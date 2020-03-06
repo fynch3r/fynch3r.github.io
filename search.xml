@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>damn</title>
+    <url>/damn/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>hello</title>
+    <url>/hello/</url>
+    <content><![CDATA[<p>#一级标题</p>
+]]></content>
+      <categories>
+        <category>入门</category>
+      </categories>
+      <tags>
+        <tag>lalala</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Life</title>
     <url>/Life/</url>
     <content><![CDATA[<p>#Make it better.</p>
