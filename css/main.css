@@ -1203,7 +1203,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #c9e503;
+  background: #0dffd5;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2177,6 +2177,103 @@ ul.breadcrumb li + li:last-child {
 }
 .tag-cloud a:hover {
   color: #222 !important;
+}
+.search-pop-overlay {
+  background: rgba(0,0,0,0.3);
+  display: none;
+  height: 100%;
+  left: 0;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1400;
+}
+.search-popup {
+  background: var(--card-bg-color);
+  border-radius: 5px;
+  display: none;
+  height: 80%;
+  left: 50%;
+  margin-left: -350px;
+  padding: 0;
+  position: fixed;
+  top: 10%;
+  width: 700px;
+  z-index: 1500;
+}
+@media (max-width: 767px) {
+  .search-popup {
+    border-radius: 0;
+    height: 100%;
+    left: 0;
+    margin: 0;
+    top: 0;
+    width: 100%;
+  }
+}
+.search-popup .search-icon,
+.search-popup .popup-btn-close {
+  color: #999;
+  font-size: 18px;
+  padding: 0 10px;
+}
+.search-popup .popup-btn-close {
+  cursor: pointer;
+}
+.search-popup .popup-btn-close:hover .fa {
+  color: #222;
+}
+.search-popup .search-header {
+  background: #eee;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  display: flex;
+  padding: 5px;
+}
+.site-search input.search-input {
+  background: transparent;
+  border: 0;
+  outline: 0;
+  width: 100%;
+}
+.site-search input.search-input::-webkit-search-cancel-button {
+  display: none;
+}
+.search-loading-icon {
+  margin: 20% auto 0 auto;
+  text-align: center;
+}
+.search-popup .search-input-container {
+  flex-grow: 1;
+  padding: 2px;
+}
+.search-popup ul.search-result-list {
+  margin: 0 5px;
+  padding: 0;
+  width: 100%;
+}
+.search-popup p.search-result {
+  border-bottom: 1px dashed #ccc;
+  padding: 5px 0;
+}
+.search-popup a.search-result-title {
+  font-weight: bold;
+}
+.search-popup .search-keyword {
+  border-bottom: 1px dashed #ff2a2a;
+  color: #ff2a2a;
+  font-weight: bold;
+}
+.search-popup #search-result {
+  display: flex;
+  height: calc(100% - 55px);
+  overflow: auto;
+  padding: 5px 25px;
+}
+.search-popup #no-result {
+  color: #ccc;
+  margin: auto;
 }
 .header {
   margin: 0 auto;
