@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://0range228.github.io/"/>
-  <updated>2020-03-06T08:18:50.381Z</updated>
+  <updated>2020-03-06T18:20:16.684Z</updated>
   <id>https://0range228.github.io/</id>
   
   <author>
@@ -17,28 +17,13 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>damn</title>
-    <link href="https://0range228.github.io/damn/"/>
-    <id>https://0range228.github.io/damn/</id>
-    <published>2020-03-06T08:18:50.000Z</published>
-    <updated>2020-03-06T08:18:50.381Z</updated>
-    
-    <summary type="html">
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
     <title>hello</title>
     <link href="https://0range228.github.io/hello/"/>
     <id>https://0range228.github.io/hello/</id>
     <published>2020-03-06T08:13:49.000Z</published>
-    <updated>2020-03-06T12:45:09.542Z</updated>
+    <updated>2020-03-06T18:20:16.684Z</updated>
     
-    <content type="html"><![CDATA[<hr><h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级标题"><a href="#二级标题" class="headerlink" title="二级标题"></a>二级标题</h2><ol><li>wd<ul><li>伟大的</li><li>哇打算打</li><li>我的朴讷大方</li></ul></li><li>edwd<ol><li>wdadasd</li><li>awdasda</li><li>awdasd</li></ol></li><li>wdwdwwddwwd</li><li>wdwdaw</li></ol><p>请喝<a href="https://www.coca-cola.com.cn/" target="_blank" rel="noopener">可口可乐</a></p><p>请喝<a href="https://www.coca-cola.com.cn/" target="_blank" rel="noopener" title="请喝可口可乐">可口可乐</a></p><p><code>printf()</code>就是C语言打印的函数。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(<span class="string">"hello"</span>);</span><br></pre></td></tr></table></figure><p><em>hello</em></p><p><strong>hello</strong></p><p><strong><em>hello</em></strong></p><p><del>hello</del></p><p><u> hello</u></p><div></div><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1583504737849&amp;di=0c68e2bbeed976408b39758013a5c695&amp;imgtype=0&amp;src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20190917%2F02a5f80fee2d443a8703bdd7ccd56f42.JPG" alt="Alt cocacola" title="cocacola" style="zoom:67%;" /><p><strong>qsqqs</strong></p><table><thead><tr><th align="left">1</th><th align="center">1</th></tr></thead><tbody><tr><td align="left">Effs</td><td align="center">Efsefs</td></tr></tbody></table><h2 id="来了"><a href="#来了" class="headerlink" title="来了"></a>来了</h2><h3 id="dedaeda"><a href="#dedaeda" class="headerlink" title="dedaeda"></a>dedaeda</h3><p>faef</p><p>afa</p><p>ef</p><p>ae</p><p>fa</p><p>e</p><p>a</p><p>fa</p><p>ef</p><p>ae</p><p>faf</p><p>ae</p><p>fa</p><p>fa</p><p>e</p><p>f</p><p>fa</p><p>ef</p><p>a</p><p>fa</p><p>ef</p><p>a</p><h4 id="efefafa"><a href="#efefafa" class="headerlink" title="efefafa"></a>efefafa</h4><p>efsfesfse</p><p>efsefsef</p><p>se</p><p>fse</p><p>fs</p><p>ef</p><p>se</p><p>fs</p><p>ef</p><p>se</p><p>fs</p><p>ef</p><p>sf</p><p>s</p><p>fe</p><h2 id="chilemei1-1"><a href="#chilemei1-1" class="headerlink" title="chilemei1 [^1]"></a>chilemei1 [^1]</h2><p>typora[^2]</p><p>: ededdda</p><p>[^1]:it’s my love.</p><p>[^2]:it’s my love!!!</p>]]></content>
+    <content type="html"><![CDATA[<hr><h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级标题"><a href="#二级标题" class="headerlink" title="二级标题"></a>二级标题</h2><ol><li>wd<ul><li>伟大的</li><li>哇打算打</li><li>我的朴讷大方</li></ul></li><li>edwd<ol><li>wdadasd</li><li>awdasda</li><li>awdasd</li></ol></li><li>wdwdwwddwwd</li><li>wdwdaw</li></ol><p>请喝<a href="https://www.coca-cola.com.cn/" target="_blank" rel="noopener">可口可乐</a></p><p>请喝<a href="https://www.coca-cola.com.cn/" target="_blank" rel="noopener" title="请喝可口可乐">可口可乐</a></p><p><code>printf()</code>就是C语言打印的函数。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(<span class="string">"hello"</span>);</span><br></pre></td></tr></table></figure><p><em>hello</em></p><p><strong>hello</strong></p><p><strong><em>hello</em></strong></p><p><del>hello</del></p><p><u> hello</u></p><div></div><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1583504737849&amp;di=0c68e2bbeed976408b39758013a5c695&amp;imgtype=0&amp;src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20190917%2F02a5f80fee2d443a8703bdd7ccd56f42.JPG" alt="Alt cocacola" title="cocacola" style="zoom:67%;" /><p><strong>qsqqs</strong></p><table><thead><tr><th align="left">1</th><th align="center">1</th></tr></thead><tbody><tr><td align="left">Effs</td><td align="center">Efsefs</td></tr></tbody></table><h2 id="来了"><a href="#来了" class="headerlink" title="来了"></a>来了</h2><h3 id="dedaeda"><a href="#dedaeda" class="headerlink" title="dedaeda"></a>dedaeda</h3><p>faef</p><p>afa</p><p>ef</p><p>ae</p><p>fa</p><p>e</p><p>a</p><p>fa</p><p>ef</p><p>ae</p><p>faf</p><p>ae</p><p>fa</p><p>fa</p><p>e</p><p>f</p><p>fa</p><p>ef</p><p>a</p><p>fa</p><p>ef</p><p>a</p><h4 id="efefafa"><a href="#efefafa" class="headerlink" title="efefafa"></a>efefafa</h4><p>efsfesfse</p><p>efsefsef</p><p>se</p><p>fse</p><p>fs</p><p>ef</p><p>se</p><p>fs</p><p>ef</p><p>se</p><p>fs</p><p>ef</p><p>sf</p><p>s</p><p>fe</p><h2 id="chilemei1-1"><a href="#chilemei1-1" class="headerlink" title="chilemei1 [^1]"></a>chilemei1 [^1]</h2><p>typora[^2]</p><p>: ededdda</p><p>/Users/fengxincheng/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh</p><p>[^1]:it’s my love.</p><p>[^2]:it’s my love!!!</p>]]></content>
     
     <summary type="html">
     

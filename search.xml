@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>damn</title>
-    <url>/damn/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>hello</title>
     <url>/hello/</url>
     <content><![CDATA[<hr>
@@ -98,6 +93,7 @@
 <p>fe</p>
 <h2 id="chilemei1-1"><a href="#chilemei1-1" class="headerlink" title="chilemei1 [^1]"></a>chilemei1 [^1]</h2><p>typora[^2]</p>
 <p>: ededdda</p>
+<p>/Users/fengxincheng/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh</p>
 <p>[^1]:it’s my love.</p>
 <p>[^2]:it’s my love!!!</p>
 ]]></content>
