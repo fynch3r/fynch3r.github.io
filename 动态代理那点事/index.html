@@ -27,16 +27,18 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"0range228.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
-  <meta name="description" content="zzz">
+  <meta name="description" content="序言今天来学习动态代理。">
+<meta name="keywords" content="Java">
 <meta property="og:type" content="website">
-<meta property="og:title" content="0range的小窝">
-<meta property="og:url" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;tags&#x2F;begin&#x2F;index.html">
+<meta property="og:title" content="动态代理那点事">
+<meta property="og:url" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E9%82%A3%E7%82%B9%E4%BA%8B&#x2F;index.html">
 <meta property="og:site_name" content="0range的小窝">
-<meta property="og:description" content="zzz">
+<meta property="og:description" content="序言今天来学习动态代理。">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-04-11T08:19:51.466Z">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://0range228.github.io/tags/begin/">
+<link rel="canonical" href="https://0range228.github.io/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E9%82%A3%E7%82%B9%E4%BA%8B/">
 
 
 <script id="page-configurations">
@@ -48,7 +50,8 @@
   };
 </script>
 
-  <title>标签: begin | 0range的小窝</title>
+  <title>动态代理那点事 | 0range的小窝
+  </title>
   
 
 
@@ -126,17 +129,17 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">2</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">4</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">0</span></a>
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">3</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">2</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">5</span></a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -181,58 +184,65 @@
       <div class="main-inner">
         <div class="content-wrap">
           
+  
+  
 
           <div class="content">
             
 
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">动态代理那点事
+</h1>
+
+<div class="post-meta">
   
-  
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h1 class="collection-header">begin
-          <small>标签</small>
-        </h1>
-      </div>
+
+</div>
+
+</header>
 
       
-    <div class="collection-year">
-      <h1 class="collection-header">2020</h1>
-    </div>
+      
+      
+      <div class="post-body">
+          <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><p>今天来学习动态代理。</p>
+<a id="more"></a>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+<h1 id="什么是动态代理？"><a href="#什么是动态代理？" class="headerlink" title="什么是动态代理？"></a>什么是动态代理？</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>给目标对象提供一个代理对象，并由代理对象控制目标对象的引用。</p>
+<h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><ol>
+<li>通过引入代理对象的方式来简介访问目标对象，防止直接访问目标对象给系统带来的不必要复杂性；</li>
+<li>通过代理对象对原有的业务增强；</li>
+</ol>
+<h2 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a>注意事项：</h2><ol>
+<li>代理对象和真实对象<strong>必须实现同一个接口</strong>；</li>
+<li>代理对象只是搬运工，代理对象必须包含真实的对象；</li>
+</ol>
+<h2 id="两个核心类"><a href="#两个核心类" class="headerlink" title="两个核心类"></a>两个核心类</h2><h3 id="Proxy"><a href="#Proxy" class="headerlink" title="Proxy"></a>Proxy</h3><p>调度器，帮助调度服务的员工，是所有动态代理的父类，只管new实例出来</p>
+<p>###InvocationHandler</p>
+<p>接口，只有一个<strong>invoke</strong>方法，只管员工的执行功能</p>
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-03-09T11:31:44+08:00"
-              content="2020-03-09">
-          03-09
-        </time>
       </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/begin/begin/" itemprop="url">
-            <span itemprop="name">begin</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
+      
+      
+      
     </div>
+    
+
+    
+    
+    
   </div>
-  
-  
-  
-
-  
-
 
 
           </div>
           
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -281,6 +291,7 @@
       -->
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是动态代理？"><span class="nav-number">2.</span> <span class="nav-text">什么是动态代理？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义"><span class="nav-number">2.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目的"><span class="nav-number">2.2.</span> <span class="nav-text">目的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意事项："><span class="nav-number">2.3.</span> <span class="nav-text">注意事项：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#两个核心类"><span class="nav-number">2.4.</span> <span class="nav-text">两个核心类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Proxy"><span class="nav-number">2.4.1.</span> <span class="nav-text">Proxy</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -296,14 +307,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">日志</span>
         </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -348,12 +365,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">0k</span>
+    <span title="站点总字数">22k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1 分钟</span>
+    <span title="站点阅读时长">36 分钟</span>
   -->
 
 </div>

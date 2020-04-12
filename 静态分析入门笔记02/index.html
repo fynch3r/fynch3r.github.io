@@ -27,20 +27,18 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"0range228.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
-  <meta name="description" content="begin">
-<meta name="keywords" content="begin">
+  <meta name="description" content="序言 遥望洞庭山水翠，白银盘里一青螺。  这篇梳理数据流分析及相关方法。">
+<meta name="keywords" content="静态分析">
 <meta property="og:type" content="article">
-<meta property="og:title" content="begin">
-<meta property="og:url" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;begin&#x2F;begin&#x2F;index.html">
+<meta property="og:title" content="静态分析入门笔记02">
+<meta property="og:url" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B002&#x2F;index.html">
 <meta property="og:site_name" content="0range的小窝">
-<meta property="og:description" content="begin">
+<meta property="og:description" content="序言 遥望洞庭山水翠，白银盘里一青螺。  这篇梳理数据流分析及相关方法。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;1.jpg">
-<meta property="og:updated_time" content="2020-03-09T03:49:37.247Z">
+<meta property="og:updated_time" content="2020-04-03T01:40:44.568Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;1.jpg">
 
-<link rel="canonical" href="https://0range228.github.io/begin/begin/">
+<link rel="canonical" href="https://0range228.github.io/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B002/">
 
 
 <script id="page-configurations">
@@ -52,7 +50,7 @@
   };
 </script>
 
-  <title>begin | 0range的小窝</title>
+  <title>静态分析入门笔记02 | 0range的小窝</title>
   
 
 
@@ -130,17 +128,17 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">2</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">4</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">0</span></a>
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">3</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">2</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">5</span></a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -194,7 +192,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://0range228.github.io/begin/begin/">
+    <link itemprop="mainEntityOfPage" href="https://0range228.github.io/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B002/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/yfy.png">
@@ -207,7 +205,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          begin
+          静态分析入门笔记02
         </h1>
 
         <div class="post-meta">
@@ -216,13 +214,28 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-03-09 11:31:44 / 修改时间：11:49:37" itemprop="dateCreated datePublished" datetime="2020-03-09T11:31:44+08:00">2020-03-09</time>
+              <time title="创建时间：2020-03-27 20:33:33" itemprop="dateCreated datePublished" datetime="2020-03-27T20:33:33+08:00">2020-03-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-03 09:40:44" itemprop="dateModified" datetime="2020-04-03T09:40:44+08:00">2020-04-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">静态分析</span></a>
+                </span>
             </span>
 
           
-            <span id="/begin/begin/" class="post-meta-item leancloud_visitors" data-flag-title="begin" title="热度">
+            <span id="/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B002/" class="post-meta-item leancloud_visitors" data-flag-title="静态分析入门笔记02" title="热度">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -238,8 +251,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/begin/begin/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/begin/begin/" itemprop="commentCount"></span>
+    <a title="valine" href="/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B002/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B002/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -249,7 +262,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>5</span>
+              <span>351</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -268,36 +281,38 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="begin"><a href="#begin" class="headerlink" title="begin"></a>begin</h1><p><img src="../../images/1.jpg" alt="gfsy"></p>
+        <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>遥望洞庭山水翠，白银盘里一青螺。</p>
+</blockquote>
+<p>这篇梳理数据流分析及相关方法。</p>
+<a id="more"></a>
+
+<h1 id="数据流-Data-Flows"><a href="#数据流-Data-Flows" class="headerlink" title="数据流 Data Flows"></a>数据流 Data Flows</h1><h2 id="CFG上到底是什么在流动？"><a href="#CFG上到底是什么在流动？" class="headerlink" title="CFG上到底是什么在流动？"></a>CFG上到底是什么在流动？</h2><p>是<strong>数据流</strong>。</p>
+<p>绝大部分静态分析牺牲了<strong>completeness</strong>。</p>
+<p>先讲两点：</p>
+<ol>
+<li>对变量进行抽象表达。</li>
+<li>over-approcimation：过近似。就是说无论实际函数产生了多么复杂的情况，静态分析时都应该包含每种情况。</li>
+</ol>
+<p><strong>may-analysis</strong>：绝大部分静态分析，最常见。</p>
+<blockquote>
+<p>Outputs: maybe-true , so -&gt; over-approximation.</p>
+</blockquote>
+<p><strong>must-analysis</strong>: 为了报出来<strong>一定</strong>是正确的，那么就必须under-approximation。</p>
+<blockquote>
+<p>Outputs: must be true , so -&gt; under-approximation.</p>
+</blockquote>
+<p>同一目标：<strong><em>safe-approximation</em></strong></p>
 
     </div>
 
     
     
     
-        
-
-  <div class="followme">
-    <p>欢迎关注我的其它发布渠道</p>
-
-    <div class="social-list">
-
-            <div class="social-item">
-              <a target="_blank" class="social-link" href="/atom.xml">
-                <span class="icon">
-                  <i class="fa fa-rss"></i>
-                </span>
-
-                <span class="label">rss</span>
-              </a>
-            </div>
-    </div>
-  </div>
-
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/begin/" rel="tag"><i class="fa fa-tag"></i>begin</a>
+              <a href="/tags/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/" rel="tag"><i class="fa fa-tag"></i>静态分析</a>
           </div>
 
         
@@ -306,10 +321,13 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/Life/" rel="prev" title="Life">
-      <i class="fa fa-chevron-left"></i> Life
+    <a href="/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/" rel="prev" title="静态分析入门笔记01">
+      <i class="fa fa-chevron-left"></i> 静态分析入门笔记01
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/Linux%E6%B8%A9%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="next" title="Linux温习笔记">
+      Linux温习笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -372,7 +390,7 @@
       -->
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#begin"><span class="nav-number">1.</span> <span class="nav-text">begin</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据流-Data-Flows"><span class="nav-number">2.</span> <span class="nav-text">数据流 Data Flows</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CFG上到底是什么在流动？"><span class="nav-number">2.1.</span> <span class="nav-text">CFG上到底是什么在流动？</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -388,14 +406,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">日志</span>
         </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -440,12 +464,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">0k</span>
+    <span title="站点总字数">22k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1 分钟</span>
+    <span title="站点阅读时长">36 分钟</span>
   -->
 
 </div>

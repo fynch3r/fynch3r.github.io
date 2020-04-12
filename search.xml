@@ -1,26 +1,849 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>begin</title>
-    <url>/begin/begin/</url>
-    <content><![CDATA[<h1 id="begin"><a href="#begin" class="headerlink" title="begin"></a>begin</h1><p><img src="../../images/1.jpg" alt="gfsy"></p>
+    <title>漫谈Java反射</title>
+    <url>/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/</url>
+    <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><p>今天来总结一下Java反射，在它面前，任何事物没有任何隐私。</p>
+<a id="more"></a>
+
+<h1 id="什么是Java反射？"><a href="#什么是Java反射？" class="headerlink" title="什么是Java反射？"></a>什么是Java反射？</h1><blockquote>
+<p>将类的各个组成部分封装为其他对象，这就是反射机制。</p>
+</blockquote>
+<p>Java中的反射机制是指<strong>在运行状态中</strong>，对于任意一个类都能够知道这个类所有的属性和方法；并且对于任意一个对象，都能够调用它的任意一个方法；这种动态获取信息以及动态调用对象方法的功能成为Java语言的反射机制。</p>
+<p><strong><em>让Java可以在运行时，根据传入的类名字符串，去执行这个类存在的方法。</em></strong></p>
+<p>举个例子，Java代码在计算机中经历的三个阶段：</p>
+<p><img src="../images/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/image-20200411205831842.png" alt="image-20200411205831842"></p>
+<ul>
+<li><p>source源代码阶段：此时刚刚编译为字节码，仍然保存在硬盘上。</p>
+</li>
+<li><p>Class类对象阶段：类加载器把Person.class字节码加载进内存。</p>
+<p>对于java来说，万物皆对象，那么这时内存里会有一个Person这个类的类对象，也就是<strong>Class类对象</strong>，这个东西就很抽象。</p>
+<blockquote>
+<p>在Java里面有个类叫做<strong>Class</strong>，它是来描述<strong><em>所有字节码物理文件的一些共同特征和行为</em></strong>。例如成员变量，构造方法，普通的成员方法。</p>
+<p>Class类对象会对重点内容进行封装成成员变量：</p>
+<p>成员变量 ——-&gt; Field对象，Field[] fields</p>
+<p>构造方法 ——-&gt; Constructor对象，Constructor[] cons</p>
+<p>成员方法 ——-&gt; Method对象，Method[] methods</p>
+</blockquote>
+</li>
+<li><p>运行时阶段：这个时候类对象已经实例化成为了一个对象</p>
+</li>
+</ul>
+<p>好处：</p>
+<ol>
+<li>可以在程序<strong>运行过程中</strong>，操作对象。例如：获取，设置</li>
+<li>可以降低程序耦合性，提高程序的扩展性</li>
+</ol>
+<h2 id="如何获取Class类对象？"><a href="#如何获取Class类对象？" class="headerlink" title="如何获取Class类对象？"></a>如何获取Class类对象？</h2><h3 id="字节码文件阶段"><a href="#字节码文件阶段" class="headerlink" title="字节码文件阶段"></a>字节码文件阶段</h3><blockquote>
+<p>Class.forname(“全类名”)//包名.类名</p>
+</blockquote>
+<p>将字节码文件加载进内存 返回Class类对象</p>
+<h3 id="内存阶段"><a href="#内存阶段" class="headerlink" title="内存阶段"></a>内存阶段</h3><blockquote>
+<p>类名.class</p>
+</blockquote>
+<p>当class字节码加载进内存，那么这个Class类对象就有一个<strong>类名</strong>属性，可以用来索引</p>
+<h3 id="运行时阶段"><a href="#运行时阶段" class="headerlink" title="运行时阶段"></a>运行时阶段</h3><blockquote>
+<p>对象.getClass()</p>
+</blockquote>
+<p>所有对象的父类都是Object类，这个类有自己的getClass方法，所有对象都可以拿来用</p>
+<h2 id="实例demo"><a href="#实例demo" class="headerlink" title="实例demo"></a>实例demo</h2><h3 id="字节码阶段"><a href="#字节码阶段" class="headerlink" title="字节码阶段"></a>字节码阶段</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//Class.forName("全类名")</span></span><br><span class="line">Class cls1 = Class.forName(<span class="string">"domain.Person"</span>);</span><br><span class="line">System.out.println(cls1);</span><br></pre></td></tr></table></figure>
+
+<h3 id="内存阶段-1"><a href="#内存阶段-1" class="headerlink" title="内存阶段"></a>内存阶段</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//类名.class属性</span></span><br><span class="line">Class cls2 = Person<span class="class">.<span class="keyword">class</span></span>;</span><br><span class="line">System.out.println(cls2);</span><br></pre></td></tr></table></figure>
+
+<h3 id="运行时阶段-1"><a href="#运行时阶段-1" class="headerlink" title="运行时阶段"></a>运行时阶段</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//对象.getClass()方法</span></span><br><span class="line">Person p = <span class="keyword">new</span> Person();</span><br><span class="line">Class cls3 = p.getClass();</span><br><span class="line">System.out.println(cls3);</span><br></pre></td></tr></table></figure>
+
+<h3 id="小细节"><a href="#小细节" class="headerlink" title="小细节"></a>小细节</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//用==去比较三个class类对象，==比较的是对象的内存地址，如果内存地址相同，那么就是同一个对象</span></span><br><span class="line">System.out.println(cls1 == cls2);<span class="comment">//true</span></span><br><span class="line">System.out.println(cls1 == cls3);<span class="comment">//true</span></span><br><span class="line"><span class="comment">//结论：同一个字节码文件（xx.class）在一次程序运行的过程中，只会被加载一次</span></span><br><span class="line"><span class="comment">//不论是哪种方式获取的Class类对象，都是同一个。</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="实例对照"><a href="#实例对照" class="headerlink" title="实例对照"></a>实例对照</h1><p>下面看一个demo：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">  	<span class="comment">//public String a;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">(String name, <span class="keyword">int</span> age)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getAge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAge</span><span class="params">(<span class="keyword">int</span> age)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Person&#123;"</span> +</span><br><span class="line">                <span class="string">"name='"</span> + name + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", age="</span> + age +</span><br><span class="line">                <span class="string">'&#125;'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">eat</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"eat..."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">eat</span><span class="params">(String food)</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"eat..."</span>+food);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="获取Fields"><a href="#获取Fields" class="headerlink" title="获取Fields"></a>获取Fields</h2><blockquote>
+<p> 获取成员变量们：</p>
+<ul>
+<li>Fields[] getFields()：只获取所有public修饰的成员变量</li>
+<li>Fields[] getField(String name)：获取所有public修饰的成员变量</li>
+<li>Fields[] getDeclaredFields()：获取所有的成员变量，【不考虑】修饰符</li>
+<li>Fields[] getField(String name)：获取特定的成员变量</li>
+</ul>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Class personClass = Person<span class="class">.<span class="keyword">class</span></span>;</span><br><span class="line"><span class="comment">//Fields[] getFields()：只会获取全部的【public修饰】的成员变量</span></span><br><span class="line">Field[] fields = personClass.getFields();</span><br><span class="line"><span class="keyword">for</span> (Field field : fields) &#123;</span><br><span class="line">    <span class="comment">//由于都是private，什么都不输出</span></span><br><span class="line">    System.out.println(field);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//这里新增测试字段 public a</span></span><br><span class="line"><span class="comment">//public String a;</span></span><br><span class="line">Class personClass = Person<span class="class">.<span class="keyword">class</span></span>;</span><br><span class="line">Field a = personClass.getField(<span class="string">"a"</span>);</span><br><span class="line"><span class="comment">//获取成员变量a的值</span></span><br><span class="line">Person p = <span class="keyword">new</span> Person();</span><br><span class="line">Object value = a.get(p);</span><br><span class="line">System.out.println(value);<span class="comment">//null</span></span><br><span class="line"><span class="comment">//设置a的值</span></span><br><span class="line">a.set(p,<span class="string">"张三"</span>)；</span><br><span class="line">System.out.println(p);<span class="comment">//Person&#123;name='null',age=0,a='张三'&#125;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//这里新增测试字段private d</span></span><br><span class="line"><span class="comment">//private String d</span></span><br><span class="line">Class personClass = Person<span class="class">.<span class="keyword">class</span></span>;</span><br><span class="line">Field[] declaredFields = personClass.getDeclaredFields();</span><br><span class="line"><span class="comment">// 获取所有的成员变量，不考虑修饰符，这个方法超级暴力</span></span><br><span class="line"><span class="keyword">for</span> (Field declaredField : declaredFields) &#123;</span><br><span class="line">    <span class="comment">//由于都是private，什么都不输出</span></span><br><span class="line">    System.out.println(declaredField);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Class personClass = Person<span class="class">.<span class="keyword">class</span></span>;</span><br><span class="line">Person p = <span class="keyword">new</span> Person();</span><br><span class="line">Field d = personClass.getDeclaredField(<span class="string">"d"</span>);</span><br><span class="line"><span class="comment">//当访问private时，忽略访问权限符的安全检查</span></span><br><span class="line"><span class="comment">//暴力反射</span></span><br><span class="line">d.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">Object value= d.get(p);</span><br><span class="line">System.out.println(value);<span class="comment">//null,因为初始化，还没有设置值</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="获取Constructor"><a href="#获取Constructor" class="headerlink" title="获取Constructor"></a>获取Constructor</h2><blockquote>
+<p>获取构造方法们：</p>
+<p>Constructor&lt;?&gt;[] getConstructors()</p>
+<p>Constructor<?> getConstructor(类 <?> … parameterTypes)</p>
+<p>Constructor&lt;?&gt; getDeclaredConstructors()</p>
+<p>Constructor<?> getDeclaredConstructor(类 <?> … parameterTypes)</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Class personClass = Person<span class="class">.<span class="keyword">class</span></span>;</span><br><span class="line">Constructor constructor = personClass.getConstructor(String<span class="class">.<span class="keyword">class</span>,<span class="title">int</span>.<span class="title">class</span>)</span>;<span class="comment">//每一个构造方法的参数种类不一样，这一步是获取构造方法</span></span><br><span class="line">System.out.println(constructor);</span><br><span class="line"><span class="comment">//所以可以执行构造函数，进而创建对象，[构造器.newInstance]</span></span><br><span class="line">Object person = constructor.newInstance(<span class="string">"张三"</span>, <span class="number">23</span>);<span class="comment">//传递对应的参数值</span></span><br><span class="line">System.out.println(person);<span class="comment">//Person&#123;name=‘张三‘，age=’23‘&#125;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Class personClass = Person<span class="class">.<span class="keyword">class</span></span>;</span><br><span class="line"><span class="comment">//对于无参的构造方法，可以直接使用Class类对象的newInstance方法</span></span><br><span class="line">Object o = personClass.newInstance();</span><br><span class="line">System.out.println(o);</span><br></pre></td></tr></table></figure>
+
+<h2 id="获取Methods"><a href="#获取Methods" class="headerlink" title="获取Methods"></a>获取Methods</h2><blockquote>
+<p>获取成员方法们：</p>
+<p>Method[]  getMethods()//获取所有【public】修饰的方法，父类Object的方法也能看到</p>
+<p>Method getMethod(String name，类 &lt;?&gt; … parameterTypes)</p>
+<p>Method[] getDeclaredMethods()//</p>
+<p>Method getDeclaredMethod(String name，类 &lt;?&gt; … parameterTypes)</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Class personClass = Person<span class="class">.<span class="keyword">class</span></span>;</span><br><span class="line"><span class="comment">//获取制定名称的方法</span></span><br><span class="line">Method eat_Method = personClass.getMethod(<span class="string">"eat"</span>);</span><br><span class="line"><span class="comment">//进而执行方法,【invoke】，它需要一个真实的对象，以及方法的实际参数列表</span></span><br><span class="line">Person pp = <span class="keyword">new</span> Person();</span><br><span class="line"><span class="comment">//因为是空参方法，所以直接放进来一个对象就行</span></span><br><span class="line"><span class="comment">//执行方法，eat...</span></span><br><span class="line">eat_Method.invoke(pp);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Class personClass = Person<span class="class">.<span class="keyword">class</span></span>;</span><br><span class="line">Method eat_Method2 = personClass.getMethod(<span class="string">"eat"</span>,String<span class="class">.<span class="keyword">class</span>)</span>;<span class="comment">//eat方法重载，eat方法的需要传入的参数是String类型</span></span><br><span class="line">eat_Method2.invoke(pp,<span class="string">"jiaozi"</span>);<span class="comment">//吃饺子</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Class personClass = Person<span class="class">.<span class="keyword">class</span></span>;</span><br><span class="line">Method[] methods = personClass.getMethods();<span class="comment">//获取所有public方法名</span></span><br><span class="line"><span class="comment">//获取类名</span></span><br><span class="line">String className = personClass.getName;<span class="comment">//获取类名</span></span><br><span class="line">System.out.println(className);<span class="comment">//包名.类名</span></span><br><span class="line"><span class="keyword">for</span> (Method method : methods) &#123;</span><br><span class="line">    <span class="comment">//也支持暴力反射：method.setAccessible(true);</span></span><br><span class="line">    System.out.println(method);</span><br><span class="line">    <span class="comment">//获取所有方法名</span></span><br><span class="line">    String methodname = method.getName();</span><br><span class="line">    System.out.println(methodname);</span><br></pre></td></tr></table></figure>
+
+<h1 id="灵魂体现"><a href="#灵魂体现" class="headerlink" title="灵魂体现"></a>灵魂体现</h1><p>这里引入一个实际利用中的小demo：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(String className, String methodName)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    Class clazz = Class.forName(className);    </span><br><span class="line">    clazz.getMethod(methodName).invoke(clazz.newInstance()); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里分步解读：</p>
+<ol>
+<li>首先两个参数：<code>className</code>、<code>methodName</code>分别代表了传入的类名和方法名。</li>
+<li>首先<code>Class clazz = Class.forName(className);</code>这里的意思是在字节码层面，我先获取你的Class类对象，也就是<code>clazz</code></li>
+<li>接下来<code>clazz.getMethod(methodName).invoke(clazz.newInstance());</code>这里的含义可以分步解读：<ol>
+<li><code>clazz.getMethod(methodName)</code>这里我先根据传进来的方法名<code>methodName</code>获取你的Method对象;</li>
+<li>接下来<code>.invoke(clazz.newInstance())</code>这个含义是对于我获取的method方法对象，我要执行这个方法，那么问题来了，我如何才能执行这个方法呢？？？</li>
+<li>这里我先<code>clazz.newInstance()</code>，这一手的含义是我要先生成一个指定类的对象，那么如何生成呢？之前我已经获取了Class类对象，那么就可以用这个类对象来生成这个类的实例化对象</li>
+<li><code>clazz.newInstance()</code>这样就可以生成一个实例化对象了</li>
+<li>那么有了类的实例化对象之后，直接放入invoke参数里面，就可以凭借我们之前的Method对象来执行这个特殊的<code>className</code>方法了!</li>
+</ol>
+</li>
+</ol>
+<p>说了这么多嗷，我分步拆开来写一下，会更清晰一些：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(String className, String methodName)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">  		<span class="comment">//首先找到类对象</span></span><br><span class="line">  		Class clazz = Class.forName(className);</span><br><span class="line">  		<span class="comment">//根据类对象找到Method方法对象</span></span><br><span class="line">      Method mtd = clazz.getMethod(methodName);</span><br><span class="line">  		<span class="comment">//动态生成类实例化对象obj</span></span><br><span class="line">      Object obj = clazz.newInstance();</span><br><span class="line">  		<span class="comment">//调用类中方法mtd</span></span><br><span class="line">      mtd.invoke(obj); </span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>以下一步步使用反射机制实现<code>Runtime.getRuntime().exec(&quot;calc.exe&quot;);</code>这个语句</p>
+<ul>
+<li>getRuntime()：其实就是<strong>Runtime类获取对象</strong>的方式，等于new一个Runtime类。之所以封装成一个函数是为了不调用一次建立一个对象，只获取一个对象来执行操作。</li>
+<li>exec()：调用exec函数</li>
+<li>calc.exe：调用计算器程序</li>
+</ul>
+<h2 id="类的初始化"><a href="#类的初始化" class="headerlink" title="类的初始化"></a>类的初始化</h2><p>这里我再写一个小demo吧：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> domain;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TrainPrint</span> </span>&#123;</span><br><span class="line">    <span class="comment">//初始块</span></span><br><span class="line">    &#123;</span><br><span class="line">        System.out.printf(<span class="string">"Empty block initial %s\n"</span>, <span class="keyword">this</span>.getClass());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//静态初始块</span></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.printf(<span class="string">"Static initial %s\n"</span>, TrainPrint<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//构造函数</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TrainPrint</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.printf(<span class="string">"Initial %s\n"</span>, <span class="keyword">this</span>.getClass());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先我写一个测试类，对于这个测试类，它有初始块，静态初始块，构造函数。</p>
+<p>那么下面我来获取它的Class对象，想看看当这个<code>TrainPrint</code>测试类加载进内存之后，哪些部分执行了，好主意，说写就写：</p>
+<p>首先<strong>类的初始化</strong>:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> reflect;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> domain.TrainPrint;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">initTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, ClassNotFoundException </span>&#123;</span><br><span class="line">        Class.forName(<span class="string">"domain.TrainPrint"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行结果：<code>Static initial class domain.TrainPrint</code></p>
+<p>这说明当类加载进了内存，只有<strong>静态初始块</strong>得到了执行。</p>
+<p>那么<strong>类的实例化</strong>呢:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> reflect;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> domain.TrainPrint;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">initTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, ClassNotFoundException </span>&#123;</span><br><span class="line">        TrainPrint test= <span class="keyword">new</span> TrainPrint();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行结果：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Static initial class domain.TrainPrint</span><br><span class="line">Empty block initial class domain.TrainPrint</span><br><span class="line">Initial class domain.TrainPrint</span><br></pre></td></tr></table></figure>
+
+<p>这也暴露了顺序：<code>静态初始块</code>-&gt;<code>初始块</code>-&gt;<code>构造函数</code></p>
+<p>补充：</p>
+<p>具有父类的类的实例化：<code>父类静态初始块</code>-&gt;<code>子类静态初始块</code>-&gt;<code>父类初始块</code>-&gt;<code>父类构造函数</code>-&gt;<code>子类初始块</code>-&gt;<code>子类构造函数</code><br>具有父类的类的实例化：<code>父类静态初始块</code>-&gt;<code>子类静态初始块</code></p>
+<p>以上对于类初始化的说明其实就是说，单独一个Class.forName()，在<strong>类静态初始块可控的情况</strong>下，可以执行恶意代码。</p>
+<h2 id="调用内部类"><a href="#调用内部类" class="headerlink" title="调用内部类"></a>调用内部类</h2><p>Java的普通类 C1 中支持编写内部类 C2 ，而在编译的时候，会生成两个文件： <code>C1.class</code> 和 <code>C1$C2.class</code>，可以把他们看作两个无关的类。</p>
+<p><code>Class.forName(&quot;C1$C2&quot;)</code>可以调用这个内部类。</p>
+<p>我们可以通过<code>Class.forName(&quot;java.lang.Runtime&quot;)</code>来获取类（java.lang.Runtime是Runtime类的完整路径）</p>
+<h2 id="getMethod"><a href="#getMethod" class="headerlink" title="getMethod"></a>getMethod</h2><p>Java中支持类的重载，我们不能仅通过函数名来确定一个函数。所以，在调用 getMethod 的时候，我们需要传给他你需要获取的函数的参数类型列表，如下：<br><code>Class.forName(&quot;java.lang.Runtime&quot;).getMethod(&quot;exec&quot;, String.class)</code></p>
+<h2 id="invoke"><a href="#invoke" class="headerlink" title="invoke"></a>invoke</h2><p>invoke方法位于Method类下，其的作用是传入参数，执行方法，<br><code>public Object invoke(Object obj, Object... args)</code><br>它的第一个参数是执行method的实例化对象：</p>
+<ul>
+<li>如果这个方法是一个普通方法，那么第一个参数是类对象</li>
+<li>如果这个方法是一个静态方法，那么第一个参数是类（之后会提到，这里其实不用那么死板），它接下来的参数才是需要传入的参数。</li>
+</ul>
+<p>由于我们的exec函数是一个普通方法，需要传入类对象，即<code>invoke(类对象，exec方法传入的参数)</code><br>之前说到Runtime的类对象不能通过newInstance()来获取对象（class.newInstance等于new class）,是因为Runtime的类构造函数是一个private构造函数，只能通过getRuntime方法返回一个对象。</p>
+<p>获取类对象：</p>
+<figure class="highlight plain"><figcaption><span>(由于getRuntime是一个静态方法，invoke传入Runtime类，进行调用)</span></figcaption><table><tr><td class="code"><pre><span class="line">`invoke(Class.forName(&quot;java.lang.Runtime&quot;).getMethod(&quot;getRuntime&quot;).invoke(Class.forName(&quot;java.lang.Runtime&quot;))，&quot;calc.exe&quot;)`</span><br><span class="line"></span><br><span class="line">合并：</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">Class.forName(&quot;java.lang.Runtime&quot;).getMethod(&quot;exec&quot;, String.class).</span><br><span class="line">                invoke(</span><br><span class="line">                        Class.forName(&quot;java.lang.Runtime&quot;).getMethod(&quot;getRuntime&quot;).invoke(</span><br><span class="line">                                Class.forName(&quot;java.lang.Runtime&quot;)),&quot;/Applications/Calculator.app/Contents/MacOS/Calculator&quot;);</span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/image-20200411221213662.png" alt="image-20200411221213662"></p>
+<p>再简化一下：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">Class clazz = Class.forName(<span class="string">"java.lang.Runtime"</span>); </span><br><span class="line">clazz.getMethod("exec", String.class).invoke(clazz.getMethod("getRuntime").invoke(clazz), "/Applications/Calculator.app/Contents/MacOS/Calculator");</span><br></pre></td></tr></table></figure>
+
+<p>详细解读，这里是一个疯狂套娃的过程：</p>
+<ol>
+<li>首先我要找到类对象，clazz，不多说了</li>
+<li>接下来我要告诉这个类对象我要执行的方法是<code>exec</code>，这个exec方法接受的参数类型是<code>String</code>类型，当然就是恶意命令字符串</li>
+<li>那么我们的invoke函数需要的操作就是<code>invoke(类对象，exec方法等待接收的参数)</code>，那么问题来了：Runtime类不允许<code>newInstance()</code>来实例化对象！！！但是他允许通过<code>getRuntime</code>方法返回一个对象，那么我就用getRuntime方法来返回一个对象！</li>
+<li>现在开始疯狂套娃！</li>
+<li>首先既然你不允许instance，那么我就在那个类对象的位置“套”出来一个对象！思路其实就是既然我没办法给你在那个位置“放”上一个实例化对象，那么我就在你的位置上<strong>使用反射invoke执行<code>getRuntime</code>方法</strong>，不就可以了么！</li>
+<li>那么就有了简化版代码！</li>
+<li>这里仔细看，可以看到，其实<code>getRuntime</code>方法它也是一个无参构造方法！</li>
+</ol>
+<h2 id="指定的构造方法生成类的实例"><a href="#指定的构造方法生成类的实例" class="headerlink" title="指定的构造方法生成类的实例"></a>指定的构造方法生成类的实例</h2><p>继续举一个演化成反射机制的执行命令payload的例子：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; paramList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">paramList.add(<span class="string">"/Applications/Calculator.app/Contents/MacOS/Calculator"</span>);</span><br><span class="line">ProcessBuilder pb = <span class="keyword">new</span> ProcessBuilder(paramList);</span><br><span class="line">pb.start();</span><br></pre></td></tr></table></figure>
+
+<p>可见，其构造函数是写入了一个字符串，不是无参构造方法，接下来我们会一步步进行转化。</p>
+<p>ProcessBuilder有两个构造函数：</p>
+<ul>
+<li><code>public ProcessBuilder(List command)</code></li>
+<li><code>public ProcessBuilder(String... command)</code>(此处，String<code>...</code>这种语法表示String参数数量是可变的，与String[]一样)</li>
+</ul>
+<p><code>getConsturctor()</code>函数可以选定指定接口格式的构造函数(由于构造函数也可以根据参数来进行重载)，<code>getConsturctor(参数类型)</code></p>
+<p>选定后我们可以通过<code>newInstance()</code>,并传入构造函数的参数执行构造函数，即<code>newInstance(传入的构造函数参数)</code>。</p>
+<p>start函数不是一个静态函数,需要传入类的实例，所以这里可以继续使用反射：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">Class clazz = Class.forName(<span class="string">"java.lang.ProcessBuilder"</span>); </span><br><span class="line">clazz.getMethod("start").invoke(clazz.getConstructor(List.class).newInstance(Arrays.asList("/Applications/Calculator.app/Contents/MacOS/Calculator")));</span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/image-20200411224713717.png" alt="image-20200411224713717"></p>
+<p>这里还有一种方式：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//这个可以传入多个字符串</span></span><br><span class="line">ProcessBuilder pb = <span class="keyword">new</span> ProcessBuilder(<span class="string">"/Applications/Calculator.app/Contents/MacOS/Calculator"</span>);</span><br><span class="line">pb.start();</span><br></pre></td></tr></table></figure>
+
+<p>那么payload就这样写吧：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">Class clazz = Class.forName(<span class="string">"java.lang.ProcessBuilder"</span>); </span><br><span class="line">((ProcessBuilder)clazz.getConstructor(String[].class).newInstance(new String[]&#123;"/Applications/Calculator.app/Contents/MacOS/Calculator"&#125;)).start();</span><br></pre></td></tr></table></figure>
+
+<p>但是实际上我们这样调用是会报错的，因为newInstance函数接受参数是一个<code>Object..</code>也就是Object数组，它会完美契合我们提供的String[]，剥去一层数组。</p>
+<p>那就再套一层：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">Class clazz = Class.forName(<span class="string">"java.lang.ProcessBuilder"</span>); </span><br><span class="line">((ProcessBuilder)clazz.getConstructor(String[].class).newInstance(new String[][]&#123;&#123;"/Applications/Calculator.app/Contents/MacOS/Calculator"&#125;&#125;)).start();</span><br></pre></td></tr></table></figure>
+
+<h2 id="执行私有方法"><a href="#执行私有方法" class="headerlink" title="执行私有方法"></a>执行私有方法</h2><p>以上都是方法或构造方法是public函数，但是如果是私有方法，该如何调用？<br>之前用的都是getMethod、getConstructor，接下来需要使用getDeclaredMethod、getDeclaredConstructor：</p>
+<ul>
+<li>getMethod等方法获取的是当前类中所有<strong>公共</strong>方法，包括从父类继承的方法</li>
+<li>getDeclared等方法获取的是<strong>当前类中“声明”的方法，是实在写在这个类里的，包括私有的方法，但从父类里继承来的就不包含了</strong></li>
+</ul>
+<p>之前说到Runtime的构造方式是一个私有方法，从而不能直接调用，那么接下来我就来调用Runtime的构造方法来获取一个实例来执行计算器弹出：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">Class clazz = Class.forName(<span class="string">"java.lang.Runtime"</span>); </span><br><span class="line">Constructor m = clazz.getDeclaredConstructor(); </span><br><span class="line">m.setAccessible(<span class="keyword">true</span>); <span class="comment">//暴力反射</span></span><br><span class="line">clazz.getMethod("exec", String.class).invoke(m.newInstance(), "/Applications/Calculator.app/Contents/MacOS/Calculator");</span><br></pre></td></tr></table></figure>
+
+<p>在获取到私有方法后，通过<code>setAccessible(true)</code>可以打破私有方法访问限制，从而进行调用。</p>
+<h1 id="从Commons-collections收获的一点反思"><a href="#从Commons-collections收获的一点反思" class="headerlink" title="从Commons-collections收获的一点反思"></a>从Commons-collections收获的一点反思</h1><p>对于正常的反射模板：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Class.forName(<span class="string">"java.lang.Runtime"</span>).getMethod(<span class="string">"getRuntime"</span>).invoke(Class.forName(<span class="string">"java.lang.Runtime"</span>))</span><br></pre></td></tr></table></figure>
+
+<p>但其实我们很容易忽略反射机制中调用的函数实际上可以在两个不同的class中调用，<strong>就像好比有一个函数可以在两个class中调用</strong>。</p>
+<p>在Commons-Collections的环境中，我们是没法得到<code>Class.forName(&quot;java.lang.Runtime&quot;).getMethod(...)</code>的，但是可以得到<code>Class.forName(&quot;java.lang.Class&quot;).getMethod(...)</code>。</p>
+<p>可以理解为我们可以抓到<code>Runtime</code>的父类，那么就可以得到以下途径进行变形：</p>
+<ul>
+<li>用反射机制去调用反射机制中使用的函数getMethod</li>
+<li>使用invoke传入的obj去指定getMethod的当前的调用环境（在实际代码执行中是this变量的区别）</li>
+</ul>
+<p>继续看一下Class类中getMethod方法的接口：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@CallerSensitive</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Method <span class="title">getMethod</span><span class="params">(String name, Class&lt;?&gt;... parameterTypes)</span><span class="comment">////&lt;?&gt;... 表示任意类型任意数量的Class数组</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> NoSuchMethodException, SecurityException </span>&#123;</span><br><span class="line">    checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), <span class="keyword">true</span>);</span><br><span class="line">    Method method = getMethod0(name, parameterTypes, <span class="keyword">true</span>);</span><br><span class="line">    <span class="keyword">if</span> (method == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchMethodException(getName() + <span class="string">"."</span> + name + argumentTypesToString(parameterTypes));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> method;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>那么我们传数组，来拿到<code>getmethod</code>这个方法不就行了么：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">Method method1= Class.forName(<span class="string">"java.lang.Class"</span>)</span><br><span class="line">        .getMethod("getMethod", new Class[] &#123;String.class, Class[].class &#125;);//根据getMethod方法接口进行封装</span><br></pre></td></tr></table></figure>
+
+<p>以下套娃警告！</p>
+<p>这里的Class类，它有所有方法，我们就是先拿到<code>getmethod</code>这个方法，这里是为什么呢？因为对于想用反射来调用方法其他类的方法，你必须会用到<code>getmethod</code>方法（忘了的向上翻模板），这里就相当于我先把梯子拿到！</p>
+<p>那么有了<code>getmethod</code>方法之后，我需要一个obj对象来调用呀，这个obj其实就是<code>java.lang.Runtime</code>。之前也说了，这个对象很有脾气，需要执行这个类下面的<code>Runtime</code>方法，才能实例化一个<code>Runtime</code>对象。</p>
+<p>结合上面刚刚获取的<code>getmethod</code>梯子方法，继续写吧：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//以下语句执行结果等同于Class.forName("java.lang.Runtime").getMethod(getRunime)</span></span><br><span class="line">method1.invoke(Class.forName(<span class="string">"java.lang.Runtime"</span>),<span class="string">"getRuntime"</span>,<span class="keyword">new</span> Class[<span class="number">0</span>]);</span><br><span class="line"><span class="comment">//用于对比：以下语句等同于Class.forName("java.lang.Class").getMethod(getRunime)</span></span><br><span class="line"><span class="comment">//method1.invoke(Class.forName("java.lang.Class"),"getRuntime",new Class[0]);</span></span><br></pre></td></tr></table></figure>
+
+<p>合起来就是：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 1.正常的反射调用</span></span><br><span class="line">Class.forName(<span class="string">"java.lang.Runtime"</span>).getMethod(<span class="string">"getRuntime"</span>)</span><br><span class="line"><span class="comment">// 2.经过变形的反射调用，需要绕一圈</span></span><br><span class="line">Class.forName(<span class="string">"java.lang.Class"</span>)</span><br><span class="line">    .getMethod("getMethod", new Class[] &#123;String.class, Class[].class &#125;)//得到getMethod方法</span><br><span class="line">   .invoke(Class.forName(<span class="string">"java.lang.Runtime"</span>),<span class="string">"getRuntime"</span>,<span class="keyword">new</span> Class[<span class="number">0</span>]);<span class="comment">//new Class[0]其实就是占位</span></span><br></pre></td></tr></table></figure>
+
+<p><code>new Class[0]</code>其实就是占位，因为阅读源码能看到invoke方法参数规范，是硬性标准需要两个参数的，第二个是一个<code>Object</code>类的数组：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@CallerSensitive</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object obj, Object... args)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> IllegalAccessException, IllegalArgumentException,</span></span><br><span class="line"><span class="function">       InvocationTargetException</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!override) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!Reflection.quickCheckMemberAccess(clazz, modifiers)) &#123;</span><br><span class="line">            Class&lt;?&gt; caller = Reflection.getCallerClass();</span><br><span class="line">            checkAccess(caller, clazz, obj, modifiers);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    MethodAccessor ma = methodAccessor;             <span class="comment">// read volatile</span></span><br><span class="line">    <span class="keyword">if</span> (ma == <span class="keyword">null</span>) &#123;</span><br><span class="line">        ma = acquireMethodAccessor();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ma.invoke(obj, args);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>所以现在我们只是以<code>Class.forName(&quot;java.lang.Class&quot;)</code>开头获取到了Runtime类下的getRuntime方法。还没有执行。</p>
+<h2 id="神奇的invoke参数"><a href="#神奇的invoke参数" class="headerlink" title="神奇的invoke参数"></a>神奇的invoke参数</h2><p>自己写完总觉得invoke参数奇奇怪怪的，淦，研究一下。</p>
+<p>invoke有一个非常神奇的特性，它不会那么严格地校验obj。回顾之前总结的invoke传参规则：</p>
+<blockquote>
+<p>它的第一个参数是执行method的对象obj：</p>
+<ul>
+<li>如果这个方法是一个普通方法，那么第一个参数是类对象</li>
+<li>如果这个方法是一个静态方法，那么第一个参数是类<br>它接下来的参数才是需要传入的参数。</li>
+</ul>
+</blockquote>
+<p>但是，<strong>传入的第一个参数其实不一定要是正确的类或者类对象!</strong></p>
+<p>下面一个小例子：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//main函数</span></span><br><span class="line">Class.forName(<span class="string">"a"</span>).getMethod(<span class="string">"print"</span>).invoke(<span class="keyword">null</span>);</span><br><span class="line"><span class="comment">//内部类：</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">a</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>按照规则，print函数是一个<strong>静态方法</strong>，实际上我们应该invoke传入一个a的类。但是以上代码的执行结果却是成功的：</p>
+<p><img src="../images/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/image-20200412135058766.png" alt="image-20200412135058766"></p>
+<p>但是如果<code>print</code>方法不是静态防范时就会执行失败：</p>
+<p><img src="../images/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/image-20200412135158822.png" alt="image-20200412135158822"></p>
+<p>这是因为invoke函数null抛出报错的机制导致的：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">* <span class="meta">@exception</span> NullPointerException      </span><br><span class="line">* <span class="keyword">if</span> the specified object is <span class="keyword">null</span> and the method is an instance method. <span class="comment">//obj为null，并且method是一个实例method</span></span><br><span class="line">*/</span><br><span class="line"><span class="meta">@CallerSensitive</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object obj, Object... args)</span></span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当method是一个普通函数时，传入obj不能为null，并且其类对象要与方法匹配；但是当method是一个静态函数时，就很随便了(可能是因为压根不会被用到吧)。</p>
+<p>这里我迷茫了好久，知道我看到这样一句话才弄懂：</p>
+<blockquote>
+<p><strong>类实例</strong>是其他类的实例，<strong>类</strong>实际上是Class.class这个类的实例。<br>这边之前的疑问是，getMethod不是静态方法而invoke中传入的是类而不是类实例。<br>实际上因为getMethod本来就是class类中的方法，而<code>Class.forName(&quot;java.lang.Runtime&quot;)</code>获取到的class类的实例<br>我们调用getMethod传入的不是之前的模糊类的概念，而是class类的实例（类实例），所以这里是没毛病的调用class类下的非静态方法，传入class类实例。</p>
+</blockquote>
+<h2 id="回来继续构造调用"><a href="#回来继续构造调用" class="headerlink" title="回来继续构造调用"></a>回来继续构造调用</h2><p>上面我们只是获取到了getRuntime方法，我们还没有调用这个方法获取其Runtime对象</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//普通调用形式</span></span><br><span class="line">Runtime.getRuntime()</span><br><span class="line"><span class="comment">// 反射调用</span></span><br><span class="line">Class.forName(<span class="string">"java.lang.Runtime"</span>).getMethod(<span class="string">"getRuntime"</span>).invoke(Class.forName(<span class="string">"java.lang.Runtime"</span>))</span><br><span class="line"><span class="comment">// 经过变形的反射调用</span></span><br><span class="line">Method method = (Method) Class.forName(<span class="string">"java.lang.Class"</span>)</span><br><span class="line">                .getMethod("getMethod", new Class[] &#123;String.class, Class[].class &#125;)//得到getMethod方法，这个方法需要两个型参，这里要列好，分别是String和Class</span><br><span class="line">  .invoke(Class.forName(<span class="string">"java.lang.Runtime"</span>),<span class="string">"getRuntime"</span>,<span class="keyword">new</span> Class[<span class="number">0</span>]);<span class="comment">//调用getMethod方法，得到getRuntime方法</span></span><br><span class="line"><span class="comment">//以上等于执行Class.forName("java.lang.Runtime").getMethod("getRuntime")</span></span><br><span class="line"><span class="comment">//调用Runtime.getRuntime函数，传入的obj根据上面的分析可以随便写</span></span><br><span class="line">method.invoke(Class.forName(<span class="string">"java.lang.Runtime"</span>),<span class="keyword">new</span> Object[<span class="number">0</span>]);</span><br><span class="line">method.invoke(<span class="keyword">null</span>,<span class="keyword">new</span> Object[<span class="number">0</span>]);</span><br><span class="line">method.invoke(Class.forName(<span class="string">"java.lang.String"</span>),<span class="keyword">new</span> Object[<span class="number">0</span>]);</span><br></pre></td></tr></table></figure>
+
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>反射，永远滴神！</p>
 ]]></content>
+      <categories>
+        <category>反射</category>
+      </categories>
       <tags>
-        <tag>begin</tag>
+        <tag>Java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Linux温习笔记</title>
+    <url>/Linux%E6%B8%A9%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>江山如画，一时多少豪杰。</p>
+</blockquote>
+<p>今天来复习一下Linux基础知识。</p>
+<a id="more"></a>
+
+<h1 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h1><p><code>/</code>：根目录，所有用户共享的目录，就是树根</p>
+<p><code>~</code>：家目录，用户的个人目录</p>
+<p>用户<code>tom</code>的家目录：<code>/home/tom</code></p>
+<p>用户<code>root</code>的家目录：<code>/root</code></p>
+<p><code>#</code>：root</p>
+<p><code>$</code>：普通用户</p>
+<h1 id="各种命令"><a href="#各种命令" class="headerlink" title="各种命令"></a>各种命令</h1><h2 id="ls"><a href="#ls" class="headerlink" title="ls"></a>ls</h2><blockquote>
+<p>ls [选项] [参数] :   ls -l /etc</p>
+</blockquote>
+<p>目录内容查看</p>
+<p>选项：</p>
+<ul>
+<li><code>-a</code>：显示所有文件（包括隐藏文件）</li>
+<li><code>-l</code>：长格式显示；<code>ls -l</code>可以简写成<code>ll</code></li>
+</ul>
+<p>权限 | 引用次数 | user | group | size(bytes) | 最后修改时间</p>
+<ul>
+<li><code>-lh</code>：人类化显示，KB、MB…</li>
+<li><code>-ld</code>：查看目录本身的信息</li>
+<li><code>-li</code>：查看文件的inode节点</li>
+</ul>
+<p><code>-rw-r--r--</code>: -|user|group|others</p>
+<ul>
+<li>第一个<code>-</code>含义：<ul>
+<li>-：文件</li>
+<li>d：目录</li>
+<li>l：软链接</li>
+</ul>
+</li>
+<li><code>rw-</code>含义：<ul>
+<li>user有read、write权限</li>
+</ul>
+</li>
+<li><code>r--</code>含义：<ul>
+<li>group只有read权限</li>
+</ul>
+</li>
+<li><code>r--</code>含义：<ul>
+<li>其他人只有read权限</li>
+</ul>
+</li>
+</ul>
+<h2 id="mkdir"><a href="#mkdir" class="headerlink" title="mkdir"></a>mkdir</h2><blockquote>
+<p>mkdir [选项] [目录名，路径]</p>
+</blockquote>
+<p>创建新目录</p>
+<p>选项：</p>
+<ul>
+<li><code>-p</code>：迭代创建。在目录本身不存在的情况下，创建新目录(子目录)</li>
+</ul>
+<h2 id="cd"><a href="#cd" class="headerlink" title="cd"></a>cd</h2><blockquote>
+<p>cd [目录路径] ：cd  /tmp</p>
+</blockquote>
+<p>切换目录</p>
+<h2 id="pwd"><a href="#pwd" class="headerlink" title="pwd"></a>pwd</h2><p>显示当前目录</p>
+<p>.    ：当前目录</p>
+<p>..    ：上一级目录</p>
+<h2 id="cp"><a href="#cp" class="headerlink" title="cp"></a>cp</h2><blockquote>
+<p>cp [选项]  [源文件目录] [目标文件目录] </p>
+</blockquote>
+<p>复制文件或目录</p>
+<p>选项：</p>
+<ul>
+<li><code>-r</code>：复制目录</li>
+<li><code>-p</code>：复制目录时保留文件属性（修改时间等信息）</li>
+</ul>
+<h2 id="mv"><a href="#mv" class="headerlink" title="mv"></a>mv</h2><blockquote>
+<p>mv [源路径] [目标路径]</p>
+</blockquote>
+<p>剪切、改名</p>
+<p><code>mv test test1</code>：将目前目录下的文件test改名为test1</p>
+<p><code>mv test1 test2 test3 test4</code>：源路径可以多个一起复制（1，2，3 -&gt; 4)</p>
+<h2 id="rm"><a href="#rm" class="headerlink" title="rm"></a>rm</h2><blockquote>
+<p>rm [选项] [路径]</p>
+</blockquote>
+<p>删除文件或目录</p>
+<p>选项：</p>
+<ul>
+<li><code>-f</code>：默认强制删除</li>
+<li><code>-r</code>：删除目录</li>
+</ul>
+<p><code>rm -rf /*</code>：将根目录下的一切删除</p>
+<h2 id="touch"><a href="#touch" class="headerlink" title="touch"></a>touch</h2><p>创建空文件</p>
+<h2 id="cat"><a href="#cat" class="headerlink" title="cat"></a>cat</h2><blockquote>
+<p>cat [选项] [文件路径]</p>
+</blockquote>
+<p>显示文件内容</p>
+<p>选项：</p>
+<ul>
+<li><code>-n</code>：显示行号</li>
+<li><code>-A</code>：查看所有内容，包含隐藏文件 <code>ls -a</code></li>
+</ul>
+<p>##tac</p>
+<blockquote>
+<p>tac [选项] [文件路径]</p>
+</blockquote>
+<p>文件倒着显示，从最后一行倒着显示</p>
+<h2 id="more"><a href="#more" class="headerlink" title="more"></a>more</h2><p>分页显示文件内容</p>
+<p>进入浏览状态后：</p>
+<ul>
+<li>空格键/f：翻页</li>
+<li>enter：逐行显示</li>
+<li>q/Q：退出</li>
+<li>B/b：返回上一页</li>
+</ul>
+<h2 id="less"><a href="#less" class="headerlink" title="less"></a>less</h2><p>与more相同，但可以用⬆️方向键向上翻页</p>
+<p>也可以搜索关键词：</p>
+<p><code>/+keyword</code>：寻找关键词，<code>n</code>向下找</p>
+<p>##head</p>
+<p><code>head -n 20 /etc/services.conf</code>：查看前20行内容</p>
+<p>如果不写-n 20，那么默认显示前10行</p>
+<h2 id="tail"><a href="#tail" class="headerlink" title="tail"></a>tail</h2><p><code>tail -n 20 /etc/services.conf</code>：查看尾部后20行</p>
+<p>如果不写，也是默认后10行</p>
+<h2 id="ln"><a href="#ln" class="headerlink" title="ln"></a>ln</h2><blockquote>
+<p>ln [选项] [源文件] [目标文件]</p>
+</blockquote>
+<p>选项：</p>
+<ul>
+<li><code>-s</code>：创建软链接</li>
+</ul>
+<blockquote>
+<p>软链接：通过文件路径访问，类似快捷方式；</p>
+<p>硬链接：通过文件索引地址（inode）访问，</p>
+<p>​                与<code>cp -p</code>不同的是，硬链接可以同步更新</p>
+</blockquote>
+<h2 id="chmod"><a href="#chmod" class="headerlink" title="chmod"></a>chmod</h2><blockquote>
+<p>chmod [选项] [文件或目录]</p>
+<p>Type1：</p>
+<p>​    [{ugoa}{+-=}{rwx}] [文件或目录]</p>
+<p>Type2:</p>
+<p>​    [mode 421] [文件或目录]</p>
+</blockquote>
+<p>权限管理</p>
+<p><code>-R</code>：递归修改，如果修改目录权限，那么目录内所有的文件都会修改</p>
+<p>Type1：</p>
+<p><code>u+x</code>：给user增加x权限</p>
+<p><code>g+w</code>：给group增加write权限</p>
+<p><code>o-r</code>：给other去掉read权限</p>
+<p><code>g=rwx</code>：强制给group权限改为read、write、exe</p>
+<p>Type2：</p>
+<p>权限用数字显示</p>
+<p><code>r=4,w=2,x=1</code></p>
+<p><code>rwxrw-r--</code>：764</p>
+<h2 id="find"><a href="#find" class="headerlink" title="find"></a>find</h2><blockquote>
+<p>find [选项] [搜索范围] [匹配条件]</p>
+</blockquote>
+<p>文件搜索</p>
+<p><code>find /etc -name init</code>：在<code>/etc</code>下搜索文件init</p>
+<p><code>-iname</code>：不区分大小写</p>
+<p><code>*init*</code>：只要带init就可以</p>
+<p><code>init???</code>：以init开头，后面有三个字符</p>
+<p><code>-type</code>：按类型查找</p>
+<p><code>-type -f/d/l</code>：按照文件/目录/软链接类型查找</p>
+<h2 id="locate、which、whereis"><a href="#locate、which、whereis" class="headerlink" title="locate、which、whereis"></a>locate、which、whereis</h2><p><code>which</code>：找到命令所在的目录</p>
+<p><code>whereis</code>：会附带帮助文档的位置</p>
+<h2 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h2><blockquote>
+<p>grep [选项] [关键词] [文件名或目录]</p>
+</blockquote>
+<p>搜寻特定行</p>
+<p>选项：</p>
+<p><code>-i</code>：不区分大小写</p>
+<p><code>-n</code>：显示行号</p>
+<p><code>-v</code>：反向搜索，排除指定字串</p>
+<p>​        <code>grep -v ^# /etc/inittab</code>：不看行首带#注释的行</p>
+<h2 id="man"><a href="#man" class="headerlink" title="man"></a>man</h2><blockquote>
+<p>man [命令或配置文件]</p>
+</blockquote>
+<p>查看帮助手册</p>
+<h2 id="help、who、w"><a href="#help、who、w" class="headerlink" title="help、who、w"></a>help、who、w</h2><p><code>help</code>：查看shell内置命令的帮助手册</p>
+<p><code>who</code>：查看登陆用户信息</p>
+<p><code>w</code>：查看详细登录信息</p>
+<h2 id="gzip、gunzip"><a href="#gzip、gunzip" class="headerlink" title="gzip、gunzip"></a>gzip、gunzip</h2><blockquote>
+<p>.gz : linux常见的压缩格式</p>
+<p>.zip : win、linux都可以识别，解压</p>
+</blockquote>
+<p><code>gzip 文件名</code>：压缩成.gz格式的压缩文件，压缩后<strong>不会保留</strong>源文件</p>
+<p><code>gunzip 压缩文件</code>：将.gz文件解压成正常文件 </p>
+<h2 id="tar"><a href="#tar" class="headerlink" title="tar"></a>tar</h2><blockquote>
+<p>tar [-zcvf] [压缩后文件名] [待压缩目录]</p>
+</blockquote>
+<p>压缩目录，先打包，再压缩，格式<code>.tar.gz</code></p>
+<p>选项：</p>
+<p><code>-c</code>：打包</p>
+<p><code>x</code>：解包</p>
+<p><code>-v</code>：显示详细信息</p>
+<p><code>-f</code>：指定文件名</p>
+<p><code>-z</code>：打包同时压缩</p>
+<p><code>zcvf</code>：打包</p>
+<p><code>zxvf</code>：解包</p>
+<h2 id="zip"><a href="#zip" class="headerlink" title="zip"></a>zip</h2><blockquote>
+<p>zip [选项] [压缩后文件名] [压缩目录]</p>
+</blockquote>
+<p>​    <code>-r</code>：压缩目录</p>
+<h2 id="shutdown"><a href="#shutdown" class="headerlink" title="shutdown"></a>shutdown</h2><p><code>shutdown -h now/date</code>：关机</p>
+<p><code>shutdown -r</code>：重启</p>
+<p><code>shutdown -c</code>：取消上一条命令</p>
+<h2 id="网络命令"><a href="#网络命令" class="headerlink" title="网络命令"></a>网络命令</h2><p><code>tty</code>：本地终端</p>
+<p><code>pts</code>：远程终端</p>
+<p>###write</p>
+<blockquote>
+<p>write &lt;用户名&gt; : 给在线用户名发消息，ctrl+D保存结束</p>
+</blockquote>
+<h3 id="wall"><a href="#wall" class="headerlink" title="wall"></a>wall</h3><blockquote>
+<p>wall [message] : 广播信息，自己也会收到</p>
+</blockquote>
+<h3 id="ping"><a href="#ping" class="headerlink" title="ping"></a>ping</h3><blockquote>
+<p>ping -c : 指定发送次数</p>
+</blockquote>
+<h3 id="ifconfig"><a href="#ifconfig" class="headerlink" title="ifconfig"></a>ifconfig</h3><blockquote>
+<p>ifconfig etc0 [ip]： 给eth0配置ip地址</p>
+</blockquote>
+<h3 id="mail"><a href="#mail" class="headerlink" title="mail"></a>mail</h3><blockquote>
+<p>mail [用户名]：查看，发送电子邮件</p>
+</blockquote>
+<h3 id="last"><a href="#last" class="headerlink" title="last"></a>last</h3><p>列出计算机用户登录信息</p>
+<h3 id="traceroute"><a href="#traceroute" class="headerlink" title="traceroute"></a>traceroute</h3><blockquote>
+<p>traceroute <a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a></p>
+</blockquote>
+<p>显示数据包到主机之间的路径</p>
+<h3 id="netstat"><a href="#netstat" class="headerlink" title="netstat"></a>netstat</h3><p>查询网络状态</p>
+<p>选项：</p>
+<p><code>-t</code>：TCP</p>
+<p><code>-u</code>：UDP</p>
+<p><code>-l</code>：监听</p>
+<p><code>-r</code>：路由</p>
+<p><code>-n</code>：显示ip地址和端口号</p>
+<p><code>-a</code>：所有，all</p>
+<h1 id="软件包类别"><a href="#软件包类别" class="headerlink" title="软件包类别"></a>软件包类别</h1><ol>
+<li>源码包<ol>
+<li>C/C++编写，需手动安装</li>
+</ol>
+</li>
+<li>二进制包<ol>
+<li>经过编译的二进制包，不能再看见源代码</li>
+<li>.rpm包：redhat，centOS</li>
+<li>.ded包：debian，ubuntu</li>
+</ol>
+</li>
+</ol>
+<p>#SHELL命令</p>
+<p>shell两大家族：</p>
+<table>
+<thead>
+<tr>
+<th align="center">Bourne shell</th>
+<th align="left">C</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">sh</td>
+<td align="left">csh</td>
+</tr>
+<tr>
+<td align="center">ksh</td>
+<td align="left">tcsh</td>
+</tr>
+<tr>
+<td align="center">bash</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="center">psh</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="center">zsh</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<p>查看支持shell种类：<code>vim /etc/shells</code></p>
+<h2 id="echo"><a href="#echo" class="headerlink" title="echo"></a>echo</h2><p>输出命令</p>
+<p><code>echo -e</code>：支持<code>\</code>转义         </p>
+<p> <code>#! /bin/bash</code></p>
+<h2 id="alias"><a href="#alias" class="headerlink" title="alias"></a>alias</h2><blockquote>
+<p>alias 别名 = ‘原命令’</p>
+</blockquote>
+<p>设置命令别名</p>
+<p><code>alias</code>：查询命令别名</p>
+<p><code>unalias</code>：删除别名</p>
+<h2 id="history"><a href="#history" class="headerlink" title="history"></a>history</h2><blockquote>
+<p>history [选项] [历史命令保存文件] </p>
+</blockquote>
+<p>查看历史命令</p>
+<p>选项：</p>
+<p><code>-c</code>：清空历史命令</p>
+<p><code>-w</code>：把缓存中的历史命令写入文件</p>
+<p><code>～/.bash_history</code>：历史命令</p>
+<p>##tricky</p>
+<p><code>Ctrl+L</code>    清屏</p>
+<p><code>Ctrl+U</code>    清空光标前命令、剪切</p>
+<p><code>Ctrl+K</code>    清空光标后命令</p>
+<p><code>Ctrl+Y</code>    粘贴</p>
+<p><code>Ctrl+R</code>    在历史命令中搜索</p>
+<p><code>Ctrl+D</code>    退出当前终端</p>
+<p><code>Ctrl+A</code>    光标移至开头</p>
+<p><code>Ctrl+E</code>    光标移至结尾</p>
+<p>##重定向</p>
+<p>标准输出重定向：</p>
+<blockquote>
+<p>命令    &gt;    文件    ：    覆盖</p>
+<p>命令    &gt;&gt;    文件  ：   追加</p>
+</blockquote>
+<p>不管是否报错都保存：</p>
+<blockquote>
+<p>覆盖：命令    &gt;    文件    2&gt;$1</p>
+<p>​            命令    &amp;&gt;    文件</p>
+<p>追加：命令    &gt;&gt;    文件    2&gt;$1</p>
+<p>​            命令    &amp;&gt;&gt;    文件</p>
+</blockquote>
+<p>正确保存1，错误保存2：</p>
+<blockquote>
+<p>命令    &gt;&gt;    文件1    2 &gt;&gt; 文件2    </p>
+</blockquote>
+<p>##管道符</p>
+<blockquote>
+<p>命令1 | 命令2        ：命令1的<strong>正确输出</strong>作为命令2的操作对象</p>
+</blockquote>
+<h2 id="set"><a href="#set" class="headerlink" title="set"></a>set</h2><p>查看所有命令</p>
+<p>unset</p>
+<h2 id="多命令顺序执行"><a href="#多命令顺序执行" class="headerlink" title="多命令顺序执行"></a>多命令顺序执行</h2><p><code>;</code>：多个命令之间没有任何联系，顺序执行</p>
+<p><code>&amp;&amp;</code>：<strong>逻辑与</strong></p>
+<p>​        当<code>cmd1</code>正确执行，<code>cmd2</code>才会执行</p>
+<p>​        当<code>cmd1</code>不正确，<code>cmd2</code>不会执行</p>
+<p><code>||</code>：<strong>逻辑或</strong></p>
+<p>​        当<code>cmd1</code>正确执行，<code>cmd2</code>就不会执行</p>
+<p>​        当<code>cmd1</code>不正确，<code>cmd2</code>才会执行</p>
+<p>例子：</p>
+<p>判断命令是否正确：</p>
+<p><code>cmd &amp;&amp; echo yes || echo no</code></p>
+<p>脚本安装：</p>
+<p><code>./configure &amp;&amp; make &amp;&amp; make install</code></p>
+<h2 id="通配符"><a href="#通配符" class="headerlink" title="通配符"></a>通配符</h2><p>匹配文件名</p>
+<p>具体含义：</p>
+<p><code>?</code>：匹配任意一个字符，必须得有一个，不包含null</p>
+<p><code>*</code>：匹配任意一个或多个任意字符，可以匹配任意内容，null也可以匹配到</p>
+<p><code>[]</code>：匹配括号中的任意一个字符，必须得有一个</p>
+<p><code>[-]</code>：<code>[a-z]</code>：匹配任意一个小写字母</p>
+<p><code>[^]</code>：<strong>逻辑非</strong>，表示匹配不在中括号内的一个字符</p>
+<p>​            <code>[^0-9]</code>：匹配一个任意一个不是0-9数字的字符</p>
+<h2 id="其他特殊符号"><a href="#其他特殊符号" class="headerlink" title="其他特殊符号"></a>其他特殊符号</h2><p>单引号双引号的区别：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">name=sc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">'$name'</span> =&gt;<span class="variable">$name</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"<span class="variable">$name</span>"</span> =&gt;sc</span><br></pre></td></tr></table></figure>
+
+<p><code>$()</code>：用来执行系统命令</p>
+<p><code>abc = $(date)</code>：将date执行，将结果赋值给abc变量的值</p>
+<h1 id="Vim"><a href="#Vim" class="headerlink" title="Vim"></a>Vim</h1><p>永远滴神</p>
+<p>没有菜单，只有命令</p>
+<h2 id="行号"><a href="#行号" class="headerlink" title="行号"></a>行号</h2><p><code>:set nu</code>：设置行号</p>
+<p><code>:set nonu</code>：取消行号</p>
+<h2 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h2><p><code>a</code>：是从目前光标所在位置的下一个位置插入</p>
+<p><code>A</code>：在光标所在行尾插入</p>
+<p><code>i</code>：在光标所在的当前位置插入</p>
+<p><code>I</code>：在光标所在行首插入</p>
+<p><code>o</code>：在光标下一行插入一行，从行首开始输入文字</p>
+<p><code>O</code>；在光标上插入新行</p>
+<h2 id="移动"><a href="#移动" class="headerlink" title="移动"></a>移动</h2><p><code>gg</code>：到第一行</p>
+<p><code>G</code>：到最后一行</p>
+<p><code>:1000</code>：到1000行</p>
+<p><code>$</code>：移动光标所在行的”行尾”</p>
+<p><code>0/^</code>：移至光标所在行的”行首”</p>
+<p><code>w</code>：光标移至下个字的开头</p>
+<p><code>e</code>：光标移至下个字的字尾</p>
+<p><code>b</code>：光标移至上个字的开头</p>
+<h2 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h2><p><code>x</code>：每按一次，删除光标所在处的字符</p>
+<p><code>nx</code>：<code>6x</code>表示，删除光标后的6个字符</p>
+<p><code>X</code>：每按一次，删除光标前面的一个字符</p>
+<p><code>nX</code>：<code>6X</code>表示，删除光标前的6个字符</p>
+<p><code>dd</code>：删除光标所在行</p>
+<p><code>ndd</code>：从光标所在行开始删除n行</p>
+<p><code>dG</code>：删除从光标所在行开始到文件末尾的内容</p>
+<p><code>D</code>：删除光标处到行尾的内容</p>
+<p><code>：n1,n2d</code>：删除<code>n1~n2</code>指定范围的行</p>
+<h2 id="复制"><a href="#复制" class="headerlink" title="复制"></a>复制</h2><p><code>yy</code>：复制当前行</p>
+<p><code>nyy</code>：<code>6yy</code>表示复制当行往下数以下6行</p>
+<p><code>dd</code>：剪切当前行</p>
+<p><code>ndd</code>：<code>6dd</code>表示剪切当行往下数以下6行</p>
+<p><code>p</code>：粘贴在当前行下面</p>
+<p><code>P</code>：粘贴在当前行上面</p>
+<h2 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h2><p><code>/string</code>：搜索指定字符串</p>
+<p><code>n</code>：搜索下一个出现的位置</p>
+<p><code>/</code>：<code>/范围 /要替换的/替换的/g</code></p>
+<h2 id="替换"><a href="#替换" class="headerlink" title="替换"></a>替换</h2><p><code>r</code>：进行替换当前字符模式，替换一个字符</p>
+<p><code>R</code>：从光标所在处开始替换字符，可以写一堆</p>
+<p><code>u</code>：撤销上一步操作</p>
+<h2 id="保存"><a href="#保存" class="headerlink" title="保存"></a>保存</h2><p><code>:w</code>：保存</p>
+<p><code>:w new_file_name</code>：保存到指定路径</p>
+<p><code>:wq</code>：保存并退出</p>
+<p><code>:q!</code>：不保存，强制退出</p>
+<p><code>:wq!</code>：强行保存</p>
+<h2 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h2><p><code>:r filename</code>：将文件内容导入到当前Vim文件中</p>
+<p><code>:r ! cmd</code>：将命令执行结果导入到当前文件之中</p>
+<h2 id="快捷键"><a href="#快捷键" class="headerlink" title="快捷键"></a>快捷键</h2><p><code>:map ^B 2251267401@qq.com</code>：定义ctrlB为快捷键，替换个人邮箱（尖括号是用ctrl+v+B敲出来）</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>静态分析入门笔记02</title>
+    <url>/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B002/</url>
+    <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>遥望洞庭山水翠，白银盘里一青螺。</p>
+</blockquote>
+<p>这篇梳理数据流分析及相关方法。</p>
+<a id="more"></a>
+
+<h1 id="数据流-Data-Flows"><a href="#数据流-Data-Flows" class="headerlink" title="数据流 Data Flows"></a>数据流 Data Flows</h1><h2 id="CFG上到底是什么在流动？"><a href="#CFG上到底是什么在流动？" class="headerlink" title="CFG上到底是什么在流动？"></a>CFG上到底是什么在流动？</h2><p>是<strong>数据流</strong>。</p>
+<p>绝大部分静态分析牺牲了<strong>completeness</strong>。</p>
+<p>先讲两点：</p>
+<ol>
+<li>对变量进行抽象表达。</li>
+<li>over-approcimation：过近似。就是说无论实际函数产生了多么复杂的情况，静态分析时都应该包含每种情况。</li>
+</ol>
+<p><strong>may-analysis</strong>：绝大部分静态分析，最常见。</p>
+<blockquote>
+<p>Outputs: maybe-true , so -&gt; over-approximation.</p>
+</blockquote>
+<p><strong>must-analysis</strong>: 为了报出来<strong>一定</strong>是正确的，那么就必须under-approximation。</p>
+<blockquote>
+<p>Outputs: must be true , so -&gt; under-approximation.</p>
+</blockquote>
+<p>同一目标：<strong><em>safe-approximation</em></strong></p>
+]]></content>
+      <categories>
+        <category>静态分析</category>
+      </categories>
+      <tags>
+        <tag>静态分析</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>静态分析入门笔记01</title>
+    <url>/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/</url>
+    <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>男儿何不带吴钩，收取关山五十州。</p>
+</blockquote>
+<p>从这篇文章开始，我会在我的博客中记录学习<strong>程序静态分析</strong>的点点滴滴，我也会把在疫情期间，自己在家中学习的成果和收获上传到我的博客，记录自己的点滴进步。</p>
+<a id="more"></a>
+
+<h1 id="PL？程序分析？"><a href="#PL？程序分析？" class="headerlink" title="PL？程序分析？"></a>PL？程序分析？</h1><h2 id="PL的三大模块"><a href="#PL的三大模块" class="headerlink" title="PL的三大模块"></a>PL的三大模块</h2><p><img src="../images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%9001_1.jpg" alt="q"></p>
+<h3 id="理论部分"><a href="#理论部分" class="headerlink" title="理论部分"></a>理论部分</h3><ol>
+<li>程序是如何设计的</li>
+<li>语言的类型系统</li>
+<li>语言的形式语义与逻辑系统</li>
+</ol>
+<h3 id="支撑环境"><a href="#支撑环境" class="headerlink" title="支撑环境"></a>支撑环境</h3><ol>
+<li>编译器：对语言语法的解析，字节码转换等</li>
+<li>运行时系统：Java，Python等，JVM虚拟机，内存分配，管理</li>
+</ol>
+<h3 id="语言应用"><a href="#语言应用" class="headerlink" title="语言应用"></a>语言应用</h3><ol>
+<li>程序分析</li>
+<li>程序验证</li>
+<li>程序合成：例如如何自动生成一个程序</li>
+</ol>
+<h2 id="语言核心"><a href="#语言核心" class="headerlink" title="语言核心"></a>语言核心</h2><p>核心无非分为三类：</p>
+<ol>
+<li><p><strong>命令式语言Imperative language</strong>：Java，C/C++等</p>
+<p>把程序逻辑拆解成一条条指令，加载到内存，顺序执行下来。</p>
+</li>
+<li><p><strong>函数式语言Functional language</strong>：Pascal，JS，Python</p>
+<p>命令式与函数式相结合，把逻辑包装起来，形式化。</p>
+</li>
+<li><p><strong>逻辑式语言Prolog</strong>：</p>
+<p>声明，逻辑，与、或、非。</p>
+</li>
+</ol>
+<blockquote>
+<p>语言核心没有变，用语言写的程序变得复杂了。</p>
+</blockquote>
+<p>#静态分析</p>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><blockquote>
+<p>在程序运行前，在编译时刻就完成程序安全性，可靠性的检验。不用运行程序本身，就能检查出程序潜在的问题。</p>
+</blockquote>
+<ol>
+<li>程序运行时会不会有隐私泄露？</li>
+<li>空指针引用异常？</li>
+<li>cast安全吗？</li>
+<li>v1，v2两个变量会不会造成内存竞争？要不要加锁？</li>
+<li>assert运行时会不会fail掉？</li>
+<li>dead code？</li>
+</ol>
+<h2 id="Rice’s-Theorem"><a href="#Rice’s-Theorem" class="headerlink" title="Rice’s Theorem"></a>Rice’s Theorem</h2><blockquote>
+<p>程序分析不存在  <strong><em>exact answer</em></strong></p>
+</blockquote>
+<p>正常的递归可枚举语言，<strong>不存在</strong>某个方法，可以去判断其是否存在问题。</p>
+<h2 id="Sound-amp-Complete"><a href="#Sound-amp-Complete" class="headerlink" title="Sound &amp; Complete"></a>Sound &amp; Complete</h2><blockquote>
+<p>Sound &gt; Truth &gt; Complete</p>
+</blockquote>
+<ul>
+<li><p>Sound：Overapproximate，肯定会包含Truth。</p>
+<p>假如Truth就是代表有10个空指针异常，那么Sound可以有1k，1w个空指针异常，就是<strong><em>包含Truth的关系</em></strong>。</p>
+</li>
+<li><p>Complete：Underapproximate，一定在Truth里面。</p>
+<p>上一个例子，无论Complete里面有几个空指针异常，只要存在的，就一定在Truth里面，<strong><em>是Truth子集的关系</em></strong>。</p>
+</li>
+</ul>
+<h2 id="Useful-static-analysis"><a href="#Useful-static-analysis" class="headerlink" title="Useful static analysis"></a>Useful static analysis</h2><ul>
+<li>妥协Soundness：会产生<strong>【漏报】</strong>，<strong><em>False Negatives</em></strong></li>
+<li>妥协Completeness：会产生<strong>【误报】</strong>，<strong><em>False Positives</em></strong></li>
+</ul>
+<p>但是在绝大部分的静态分析中，绝大部分都<strong><em>【妥协Completeness】</em></strong>。</p>
+<p>宁可误报，也不要漏报！</p>
+<h2 id="准则"><a href="#准则" class="headerlink" title="准则"></a>准则</h2><p>在保证<strong>soundness</strong>的基础上，在<strong>【精度】</strong>和<strong>【速度】</strong>上作出权衡。</p>
+<h1 id="抽象-近似"><a href="#抽象-近似" class="headerlink" title="抽象+近似"></a>抽象+近似</h1><ol>
+<li>抽象：判断变量的+/—/0符号。</li>
+<li>近似：在抽象的基础上进行近似。<ul>
+<li>Transfer function</li>
+<li>Control flows</li>
+</ul>
+</li>
+</ol>
+<p>Concrete Domain ——&gt; Abstract Domain</p>
+<p>不关心是具体数值，关心变量的符号位。</p>
+<p><strong>Transfer function</strong>：</p>
+<p>在静态分析中，transfer fuction主要应用在于如何在程序语句的抽象值上进行运算。</p>
+<p>根据你分析的程序的目标，和程序中每一个语句的语义，综合地设计分析方法。</p>
+<p><img src="../images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/image-20200325173724216.png" alt></p>
+<p><strong>Control flows</strong>：</p>
+<p>控制流，就是程序执行的流。控制流图，程序如何跳转。</p>
+<p><img src="../images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/image-20200325173739742.png" alt></p>
+<h1 id="IR-Intermediate-representation"><a href="#IR-Intermediate-representation" class="headerlink" title="IR (Intermediate representation)"></a>IR (Intermediate representation)</h1><h2 id="Compiler-amp-Analysis"><a href="#Compiler-amp-Analysis" class="headerlink" title="Compiler &amp; Analysis"></a>Compiler &amp; Analysis</h2><ol>
+<li><p>Compiler:</p>
+<p>需要将人写的高级代码，<strong>【编译】</strong>成机器可以看懂的机器码。</p>
+<p>在这个过程中，编译器做的工作不仅有【翻译】，还会有【检查】。</p>
+<p><img src="../images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/image-20200325190416693.png" alt="image-20200325190416693"></p>
+</li>
+<li><p>AST vs. IR:</p>
+<p><img src="../images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/image-20200325192746007.png" alt="image-20200325192746007"></p>
+</li>
+</ol>
+<h1 id="3AC"><a href="#3AC" class="headerlink" title="3AC"></a>3AC</h1><p>3AC：三地址码。<code>a = b + c</code></p>
+<h1 id="Control-Flow-Analysis"><a href="#Control-Flow-Analysis" class="headerlink" title="Control Flow Analysis"></a>Control Flow Analysis</h1><h2 id="Basic-Blocks"><a href="#Basic-Blocks" class="headerlink" title="Basic Blocks"></a>Basic Blocks</h2><p>最大的、连续的、3AC指令块。</p>
+<p>有且只有一个入口，并且是第一行指令是入口。</p>
+<p>出口也是唯一的，是最后一个指令。</p>
+<h3 id="如何划分BB？"><a href="#如何划分BB？" class="headerlink" title="如何划分BB？"></a>如何划分BB？</h3><ol>
+<li>首先决定BB入口在哪：<ol>
+<li>程序中的第一行语句。</li>
+<li>无条件跳转的目标语句也是入口。</li>
+<li>紧接着条件/无条件跳转的语句也是个BB入口。</li>
+</ol>
+</li>
+<li>有了BB入口，接下来：<ol>
+<li>有了入口，那么整个BB包含入口开始的连续语句，直到下一个leader的位置。</li>
+</ol>
+</li>
+</ol>
+<h2 id="CFG"><a href="#CFG" class="headerlink" title="CFG"></a>CFG</h2><p>控制流图。</p>
+<p>控制流图的node其实就是BB代码块。</p>
+<p><img src="../images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/image-20200327194043941.png" alt="image-20200327194043941"></p>
+]]></content>
+      <categories>
+        <category>静态分析</category>
+      </categories>
+      <tags>
+        <tag>静态分析</tag>
       </tags>
   </entry>
   <entry>
     <title>Life</title>
     <url>/Life/</url>
     <content><![CDATA[<p>#Make it better.</p>
-<p>wswsws</p>
-<p>wswsw</p>
 <a id="more"></a>
 
-<p>swswswsws</p>
-<p>wswsws</p>
-<p>wsws</p>
-<p>wsswsws</p>
 ]]></content>
       <tags>
         <tag>new begin</tag>
