@@ -1,6 +1,195 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>JVM梳理</title>
+    <url>/JVM%E6%A2%B3%E7%90%86/</url>
+    <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>岁月悠悠，衰微只及肌肤；热忱抛却，颓唐必致灵魂</p>
+</blockquote>
+<p>今天来总结一下JVM。</p>
+<a id="more"></a>
+
+<h1 id="JVM的整体结构"><a href="#JVM的整体结构" class="headerlink" title="JVM的整体结构"></a>JVM的整体结构</h1><p>JDK：JVM + 基础类库 + 编译工具；</p>
+<p>JRE：JVM + 基础类库；</p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418145902839.png" alt="image-20200418145902839"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418155204290.png" alt="image-20200418155204290"></p>
+<p>说明：</p>
+<ol>
+<li>线程私有：虚拟机栈，本地方法栈，程序计数器；</li>
+<li>线程共享：堆，方法区；</li>
+<li>执行引擎：解释器（Interpreter）、JIT（即时编译器，编译器后端）、GC（垃圾回收器）；</li>
+<li>JVM直接和操作系统对话；</li>
+<li>先经过类加载器，类信息放在方法区中，类的实例对象放在堆中；</li>
+<li>解释器逐行解释代码，翻译成机器码；</li>
+</ol>
+<h1 id="Java代码执行流程"><a href="#Java代码执行流程" class="headerlink" title="Java代码执行流程"></a>Java代码执行流程</h1><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418151219263.png" alt="image-20200418151219263"></p>
+<h1 id="JVM的架构模型"><a href="#JVM的架构模型" class="headerlink" title="JVM的架构模型"></a>JVM的架构模型</h1><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418151623527.png" alt="image-20200418151623527"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418151703860.png" alt="image-20200418151703860"></p>
+<h1 id="JVM的生命周期"><a href="#JVM的生命周期" class="headerlink" title="JVM的生命周期"></a>JVM的生命周期</h1><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418154808045.png" alt="image-20200418154808045"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418155021200.png" alt="image-20200418155021200"></p>
+<p>说明：</p>
+<ol>
+<li><code>jps</code>查看JVM进程</li>
+</ol>
+<h1 id="类加载子系统"><a href="#类加载子系统" class="headerlink" title="类加载子系统"></a>类加载子系统</h1><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418155255836.png" alt="image-20200418155255836"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418155548287.png" alt="image-20200418155548287"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418155604895.png" alt="image-20200418155604895"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418155641028.png" alt="image-20200418155641028"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418160000057.png" alt="image-20200418160000057"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418160516538.png" alt="image-20200418160516538"></p>
+<ol>
+<li><p>加载：</p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418160817268.png" alt="image-20200418160817268"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418161024792.png" alt="image-20200418161024792"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419153054534.png" alt="image-20200419153054534"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419153129167.png" alt="image-20200419153129167"></p>
+<p>讲图：</p>
+<p>instanceKlass相当于一种数据结构；</p>
+<p>堆中存放Person.class的类对象，这个类对象有instanceKlass的内存地址</p>
+<p>instanceKlass也存放着Person类对象的内存地址；</p>
+</li>
+</ol>
+<p>   对于Person的实例化对象来说，对象头部存放Person类对象地址；</p>
+<p>   那么就会先去找class类对象，再间接去元空间去找instanceKlass对象，再之后就会去元空间里面找<code>_Methods,_fields</code>，去调用对象方法。</p>
+<ol start="2">
+<li><p>链接：</p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418161125751.png" alt="image-20200418161125751"></p>
+<p>验证：</p>
+<ol>
+<li><p>文件格式验证：0xCAFEBABE</p>
+</li>
+<li><p>元数据验证：对字节码描述的信息进行语义分析</p>
+</li>
+<li><p>字节码验证：最复杂</p>
+<p>通过数据流分析和控制流分析，确定程序是合法的，符合逻辑的</p>
+</li>
+<li><p>符号饮用验证：确保解析行为可以正常运行</p>
+</li>
+</ol>
+<p>准备：</p>
+<ol>
+<li>对于final，static：<ol>
+<li>基本类型会直接给值</li>
+<li>包装类就会先0再赋值</li>
+</ol>
+</li>
+<li>在JDK7之后，静态变量的内存不再方法区内，会跟着类对象存储在堆中。</li>
+<li>常量也会在准备阶段被赋值；</li>
+</ol>
+<p>解析：其实就是<code>#1-&gt;内存指针</code>的过程；</p>
+</li>
+<li><p>初始化：</p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418161953621.png" alt="image-20200418161953621"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418162523130.png" alt="image-20200418162523130"></p>
+<p>讲图：</p>
+<p><clinit>（）就是给类变量赋值；</clinit></p>
+<p>类一旦被初始化，那么static{}代码块就会执行；</p>
+</li>
+</ol>
+<h2 id="类加载器分类"><a href="#类加载器分类" class="headerlink" title="类加载器分类"></a>类加载器分类</h2><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418163927620.png" alt="image-20200418163927620"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418164007063.png" alt="image-20200418164007063"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418165041003.png" alt="image-20200418165041003"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418165056893.png" alt="image-20200418165056893"></p>
+<h3 id="启动类加载器"><a href="#启动类加载器" class="headerlink" title="启动类加载器"></a>启动类加载器</h3><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418165134118.png" alt="image-20200418165134118"></p>
+<h3 id="扩展类加载器"><a href="#扩展类加载器" class="headerlink" title="扩展类加载器"></a>扩展类加载器</h3><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418170248971.png" alt="image-20200418170248971"></p>
+<h3 id="应用程序类加载器"><a href="#应用程序类加载器" class="headerlink" title="应用程序类加载器"></a>应用程序类加载器</h3><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418170341262.png" alt="image-20200418170341262"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418170745232.png" alt="image-20200418170745232"></p>
+<h3 id="用户自定义类加载器"><a href="#用户自定义类加载器" class="headerlink" title="用户自定义类加载器"></a>用户自定义类加载器</h3><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418170831894.png" alt="image-20200418170831894"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418171054380.png" alt="image-20200418171054380"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418171316057.png" alt="image-20200418171316057"></p>
+<h2 id="关于ClassLoader"><a href="#关于ClassLoader" class="headerlink" title="关于ClassLoader"></a>关于ClassLoader</h2><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418171426186.png" alt="image-20200418171426186"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418172845950.png" alt="image-20200418172845950"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418173249965.png" alt="image-20200418173249965"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418173527886.png" alt></p>
+<h2 id="双亲委派机制"><a href="#双亲委派机制" class="headerlink" title="双亲委派机制"></a>双亲委派机制</h2><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418173924676.png" alt="image-20200418173924676"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418174739320.png" alt="image-20200418174739320"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418180901719.png" alt="image-20200418180901719"></p>
+<h2 id="沙箱安全机制"><a href="#沙箱安全机制" class="headerlink" title="沙箱安全机制"></a>沙箱安全机制</h2><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418180935740.png" alt="image-20200418180935740"></p>
+<h2 id="类的主动使用和被动使用"><a href="#类的主动使用和被动使用" class="headerlink" title="类的主动使用和被动使用"></a>类的主动使用和被动使用</h2><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418181420103.png" alt="image-20200418181420103"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418185356560.png" alt="image-20200418185356560"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418185453190.png" alt="image-20200418185453190"></p>
+<h1 id="运行时数据区"><a href="#运行时数据区" class="headerlink" title="运行时数据区"></a>运行时数据区</h1><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418185723067.png" alt="image-20200418185723067"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418192817976.png" alt="image-20200418192817976"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418193138847.png" alt="image-20200418193138847"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418194740732.png" alt="image-20200418194740732"></p>
+<h2 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h2><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418195102631.png" alt="image-20200418195102631"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418195246131.png" alt="image-20200418195246131"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418195504014.png" alt="image-20200418195504014"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418195628415.png" alt="image-20200418195628415"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418200332016.png" alt="image-20200418200332016"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418200413151.png" alt="image-20200418200413151"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418200450509.png" alt="image-20200418200450509"></p>
+<p>说明：</p>
+<p>并行是时刻，并发是时间段；</p>
+<p>并行是同时执行，并发是一个时间片内交替执行；</p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418203821322.png" alt="image-20200418203821322"></p>
+<h2 id="虚拟机栈"><a href="#虚拟机栈" class="headerlink" title="虚拟机栈"></a>虚拟机栈</h2><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418203923749.png" alt="image-20200418203923749"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418204014794.png" alt="image-20200418204014794"></p>
+<p>说明：</p>
+<p>栈空间也可以存放堆中对象的引用值；</p>
+<p>栈：每个【线程】运行时需要的内存空间，每个线程只能有一个活动栈桢；</p>
+<p>栈桢：每个【方法】运行时需要的内存空间：</p>
+<p>​            局部变量表/操作数栈/动态链接/返回地址</p>
+<p>活动栈桢：对应着当前正在执行的方法，往往在栈顶部；</p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418205038016.png" alt="image-20200418205038016"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418205108066.png" alt="image-20200418205108066"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418205237524.png" alt="image-20200418205237524"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418205309508.png" alt="image-20200418205309508"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418205413293.png" alt="image-20200418205413293"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418205716022.png" alt="image-20200418205716022"></p>
+<h3 id="局部变量表"><a href="#局部变量表" class="headerlink" title="局部变量表"></a>局部变量表</h3><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418205949373.png" alt="image-20200418205949373"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418210220163.png" alt="image-20200418210220163"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418210905110.png" alt="image-20200418210905110"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418211004395.png" alt="image-20200418211004395"></p>
+<p>说明：静态方法是不允许使用this关键字的</p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418211757994.png" alt="image-20200418211757994"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418212132545.png" alt="image-20200418212132545"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418212227111.png" alt="image-20200418212227111"></p>
+<h3 id="操作数栈"><a href="#操作数栈" class="headerlink" title="操作数栈"></a>操作数栈</h3><p>它是由数组实现的</p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418212650692.png" alt="image-20200418212650692"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418212759619.png" alt="image-20200418212759619"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418213405170.png" alt="image-20200418213405170"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418213538778.png" alt="image-20200418213538778"></p>
+<h3 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h3><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418213646147.png" alt="image-20200418213646147"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418213849929.png" alt="image-20200418213849929"></p>
+<h3 id="栈顶缓存技术"><a href="#栈顶缓存技术" class="headerlink" title="栈顶缓存技术"></a>栈顶缓存技术</h3><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418214034973.png" alt="image-20200418214034973"></p>
+<h3 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h3><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418214152093.png" alt="image-20200418214152093"></p>
+<p>运行时常量池在方法区中；</p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419130449081.png" alt="image-20200419130449081"></p>
+<h3 id="方法的调用"><a href="#方法的调用" class="headerlink" title="方法的调用"></a>方法的调用</h3><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419130630076.png" alt="image-20200419130630076"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419132125397.png" alt="image-20200419132125397"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419132917680.png" alt="image-20200419132917680"></p>
+<h3 id="虚方法和非虚方法"><a href="#虚方法和非虚方法" class="headerlink" title="虚方法和非虚方法"></a>虚方法和非虚方法</h3><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419133028099.png" alt="image-20200419133028099"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419134117873.png" alt="image-20200419134117873"></p>
+<p>this/super基本上都是非虚方法，在编译期间就可以确定</p>
+<p>invokestatic/invokespecial</p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419140113762.png" alt="image-20200419140113762"></p>
+<p>如果隐式调用父类的final方法（也就是不加super.），是invokevirtual</p>
+<p>但如果super.的方式，则是invokespecial</p>
+<p>子类重写也是invokevirtual</p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419150151752.png" alt="image-20200419150151752"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419150436945.png" alt="image-20200419150436945"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419151113451.png" alt="image-20200419151113451"></p>
+<h3 id="方法重写"><a href="#方法重写" class="headerlink" title="方法重写"></a>方法重写</h3><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419151335851.png" alt="image-20200419151335851"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419151451292.png" alt="image-20200419151451292"></p>
+<h3 id="方法返回地址"><a href="#方法返回地址" class="headerlink" title="方法返回地址"></a>方法返回地址</h3><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419151808852.png" alt="image-20200419151808852"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419152042892.png" alt="image-20200419152042892"></p>
+<h2 id="本地方法接口"><a href="#本地方法接口" class="headerlink" title="本地方法接口"></a>本地方法接口</h2><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419152319866.png" alt="image-20200419152319866"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419152355798.png" alt="image-20200419152355798"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419152450717.png" alt="image-20200419152450717"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419152549409.png" alt="image-20200419152549409"></p>
+<h2 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h2><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419152635383.png" alt="image-20200419152635383"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419152713001.png" alt="image-20200419152713001"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419152747720.png" alt="image-20200419152747720"></p>
+]]></content>
+      <categories>
+        <category>JVM</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>漫谈Java反射</title>
     <url>/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/</url>
     <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><p>今天来总结一下Java反射，在它面前，任何事物没有任何隐私。</p>

@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-pace-theme-flash.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<!--
+
+  <script src="//code.tidio.co/oixl41gwhy8tvqy6jte9uvglyrqcjrvc.js" async></script>
+
+-->
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"0range228.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+  <meta name="description" content="序言 岁月悠悠，衰微只及肌肤；热忱抛却，颓唐必致灵魂  今天来总结一下JVM。">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM梳理">
+<meta property="og:url" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;index.html">
+<meta property="og:site_name" content="0range的小窝">
+<meta property="og:description" content="序言 岁月悠悠，衰微只及肌肤；热忱抛却，颓唐必致灵魂  今天来总结一下JVM。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418145902839.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418155204290.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418151219263.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418151623527.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418151703860.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418154808045.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418155021200.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418155255836.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418155548287.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418155604895.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418155641028.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418160000057.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418160516538.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418160817268.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418161024792.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200419153054534.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200419153129167.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418161125751.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418161953621.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418162523130.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418163927620.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418164007063.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418165041003.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418165056893.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418165134118.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418170248971.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418170341262.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418170745232.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418170831894.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418171054380.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418171316057.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418171426186.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418172845950.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418173249965.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418173527886.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418173924676.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418174739320.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418180901719.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418180935740.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418181420103.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418185356560.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418185453190.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418185723067.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418192817976.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418193138847.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418194740732.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418195102631.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418195246131.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418195504014.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418195628415.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418200332016.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418200413151.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418200450509.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418203821322.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418203923749.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418204014794.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418205038016.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418205108066.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418205237524.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418205309508.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418205413293.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418205716022.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418205949373.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418210220163.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418210905110.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418211004395.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418211757994.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418212132545.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418212227111.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418212650692.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418212759619.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418213405170.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418213538778.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418213646147.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418213849929.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418214034973.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418214152093.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200419130449081.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200419130630076.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200419132125397.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200419132917680.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200419133028099.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200419134117873.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200419140113762.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200419150151752.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200419150436945.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200419151113451.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200419151335851.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200419151451292.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200419151808852.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200419152042892.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200419152319866.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200419152355798.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200419152450717.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200419152549409.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200419152635383.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200419152713001.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200419152747720.png">
+<meta property="og:updated_time" content="2020-04-19T07:59:43.526Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%A2%B3%E7%90%86&#x2F;image-20200418145902839.png">
+
+<link rel="canonical" href="https://0range228.github.io/JVM%E6%A2%B3%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>JVM梳理 | 0range的小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="0range的小窝" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+<a href="https://github.com/0range228" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#FFA500; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">0range的小窝</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Hello,World.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">4</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">7</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://0range228.github.io/JVM%E6%A2%B3%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/yfy.png">
+      <meta itemprop="name" content="0range">
+      <meta itemprop="description" content="zzz">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="0range的小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JVM梳理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-18 14:55:19" itemprop="dateCreated datePublished" datetime="2020-04-18T14:55:19+08:00">2020-04-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-19 15:59:43" itemprop="dateModified" datetime="2020-04-19T15:59:43+08:00">2020-04-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JVM/" itemprop="url" rel="index"><span itemprop="name">JVM</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/JVM%E6%A2%B3%E7%90%86/" class="post-meta-item leancloud_visitors" data-flag-title="JVM梳理" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度：</span>
+              <span class="leancloud-visitors-count"></span>
+              <span>°C</span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/JVM%E6%A2%B3%E7%90%86/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/JVM%E6%A2%B3%E7%90%86/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>岁月悠悠，衰微只及肌肤；热忱抛却，颓唐必致灵魂</p>
+</blockquote>
+<p>今天来总结一下JVM。</p>
+<a id="more"></a>
+
+<h1 id="JVM的整体结构"><a href="#JVM的整体结构" class="headerlink" title="JVM的整体结构"></a>JVM的整体结构</h1><p>JDK：JVM + 基础类库 + 编译工具；</p>
+<p>JRE：JVM + 基础类库；</p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418145902839.png" alt="image-20200418145902839"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418155204290.png" alt="image-20200418155204290"></p>
+<p>说明：</p>
+<ol>
+<li>线程私有：虚拟机栈，本地方法栈，程序计数器；</li>
+<li>线程共享：堆，方法区；</li>
+<li>执行引擎：解释器（Interpreter）、JIT（即时编译器，编译器后端）、GC（垃圾回收器）；</li>
+<li>JVM直接和操作系统对话；</li>
+<li>先经过类加载器，类信息放在方法区中，类的实例对象放在堆中；</li>
+<li>解释器逐行解释代码，翻译成机器码；</li>
+</ol>
+<h1 id="Java代码执行流程"><a href="#Java代码执行流程" class="headerlink" title="Java代码执行流程"></a>Java代码执行流程</h1><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418151219263.png" alt="image-20200418151219263"></p>
+<h1 id="JVM的架构模型"><a href="#JVM的架构模型" class="headerlink" title="JVM的架构模型"></a>JVM的架构模型</h1><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418151623527.png" alt="image-20200418151623527"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418151703860.png" alt="image-20200418151703860"></p>
+<h1 id="JVM的生命周期"><a href="#JVM的生命周期" class="headerlink" title="JVM的生命周期"></a>JVM的生命周期</h1><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418154808045.png" alt="image-20200418154808045"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418155021200.png" alt="image-20200418155021200"></p>
+<p>说明：</p>
+<ol>
+<li><code>jps</code>查看JVM进程</li>
+</ol>
+<h1 id="类加载子系统"><a href="#类加载子系统" class="headerlink" title="类加载子系统"></a>类加载子系统</h1><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418155255836.png" alt="image-20200418155255836"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418155548287.png" alt="image-20200418155548287"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418155604895.png" alt="image-20200418155604895"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418155641028.png" alt="image-20200418155641028"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418160000057.png" alt="image-20200418160000057"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418160516538.png" alt="image-20200418160516538"></p>
+<ol>
+<li><p>加载：</p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418160817268.png" alt="image-20200418160817268"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418161024792.png" alt="image-20200418161024792"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419153054534.png" alt="image-20200419153054534"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419153129167.png" alt="image-20200419153129167"></p>
+<p>讲图：</p>
+<p>instanceKlass相当于一种数据结构；</p>
+<p>堆中存放Person.class的类对象，这个类对象有instanceKlass的内存地址</p>
+<p>instanceKlass也存放着Person类对象的内存地址；</p>
+</li>
+</ol>
+<p>   对于Person的实例化对象来说，对象头部存放Person类对象地址；</p>
+<p>   那么就会先去找class类对象，再间接去元空间去找instanceKlass对象，再之后就会去元空间里面找<code>_Methods,_fields</code>，去调用对象方法。</p>
+<ol start="2">
+<li><p>链接：</p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418161125751.png" alt="image-20200418161125751"></p>
+<p>验证：</p>
+<ol>
+<li><p>文件格式验证：0xCAFEBABE</p>
+</li>
+<li><p>元数据验证：对字节码描述的信息进行语义分析</p>
+</li>
+<li><p>字节码验证：最复杂</p>
+<p>通过数据流分析和控制流分析，确定程序是合法的，符合逻辑的</p>
+</li>
+<li><p>符号饮用验证：确保解析行为可以正常运行</p>
+</li>
+</ol>
+<p>准备：</p>
+<ol>
+<li>对于final，static：<ol>
+<li>基本类型会直接给值</li>
+<li>包装类就会先0再赋值</li>
+</ol>
+</li>
+<li>在JDK7之后，静态变量的内存不再方法区内，会跟着类对象存储在堆中。</li>
+<li>常量也会在准备阶段被赋值；</li>
+</ol>
+<p>解析：其实就是<code>#1-&gt;内存指针</code>的过程；</p>
+</li>
+<li><p>初始化：</p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418161953621.png" alt="image-20200418161953621"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418162523130.png" alt="image-20200418162523130"></p>
+<p>讲图：</p>
+<p><clinit>（）就是给类变量赋值；</clinit></p>
+<p>类一旦被初始化，那么static{}代码块就会执行；</p>
+</li>
+</ol>
+<h2 id="类加载器分类"><a href="#类加载器分类" class="headerlink" title="类加载器分类"></a>类加载器分类</h2><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418163927620.png" alt="image-20200418163927620"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418164007063.png" alt="image-20200418164007063"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418165041003.png" alt="image-20200418165041003"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418165056893.png" alt="image-20200418165056893"></p>
+<h3 id="启动类加载器"><a href="#启动类加载器" class="headerlink" title="启动类加载器"></a>启动类加载器</h3><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418165134118.png" alt="image-20200418165134118"></p>
+<h3 id="扩展类加载器"><a href="#扩展类加载器" class="headerlink" title="扩展类加载器"></a>扩展类加载器</h3><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418170248971.png" alt="image-20200418170248971"></p>
+<h3 id="应用程序类加载器"><a href="#应用程序类加载器" class="headerlink" title="应用程序类加载器"></a>应用程序类加载器</h3><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418170341262.png" alt="image-20200418170341262"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418170745232.png" alt="image-20200418170745232"></p>
+<h3 id="用户自定义类加载器"><a href="#用户自定义类加载器" class="headerlink" title="用户自定义类加载器"></a>用户自定义类加载器</h3><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418170831894.png" alt="image-20200418170831894"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418171054380.png" alt="image-20200418171054380"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418171316057.png" alt="image-20200418171316057"></p>
+<h2 id="关于ClassLoader"><a href="#关于ClassLoader" class="headerlink" title="关于ClassLoader"></a>关于ClassLoader</h2><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418171426186.png" alt="image-20200418171426186"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418172845950.png" alt="image-20200418172845950"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418173249965.png" alt="image-20200418173249965"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418173527886.png" alt></p>
+<h2 id="双亲委派机制"><a href="#双亲委派机制" class="headerlink" title="双亲委派机制"></a>双亲委派机制</h2><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418173924676.png" alt="image-20200418173924676"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418174739320.png" alt="image-20200418174739320"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418180901719.png" alt="image-20200418180901719"></p>
+<h2 id="沙箱安全机制"><a href="#沙箱安全机制" class="headerlink" title="沙箱安全机制"></a>沙箱安全机制</h2><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418180935740.png" alt="image-20200418180935740"></p>
+<h2 id="类的主动使用和被动使用"><a href="#类的主动使用和被动使用" class="headerlink" title="类的主动使用和被动使用"></a>类的主动使用和被动使用</h2><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418181420103.png" alt="image-20200418181420103"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418185356560.png" alt="image-20200418185356560"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418185453190.png" alt="image-20200418185453190"></p>
+<h1 id="运行时数据区"><a href="#运行时数据区" class="headerlink" title="运行时数据区"></a>运行时数据区</h1><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418185723067.png" alt="image-20200418185723067"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418192817976.png" alt="image-20200418192817976"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418193138847.png" alt="image-20200418193138847"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418194740732.png" alt="image-20200418194740732"></p>
+<h2 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h2><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418195102631.png" alt="image-20200418195102631"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418195246131.png" alt="image-20200418195246131"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418195504014.png" alt="image-20200418195504014"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418195628415.png" alt="image-20200418195628415"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418200332016.png" alt="image-20200418200332016"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418200413151.png" alt="image-20200418200413151"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418200450509.png" alt="image-20200418200450509"></p>
+<p>说明：</p>
+<p>并行是时刻，并发是时间段；</p>
+<p>并行是同时执行，并发是一个时间片内交替执行；</p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418203821322.png" alt="image-20200418203821322"></p>
+<h2 id="虚拟机栈"><a href="#虚拟机栈" class="headerlink" title="虚拟机栈"></a>虚拟机栈</h2><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418203923749.png" alt="image-20200418203923749"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418204014794.png" alt="image-20200418204014794"></p>
+<p>说明：</p>
+<p>栈空间也可以存放堆中对象的引用值；</p>
+<p>栈：每个【线程】运行时需要的内存空间，每个线程只能有一个活动栈桢；</p>
+<p>栈桢：每个【方法】运行时需要的内存空间：</p>
+<p>​            局部变量表/操作数栈/动态链接/返回地址</p>
+<p>活动栈桢：对应着当前正在执行的方法，往往在栈顶部；</p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418205038016.png" alt="image-20200418205038016"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418205108066.png" alt="image-20200418205108066"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418205237524.png" alt="image-20200418205237524"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418205309508.png" alt="image-20200418205309508"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418205413293.png" alt="image-20200418205413293"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418205716022.png" alt="image-20200418205716022"></p>
+<h3 id="局部变量表"><a href="#局部变量表" class="headerlink" title="局部变量表"></a>局部变量表</h3><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418205949373.png" alt="image-20200418205949373"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418210220163.png" alt="image-20200418210220163"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418210905110.png" alt="image-20200418210905110"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418211004395.png" alt="image-20200418211004395"></p>
+<p>说明：静态方法是不允许使用this关键字的</p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418211757994.png" alt="image-20200418211757994"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418212132545.png" alt="image-20200418212132545"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418212227111.png" alt="image-20200418212227111"></p>
+<h3 id="操作数栈"><a href="#操作数栈" class="headerlink" title="操作数栈"></a>操作数栈</h3><p>它是由数组实现的</p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418212650692.png" alt="image-20200418212650692"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418212759619.png" alt="image-20200418212759619"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418213405170.png" alt="image-20200418213405170"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418213538778.png" alt="image-20200418213538778"></p>
+<h3 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h3><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418213646147.png" alt="image-20200418213646147"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418213849929.png" alt="image-20200418213849929"></p>
+<h3 id="栈顶缓存技术"><a href="#栈顶缓存技术" class="headerlink" title="栈顶缓存技术"></a>栈顶缓存技术</h3><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418214034973.png" alt="image-20200418214034973"></p>
+<h3 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h3><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200418214152093.png" alt="image-20200418214152093"></p>
+<p>运行时常量池在方法区中；</p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419130449081.png" alt="image-20200419130449081"></p>
+<h3 id="方法的调用"><a href="#方法的调用" class="headerlink" title="方法的调用"></a>方法的调用</h3><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419130630076.png" alt="image-20200419130630076"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419132125397.png" alt="image-20200419132125397"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419132917680.png" alt="image-20200419132917680"></p>
+<h3 id="虚方法和非虚方法"><a href="#虚方法和非虚方法" class="headerlink" title="虚方法和非虚方法"></a>虚方法和非虚方法</h3><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419133028099.png" alt="image-20200419133028099"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419134117873.png" alt="image-20200419134117873"></p>
+<p>this/super基本上都是非虚方法，在编译期间就可以确定</p>
+<p>invokestatic/invokespecial</p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419140113762.png" alt="image-20200419140113762"></p>
+<p>如果隐式调用父类的final方法（也就是不加super.），是invokevirtual</p>
+<p>但如果super.的方式，则是invokespecial</p>
+<p>子类重写也是invokevirtual</p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419150151752.png" alt="image-20200419150151752"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419150436945.png" alt="image-20200419150436945"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419151113451.png" alt="image-20200419151113451"></p>
+<h3 id="方法重写"><a href="#方法重写" class="headerlink" title="方法重写"></a>方法重写</h3><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419151335851.png" alt="image-20200419151335851"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419151451292.png" alt="image-20200419151451292"></p>
+<h3 id="方法返回地址"><a href="#方法返回地址" class="headerlink" title="方法返回地址"></a>方法返回地址</h3><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419151808852.png" alt="image-20200419151808852"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419152042892.png" alt="image-20200419152042892"></p>
+<h2 id="本地方法接口"><a href="#本地方法接口" class="headerlink" title="本地方法接口"></a>本地方法接口</h2><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419152319866.png" alt="image-20200419152319866"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419152355798.png" alt="image-20200419152355798"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419152450717.png" alt="image-20200419152450717"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419152549409.png" alt="image-20200419152549409"></p>
+<h2 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h2><p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419152635383.png" alt="image-20200419152635383"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419152713001.png" alt="image-20200419152713001"></p>
+<p><img src="../images/JVM%E6%A2%B3%E7%90%86/image-20200419152747720.png" alt="image-20200419152747720"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"><i class="fa fa-tag"></i>Java</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/" rel="prev" title="漫谈Java反射">
+      <i class="fa fa-chevron-left"></i> 漫谈Java反射
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+      <!--
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://link.hhtjim.com/163/26348068.mp3"></iframe>
+      -->
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM的整体结构"><span class="nav-number">2.</span> <span class="nav-text">JVM的整体结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java代码执行流程"><span class="nav-number">3.</span> <span class="nav-text">Java代码执行流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM的架构模型"><span class="nav-number">4.</span> <span class="nav-text">JVM的架构模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM的生命周期"><span class="nav-number">5.</span> <span class="nav-text">JVM的生命周期</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#类加载子系统"><span class="nav-number">6.</span> <span class="nav-text">类加载子系统</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#类加载器分类"><span class="nav-number">6.1.</span> <span class="nav-text">类加载器分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#启动类加载器"><span class="nav-number">6.1.1.</span> <span class="nav-text">启动类加载器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展类加载器"><span class="nav-number">6.1.2.</span> <span class="nav-text">扩展类加载器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用程序类加载器"><span class="nav-number">6.1.3.</span> <span class="nav-text">应用程序类加载器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用户自定义类加载器"><span class="nav-number">6.1.4.</span> <span class="nav-text">用户自定义类加载器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于ClassLoader"><span class="nav-number">6.2.</span> <span class="nav-text">关于ClassLoader</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#双亲委派机制"><span class="nav-number">6.3.</span> <span class="nav-text">双亲委派机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#沙箱安全机制"><span class="nav-number">6.4.</span> <span class="nav-text">沙箱安全机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类的主动使用和被动使用"><span class="nav-number">6.5.</span> <span class="nav-text">类的主动使用和被动使用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#运行时数据区"><span class="nav-number">7.</span> <span class="nav-text">运行时数据区</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#程序计数器"><span class="nav-number">7.1.</span> <span class="nav-text">程序计数器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟机栈"><span class="nav-number">7.2.</span> <span class="nav-text">虚拟机栈</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#局部变量表"><span class="nav-number">7.2.1.</span> <span class="nav-text">局部变量表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#操作数栈"><span class="nav-number">7.2.2.</span> <span class="nav-text">操作数栈</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Demo"><span class="nav-number">7.2.3.</span> <span class="nav-text">Demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#栈顶缓存技术"><span class="nav-number">7.2.4.</span> <span class="nav-text">栈顶缓存技术</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#动态链接"><span class="nav-number">7.2.5.</span> <span class="nav-text">动态链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法的调用"><span class="nav-number">7.2.6.</span> <span class="nav-text">方法的调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#虚方法和非虚方法"><span class="nav-number">7.2.7.</span> <span class="nav-text">虚方法和非虚方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法重写"><span class="nav-number">7.2.8.</span> <span class="nav-text">方法重写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法返回地址"><span class="nav-number">7.2.9.</span> <span class="nav-text">方法返回地址</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#本地方法接口"><span class="nav-number">7.3.</span> <span class="nav-text">本地方法接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#本地方法栈"><span class="nav-number">7.4.</span> <span class="nav-text">本地方法栈</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="0range"
+      src="/images/yfy.png">
+  <p class="site-author-name" itemprop="name">0range</p>
+  <div class="site-description" itemprop="description">zzz</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/0range228" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;0range228" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart" aria-hidden="true"></i>
+  </span>
+   Powered By - 
+  <span class="author" itemprop="copyrightHolder">0range</span>
+
+  <!--
+    <span class="post-meta-divider"> | </span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">28k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">47 分钟</span>
+  -->
+
+</div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+            'X-LC-Key'    : 'l8KvoMr1i8urA7X7BzPMtQC7',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+      appKey     : 'l8KvoMr1i8urA7X7BzPMtQC7',
+      placeholder: "Say Something~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+
+<!--
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unjkp.com/valine/dist/Valine.min.js"></script>  
+  <script src="/js/Valine.min.js"></script> 
+
+   
+  
+  <script src="/js/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+        appKey: 'l8KvoMr1i8urA7X7BzPMtQC7',
+        placeholder: 'Say Something~',
+        avatar:'mm',
+        guest_info:['nick'] ,  //评论者只需要提供评论的昵称即可
+        pageSize:'10' || 10,
+    });
+  
+    var infoEle = document.querySelector('#comments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0){
+      infoEle.childNodes.forEach(function(item) {
+        item.parentNode.removeChild(item);
+      });
+    }
+  </script>
+
+-->
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/click_love.js"></script>
