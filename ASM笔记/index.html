@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-pace-theme-flash.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<!--
+
+  <script src="//code.tidio.co/oixl41gwhy8tvqy6jte9uvglyrqcjrvc.js" async></script>
+
+-->
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"0range228.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+  <meta name="description" content="序言 累土而不辍，丘山崇成。  今天来学习磨人的ASM框架。">
+<meta name="keywords" content="ASM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASM笔记">
+<meta property="og:url" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;ASM%E7%AC%94%E8%AE%B0&#x2F;index.html">
+<meta property="og:site_name" content="0range的小窝">
+<meta property="og:description" content="序言 累土而不辍，丘山崇成。  今天来学习磨人的ASM框架。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;ASM%E7%AC%94%E8%AE%B0&#x2F;image-20200509145250530.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;ASM%E7%AC%94%E8%AE%B0&#x2F;image-20200509153518513.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;ASM%E7%AC%94%E8%AE%B0&#x2F;image-20200509153606292.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;ASM%E7%AC%94%E8%AE%B0&#x2F;image-20200509154551909.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;ASM%E7%AC%94%E8%AE%B0&#x2F;image-20200509154617771.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;ASM%E7%AC%94%E8%AE%B0&#x2F;image-20200509154949319.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;ASM%E7%AC%94%E8%AE%B0&#x2F;image-20200509160013663.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;ASM%E7%AC%94%E8%AE%B0&#x2F;image-20200509162013272.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;ASM%E7%AC%94%E8%AE%B0&#x2F;image-20200509163546690.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;ASM%E7%AC%94%E8%AE%B0&#x2F;image-20200509165603790.png">
+<meta property="og:updated_time" content="2020-05-10T07:47:08.121Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;ASM%E7%AC%94%E8%AE%B0&#x2F;image-20200509145250530.png">
+
+<link rel="canonical" href="https://0range228.github.io/ASM%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>ASM笔记 | 0range的小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="0range的小窝" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+<a href="https://github.com/0range228" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#FFA500; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">0range的小窝</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Hello,World.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">4</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">16</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://0range228.github.io/ASM%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/yfy.png">
+      <meta itemprop="name" content="0range">
+      <meta itemprop="description" content="zzz">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="0range的小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ASM笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-09 14:43:36" itemprop="dateCreated datePublished" datetime="2020-05-09T14:43:36+08:00">2020-05-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-05-10 15:47:08" itemprop="dateModified" datetime="2020-05-10T15:47:08+08:00">2020-05-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">静态分析</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/ASM%E7%AC%94%E8%AE%B0/" class="post-meta-item leancloud_visitors" data-flag-title="ASM笔记" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度：</span>
+              <span class="leancloud-visitors-count"></span>
+              <span>°C</span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/ASM%E7%AC%94%E8%AE%B0/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/ASM%E7%AC%94%E8%AE%B0/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>18k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>30 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>累土而不辍，丘山崇成。</p>
+</blockquote>
+<p>今天来学习磨人的ASM框架。</p>
+<a id="more"></a>
+
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p><a href="http://asm.ow2.org/" target="_blank" rel="noopener">ASM</a> 是一个 Java 字节码操控框架。它能被用来动态生成类或者增强既有类的功能。ASM 可以直接产生二进制 class 文件，也可以在类被加载入 Java 虚拟机之前动态改变类行为。Java class 被存储在严格格式定义的 .class 文件里，这些类文件拥有足够的元数据来解析类中的所有元素：类名称、方法、属性以及 Java 字节码（指令）。ASM 从类文件中读入信息后，能够<u>改变</u>类行为，<u>分析</u>类信息，甚至能够根据用户要求生成新类。</p>
+<p>简单的说，ASM可以读取解析<code>class</code>文件内容，并提供接口让你可以对<code>class</code>文件字节码内容进行CRUD操作。</p>
+<p><strong>注:</strong> <code>class</code>文件存储的是<code>java</code>字节码，ASM 是对<code>java</code>字节码操作的一层封装，因此，如果你很了解 <code>class</code>文件格式的话，你甚至可以通过直接使用文本编辑器（eg:Vim）来改写<code>class</code>文件。</p>
+<p>知道了 ASM 的作用后，接下来就来看下 ASM 的执行模式。</p>
+<h1 id="ASM框架执行流程"><a href="#ASM框架执行流程" class="headerlink" title="ASM框架执行流程"></a>ASM框架执行流程</h1><p><a href="http://asm.ow2.org/" target="_blank" rel="noopener">ASM</a> 提供了两组API：Core和Tree：</p>
+<ul>
+<li>Core是基于访问者模式来操作类的</li>
+<li>Tree是基于树节点来操作类的</li>
+</ul>
+<p><strong>本文我们主要讨论的是 <a href="http://asm.ow2.org/" target="_blank" rel="noopener">ASM</a> 的 CoreAPI。</strong></p>
+<p><a href="http://asm.ow2.org/" target="_blank" rel="noopener">ASM</a> 内部采用 <strong>访问者模式</strong> 将 <code>.class</code> 类文件的内容从头到尾扫描一遍，每次扫描到类文件相应的内容时，都会调用<code>ClassVisitor</code>内部相应的方法。<br> 比如：</p>
+<ul>
+<li>扫描到<strong>类文件</strong>时，会回调<code>ClassVisitor</code>的<code>visit()</code>方法；</li>
+<li>扫描到<strong>类注解</strong>时，会回调<code>ClassVisitor</code>的<code>visitAnnotation()</code>方法；</li>
+<li>扫描到<strong>类成员</strong>时，会回调<code>ClassVisitor</code>的<code>visitField()</code>方法；</li>
+<li>扫描到<strong>类方法</strong>时，会回调<code>ClassVisitor</code>的<code>visitMethod()</code>方法；<br> ······<br> 扫描到相应结构内容时，会回调相应方法，该方法会返回一个对应的字节码操作对象（比如，<code>visitMethod()</code>返回<code>MethodVisitor</code>实例），通过修改这个对象，就可以修改<code>class</code>文件相应结构部分内容，最后将这个<code>ClassVisitor</code>字节码内容覆盖原来<code>.class</code>文件就实现了类文件的代码切入。</li>
+</ul>
+<p>具体关系如下：</p>
+<table>
+<thead>
+<tr>
+<th align="center">树形关系</th>
+<th align="center">使用的接口</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Class</td>
+<td align="center">ClassVisitor</td>
+</tr>
+<tr>
+<td align="center">Field</td>
+<td align="center">FieldVisitor</td>
+</tr>
+<tr>
+<td align="center">Method</td>
+<td align="center">MethodVisitor</td>
+</tr>
+<tr>
+<td align="center">Annotation</td>
+<td align="center">AnnotationVisitor</td>
+</tr>
+</tbody></table>
+<p>整个具体的执行时序如下图所示：</p>
+<p><img src="../images/ASM%E7%AC%94%E8%AE%B0/image-20200509145250530.png" alt="image-20200509145250530"></p>
+<p>通过时序图可以看出<a href="http://asm.ow2.org/" target="_blank" rel="noopener">ASM</a>在处理<code>class</code>文件的整个过程。<a href="http://asm.ow2.org/" target="_blank" rel="noopener">ASM</a>通过树这种数据结构来表示复杂的字节码结构，并利用 <strong>Push模型</strong> 来对树进行遍历。</p>
+<ul>
+<li><p><a href="http://asm.ow2.org/" target="_blank" rel="noopener">ASM</a> 中提供一个<code>ClassReader</code>类，这个类可以直接由字节数组或者<code>class</code>文件间接的获得字节码数据。它会调用<code>accept()</code>方法，接受一个实现了抽象类<code>ClassVisitor</code>的对象实例作为参数，然后依次调用<code>ClassVisitor</code>的各个方法。字节码空间上的偏移被转成各种<code>visitXXX</code>方法。使用者只需要在对应的的方法上进行需求操作即可，无需考虑字节偏移。</p>
+</li>
+<li><p>这个过程中<code>ClassReader</code>可以看作是一个事件生产者，<code>ClassWriter</code>继承自<code>ClassVisitor</code>抽象类，负责将对象化的class文件内容重构成一个二进制格式的<code>class</code>字节码文件，<code>ClassWriter</code>可以看作是一个事件的消费者。</p>
+</li>
+<li><p>通常，<code>cr.accept(cvv, skip_Debug)</code>.</p>
+<p>cvv通常是来继承<code>ClassVistor</code>的一个类的实例，这个类里面通常重载<code>ClassVisitor</code>的一系列方法，实现我们自己的操作。</p>
+</li>
+</ul>
+<p>接下来还剩的一点内容就是如何实现<code>class</code>文件字节码的修改。</p>
+<h1 id="ASM字节码修改"><a href="#ASM字节码修改" class="headerlink" title="ASM字节码修改"></a>ASM字节码修改</h1><p>由于 <a href="http://asm.ow2.org/" target="_blank" rel="noopener">ASM</a> 是直接对<code>class</code>文件的字节码进行操作，因此，要修改<code>class</code>文件内容时，也要注入相应的<code>java</code>字节码。</p>
+<p>所以，在注入字节码之前，我们还需要了解下<code>class</code>文件的结构，JVM指令等知识。</p>
+<h2 id="Class文件结构"><a href="#Class文件结构" class="headerlink" title="Class文件结构"></a>Class文件结构</h2><p> <code>Java</code>源文件经过<code>javac</code>编译器编译之后，将会生成对应的二进制<code>.class</code>文件，如下图所示：</p>
+<p><img src="../images/ASM%E7%AC%94%E8%AE%B0/image-20200509153518513.png" alt="image-20200509153518513"></p>
+<p><code>Java</code>类文件是 8 位字节的二进制流。数据项按顺序存储在<code>class</code>文件中，相邻的项之间没有间隔，这使得<code>class</code>文件变得紧凑，减少存储空间。在<code>Java</code>类文件中包含了许多大小不同的项，由于每一项的结构都有严格规定，这使得 class 文件能够从头到尾被顺利地解析。</p>
+<p>每个<code>class</code>文件都是有固定的结构信息，而且保留了源码文件中的符号。下图是<code>class</code>文件的格式图。其中带 * 号的表示可重复的结构。</p>
+<p><img src="../images/ASM%E7%AC%94%E8%AE%B0/image-20200509153606292.png" alt="image-20200509153606292"></p>
+<p>类结构体中所有的修饰符、字符常量和其他常量都被存储在class文件开始的一个常量堆栈(Constant Stack)中，其他结构体通过索引引用。</p>
+<p>每个类必须包含headers（包括：class name, super class, interface, etc.）和常量堆栈（Constant Stack）其他元素，例如：字段（fields）、方法（methods）和全部属性（attributes）可以选择显示或者不显示。</p>
+<p>每个字段块（Field section）包括名称、修饰符（public, private, etc.）、描述符号(descriptor)和字段属性。</p>
+<p>每个方法区域（Method section）里面的信息与header部分的信息类似，信息关于最大堆栈（max stack）和最大本地变量数量（max local variable numbers）被用于修改字节码。对于非abstract和非native的方法有一个方法指令表，exceptions表和代码属性表。除此之外，还可以有其他方法属性。</p>
+<p>每个类、字段、方法和方法代码的属性有属于自己的名称记录在类文件格式的JVM规范的部分，这些属性展示了字节码多方面的信息，例如源文件名、内部类、签名、代码行数、本地变量表和注释。JVM规范允许定义自定义属性，这些属性会被标准的VM（虚拟机）忽略，但是可以包含附件信息。</p>
+<p>方法代码表包含一系列对java虚拟机的指令。有些指令在代码中使用偏移量，当指令从方法代码被插入或者移除时，全部偏移量的值可能需要调整。</p>
+<h2 id="Java类型与Class文件内部类型对应关系"><a href="#Java类型与Class文件内部类型对应关系" class="headerlink" title="Java类型与Class文件内部类型对应关系"></a>Java类型与Class文件内部类型对应关系</h2><p><code>Java</code>类型分为基本类型和引用类型，在 JVM 中对每一种类型都有与之相对应的类型描述，如下表：</p>
+<table>
+<thead>
+<tr>
+<th align="center">Java type</th>
+<th align="center">JVM Type descriptor</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">boolean</td>
+<td align="center">Z</td>
+</tr>
+<tr>
+<td align="center">char</td>
+<td align="center">C</td>
+</tr>
+<tr>
+<td align="center">byte</td>
+<td align="center">B</td>
+</tr>
+<tr>
+<td align="center">short</td>
+<td align="center">S</td>
+</tr>
+<tr>
+<td align="center">int</td>
+<td align="center">I</td>
+</tr>
+<tr>
+<td align="center">float</td>
+<td align="center">F</td>
+</tr>
+<tr>
+<td align="center">long</td>
+<td align="center">J</td>
+</tr>
+<tr>
+<td align="center">double</td>
+<td align="center">D</td>
+</tr>
+<tr>
+<td align="center">Object</td>
+<td align="center">Ljava/lang/Object;</td>
+</tr>
+<tr>
+<td align="center">int[]</td>
+<td align="center">[I</td>
+</tr>
+<tr>
+<td align="center">Object[][]</td>
+<td align="center">[[Ljava/lang/Object;</td>
+</tr>
+</tbody></table>
+<p>在 <a href="http://asm.ow2.org/" target="_blank" rel="noopener">ASM</a> 中要获得一个类的 JVM 内部描述，可以使用<code>org.objectweb.asm.Type</code>类中的<code>getDescriptor(final Class c)</code>方法，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TypeDescriptors</span> </span>&#123;    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;    </span><br><span class="line">   System.out.println(Type.getDescriptor(TypeDescriptors<span class="class">.<span class="keyword">class</span>))</span>;    </span><br><span class="line">     System.out.println(Type.getDescriptor(String<span class="class">.<span class="keyword">class</span>))</span>;    </span><br><span class="line">    &#125;        </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Lorg/victorzhzh/core/structure/TypeDescriptors;    </span><br><span class="line">Ljava/lang/String;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Java方法声明与Class内部声明的对应关系"><a href="#Java方法声明与Class内部声明的对应关系" class="headerlink" title="Java方法声明与Class内部声明的对应关系"></a>Java方法声明与Class内部声明的对应关系</h2><p>在·Java·的二进制文件中，方法的方法名和方法的描述都是存储在Constant pool 中的，且在两个不同的单元里。因此，方法描述中不含有方法名，只含有参数类型和返回类型。</p>
+<p>格式：(参数描述符)返回值描述符</p>
+<table>
+<thead>
+<tr>
+<th align="center">Method declaration in source file</th>
+<th align="center">Method descriptor</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">void m(int i, float f)</td>
+<td align="center">(IF)V</td>
+</tr>
+<tr>
+<td align="center">int m(Object o)</td>
+<td align="center">(Ljava/lang/Object;)I</td>
+</tr>
+<tr>
+<td align="center">int[] m(int i, String s)</td>
+<td align="center">(ILjava/lang/String;)[I</td>
+</tr>
+<tr>
+<td align="center">Object m(int[] i)</td>
+<td align="center">([I]Ljava/lang/Object;</td>
+</tr>
+<tr>
+<td align="center">String m()</td>
+<td align="center">()Ljava/lang/String;</td>
+</tr>
+</tbody></table>
+<h2 id="JVM指令"><a href="#JVM指令" class="headerlink" title="JVM指令"></a>JVM指令</h2><p>假设现在我们有如下一个类：</p>
+<p><img src="../images/ASM%E7%AC%94%E8%AE%B0/image-20200509154551909.png" alt="image-20200509154551909"></p>
+<p>先用<code>javac com/yn/test/Test.java</code>编译得到<code>Test.class</code>文件，然后再使用<code>javap -c com/yn/test/Test</code>来查看下这个<code>Test.class</code>文件的字节码，结果如下图所示：</p>
+<p><img src="../images/ASM%E7%AC%94%E8%AE%B0/image-20200509154617771.png" alt="image-20200509154617771"></p>
+<p>上图中第3行到第7行，是类<code>Test</code>的默认构造函数（由编译器默认生成），<code>Code</code>以下部分是构造函数内部代码，其中：</p>
+<p><strong>aload_0</strong>：  这个指令是LOAD系列指令中的一个，它的意思表示装载当前第 0 个元素到堆栈中。代码上相当于<strong>this</strong>。而这个数据元素的类型是一个引用类型。这些指令包含了：ALOAD，ILOAD，LLOAD，FLOAD，DLOAD。区分它们的作用就是针对不用数据类型而准备的LOAD指令，此外还有专门负责处理数组的指令 SALOAD。</p>
+<p><strong>invokespecial</strong>： 这个指令是调用系列指令中的一个。其目的是调用对象类的方法。后面需要给上父类的方法完整签名。“#1”的意思是 .class 文件常量表中第1个元素。值为：“java/lang/Object.”<init>“:()V”。结合ALOAD_0。这两个指令可以翻译为：“super()”。其含义是调用自己的父类构造方法。</init></p>
+<p>第9到14行是<code>main</code>方法，<code>Code</code>以下是其字节码表示：</p>
+<p><strong>getstatic</strong>：   这个指令是GET系列指令中的一个其作用是获取静态字段内容到堆栈中。这一系列指令包括了：GETFIELD、GETSTATIC。它们分别用于获取动态字段和静态字段。此处表示的意思获取静态成员<code>System.out</code>到堆栈中。</p>
+<p><strong>ldc</strong>：这个指令的功能是从常量表中装载一个数据到堆栈中。此处表示从常量池中获取字符串”Hello World!”。</p>
+<p><strong>invokevirtual</strong>：也是一种调用指令，这个指令区别与 invokespecial 的是它是根据引用调用对象类的方法。此处表示调用<code>java.io.PrintStream.println(String)</code>方法，结合前面的操作，这里调用的就是<code>System.out.println(&quot;Hello World!&quot;)</code>。</p>
+<p><strong>return</strong>： 这也是一系列指令中的一个，其目的是方法调用完毕返回：可用的其他指令有：IRETURN，DRETURN，ARETURN等，用于表示不同类型参数的返回。</p>
+<p>接下来，我们就可以根据上面所讲的内容，将代码字节码注入到<code>class</code>文件中了。</p>
+<p>现在假设我们想要在类<code>Test</code>的<code>main</code>方法前后动态插入代码，如下所示：</p>
+<p><img src="../images/ASM%E7%AC%94%E8%AE%B0/image-20200509154949319.png" alt="image-20200509154949319"></p>
+<p>要完成在<code>main</code>方法前后插入输出代码，需要以下几步操作：</p>
+<p><strong>读取<code>Test.class</code>文件，可以通过 <a href="http://asm.ow2.org/" target="_blank" rel="noopener">ASM</a> 提供的<code>ClassReader</code>类进行<code>class</code>文件的读取与遍历。</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用全限定名，创建一个ClassReader对象</span></span><br><span class="line">ClassReader classReader = <span class="keyword">new</span> ClassReader(<span class="string">"com.yn.test.Test"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 构建一个ClassWriter对象，并设置让系统自动计算栈和本地变量大小</span></span><br><span class="line">ClassWriter classWriter = <span class="keyword">new</span> ClassWriter(ClassWriter.COMPUTE_MAXS);</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建一个自定义ClassVisitor，方便后续ClassReader的遍历通知</span></span><br><span class="line">ClassVisitor classVisitor = <span class="keyword">new</span> TestClassVisitor(classWriter);</span><br><span class="line"></span><br><span class="line"><span class="comment">//开始扫描class文件</span></span><br><span class="line">classReader.accept(classVisitor, ClassReader.SKIP_DEBUG);</span><br></pre></td></tr></table></figure>
+
+<p>**构造<code>System.out.println(String)</code>的 <a href="http://asm.ow2.org/" target="_blank" rel="noopener">ASM</a> 代码。</p>
+<p>上面我们从<code>javap</code>反编译得到的字节码可以知道，实现<code>System.out.println(&quot;Hello World!&quot;);</code>的字节码总共需要3步操作：<br> (1). 获取<code>System</code>静态成员<code>out</code>，其对应的指令为<code>getstatic</code>，对应的 <a href="http://asm.ow2.org/" target="_blank" rel="noopener">ASM</a> 代码为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mv.visitFieldInsn(Opcodes.GETSTATIC,</span><br><span class="line">                  Type.getInternalName(System.class), //"java/lang/System"</span><br><span class="line">                  <span class="string">"out"</span>,</span><br><span class="line">                  Type.getDescriptor(PrintStream.class) //"Ljava/io/PrintStream;"</span><br><span class="line">            );</span><br></pre></td></tr></table></figure>
+
+<p> (2). 获取字符串常量”Hello World!”，其对应的指令为<code>ldc</code>，对应的 <a href="http://asm.ow2.org/" target="_blank" rel="noopener">ASM</a> 代码为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mv.visitLdcInsn(<span class="string">"Hello World!"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>(3). 获取<code>PrintStream.println(String)</code>方法，其对应的指令为<code>invokervirtual</code>，对应的 <a href="http://asm.ow2.org/" target="_blank" rel="noopener">ASM</a> 代码为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,</span><br><span class="line">                   Type.getInternalName(PrintStream.class), //"java/io/PrintStream"</span><br><span class="line">                   <span class="string">"println"</span>,</span><br><span class="line">                   <span class="string">"(Ljava/lang/String;)V"</span>,<span class="comment">//方法描述符</span></span><br><span class="line">                   <span class="keyword">false</span>);</span><br></pre></td></tr></table></figure>
+
+<p><strong>在<code>main</code>方法进入前，进行代码插入，可以通过<code>MethodVisitor.visitCode()</code>方法。</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在源方法前去修改方法内容,这部分的修改将加载源方法的字节码之前</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      mv.visitCode();</span><br><span class="line">      System.out.println(<span class="string">"method start to insert code"</span>);</span><br><span class="line">      sop(<span class="string">"asm insert before"</span>);<span class="comment">//this is the insert code</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>在<code>main</code>方法退出前，进行代码插入，可以通关过<code>MethodVisitor.visitInsn()</code>方法，通过判断当前的指令为<code>return</code>时，表明即将执行<code>return</code>语句，此时插入字节码即可。</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitInsn</span><span class="params">(<span class="keyword">int</span> opcode)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//检测到return语句</span></span><br><span class="line">    <span class="keyword">if</span> (opcode == Opcodes.RETURN) &#123;</span><br><span class="line">        System.out.println(<span class="string">"method end to insert code"</span>);</span><br><span class="line">        sop(<span class="string">"asm insert after"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">        <span class="comment">//执行原本语句</span></span><br><span class="line">        mv.visitInsn(opcode);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>字节码插入<code>class</code>文件成功后，导出字节码到原文件中。</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取改写后的class二进制字节码</span></span><br><span class="line"><span class="keyword">byte</span>[] classFile = classWriter.toByteArray();</span><br><span class="line"><span class="comment">// 将这个类输出到原先的类文件目录下，这是原先的类文件已经被修改</span></span><br><span class="line">File file = <span class="keyword">new</span> File(<span class="string">"E:/code/Android/Projects/AsmButterknife/sample-java/build/classes/java/main/com/yn/test/Test.class"</span>);</span><br><span class="line">FileOutputStream fos = <span class="keyword">new</span> FileOutputStream(file);</span><br><span class="line">fos.write(classFile);</span><br><span class="line">fos.close();</span><br></pre></td></tr></table></figure>
+
+<p><strong>注:</strong> <a href="http://search.maven.org/#search|ga|1|a%3A" target="_blank" rel="noopener" asm-commons"">asm-commons</a> 包中提供了一个类<code>AdviceAdapter</code>，使用该类可以更加方便的让我们在方法前后注入代码，因为其提供了方法<code>onMethodEnter()</code>和<code>onMethodExit()</code>。</p>
+<p>通过上面介绍的内容，我们已经成功使用 <a href="http://asm.ow2.org/" target="_blank" rel="noopener">ASM</a> 动态注入字节码到<code>class</code>文件中。但是如果直接采用 <a href="http://asm.ow2.org/" target="_blank" rel="noopener">ASM</a> 代码注入字节码，还是相对困难的，幸运的是 <a href="http://asm.ow2.org/" target="_blank" rel="noopener">ASM</a> 给我们提供了 <a href="http://asm.ow2.org/doc/faq.html#Q10" target="_blank" rel="noopener">ASMifier</a> 工具，使得我们可以直接通过<code>.class</code>文件反编译为 <a href="http://asm.ow2.org/" target="_blank" rel="noopener">ASM</a> 代码。</p>
+<p><a href="https://github.com/Why8n/AsmButterknife/blob/master/sample-java/src/main/java/com/yn/test/AsmTest.java" target="_blank" rel="noopener">完整代码</a></p>
+<h1 id="ASM关键接口"><a href="#ASM关键接口" class="headerlink" title="ASM关键接口"></a>ASM关键接口</h1><h2 id="ClassVisitor"><a href="#ClassVisitor" class="headerlink" title="ClassVisitor"></a>ClassVisitor</h2><p>ClassVisitor，在 ASM3.0 中是一个接口，到了 ASM4.0 与 ClassAdapter 抽象类合并。主要负责 “拜访” 类成员信息。其中包括（标记在类上的注解，类的构造方法，类的字段，类的方法，静态代码块）,它的完整接口如下：</p>
+<p><img src="../images/ASM%E7%AC%94%E8%AE%B0/image-20200509160013663.png" alt="image-20200509160013663"></p>
+<h3 id="visit-int-int-String-String-String-String"><a href="#visit-int-int-String-String-String-String" class="headerlink" title="visit(int , int , String , String , String , String[])"></a>visit(int , int , String , String , String , String[])</h3><p>该方法是当扫描类时第一个拜访的方法，主要用于类声明使用。下面是对方法中各个参数的示意：<strong>visit( 类版本 ,</strong> <strong>修饰符</strong> <strong>, 类名 , 泛型信息 , 继承的父类 , 实现的接口**</strong>)**。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBean</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">等价于：</span><br><span class="line">visit(V1_6, ACC_PUBLIC | ACC_SUPER , <span class="string">"org/more/test/asm/simple/TestBean"</span>,</span><br><span class="line">      <span class="keyword">null</span>, <span class="string">"java/lang/Object"</span>, <span class="keyword">null</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>第一个参数：</strong>表示类版本：V1_6，表示 “.class” 文件的版本是 JDK 1.6。可用的其他版本有：V1_1（JRE_1.1）、V1_2（J2SE_1.2）、V1_3（J2SE_1.3）、V1_4（J2SE_1.4）、V1_5（J2SE_1.5）、V1_6（JavaSE_1.6）、V1_7（JavaSE_1.7）。我们所指的 JDK 6 或 JDK 7 实际上就是只 JDK 1.6 或 JDK 1.7。</p>
+<p><strong>第二个参数：</strong>表示类的修饰符：修饰符在 ASM 中是以 “ACC_” 开头的常量进行定义。可以作用到类级别上的修饰符有：ACC_PUBLIC（public）、ACC_PRIVATE（private）、ACC_PROTECTED（protected）、ACC_FINAL（final）、ACC_SUPER（extends）、ACC_INTERFACE（接口）、ACC_ABSTRACT（抽象类）、ACC_ANNOTATION（注解类型）、ACC_ENUM（枚举类型）、ACC_DEPRECATED（标记了@Deprecated注解的类）、ACC_SYNTHETIC。</p>
+<p><strong>第三个参数：</strong>表示类的名称：通常我们的类完整类名使用 “org.test.mypackage.MyClass” 来表示，但是到了字节码中会以路径形式表示它们 “org/test/mypackage/MyClass” 值得注意的是虽然是路径表示法但是不需要写明类的 “.class” 扩展名。</p>
+<p><strong>第四个参数：</strong>表示泛型信息，如果类并未定义任何泛型该参数为空。Java 字节码中表示泛型时分别对接口和类采取不同的定义。该参数的内容格式如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;泛型名:基于的类型....&gt;Ljava/lang/Object;</span><br><span class="line"></span><br><span class="line">&lt;泛型名::基于的接口....&gt;Ljava/lang/Object;</span><br></pre></td></tr></table></figure>
+
+<p>其中 “泛型名:基于的类型” 内容可以无限的写下去，例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBean</span>&lt;<span class="title">T</span>,<span class="title">V</span>,<span class="title">Z</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">泛型参数为：&lt;T:Ljava/lang/Object;V:Ljava/lang/Object;Z:Ljava/lang/Object;&gt;Ljava/lang/Object;</span><br><span class="line">分析结构如下：</span><br><span class="line">  &lt;</span><br><span class="line">   T:Ljava/lang/Object;</span><br><span class="line">   V:Ljava/lang/Object;</span><br><span class="line">   Z:Ljava/lang/Object;</span><br><span class="line">  &gt;</span><br><span class="line">   Ljava/lang/Object;</span><br></pre></td></tr></table></figure>
+
+<p>再或者：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBean</span>&lt;<span class="title">T</span> <span class="keyword">extends</span> <span class="title">Date</span>, <span class="title">V</span> <span class="keyword">extends</span> <span class="title">ArrayList</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">泛型参数为：&lt;T:Ljava/util/Date;V:Ljava/util/ArrayList;&gt;Ljava/lang/Object;</span><br><span class="line">分析结构如下：</span><br><span class="line">  &lt;</span><br><span class="line">   T:Ljava/util/Date;</span><br><span class="line">   V:Ljava/util/ArrayList;</span><br><span class="line">  &gt;</span><br><span class="line">   Ljava/lang/Object;</span><br></pre></td></tr></table></figure>
+
+<p>以上内容只是针对泛型内容是基于某个具体类型的情况，如果泛型是基于接口而非类型则定义方式会有所不同，这一点需要注意。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBean</span>&lt;<span class="title">T</span> <span class="keyword">extends</span> <span class="title">Serializable</span>, <span class="title">V</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">泛型参数为：&lt;T::Ljava/io/Serializable;V:Ljava/lang/Object;&gt;Ljava/lang/Object;</span><br><span class="line">分析结构如下：</span><br><span class="line">  &lt;</span><br><span class="line">   T::Ljava/io/Serializable; <span class="comment">//比类型多出一个“:”</span></span><br><span class="line">   V:Ljava/lang/Object;</span><br><span class="line">  &gt;</span><br><span class="line">   Ljava/lang/Object;</span><br></pre></td></tr></table></figure>
+
+<p><strong>第五个参数：</strong>表示所继承的父类。由于 Java 的类是单根结构，即所有类都继承自 java.lang.Object 因此可以简单的理解为任何类都会具有一个父类。虽然在编写 Java 程序时我们没有去写 extends 关键字去明确继承的父类，但是 JDK在编译时 总会为我们加上 “ extends Object”。所以倘若某一天你看到这样一份代码也不要过于紧张。</p>
+<p><strong>第六个参数：</strong>表示类实现的接口，在 Java 中类是可以实现多个不同的接口因此此处是一个数组例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBean</span> <span class="keyword">implements</span> <span class="title">Serializable</span> , <span class="title">List</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">该参数会以 “[java/io/Serializable, java/util/List]” 形式出现。</span><br></pre></td></tr></table></figure>
+
+<p>这里需要补充一些内容，如果类型其本身就是接口类型。对于该方法而言，接口的父类类型是 “java/lang/Object”，接口所继承的所有接口都会出现在第六个参数中。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> inteface TestBean implements Serializable , List &#123;</span><br><span class="line"></span><br><span class="line">最后两个参数对应为:</span><br><span class="line">    <span class="string">"java/lang/Object"</span>, [<span class="string">"java/io/Serializable"</span>,<span class="string">"java/util/List"</span>]</span><br></pre></td></tr></table></figure>
+
+<h3 id="visitAnnotation-String-boolean"><a href="#visitAnnotation-String-boolean" class="headerlink" title="visitAnnotation(String , boolean)"></a><strong>visitAnnotation(String , boolean)</strong></h3><p>该方法是当扫描器扫描到类注解声明时进行调用。下面是对方法中各个参数的示意：<strong>visitAnnotation(注解类型 , 注解是否可以在 JVM 中可见)</strong>。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span>(&#123; <span class="string">""</span> &#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBean</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Bean</span>等价于：</span><br><span class="line">    visitAnnotation(<span class="string">"Lnet/hasor/core/gift/bean/Bean;"</span>, <span class="keyword">true</span>);</span><br></pre></td></tr></table></figure>
+
+<p>下面是 @Bean 的源代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Target</span>(&#123; ElementType.TYPE &#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Bean &#123;</span><br><span class="line">    <span class="comment">/** Bean名称。*/</span></span><br><span class="line">    <span class="keyword">public</span> String[] value();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>第一个参数：</strong>表示的是，注解的类型。它使用的是（“L” + “类型路径” + “;”）形式表述。</p>
+<p><strong>第二个参数：</strong>表示的是，该注解是否在 JVM 中可见。这个参数的具体含义可以理解为：如果为 true 表示虚拟机可见，我们可以通过下面这样的代码获取到注解类型：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">testBeanType.getAnnotation(TestAnno<span class="class">.<span class="keyword">class</span>)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>谈到这里就需要额外说明一下在声明注解时常见的 “@Retention(RetentionPolicy.RUNTIME)” 标记。RetentionPolicy 是一个枚举它具备三个枚举元素其每个含义可以理解为：</p>
+<ol>
+<li>RetentionPolicy.SOURCE：声明注解只保留在 Java 源程序中，在编译 Java 类时注解信息不会被写入到 Class。如果使用的是这个配置 ASM 也将无法探测到这个注解。</li>
+<li>RetentionPolicy.CLASS：声明注解仅保留在 Class 文件中，JVM 运行时并不会处理它，这意味着 ASM 可以在 visitAnnotation 时候探测到它，但是通过Class 反射无法获取到注解信息。</li>
+<li>RetentionPolicy.RUNTIME：这是最常用的一种声明，ASM 可以探测到这个注解，同时 Java 反射也可以取得注解的信息。所有用到反射获取的注解都会用到这个配置，就是这个原因。</li>
+</ol>
+<h3 id="visitField-int-String-String-String-Object"><a href="#visitField-int-String-String-String-Object" class="headerlink" title="visitField(int , String , String , String , Object)"></a><strong>visitField(int , String , String , String , Object)</strong></h3><p>该方法是当扫描器扫描到类中字段时进行调用。下面是对方法中各个参数的示意：<strong>visitField(修饰符 , 字段名 , 字段类型 , 泛型描述 , 默认值)</strong>。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBean</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String stringData;</span><br><span class="line"></span><br><span class="line">stringData字段等价于：</span><br><span class="line">    visitField(ACC_PRIVATE, <span class="string">"stringData"</span>, <span class="string">"Ljava/lang/String;"</span>, <span class="keyword">null</span>, <span class="keyword">null</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>第一个参数：</strong>表示字段的修饰符，修饰符在 ASM 中是以 “ACC_” 开头的常量进行定义。可以作用到字段级别上的修饰符有：ACC_PUBLIC（public）、ACC_PRIVATE（private）、ACC_PROTECTED（protected）、ACC_STATIC（static）、ACC_FINAL（final）、ACC_VOLATILE（volatile）、ACC_TRANSIENT（transient）、ACC_ENUM（枚举）、ACC_DEPRECATED（标记了@Deprecated注解的字段）、ACC_SYNTHETIC。</p>
+<p><strong>第二个参数：</strong>表示字段的名称。</p>
+<p><strong>第三个参数：</strong>表示字段的类型，其格式为：（“L” + 类型路径 + “;”）。</p>
+<p><strong>第四个参数：</strong>表示泛型信息， 泛型类型描述是使用（“T” + 泛型名 + “;”）加以说明。例如：“private T data;” 字段的泛型描述将会是 “ TT; ”， “ private V data; ” 字段的泛型描述将会是 “ TV; ”。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBean</span>&lt;<span class="title">T</span>, <span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> T data;</span><br><span class="line">    <span class="keyword">private</span> V value;</span><br><span class="line"></span><br><span class="line">等价于：</span><br><span class="line"></span><br><span class="line">visit(V1_6, ACC_PUBLIC | ACC_SUPER , <span class="string">"org/more/test/asm/simple/TestBean"</span>,</span><br><span class="line">      <span class="string">"&lt;T:Ljava/lang/Object;V:Ljava/lang/Object;&gt;Ljava/lang/Object;"</span>, <span class="comment">//定义了两个泛型类型 T 和 V</span></span><br><span class="line">      <span class="string">"java/lang/Object"</span>, <span class="keyword">null</span>)</span><br><span class="line"></span><br><span class="line">visitField(ACC_PRIVATE, <span class="string">"data"</span>, <span class="string">"Ljava/lang/Object;"</span>, <span class="string">"TT;"</span>, <span class="keyword">null</span>)  <span class="comment">//data 泛型名称为 T</span></span><br><span class="line">visitField(ACC_PRIVATE, <span class="string">"value"</span>, <span class="string">"Ljava/lang/Object;"</span>, <span class="string">"TV;"</span>, <span class="keyword">null</span>) <span class="comment">// value 泛型名称为 V</span></span><br></pre></td></tr></table></figure>
+
+<p>还有一种情况，倘若类在定义泛型时候已经基于某个类型那么生成的代码将会是如下形式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBean</span>&lt;<span class="title">T</span> <span class="keyword">extends</span> <span class="title">Serializable</span>, <span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> T data;</span><br><span class="line">    <span class="keyword">private</span> V value;</span><br><span class="line"></span><br><span class="line">等价于：</span><br><span class="line"></span><br><span class="line">visit(V1_6, ACC_PUBLIC | ACC_SUPER , <span class="string">"org/more/test/asm/simple/TestBean"</span>,</span><br><span class="line">      <span class="string">"&lt;T::Ljava/io/Serializable;V:Ljava/lang/Object;&gt;Ljava/lang/Object;"</span>, <span class="comment">//定义了两个泛型类型 T 和 V</span></span><br><span class="line">      <span class="string">"java/lang/Object"</span>, <span class="keyword">null</span>)</span><br><span class="line"></span><br><span class="line">visitField(ACC_PRIVATE, <span class="string">"data"</span>, <span class="string">"Ljava/io/Serializable;"</span>, <span class="string">"TT;"</span>, <span class="keyword">null</span>)  <span class="comment">//data 泛型名称为 T</span></span><br><span class="line">visitField(ACC_PRIVATE, <span class="string">"value"</span>, <span class="string">"Ljava/lang/Object;"</span>, <span class="string">"TV;"</span>, <span class="keyword">null</span>)     <span class="comment">// value 泛型名称为 V</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>第五个参数：</strong>表示的是默认值， 由于默认值是 Object 类型大家可能以为可以是任何类型。这里要澄清一下，默认值中只能用来表述 Java 基本类型这其中包括了（byte、sort、int、long、float、double、boolean、String）其他所有类型都不不可以进行表述。并且只有标有 “final” 修饰符的字段并且该字段赋有初值时这个参数才会有值。例如类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBean</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String data;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TestBean</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        data = <span class="string">"aa"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">....</span><br></pre></td></tr></table></figure>
+
+<p>在执行 “visitField” 方法时候，这个参数的就是 null 值，下面这种代码也会是 null 值：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBean</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Date data;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TestBean</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        data =<span class="keyword">new</span> Date();</span><br><span class="line">    &#125;</span><br><span class="line">....</span><br></pre></td></tr></table></figure>
+
+<p>此外如果字段使用的是基本类型的包装类型，诸如：Integer、Long…也会为空值：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBean</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Integer intData = <span class="number">12</span>;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>能够正确得到默认值的代码应该是这个样子的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBean</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String data    = <span class="string">"ABC"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span>    intData = <span class="number">12</span>;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h3 id="visitMethod-int-String-String-String-String"><a href="#visitMethod-int-String-String-String-String" class="headerlink" title="visitMethod(int , String , String , String , String[])"></a><strong>visitMethod(int , String , String , String , String[])</strong></h3><p>该方法是当扫描器扫描到类的方法时进行调用。下面是对方法中各个参数的示意：<strong>visitMethod(修饰符 , 方法名 , 方法签名 , 泛型信息 , 抛出的异常)</strong>。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBean</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">halloAop</span><span class="params">(String param)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line"></span><br><span class="line">等价于：</span><br><span class="line"></span><br><span class="line">visit(V1_6, ACC_PUBLIC | ACC_SUPER , <span class="string">"org/more/test/asm/simple/TestBean"</span>,</span><br><span class="line">      <span class="keyword">null</span>, <span class="string">"java/lang/Object"</span>, <span class="keyword">null</span>)</span><br><span class="line"></span><br><span class="line">visitMethod(ACC_PUBLIC, <span class="string">"&lt;init&gt;"</span>, <span class="string">"()V"</span>, <span class="keyword">null</span>, <span class="keyword">null</span>)</span><br><span class="line">visitMethod(ACC_PUBLIC, <span class="string">"halloAop"</span>, <span class="string">"(Ljava/lang/String;)I"</span>, <span class="keyword">null</span>, [java/lang/Throwable])</span><br></pre></td></tr></table></figure>
+
+<p><strong>第一个参数：</strong>表示方法的修饰符，修饰符在 ASM 中是以 “ACC_” 开头的常量进行定义。可以作用到方法级别上的修饰符有：ACC_PUBLIC（public）、ACC_PRIVATE（private）、ACC_PROTECTED（protected）、ACC_STATIC（static）、ACC_FINAL（final）、ACC_SYNCHRONIZED（同步的）、ACC_VARARGS（不定参数个数的方法）、ACC_NATIVE（native类型方法）、ACC_ABSTRACT（抽象的）、ACC_DEPRECATED（标记了@Deprecated注解的方法）、ACC_STRICT、ACC_SYNTHETIC。</p>
+<p><strong>第二个参数：</strong>表示方法名，在 ASM 中 “visitMethod” 方法会处理（构造方法、静态代码块、私有方法、受保护的方法、共有方法、native类型方法）。在这些范畴中构造方法的方法名为 “<init>”，静态代码块的方法名为 “<clinit>”。列如：</clinit></init></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBean</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">halloAop</span><span class="params">(String param)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.println();</span><br><span class="line">    &#125;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">等价于：</span><br><span class="line"></span><br><span class="line">visit(V1_6, ACC_PUBLIC | ACC_SUPER , <span class="string">"org/more/test/asm/simple/TestBean"</span>,</span><br><span class="line">      <span class="keyword">null</span>, <span class="string">"java/lang/Object"</span>, <span class="keyword">null</span>)</span><br><span class="line"></span><br><span class="line">visitMethod(ACC_PUBLIC, <span class="string">"&lt;clinit&gt;"</span>, <span class="string">"()V"</span>, <span class="keyword">null</span>, <span class="keyword">null</span>)</span><br><span class="line">visitMethod(ACC_PUBLIC, <span class="string">"&lt;init&gt;"</span>, <span class="string">"()V"</span>, <span class="keyword">null</span>, <span class="keyword">null</span>)</span><br><span class="line">visitMethod(ACC_PUBLIC, <span class="string">"halloAop"</span>, <span class="string">"(Ljava/lang/String;)I"</span>, <span class="keyword">null</span>, [java/lang/Throwable])</span><br></pre></td></tr></table></figure>
+
+<p><strong>第三个参数：</strong>表示方法签名，方法签名的格式如下：“(参数列表)返回值类型”。在字节码中不同的类型都有其对应的代码，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"I"</span>        = <span class="keyword">int</span></span><br><span class="line"><span class="string">"B"</span>        = <span class="keyword">byte</span></span><br><span class="line"><span class="string">"C"</span>        = <span class="keyword">char</span></span><br><span class="line"><span class="string">"D"</span>        = <span class="keyword">double</span></span><br><span class="line"><span class="string">"F"</span>        = <span class="keyword">float</span></span><br><span class="line"><span class="string">"J"</span>        = <span class="keyword">long</span></span><br><span class="line"><span class="string">"S"</span>        = <span class="keyword">short</span></span><br><span class="line"><span class="string">"Z"</span>        = <span class="keyword">boolean</span></span><br><span class="line"><span class="string">"V"</span>        = <span class="keyword">void</span></span><br><span class="line"><span class="string">"[...;"</span>    = 数组</span><br><span class="line"><span class="string">"[[...;"</span>   = 二维数组</span><br><span class="line"><span class="string">"[[[...;"</span>  = 三维数组</span><br><span class="line"><span class="string">"L....;"</span>   = 引用类型</span><br></pre></td></tr></table></figure>
+
+<p>下面是一些方法签名对应的方法参数列表:</p>
+<p><img src="../images/ASM%E7%AC%94%E8%AE%B0/image-20200509162013272.png" alt="image-20200509162013272"></p>
+<p><strong>第四个参数：</strong>凡是具有泛型信息的方法，该参数都会有值。并且该值的内容信息基本等于第三个参数的拷贝，只不过不同的是泛型参数被特殊标记出来。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBean</span>&lt;<span class="title">T</span>, <span class="title">V</span> <span class="keyword">extends</span> <span class="title">List</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> T <span class="title">halloAop</span><span class="params">(V abc, <span class="keyword">int</span> aaa)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line"></span><br><span class="line">方法签名：(Ljava/util/List;I)Ljava/lang/Object;</span><br><span class="line">泛型签名：(TV;I)TT;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBean</span>&lt;<span class="title">T</span>, <span class="title">V</span> <span class="keyword">extends</span> <span class="title">List</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">halloAop</span><span class="params">(V abc, <span class="keyword">int</span> aaa)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line"></span><br><span class="line">方法签名：(Ljava/util/List;I)Ljava/lang/String;</span><br><span class="line">泛型签名：(TV;I)Ljava/lang/String;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出泛型信息中用于标识泛型类型的结构是（“T” + 泛型名 + “;”），还有一种情况就是。泛型是声明在方法上。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBean</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> &lt;T extends List&gt; <span class="function">String <span class="title">halloAop</span><span class="params">(T abc, <span class="keyword">int</span> aaa)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line"></span><br><span class="line">方法签名：(Ljava/util/List;I)Ljava/lang/String;</span><br><span class="line">泛型签名：&lt;T::Ljava/util/List;&gt;(TT;I)Ljava/lang/String; <span class="comment">//泛型类型基于接口</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBean</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function">String <span class="title">halloAop</span><span class="params">(T abc, <span class="keyword">int</span> aaa)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line"></span><br><span class="line">方法签名：(Ljava/lang/Object;I)Ljava/lang/String;</span><br><span class="line">泛型签名：&lt;T:Ljava/lang/Object;&gt;(TT;I)Ljava/lang/String; <span class="comment">//泛型类型基于类型</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>第五个参数：</strong>用来表示将会抛出的异常，如果方法不会抛出异常。则该参数为空。这个参数的表述形式比较简单，举一个例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBean</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function">String <span class="title">halloAop</span><span class="params">(T abc, <span class="keyword">int</span> aaa)</span> <span class="keyword">throws</span> Throwable,Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">异常参数为：[java/lang/Throwable, java/lang/Exception]</span><br></pre></td></tr></table></figure>
+
+<h2 id="MethodVisitor"><a href="#MethodVisitor" class="headerlink" title="MethodVisitor"></a>MethodVisitor</h2><p>假设有下面这样的一个类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DemoClass</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		System.out.println();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过Javap可以得到下面这样的输出：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">$ javap -c classtest.DemoClass</span><br><span class="line">Compiled from <span class="string">"DemoClass.java"</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">classtest</span>.<span class="title">DemoClass</span> <span class="keyword">extends</span> <span class="title">java</span>.<span class="title">lang</span>.<span class="title">Object</span></span>&#123;</span><br><span class="line"><span class="keyword">public</span> classtest.DemoClass();</span><br><span class="line">  Code:</span><br><span class="line">   <span class="number">0</span>:   aload_0</span><br><span class="line">   1:   invokespecial   #8; //Method java/lang/Object."&lt;init&gt;":()V</span><br><span class="line">   <span class="number">4</span>:   <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(java.lang.String[])</span></span>;</span><br><span class="line">  Code:</span><br><span class="line">   0:   getstatic       #16; //Field java/lang/System.out:Ljava/io/PrintStream;</span><br><span class="line">   3:   invokevirtual   #22; //Method java/io/PrintStream.println:()V</span><br><span class="line">   <span class="number">6</span>:   <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出其实Java编译完这个类之后是产生了两个方法。其中一个是第四行表示的“public classtest.DemoClass();”它是构造方法。</p>
+<p>和第十行表示的“main”方法。下面这段例子用来扫描这个类的这两个方法，我们的扫描逻辑很简单就是当遇到一个定义的方法时输出这个方法名。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DemoClassTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        ClassReader cr = <span class="keyword">new</span> ClassReader(DemoClass<span class="class">.<span class="keyword">class</span>.<span class="title">getName</span>())</span>;</span><br><span class="line">        cr.accept(<span class="keyword">new</span> DemoClassVisitor(), ClassReader.SKIP_DEBUG);</span><br><span class="line">        System.out.println(<span class="string">"---ALL END---"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DemoClassVisitor</span> <span class="keyword">extends</span> <span class="title">ClassVisitor</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DemoClassVisitor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(Opcodes.ASM4);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> MethodVisitor <span class="title">visitMethod</span><span class="params">(<span class="keyword">int</span> access, String name, String desc, String signature, String[] exceptions)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"at Method "</span> + name);</span><br><span class="line">        <span class="comment">//</span></span><br><span class="line">        MethodVisitor superMV = <span class="keyword">super</span>.visitMethod(access, name, desc, signature, exceptions);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> DemoMethodVisitor(superMV, name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DemoMethodVisitor</span> <span class="keyword">extends</span> <span class="title">MethodVisitor</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String methodName;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DemoMethodVisitor</span><span class="params">(MethodVisitor mv, String methodName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(Opcodes.ASM4, mv);</span><br><span class="line">        <span class="keyword">this</span>.methodName = methodName;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"at Method ‘"</span> + methodName + <span class="string">"’ Begin..."</span>);</span><br><span class="line">        <span class="keyword">super</span>.visitCode();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitEnd</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"at Method ‘"</span> + methodName + <span class="string">"’End."</span>);</span><br><span class="line">        <span class="keyword">super</span>.visitEnd();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>上面这段程序首先在第三行使用 ClassReader 去读取 DemoClass 类的字节码信息。</li>
+<li>其次通过“cr.accept(new DemoClassVisitor(), ClassReader.SKIP_DEBUG);”方法开始Visitor扫描整个字节码。</li>
+<li>SKIP_DEBUG选项的意义是在扫描过程中掠过所有有关行号方面的内容。</li>
+<li>在DemoClassVisitor类中我们重写了visitMethod方法，当遇到方法的时候打印出方法名。</li>
+<li>随后我们返回DemoMethodVisitor对象，用以输出方法的开始和结束。</li>
+</ol>
+<p>上面这段程序的输出如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">at Method &lt;init&gt;</span><br><span class="line">at Method ‘&lt;init&gt;’ Begin...</span><br><span class="line">at Method ‘&lt;init&gt;’End.</span><br><span class="line">at Method main</span><br><span class="line">at Method ‘main’ Begin...</span><br><span class="line">at Method ‘main’End.</span><br><span class="line">---ALL END---</span><br></pre></td></tr></table></figure>
+
+<p>下面是这个MethodVisitor接口的所有方法定义:</p>
+<p><img src="../images/ASM%E7%AC%94%E8%AE%B0/image-20200509163546690.png" alt="image-20200509163546690"></p>
+<p>虽然该接口的方法数量如此之多，甚至是ClassVisitor接口的3倍以上。但是值得我们关心的接口只有下面这几个，其余的都是和代码有关系：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MethodVisitor.visitCode();</span><br><span class="line">MethodVisitor.visitMaxs(maxStack, maxLocals);</span><br><span class="line">MethodVisitor.visitEnd();</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>第一个方法：表示ASM开始扫描这个方法。</li>
+<li>第二个方法：该方法是visitEnd之前调用的方法，可以反复调用。用以确定类方法在执行时候的堆栈大小。</li>
+<li>第三个方法：表示方法输出完毕。</li>
+</ul>
+<h3 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h3><p>关于方法名或许读者注意到了在扫描这个类的时候，有一个特殊的方法被扫描到了“<init>”，这个方法是传说中的构造方法。当Java在编译的时候没有发现类文件中有构造方法的定义会为其创建一个默认的无参构造方法。这个“<init>”就是那个由系统添加的构造方法。现在我们为类填写一个构造方法如下：</init></init></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DemoClass</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DemoClass</span><span class="params">(<span class="keyword">int</span> a)</span> </span>&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        System.out.println();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再次扫描这个类，你会发现它的结果和刚才是一样的，这是由于我们编写的构造方法替换了系统默认生成的那个。</p>
+<h3 id="静态代码块"><a href="#静态代码块" class="headerlink" title="静态代码块"></a>静态代码块</h3><p>在Class我们接触过用“static {  }”包含的代码，这个是我们常说的静态代码块。这个代码快ASM在扫描字节码的时候也会遇到它，大家可千万别以为这真的是一个什么代码块。所有的静态代码快最后都会放到“<clinit>”方法中。</clinit></p>
+<p>静态代码快只有一个，现有下面这个的一个类。在编写这个类的时候我有意的写了两个不同的静态代码块的类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DemoClass</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="keyword">int</span> a;</span><br><span class="line">        System.out.println(<span class="number">11</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        System.out.println();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="keyword">int</span> a;</span><br><span class="line">        System.out.println(<span class="number">22</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ASM在扫描这个类的时候你会发现虽然类中存在多个静态代码快，但是最后类文件中只会出现了一个“<clinit>”方法。JVM在编译Class的时候估计已经将多个静态代码块合并到一起了。</clinit></p>
+<p><img src="../images/ASM%E7%AC%94%E8%AE%B0/image-20200509165603790.png" alt="image-20200509165603790"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ASM/" rel="tag"><i class="fa fa-tag"></i>ASM</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/IDEA-Debug%E7%AC%94%E8%AE%B0/" rel="prev" title="IDEA Debug笔记">
+      <i class="fa fa-chevron-left"></i> IDEA Debug笔记
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Fastjson%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001/" rel="next" title="Fastjson学习笔记01">
+      Fastjson学习笔记01 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+      <!--
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://link.hhtjim.com/163/26348068.mp3"></iframe>
+      -->
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">2.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ASM框架执行流程"><span class="nav-number">3.</span> <span class="nav-text">ASM框架执行流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ASM字节码修改"><span class="nav-number">4.</span> <span class="nav-text">ASM字节码修改</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Class文件结构"><span class="nav-number">4.1.</span> <span class="nav-text">Class文件结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java类型与Class文件内部类型对应关系"><span class="nav-number">4.2.</span> <span class="nav-text">Java类型与Class文件内部类型对应关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java方法声明与Class内部声明的对应关系"><span class="nav-number">4.3.</span> <span class="nav-text">Java方法声明与Class内部声明的对应关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JVM指令"><span class="nav-number">4.4.</span> <span class="nav-text">JVM指令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ASM关键接口"><span class="nav-number">5.</span> <span class="nav-text">ASM关键接口</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ClassVisitor"><span class="nav-number">5.1.</span> <span class="nav-text">ClassVisitor</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#visit-int-int-String-String-String-String"><span class="nav-number">5.1.1.</span> <span class="nav-text">visit(int , int , String , String , String , String[])</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#visitAnnotation-String-boolean"><span class="nav-number">5.1.2.</span> <span class="nav-text">visitAnnotation(String , boolean)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#visitField-int-String-String-String-Object"><span class="nav-number">5.1.3.</span> <span class="nav-text">visitField(int , String , String , String , Object)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#visitMethod-int-String-String-String-String"><span class="nav-number">5.1.4.</span> <span class="nav-text">visitMethod(int , String , String , String , String[])</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MethodVisitor"><span class="nav-number">5.2.</span> <span class="nav-text">MethodVisitor</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#构造方法"><span class="nav-number">5.2.1.</span> <span class="nav-text">构造方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#静态代码块"><span class="nav-number">5.2.2.</span> <span class="nav-text">静态代码块</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="0range"
+      src="/images/yfy.png">
+  <p class="site-author-name" itemprop="name">0range</p>
+  <div class="site-description" itemprop="description">zzz</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/0range228" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;0range228" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart" aria-hidden="true"></i>
+  </span>
+   Powered By - 
+  <span class="author" itemprop="copyrightHolder">0range</span>
+
+  <!--
+    <span class="post-meta-divider"> | </span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">149k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:08</span>
+  -->
+
+</div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+            'X-LC-Key'    : 'l8KvoMr1i8urA7X7BzPMtQC7',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+      appKey     : 'l8KvoMr1i8urA7X7BzPMtQC7',
+      placeholder: "Say Something~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+
+<!--
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unjkp.com/valine/dist/Valine.min.js"></script>  
+  <script src="/js/Valine.min.js"></script> 
+
+   
+  
+  <script src="/js/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+        appKey: 'l8KvoMr1i8urA7X7BzPMtQC7',
+        placeholder: 'Say Something~',
+        avatar:'mm',
+        guest_info:['nick'] ,  //评论者只需要提供评论的昵称即可
+        pageSize:'10' || 10,
+    });
+  
+    var infoEle = document.querySelector('#comments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0){
+      infoEle.childNodes.forEach(function(item) {
+        item.parentNode.removeChild(item);
+      });
+    }
+  </script>
+
+-->
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/click_love.js"></script>
