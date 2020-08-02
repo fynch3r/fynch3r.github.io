@@ -27,16 +27,18 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"0range228.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
-  <meta name="description" content="zzz">
-<meta property="og:type" content="website">
-<meta property="og:title" content="0range的小窝">
-<meta property="og:url" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;categories&#x2F;%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90&#x2F;index.html">
+  <meta name="description" content="序言 不睹皇居壮，安知天子尊。  最近一直在Debug Soot，官方文档真的无力吐槽了。 正巧看到一篇老论文，归纳整理一波。">
+<meta name="keywords" content="Soot">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Soot控制流分析">
+<meta property="og:url" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;Soot%E6%8E%A7%E5%88%B6%E6%B5%81%E5%88%86%E6%9E%90&#x2F;index.html">
 <meta property="og:site_name" content="0range的小窝">
-<meta property="og:description" content="zzz">
+<meta property="og:description" content="序言 不睹皇居壮，安知天子尊。  最近一直在Debug Soot，官方文档真的无力吐槽了。 正巧看到一篇老论文，归纳整理一波。">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-08-01T10:28:03.927Z">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://0range228.github.io/categories/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/">
+<link rel="canonical" href="https://0range228.github.io/Soot%E6%8E%A7%E5%88%B6%E6%B5%81%E5%88%86%E6%9E%90/">
 
 
 <script id="page-configurations">
@@ -44,11 +46,11 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false
+    isPost : true
   };
 </script>
 
-  <title>分类: 静态分析 | 0range的小窝</title>
+  <title>Soot控制流分析 | 0range的小窝</title>
   
 
 
@@ -185,114 +187,171 @@
           <div class="content">
             
 
+  <div class="posts-expand">
+      
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h1 class="collection-header">静态分析
-          <small>分类</small>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://0range228.github.io/Soot%E6%8E%A7%E5%88%B6%E6%B5%81%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/yfy.png">
+      <meta itemprop="name" content="0range">
+      <meta itemprop="description" content="zzz">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="0range的小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Soot控制流分析
         </h1>
-      </div>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-30 17:09:45" itemprop="dateCreated datePublished" datetime="2020-07-30T17:09:45+08:00">2020-07-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-01 18:28:03" itemprop="dateModified" datetime="2020-08-01T18:28:03+08:00">2020-08-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/Soot%E6%8E%A7%E5%88%B6%E6%B5%81%E5%88%86%E6%9E%90/" class="post-meta-item leancloud_visitors" data-flag-title="Soot控制流分析" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度：</span>
+              <span class="leancloud-visitors-count"></span>
+              <span>°C</span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/Soot%E6%8E%A7%E5%88%B6%E6%B5%81%E5%88%86%E6%9E%90/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Soot%E6%8E%A7%E5%88%B6%E6%B5%81%E5%88%86%E6%9E%90/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>684</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <h1 class="collection-header">2020</h1>
-    </div>
+        <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>不睹皇居壮，安知天子尊。</p>
+</blockquote>
+<p>最近一直在Debug Soot，官方文档真的无力吐槽了。</p>
+<p>正巧看到一篇老论文，归纳整理一波。</p>
+<a id="more"></a>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-07-09T15:42:43+08:00"
-              content="2020-07-09">
-          07-09
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/%E8%AE%B0%E4%B8%80%E6%AC%A1ASM%E6%8F%92%E6%A1%A9/" itemprop="url">
-            <span itemprop="name">记一次ASM插桩</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-05-09T14:43:36+08:00"
-              content="2020-05-09">
-          05-09
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/ASM%E7%AC%94%E8%AE%B0/" itemprop="url">
-            <span itemprop="name">ASM笔记</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-03-27T20:33:33+08:00"
-              content="2020-03-27">
-          03-27
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B002/" itemprop="url">
-            <span itemprop="name">静态分析入门笔记02</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-03-24T13:43:08+08:00"
-              content="2020-03-24">
-          03-24
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/" itemprop="url">
-            <span itemprop="name">静态分析入门笔记01</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
+<h1 id="Soot的基本对象"><a href="#Soot的基本对象" class="headerlink" title="Soot的基本对象"></a>Soot的基本对象</h1><p>Soot有一个很复杂的层次结构，比如Scene，SootClass，SootClass，SootMethod，Body，Local，Trap，Unit；</p>
+<p>Scene：</p>
+<p>表示整个分析所发生的环境。</p>
+<p>通过Scene可以设置提供给Soot分析的所有的应用类、包含main方法的类和有关过程间分析的访问信息。</p>
+<p>SootClass：</p>
+<p>表示装入到Soot中或者由Soot创建的单个类。</p>
+<p>在Scene中的各个类都是由SootClass类的实例表示的。</p>
+<p>一个SootClass包含一个Java类所有相关的信息，例如这个类的类名、修饰符、父类、SootField、SootMethod链等。</p>
+<p>SootField：</p>
+<p>表示类的属性，也可以叫做域。</p>
+<p>SootMethod：</p>
+<p>表示一个类中的单个方法。</p>
+<p>Body：</p>
+<p>Body接口用来表示方法的实现。</p>
+<p>在Soot中，一个Body隶属于一个SootMethod，即Soot用一个Body为一个方法存储代码。</p>
+<p>分析应用可以使用Body访问各种信息，如一组声明的局部变量、方法体内语句、以及方法体内处理的异常。</p>
+<p>四种Body：</p>
+<p>BafBody、JimpleBody、ShimpleBody、GrimpBody，分别对应四种不同的中间表示法。</p>
+<p>JimpleBody用得最多。</p>
+<p>Chain：</p>
+<p>链。</p>
+<p>每个Body里面有三个主链，分别是Units链、Locals链、Traps链。</p>
+<p>Units：方法体内的语句。</p>
+<p>Locals：方法内的局部变量。</p>
+<p>Traps：方法内的异常处理。</p>
 
     </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Soot/" rel="tag"><i class="fa fa-tag"></i>Soot</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E6%B1%A1%E7%82%B9%E5%88%86%E6%9E%90%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/" rel="prev" title="污点分析简单介绍">
+      <i class="fa fa-chevron-left"></i> 污点分析简单介绍
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Java%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8/" rel="next" title="Java方法调用">
+      Java方法调用 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
   </div>
-  
-  
-  
-
-  
-
 
 
           </div>
           
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -341,6 +400,7 @@
       -->
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Soot的基本对象"><span class="nav-number">2.</span> <span class="nav-text">Soot的基本对象</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

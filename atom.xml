@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://0range228.github.io/"/>
-  <updated>2020-07-20T14:20:19.741Z</updated>
+  <updated>2020-08-02T10:22:12.238Z</updated>
   <id>https://0range228.github.io/</id>
   
   <author>
@@ -15,6 +15,59 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Java方法调用</title>
+    <link href="https://0range228.github.io/Java%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8/"/>
+    <id>https://0range228.github.io/Java%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8/</id>
+    <published>2020-08-02T07:47:04.000Z</published>
+    <updated>2020-08-02T10:22:12.238Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote><p>返景入深林，复照青苔上。</p></blockquote><p>前一阵分析Jimple文件，看到好多种invoke语句，今天来复习一下。</p><a id="more"></a><h1 id="两种链接"><a href="#两种链接" class="headerlink" title="两种链接"></a>两种链接</h1><h2 id="静态链接"><a href="#静态链接" class="headerlink" title="静态链接"></a>静态链接</h2><p>当一个class文件被装进JVM内部时，如果被调用的目标方法在编译期可知，且运行时保持不变。</p><h2 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h2><p>如果调用的方法在编译器无法确定下来，只能在运行期间确定下来（重写/多态/继承）。</p><h1 id="两种方法"><a href="#两种方法" class="headerlink" title="两种方法"></a>两种方法</h1><h2 id="非虚方法"><a href="#非虚方法" class="headerlink" title="非虚方法"></a>非虚方法</h2><p>静态方法<code>static</code>，私有方法<code>private</code>，<code>final</code>方法，构造器<code>&lt;init&gt;</code>，父类方法<code>super.xx()</code></p><h2 id="虚方法"><a href="#虚方法" class="headerlink" title="虚方法"></a>虚方法</h2><p>多态，重写，重载。</p><h1 id="五种invoke"><a href="#五种invoke" class="headerlink" title="五种invoke"></a>五种invoke</h1><h2 id="invokestatic"><a href="#invokestatic" class="headerlink" title="invokestatic"></a>invokestatic</h2><p>调用静态方法<code>static</code>，解析阶段唯一确定方法的版本。</p><h2 id="invokespecial"><a href="#invokespecial" class="headerlink" title="invokespecial"></a>invokespecial</h2><p>调用促使构造器方法<code>&lt;init&gt;</code>，私有方法<code>private</code>，父类方法<code>super.xx()</code>。</p><p>解析阶段确定唯一方法的版本。</p><h2 id="invokevirtual"><a href="#invokevirtual" class="headerlink" title="invokevirtual"></a>invokevirtual</h2><p>虚方法，以及<code>final</code>方法。</p><h2 id="invokeinterface"><a href="#invokeinterface" class="headerlink" title="invokeinterface"></a>invokeinterface</h2><p>调用xx接口</p><h2 id="invokedynamic"><a href="#invokedynamic" class="headerlink" title="invokedynamic"></a>invokedynamic</h2><p>动态解析出需要调用的方法，然后执行。</p><p>lambda表达式。</p><h2 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h2><ol><li>非虚方法：invokestatic，invokespecial</li><li>虚方法：invokevirtual，invokedynamic</li><li>特殊说明：<code>final</code>方法其实很特殊，他是唯一一个invokevirtual，却仍然是非虚方法。</li><li>invokedynamic主要还是应用于lambda表达式，比较少见</li></ol><h1 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h1><p>父类Father：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Father</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Father</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Father init method."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">showStatic</span><span class="params">(String str)</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Father static method."</span>+str);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">showFinal</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Father final method."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showCommon</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Father common method."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>子类Son继承了Father父类：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Son</span> <span class="keyword">extends</span> <span class="title">Father</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Son</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Son</span><span class="params">(<span class="keyword">int</span> age)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">showStatic</span><span class="params">(String str)</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Son staitc method."</span>+str);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">showPrivate</span><span class="params">(String str)</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Son private method"</span>+str);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span>&#123;</span><br><span class="line">        showStatic(<span class="string">"niceday"</span>);</span><br><span class="line">        Father.showStatic(<span class="string">"good"</span>);</span><br><span class="line">        showPrivate(<span class="string">"hello"</span>);</span><br><span class="line">        <span class="keyword">super</span>.showCommon();</span><br><span class="line">        <span class="keyword">super</span>.showFinal();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Son son = <span class="keyword">new</span> Son();</span><br><span class="line">        son.show();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>说明：</p><ol><li>重点还是各种方法的调用。</li><li>第一个<code>showStatic(&quot;niceday&quot;)</code>是Son子类自己的static方法。</li><li>第二个<code>Father.showStatic(&quot;good&quot;)</code>，是父类的static方法。</li><li>第三个<code>showPrivate(&quot;hello&quot;)</code>，是子类自己的private方法。</li><li>第四个和第五个方法都是继承父类的方法，分别是父类的正常方法和父类的final方法。</li></ol><p>下面看一下字节码，对应关系如下：</p><p><img src="../images/Java%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8/image-20200802181946768.png" alt="image-20200802181946768"></p><p><img src="../images/Java%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8/image-20200802182209486.png" alt="image-20200802182209486"></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;序言&quot;&gt;&lt;a href=&quot;#序言&quot; class=&quot;headerlink&quot; title=&quot;序言&quot;&gt;&lt;/a&gt;序言&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;返景入深林，复照青苔上。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;前一阵分析Jimple文件，看到好多种invoke语句，今天来复习一下。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Java" scheme="https://0range228.github.io/categories/Java/"/>
+    
+    
+      <category term="Java基础" scheme="https://0range228.github.io/tags/Java%E5%9F%BA%E7%A1%80/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Soot控制流分析</title>
+    <link href="https://0range228.github.io/Soot%E6%8E%A7%E5%88%B6%E6%B5%81%E5%88%86%E6%9E%90/"/>
+    <id>https://0range228.github.io/Soot%E6%8E%A7%E5%88%B6%E6%B5%81%E5%88%86%E6%9E%90/</id>
+    <published>2020-07-30T09:09:45.000Z</published>
+    <updated>2020-08-01T10:28:03.927Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote><p>不睹皇居壮，安知天子尊。</p></blockquote><p>最近一直在Debug Soot，官方文档真的无力吐槽了。</p><p>正巧看到一篇老论文，归纳整理一波。</p><a id="more"></a><h1 id="Soot的基本对象"><a href="#Soot的基本对象" class="headerlink" title="Soot的基本对象"></a>Soot的基本对象</h1><p>Soot有一个很复杂的层次结构，比如Scene，SootClass，SootClass，SootMethod，Body，Local，Trap，Unit；</p><p>Scene：</p><p>表示整个分析所发生的环境。</p><p>通过Scene可以设置提供给Soot分析的所有的应用类、包含main方法的类和有关过程间分析的访问信息。</p><p>SootClass：</p><p>表示装入到Soot中或者由Soot创建的单个类。</p><p>在Scene中的各个类都是由SootClass类的实例表示的。</p><p>一个SootClass包含一个Java类所有相关的信息，例如这个类的类名、修饰符、父类、SootField、SootMethod链等。</p><p>SootField：</p><p>表示类的属性，也可以叫做域。</p><p>SootMethod：</p><p>表示一个类中的单个方法。</p><p>Body：</p><p>Body接口用来表示方法的实现。</p><p>在Soot中，一个Body隶属于一个SootMethod，即Soot用一个Body为一个方法存储代码。</p><p>分析应用可以使用Body访问各种信息，如一组声明的局部变量、方法体内语句、以及方法体内处理的异常。</p><p>四种Body：</p><p>BafBody、JimpleBody、ShimpleBody、GrimpBody，分别对应四种不同的中间表示法。</p><p>JimpleBody用得最多。</p><p>Chain：</p><p>链。</p><p>每个Body里面有三个主链，分别是Units链、Locals链、Traps链。</p><p>Units：方法体内的语句。</p><p>Locals：方法内的局部变量。</p><p>Traps：方法内的异常处理。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;序言&quot;&gt;&lt;a href=&quot;#序言&quot; class=&quot;headerlink&quot; title=&quot;序言&quot;&gt;&lt;/a&gt;序言&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;不睹皇居壮，安知天子尊。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;最近一直在Debug Soot，官方文档真的无力吐槽了。&lt;/p&gt;
+&lt;p&gt;正巧看到一篇老论文，归纳整理一波。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Java" scheme="https://0range228.github.io/categories/Java/"/>
+    
+    
+      <category term="Soot" scheme="https://0range228.github.io/tags/Soot/"/>
+    
+  </entry>
   
   <entry>
     <title>污点分析简单介绍</title>
@@ -478,58 +531,6 @@
     
     
       <category term="Linux基础" scheme="https://0range228.github.io/tags/Linux%E5%9F%BA%E7%A1%80/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>静态分析入门笔记02</title>
-    <link href="https://0range228.github.io/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B002/"/>
-    <id>https://0range228.github.io/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B002/</id>
-    <published>2020-03-27T12:33:33.000Z</published>
-    <updated>2020-04-27T13:35:57.810Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote><p>遥望洞庭山水翠，白银盘里一青螺。</p></blockquote><p>这篇梳理数据流分析及相关方法。</p><a id="more"></a><h1 id="数据流-Data-Flows"><a href="#数据流-Data-Flows" class="headerlink" title="数据流 Data Flows"></a>数据流 Data Flows</h1><h2 id="CFG上到底是什么在流动？"><a href="#CFG上到底是什么在流动？" class="headerlink" title="CFG上到底是什么在流动？"></a>CFG上到底是什么在流动？</h2><p>是<strong>数据流</strong>。</p><p>绝大部分静态分析牺牲了<strong>completeness</strong>。</p><p>先讲两点：</p><ol><li>对变量进行抽象表达。</li><li>over-approcimation：过近似。就是说无论实际函数产生了多么复杂的情况，静态分析时都应该包含每种情况。</li></ol><p><strong>may-analysis</strong>：绝大部分静态分析，最常见。</p><blockquote><p>Outputs: maybe-true , so -&gt; over-approximation.</p></blockquote><p><strong>must-analysis</strong>: 为了报出来<strong>一定</strong>是正确的，那么就必须under-approximation。</p><blockquote><p>Outputs: must be true , so -&gt; under-approximation.</p></blockquote><p>同一目标：<strong><em>safe-approximation</em></strong></p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;序言&quot;&gt;&lt;a href=&quot;#序言&quot; class=&quot;headerlink&quot; title=&quot;序言&quot;&gt;&lt;/a&gt;序言&lt;/h1&gt;&lt;blockquote&gt;
-&lt;p&gt;遥望洞庭山水翠，白银盘里一青螺。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;这篇梳理数据流分析及相关方法。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="静态分析" scheme="https://0range228.github.io/categories/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/"/>
-    
-    
-      <category term="静态分析基础" scheme="https://0range228.github.io/tags/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%9F%BA%E7%A1%80/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>静态分析入门笔记01</title>
-    <link href="https://0range228.github.io/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/"/>
-    <id>https://0range228.github.io/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/</id>
-    <published>2020-03-24T05:43:08.000Z</published>
-    <updated>2020-04-27T13:35:44.933Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote><p>男儿何不带吴钩，收取关山五十州。</p></blockquote><p>从这篇文章开始，我会在我的博客中记录学习<strong>程序静态分析</strong>的点点滴滴，我也会把在疫情期间，自己在家中学习的成果和收获上传到我的博客，记录自己的点滴进步。</p><a id="more"></a><h1 id="PL？程序分析？"><a href="#PL？程序分析？" class="headerlink" title="PL？程序分析？"></a>PL？程序分析？</h1><h2 id="PL的三大模块"><a href="#PL的三大模块" class="headerlink" title="PL的三大模块"></a>PL的三大模块</h2><p><img src="../images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%9001_1.jpg" alt="q"></p><h3 id="理论部分"><a href="#理论部分" class="headerlink" title="理论部分"></a>理论部分</h3><ol><li>程序是如何设计的</li><li>语言的类型系统</li><li>语言的形式语义与逻辑系统</li></ol><h3 id="支撑环境"><a href="#支撑环境" class="headerlink" title="支撑环境"></a>支撑环境</h3><ol><li>编译器：对语言语法的解析，字节码转换等</li><li>运行时系统：Java，Python等，JVM虚拟机，内存分配，管理</li></ol><h3 id="语言应用"><a href="#语言应用" class="headerlink" title="语言应用"></a>语言应用</h3><ol><li>程序分析</li><li>程序验证</li><li>程序合成：例如如何自动生成一个程序</li></ol><h2 id="语言核心"><a href="#语言核心" class="headerlink" title="语言核心"></a>语言核心</h2><p>核心无非分为三类：</p><ol><li><p><strong>命令式语言Imperative language</strong>：Java，C/C++等</p><p>把程序逻辑拆解成一条条指令，加载到内存，顺序执行下来。</p></li><li><p><strong>函数式语言Functional language</strong>：Pascal，JS，Python</p><p>命令式与函数式相结合，把逻辑包装起来，形式化。</p></li><li><p><strong>逻辑式语言Prolog</strong>：</p><p>声明，逻辑，与、或、非。</p></li></ol><blockquote><p>语言核心没有变，用语言写的程序变得复杂了。</p></blockquote><p>#静态分析</p><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><blockquote><p>在程序运行前，在编译时刻就完成程序安全性，可靠性的检验。不用运行程序本身，就能检查出程序潜在的问题。</p></blockquote><ol><li>程序运行时会不会有隐私泄露？</li><li>空指针引用异常？</li><li>cast安全吗？</li><li>v1，v2两个变量会不会造成内存竞争？要不要加锁？</li><li>assert运行时会不会fail掉？</li><li>dead code？</li></ol><h2 id="Rice’s-Theorem"><a href="#Rice’s-Theorem" class="headerlink" title="Rice’s Theorem"></a>Rice’s Theorem</h2><blockquote><p>程序分析不存在  <strong><em>exact answer</em></strong></p></blockquote><p>正常的递归可枚举语言，<strong>不存在</strong>某个方法，可以去判断其是否存在问题。</p><h2 id="Sound-amp-Complete"><a href="#Sound-amp-Complete" class="headerlink" title="Sound &amp; Complete"></a>Sound &amp; Complete</h2><blockquote><p>Sound &gt; Truth &gt; Complete</p></blockquote><ul><li><p>Sound：Overapproximate，肯定会包含Truth。</p><p>假如Truth就是代表有10个空指针异常，那么Sound可以有1k，1w个空指针异常，就是<strong><em>包含Truth的关系</em></strong>。</p></li><li><p>Complete：Underapproximate，一定在Truth里面。</p><p>上一个例子，无论Complete里面有几个空指针异常，只要存在的，就一定在Truth里面，<strong><em>是Truth子集的关系</em></strong>。</p></li></ul><h2 id="Useful-static-analysis"><a href="#Useful-static-analysis" class="headerlink" title="Useful static analysis"></a>Useful static analysis</h2><ul><li>妥协Soundness：会产生<strong>【漏报】</strong>，<strong><em>False Negatives</em></strong></li><li>妥协Completeness：会产生<strong>【误报】</strong>，<strong><em>False Positives</em></strong></li></ul><p>但是在绝大部分的静态分析中，绝大部分都<strong><em>【妥协Completeness】</em></strong>。</p><p>宁可误报，也不要漏报！</p><h2 id="准则"><a href="#准则" class="headerlink" title="准则"></a>准则</h2><p>在保证<strong>soundness</strong>的基础上，在<strong>【精度】</strong>和<strong>【速度】</strong>上作出权衡。</p><h1 id="抽象-近似"><a href="#抽象-近似" class="headerlink" title="抽象+近似"></a>抽象+近似</h1><ol><li>抽象：判断变量的+/—/0符号。</li><li>近似：在抽象的基础上进行近似。<ul><li>Transfer function</li><li>Control flows</li></ul></li></ol><p>Concrete Domain ——&gt; Abstract Domain</p><p>不关心是具体数值，关心变量的符号位。</p><p><strong>Transfer function</strong>：</p><p>在静态分析中，transfer fuction主要应用在于如何在程序语句的抽象值上进行运算。</p><p>根据你分析的程序的目标，和程序中每一个语句的语义，综合地设计分析方法。</p><p><img src="../images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/image-20200325173724216.png" alt></p><p><strong>Control flows</strong>：</p><p>控制流，就是程序执行的流。控制流图，程序如何跳转。</p><p><img src="../images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/image-20200325173739742.png" alt></p><h1 id="IR-Intermediate-representation"><a href="#IR-Intermediate-representation" class="headerlink" title="IR (Intermediate representation)"></a>IR (Intermediate representation)</h1><h2 id="Compiler-amp-Analysis"><a href="#Compiler-amp-Analysis" class="headerlink" title="Compiler &amp; Analysis"></a>Compiler &amp; Analysis</h2><ol><li><p>Compiler:</p><p>需要将人写的高级代码，<strong>【编译】</strong>成机器可以看懂的机器码。</p><p>在这个过程中，编译器做的工作不仅有【翻译】，还会有【检查】。</p><p><img src="../images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/image-20200325190416693.png" alt="image-20200325190416693"></p></li><li><p>AST vs. IR:</p><p><img src="../images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/image-20200325192746007.png" alt="image-20200325192746007"></p></li></ol><h1 id="3AC"><a href="#3AC" class="headerlink" title="3AC"></a>3AC</h1><p>3AC：三地址码。<code>a = b + c</code></p><h1 id="Control-Flow-Analysis"><a href="#Control-Flow-Analysis" class="headerlink" title="Control Flow Analysis"></a>Control Flow Analysis</h1><h2 id="Basic-Blocks"><a href="#Basic-Blocks" class="headerlink" title="Basic Blocks"></a>Basic Blocks</h2><p>最大的、连续的、3AC指令块。</p><p>有且只有一个入口，并且是第一行指令是入口。</p><p>出口也是唯一的，是最后一个指令。</p><h3 id="如何划分BB？"><a href="#如何划分BB？" class="headerlink" title="如何划分BB？"></a>如何划分BB？</h3><ol><li>首先决定BB入口在哪：<ol><li>程序中的第一行语句。</li><li>无条件跳转的目标语句也是入口。</li><li>紧接着条件/无条件跳转的语句也是个BB入口。</li></ol></li><li>有了BB入口，接下来：<ol><li>有了入口，那么整个BB包含入口开始的连续语句，直到下一个leader的位置。</li></ol></li></ol><h2 id="CFG"><a href="#CFG" class="headerlink" title="CFG"></a>CFG</h2><p>控制流图。</p><p>控制流图的node其实就是BB代码块。</p><p><img src="../images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/image-20200327194043941.png" alt="image-20200327194043941"></p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;序言&quot;&gt;&lt;a href=&quot;#序言&quot; class=&quot;headerlink&quot; title=&quot;序言&quot;&gt;&lt;/a&gt;序言&lt;/h1&gt;&lt;blockquote&gt;
-&lt;p&gt;男儿何不带吴钩，收取关山五十州。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;从这篇文章开始，我会在我的博客中记录学习&lt;strong&gt;程序静态分析&lt;/strong&gt;的点点滴滴，我也会把在疫情期间，自己在家中学习的成果和收获上传到我的博客，记录自己的点滴进步。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="静态分析" scheme="https://0range228.github.io/categories/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/"/>
-    
-    
-      <category term="静态分析基础" scheme="https://0range228.github.io/tags/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%9F%BA%E7%A1%80/"/>
     
   </entry>
   
