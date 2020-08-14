@@ -28,16 +28,17 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"0range228.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
-  <meta name="description" content="zzz">
+  <meta name="description" content="fancyBox 3 for NexT  If you want fancybox v2, please go to theme-next-fancybox  Installation  Step 0 &amp;rarr; Delete fancybox 2 (if you want to upgrade from v2)  1$ rm -rf themes&#x2F;next&#x2F;source&#x2F;lib&#x2F;fancybo">
 <meta property="og:type" content="website">
 <meta property="og:title" content="0range的小窝">
-<meta property="og:url" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;tags&#x2F;Java%E5%8F%8D%E5%B0%84&#x2F;index.html">
+<meta property="og:url" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;lib&#x2F;fancybox&#x2F;README.html">
 <meta property="og:site_name" content="0range的小窝">
-<meta property="og:description" content="zzz">
+<meta property="og:description" content="fancyBox 3 for NexT  If you want fancybox v2, please go to theme-next-fancybox  Installation  Step 0 &amp;rarr; Delete fancybox 2 (if you want to upgrade from v2)  1$ rm -rf themes&#x2F;next&#x2F;source&#x2F;lib&#x2F;fancybo">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-08-14T05:39:27.744Z">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://0range228.github.io/tags/Java%E5%8F%8D%E5%B0%84/">
+<link rel="canonical" href="https://0range228.github.io/lib/fancybox/README">
 
 
 <script id="page-configurations">
@@ -49,7 +50,8 @@
   };
 </script>
 
-  <title>标签: Java反射 | 0range的小窝</title>
+  <title> | 0range的小窝
+  </title>
   
 
 
@@ -182,58 +184,97 @@
       <div class="main-inner">
         <div class="content-wrap">
           
+  
+  
 
           <div class="content">
             
 
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
   
-  
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h1 class="collection-header">Java反射
-          <small>标签</small>
-        </h1>
-      </div>
+  <ul class="breadcrumb">
+          
+            <li><a href="/lib/">LIB</a></li>
+            <li><a href="/lib/fancybox/">FANCYBOX</a></li>
+            <li>README</li>
+          
+  </ul>
+
+</div>
+
+</header>
 
       
-    <div class="collection-year">
-      <h1 class="collection-header">2020</h1>
-    </div>
+      
+      
+      <div class="post-body">
+          <h1 align="center"><a href="https://github.com/fancyapps/fancybox" target="_blank" rel="noopener">fancyBox 3</a> for <a href="https://github.com/theme-next" target="_blank" rel="noopener">NexT</a></h1>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+<h2 align="center">If you want fancybox v2, please go to <a href="https://github.com/theme-next/theme-next-fancybox" target="_blank" rel="noopener">theme-next-fancybox</a></h2>
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-04-11T16:18:04+08:00"
-              content="2020-04-11">
-          04-11
-        </time>
+<h1 align="center">Installation</h1>
+
+<h2 align="center">Step 0 &rarr; Delete fancybox 2 (if you want to upgrade from v2)</h2>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rm -rf themes/next/<span class="built_in">source</span>/lib/fancybox</span><br></pre></td></tr></table></figure>
+
+<h2>If you want to use the CDN instead of clone this repo, please jump to the Step 3.</h2>
+
+<h2 align="center">Step 1 &rarr; Go to NexT dir</h2>
+
+<p>Change dir to <strong>NexT</strong> directory. There must be <code>layout</code>, <code>source</code>, <code>languages</code> and other directories:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> themes/next</span><br><span class="line">$ ls</span><br><span class="line">bower.json  _config.yml  docs  gulpfile.coffee  languages  layout  LICENSE.md  package.json  README.md  scripts  <span class="built_in">source</span>  <span class="built_in">test</span></span><br></pre></td></tr></table></figure>
+
+<h2 align="center">Step 2 &rarr; Get module</h2>
+
+<p>Install module to <code>source/lib</code> directory:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/theme-next/theme-next-fancybox3 <span class="built_in">source</span>/lib/fancybox</span><br></pre></td></tr></table></figure>
+
+<h2 align="center">Step 3 &rarr; Set it up</h2>
+
+<p>Enable module in <strong>NexT</strong> <code>_config.yml</code> file:</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">fancybox:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>And, if you wants to use the CDN, then need to set:</strong></p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">vendors:</span></span><br><span class="line">  <span class="string">...</span></span><br><span class="line">  <span class="attr">fancybox:</span> <span class="string">//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js</span></span><br><span class="line">  <span class="attr">fancybox_css:</span> <span class="string">//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css</span></span><br></pre></td></tr></table></figure>
+
+<h1 align="center">Update</h1>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> themes/next/<span class="built_in">source</span>/lib/fancybox</span><br><span class="line">$ git pull</span><br></pre></td></tr></table></figure>
+
       </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/" itemprop="url">
-            <span itemprop="name">漫谈Java反射</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
+      
+      
+      
     </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/lib/">LIB</a></li>
+            <li><a href="/lib/fancybox/">FANCYBOX</a></li>
+            <li>README</li>
+          
+  </ul>
+
+    
+    
+    
   </div>
-  
-  
-  
-
-  
-
 
 
           </div>
           
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -282,6 +323,7 @@
       -->
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-number">1.</span> <span class="nav-text">fancyBox 3 for NexT</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#null"><span class="nav-number">1.1.</span> <span class="nav-text">If you want fancybox v2, please go to theme-next-fancybox</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-number">2.</span> <span class="nav-text">Installation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#null"><span class="nav-number">2.1.</span> <span class="nav-text">Step 0 → Delete fancybox 2 (if you want to upgrade from v2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#null"><span class="nav-number">2.2.</span> <span class="nav-text">If you want to use the CDN instead of clone this repo, please jump to the Step 3.</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#null"><span class="nav-number">2.3.</span> <span class="nav-text">Step 1 → Go to NexT dir</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#null"><span class="nav-number">2.4.</span> <span class="nav-text">Step 2 → Get module</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#null"><span class="nav-number">2.5.</span> <span class="nav-text">Step 3 → Set it up</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-number">3.</span> <span class="nav-text">Update</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

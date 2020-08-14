@@ -86,6 +86,69 @@
 <p>Units：方法体内的语句。</p>
 <p>Locals：方法内的局部变量。</p>
 <p>Traps：方法内的异常处理。</p>
+<h1 id="Soot阶段图：Pack-Transformer"><a href="#Soot阶段图：Pack-Transformer" class="headerlink" title="Soot阶段图：Pack/Transformer"></a>Soot阶段图：Pack/Transformer</h1><p>这部分soot的文档写得是真的烂，下面写一下我的理解：</p>
+<p><img src="../images/Soot%E6%8E%A7%E5%88%B6%E6%B5%81%E5%88%86%E6%9E%90/image-20200804170622760.png" alt="image-20200804170622760"></p>
+<p><img src="../images/Soot%E6%8E%A7%E5%88%B6%E6%B5%81%E5%88%86%E6%9E%90/image-20200803222051337.png" alt="image-20200803222051337"></p>
+<p>这里总结一下各个阶段的命名规则：</p>
+<p>第一个字母：</p>
+<ul>
+<li>j=Jimple</li>
+<li>s=Shimple</li>
+<li>b=Baf</li>
+<li>g=Grimp</li>
+</ul>
+<p>第二个字母：</p>
+<ul>
+<li>b=body 方法体创建阶段</li>
+<li>t=transform 用户自定的创建阶段</li>
+<li>o=optimizations 优化阶段</li>
+<li>a=annotion 属性生成阶段</li>
+</ul>
+<p>最后的P：</p>
+<ul>
+<li>p=pack 处理阶段</li>
+</ul>
+<h2 id="Pack"><a href="#Pack" class="headerlink" title="Pack"></a>Pack</h2><p>在Soot里，每个阶段都又对应的pack来完成。</p>
+<p>Pack其实具体来说就是一组变换器(Transformer)，每个变换器对应着相应的子阶段。</p>
+<p>当Pack被调用时，它按照执行顺序执行每一个Tranformer。</p>
+<p>提供拓展机制的是那些允许用户自定义变换的Pack：</p>
+<ol>
+<li>jtp：Jimple-transformation-pack</li>
+<li>stp：Shimple-transformation-pack</li>
+</ol>
+<p>在不改变Soot自身的情况下，用户往往可以自定义满足需求的类（变换器），然后将其注入到这些pack中，之后调用soot.Main()，使其进入到Soot的正常流程调度中。</p>
+<h2 id="Transformer"><a href="#Transformer" class="headerlink" title="Transformer"></a>Transformer</h2><p>Transformer是Soot的变换器，允许用户自定义。</p>
+<p>Soot变换器通常是继承两种：</p>
+<ol>
+<li>BodyTransformer：针对单个方法体，过程内，进行变换；</li>
+<li>SceneTransformer：针对整个应用，过程间，进行变换。</li>
+</ol>
+<p>这两种方法下，变换器类必须重构internalTransform方法，在这个方法里对被分析的代码执行某种变换。</p>
+<h1 id="Soot控制流的表达方法"><a href="#Soot控制流的表达方法" class="headerlink" title="Soot控制流的表达方法"></a>Soot控制流的表达方法</h1><p>Soot有两种类型的控制流图：</p>
+<ul>
+<li>UnitGraph</li>
+<li>BlockGraph</li>
+</ul>
+<p>区别：</p>
+<p>BlockGraph是基本控制流图，结点由基本块组成。</p>
+<p>UnitGraph的结点是Units。</p>
+<p>重点说一下UnitGraph：</p>
+<p>UnitGraph的优点是简化了控制流图，没有了基本块的概念，</p>
+<p>使用它可以简化传统的非传统的固定点数据流分析的实现。(fixed point data flow analysis)</p>
+<p>但是缺点是由于没有了基本块，那么也就增加了分析时间的开销。</p>
+<p>共同点：</p>
+<p>首先这两种类型图的表示是相通的。</p>
+<p>他们都需要实现DirectedGraph接口。</p>
+<p>该接口中的API们，可以获取到：</p>
+<ul>
+<li>图的入口节点和出口节点；</li>
+<li>一个给定节点的前驱结点和后继结点；</li>
+<li>一个以某种未明确规定的顺序和节点数在图中进行迭代的迭代器。</li>
+</ul>
+<p>在这些基础上就可以开发对任意DirectedGraph有向图进行处理的方法。</p>
+<p>实际上，UnitGraph和BlockGraph都是抽象类，Soot自己也实现很多实例化的子类。</p>
+<p>例如CompleteUnitGraph、BriefUnitGraph、CompleteBlockGraph、BriefBlockGraph等。</p>
+<p>具体在soot.toolkits.graph有实现说明。</p>
 ]]></content>
       <categories>
         <category>Java</category>
