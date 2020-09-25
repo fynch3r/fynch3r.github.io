@@ -1,6 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Java数据类型转换</title>
+    <url>/Java%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/</url>
+    <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>锲而不舍，金石可镂。</p>
+</blockquote>
+<p>今天来梳理Java数据类型转换，这部分很杂乱，顺便总结总结API，做个笔记。</p>
+<a id="more"></a>
+
+<h1 id="类型种类"><a href="#类型种类" class="headerlink" title="类型种类"></a>类型种类</h1><p>Java提供了两个类型系统，<strong>基本类型</strong>与<strong>引用类型</strong>，使用基本类型在于效率，然而很多情况，会创建对象使用，因为对象可以做更多的功能。</p>
+<p>如果想要我们的基本类型像对象一样操作，就可以使用基本类型对应的包装类，如下：</p>
+<table>
+<thead>
+<tr>
+<th>基本类型</th>
+<th>对应的包装类（位于java.lang包中）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>byte</td>
+<td>Byte</td>
+</tr>
+<tr>
+<td>short</td>
+<td>Short</td>
+</tr>
+<tr>
+<td>int</td>
+<td><strong>Integer</strong></td>
+</tr>
+<tr>
+<td>long</td>
+<td>Long</td>
+</tr>
+<tr>
+<td>float</td>
+<td>Float</td>
+</tr>
+<tr>
+<td>double</td>
+<td>Double</td>
+</tr>
+<tr>
+<td>char</td>
+<td><strong>Character</strong></td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>Boolean</td>
+</tr>
+</tbody></table>
+<p>经常使用的有4种基本类型：</p>
+<ol>
+<li>char</li>
+<li>byte</li>
+<li>String</li>
+<li>int(Integer)</li>
+</ol>
+<p>一下主要讨论这四个类型的转换，会用到包装类。</p>
+<h1 id="char-lt-gt-int"><a href="#char-lt-gt-int" class="headerlink" title="char &lt;-&gt; int"></a>char &lt;-&gt; int</h1><p>先看代码：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">65</span>;</span><br><span class="line">        System.out.println((<span class="keyword">char</span>)i);<span class="comment">//result:A</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">char</span> c = <span class="string">'A'</span>;</span><br><span class="line">        System.out.println((<span class="keyword">int</span>)c);<span class="comment">//result:65</span></span><br><span class="line">        </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>可以看到，如果进行强制类型转换，char会和ASCII码进行互相转换。</p>
+<h2 id="char-gt-int"><a href="#char-gt-int" class="headerlink" title="char -&gt; int"></a>char -&gt; int</h2><p>现在想要的是 char:’9’ -&gt; int:9</p>
+<p><strong>转换代码</strong>：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">char</span> b = <span class="string">'4'</span>;</span><br><span class="line"><span class="keyword">int</span> numericValue = Character.getNumericValue(b);</span><br><span class="line">System.out.println(numericValue);<span class="comment">// 4 type:int</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="int-gt-char"><a href="#int-gt-char" class="headerlink" title="int -&gt; char"></a>int -&gt; char</h2><p>现在想要的是 int:9 -&gt; char:’9’</p>
+<p><strong>转换代码</strong>：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> a =<span class="number">4</span>;</span><br><span class="line"><span class="keyword">char</span> intValue = Character.forDigit(a,<span class="number">10</span>);</span><br><span class="line">System.out.println(intValue);<span class="comment">// 4 type:char</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="其他方法"><a href="#其他方法" class="headerlink" title="其他方法"></a>其他方法</h2><p>直接将’0‘的ASCII码值加上一起转换</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">char</span> c = (<span class="keyword">char</span>)(<span class="string">'0'</span> + i);</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="int-lt-gt-byte"><a href="#int-lt-gt-byte" class="headerlink" title="int &lt;-&gt; byte"></a>int &lt;-&gt; byte</h1><h2 id="int-gt-byte"><a href="#int-gt-byte" class="headerlink" title="int -&gt; byte"></a>int -&gt; byte</h2><p>会发生高位截断：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">234</span>;</span><br><span class="line"><span class="keyword">byte</span> b = (<span class="keyword">byte</span>)a;</span><br><span class="line">System.out.println(b);<span class="comment">//-22</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="byte-gt-int"><a href="#byte-gt-int" class="headerlink" title="byte -&gt; int"></a>byte -&gt; int</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">byteToInt</span><span class="params">(<span class="keyword">byte</span> b)</span> </span>&#123;</span><br><span class="line">		<span class="comment">//Java 总是把 byte 当做有符处理；我们可以通过将其和 0xFF 进行二进制与得到它的无符值</span></span><br><span class="line">		<span class="keyword">return</span> b &amp; <span class="number">0xFF</span>;</span><br><span class="line">	&#125;</span><br><span class="line">....</span><br><span class="line"></span><br><span class="line"><span class="keyword">byte</span> b = -<span class="number">22</span>;</span><br><span class="line">System.out.println(byteToInt(b));<span class="comment">//234</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="char-lt-gt-String"><a href="#char-lt-gt-String" class="headerlink" title="char &lt;-&gt; String"></a>char &lt;-&gt; String</h1><p>这类就很常见了。</p>
+<h2 id="char-gt-String"><a href="#char-gt-String" class="headerlink" title="char -&gt; String"></a>char -&gt; String</h2><p>直接上API，万物<code>.valueOf()</code>转一切。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">char</span> a = <span class="string">'A'</span>;</span><br><span class="line">String s = String.valueOf(a);</span><br><span class="line">System.out.println(s);<span class="comment">//A type:String</span></span><br></pre></td></tr></table></figure>
+
+<p>字符数组：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">char</span>[] c = <span class="keyword">new</span> <span class="keyword">char</span>[]&#123;<span class="string">'A'</span>,<span class="string">'B'</span>,<span class="string">'C'</span>,<span class="string">'D'</span>,<span class="string">'E'</span>,<span class="string">'F'</span>,<span class="string">'G'</span>&#125;;</span><br><span class="line">String n = String.valueOf(c);</span><br><span class="line">System.out.println(n);<span class="comment">//ABCDEFG</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="String-gt-char"><a href="#String-gt-char" class="headerlink" title="String -&gt; char"></a>String -&gt; char</h2><p>老熟面孔了：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//n = "ABCDEFG"</span></span><br><span class="line"><span class="keyword">char</span>[] chars = n.toCharArray();</span><br><span class="line">System.out.println(Arrays.toString(chars));<span class="comment">//[A, B, C, D, E, F, G]</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="String-lt-gt-byte"><a href="#String-lt-gt-byte" class="headerlink" title="String &lt;-&gt;byte"></a>String &lt;-&gt;byte</h1><p>这里默认就是byte[]字节数组。</p>
+<h2 id="String-gt-byte"><a href="#String-gt-byte" class="headerlink" title="String -&gt; byte[]"></a>String -&gt; byte[]</h2><p>直接上代码：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">String str = <span class="string">"ABCDEFG"</span>;</span><br><span class="line"><span class="keyword">byte</span>[] strbyte = str.getBytes();</span><br><span class="line">System.out.println(Arrays.toString(strbyte));<span class="comment">//[65, 66, 67, 68, 69, 70, 71]</span></span><br></pre></td></tr></table></figure>
+
+<p>可以发现直接内容其实就是ASCII码。</p>
+<h2 id="byte-gt-String"><a href="#byte-gt-String" class="headerlink" title="byte[] -&gt; String"></a>byte[] -&gt; String</h2><p>直接用String的构造方法就行，直接上：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">byte</span>[] b= &#123;-<span class="number">60</span>,-<span class="number">29</span>,-<span class="number">70</span>,-<span class="number">61</span>,-<span class="number">93</span>,-<span class="number">84</span>,-<span class="number">42</span>,-<span class="number">48</span>,-<span class="number">71</span>,-<span class="number">6</span>,<span class="number">13</span>,<span class="number">10</span>,-<span class="number">42</span>,-<span class="number">48</span>,-<span class="number">71</span>,-<span class="number">6</span>,-<span class="number">93</span>,-<span class="number">84</span>,-<span class="number">60</span>,-<span class="number">29</span>,-<span class="number">70</span>,-<span class="number">61</span>&#125;;</span><br><span class="line">String s = <span class="keyword">new</span> String(b);</span><br><span class="line">System.out.println(s);<span class="comment">//你好，中国，中国，你好</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="int-lt-gt-String"><a href="#int-lt-gt-String" class="headerlink" title="int &lt;-&gt; String"></a>int &lt;-&gt; String</h1><h2 id="int-gt-String"><a href="#int-gt-String" class="headerlink" title="int[] -&gt; String"></a>int[] -&gt; String</h2><p>可以用StringBuilder，直接上：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line"><span class="keyword">int</span>[] test = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">23</span>,<span class="number">4</span>,<span class="number">5</span>&#125;;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; test.length; i++) &#123;</span><br><span class="line">    sb.append(test[i]);</span><br><span class="line">&#125;</span><br><span class="line">System.out.println(sb.toString());<span class="comment">//122345</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>要是想转换为ASCII码对应的字符串，可以这么写：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line"><span class="keyword">int</span>[] test = &#123;<span class="number">65</span>,<span class="number">66</span>,<span class="number">67</span>&#125;;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; test.length; i++) &#123;</span><br><span class="line">    sb.append((<span class="keyword">char</span>)test[i]);</span><br><span class="line">&#125;</span><br><span class="line">System.out.println(sb.toString());<span class="comment">//ABC</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="String-gt-int"><a href="#String-gt-int" class="headerlink" title="String -&gt; int[]"></a>String -&gt; int[]</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">String ss = <span class="string">"12345678"</span>;</span><br><span class="line"><span class="keyword">char</span>[] cc = ss.toCharArray();</span><br><span class="line"><span class="keyword">int</span>[] tar = <span class="keyword">new</span> <span class="keyword">int</span>[ss.length()];</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; cc.length; i++) &#123;</span><br><span class="line">    tar[i] = Integer.parseInt(String.valueOf(cc[i]))；</span><br><span class="line">    <span class="comment">//Interger.valueOf(cc[i].toString(),2)也可以。</span></span><br><span class="line">&#125;</span><br><span class="line">System.out.println(Arrays.toString(tar));<span class="comment">//[1, 2, 3, 4, 5, 6, 7, 8]</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="byte-lt-gt-char"><a href="#byte-lt-gt-char" class="headerlink" title="byte&lt;-&gt;char"></a>byte&lt;-&gt;char</h1><h2 id="char-gt-byte"><a href="#char-gt-byte" class="headerlink" title="char[] -&gt; byte[]"></a>char[] -&gt; byte[]</h2><p>方法1:用String作为跳板</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">char</span>[] cs = <span class="keyword">new</span> <span class="keyword">char</span>[] &#123; <span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>, <span class="string">'d'</span>, <span class="string">'e'</span>, <span class="string">'f'</span>, <span class="string">'g'</span> &#125;;</span><br><span class="line">String scs = <span class="keyword">new</span> String(cs);</span><br><span class="line"><span class="keyword">byte</span>[] bb= scs.getBytes();</span><br><span class="line">System.out.println(Arrays.toString(bb));<span class="comment">//[97, 98, 99, 100, 101, 102, 103]</span></span><br></pre></td></tr></table></figure>
+
+<p>方法2:循环+强制转型</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">char</span>[] cs = <span class="keyword">new</span> <span class="keyword">char</span>[] &#123; <span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>, <span class="string">'d'</span>, <span class="string">'e'</span>, <span class="string">'f'</span>, <span class="string">'g'</span> &#125;;</span><br><span class="line"><span class="keyword">byte</span>[] bs2 = <span class="keyword">new</span> <span class="keyword">byte</span>[cs.length];</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; cs.length; i++) &#123;<span class="comment">//循环将char数组的每一个元素转换为byte并存在上面定义的byte数组中</span></span><br><span class="line">		bs2[i] = (<span class="keyword">byte</span>) cs[i];<span class="comment">//将每一个char转换成byte</span></span><br><span class="line">&#125;</span><br><span class="line">System.out.println(Arrays.toString(bs2));<span class="comment">//[97, 98, 99, 100, 101, 102, 103]</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="byte-gt-char"><a href="#byte-gt-char" class="headerlink" title="byte[] -&gt; char[]"></a>byte[] -&gt; char[]</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">char</span>[] getChars (<span class="keyword">byte</span>[] bytes) &#123;</span><br><span class="line">	Charset cs = Charset.forName (<span class="string">"UTF-8"</span>);</span><br><span class="line">	ByteBuffer bb = ByteBuffer.allocate (bytes.length);</span><br><span class="line">  bb.put (bytes);</span><br><span class="line">  bb.flip ();</span><br><span class="line">  CharBuffer cb = cs.decode (bb);</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> cb.array();</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="keyword">byte</span>[] bb = &#123;<span class="number">97</span>, <span class="number">98</span>, <span class="number">99</span>, <span class="number">100</span>, <span class="number">101</span>, <span class="number">102</span>, <span class="number">103</span>&#125;;</span><br><span class="line"><span class="keyword">char</span>[] result = getChars(bb);</span><br><span class="line">System.out.println(Arrays.toString(result));<span class="comment">//[a, b, c, d, e, f, g]</span></span><br></pre></td></tr></table></figure>
+
+
+
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>Java基础</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>【反序列化漏洞】Jackson</title>
     <url>/%E3%80%90%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E3%80%91Jackson/</url>
     <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
