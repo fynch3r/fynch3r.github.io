@@ -41,7 +41,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84&#x2F;image-20200411224713717.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84&#x2F;image-20200412135058766.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84&#x2F;image-20200412135158822.png">
-<meta property="og:updated_time" content="2020-11-12T09:34:39.233Z">
+<meta property="og:updated_time" content="2020-11-12T09:38:45.474Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84&#x2F;image-20200411205831842.png">
 
@@ -229,7 +229,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-12 17:34:39" itemprop="dateModified" datetime="2020-11-12T17:34:39+08:00">2020-11-12</time>
+                <time title="修改时间：2020-11-12 17:38:45" itemprop="dateModified" datetime="2020-11-12T17:38:45+08:00">2020-11-12</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -346,9 +346,9 @@
 <p> 获取成员变量们：</p>
 <ul>
 <li>Fields[] getFields()：只获取所有public修饰的成员变量</li>
-<li>Fields[] getField(String name)：获取特定成员变量</li>
+<li>Fields    getField(String name)：获取特定成员变量</li>
 <li>Fields[] getDeclaredFields()：获取所有的成员变量，【不考虑】修饰符</li>
-<li>Fields[] getDeclaredField(String name)：获取特定的成员变量，【不考虑】修饰符</li>
+<li>Fields    getDeclaredField(String name)：获取特定的成员变量，【不考虑】修饰符</li>
 </ul>
 </blockquote>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Class personClass = Person<span class="class">.<span class="keyword">class</span></span>;</span><br><span class="line"><span class="comment">//Fields[] getFields()：只会获取全部的【public修饰】的成员变量</span></span><br><span class="line">Field[] fields = personClass.getFields();</span><br><span class="line"><span class="keyword">for</span> (Field field : fields) &#123;</span><br><span class="line">    <span class="comment">//由于都是private，什么都不输出</span></span><br><span class="line">    System.out.println(field);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>

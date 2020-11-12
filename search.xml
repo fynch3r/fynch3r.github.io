@@ -6511,9 +6511,9 @@
 <p> 获取成员变量们：</p>
 <ul>
 <li>Fields[] getFields()：只获取所有public修饰的成员变量</li>
-<li>Fields[] getField(String name)：获取特定成员变量</li>
+<li>Fields    getField(String name)：获取特定成员变量</li>
 <li>Fields[] getDeclaredFields()：获取所有的成员变量，【不考虑】修饰符</li>
-<li>Fields[] getDeclaredField(String name)：获取特定的成员变量，【不考虑】修饰符</li>
+<li>Fields    getDeclaredField(String name)：获取特定的成员变量，【不考虑】修饰符</li>
 </ul>
 </blockquote>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Class personClass = Person<span class="class">.<span class="keyword">class</span></span>;</span><br><span class="line"><span class="comment">//Fields[] getFields()：只会获取全部的【public修饰】的成员变量</span></span><br><span class="line">Field[] fields = personClass.getFields();</span><br><span class="line"><span class="keyword">for</span> (Field field : fields) &#123;</span><br><span class="line">    <span class="comment">//由于都是private，什么都不输出</span></span><br><span class="line">    System.out.println(field);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
