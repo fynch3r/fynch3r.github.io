@@ -41,7 +41,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84&#x2F;image-20200411224713717.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84&#x2F;image-20200412135058766.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84&#x2F;image-20200412135158822.png">
-<meta property="og:updated_time" content="2020-04-27T13:36:09.353Z">
+<meta property="og:updated_time" content="2020-11-12T09:34:39.233Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84&#x2F;image-20200411205831842.png">
 
@@ -229,7 +229,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-27 21:36:09" itemprop="dateModified" datetime="2020-04-27T21:36:09+08:00">2020-04-27</time>
+                <time title="修改时间：2020-11-12 17:34:39" itemprop="dateModified" datetime="2020-11-12T17:34:39+08:00">2020-11-12</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -346,9 +346,9 @@
 <p> 获取成员变量们：</p>
 <ul>
 <li>Fields[] getFields()：只获取所有public修饰的成员变量</li>
-<li>Fields[] getField(String name)：获取所有public修饰的成员变量</li>
+<li>Fields[] getField(String name)：获取特定成员变量</li>
 <li>Fields[] getDeclaredFields()：获取所有的成员变量，【不考虑】修饰符</li>
-<li>Fields[] getField(String name)：获取特定的成员变量</li>
+<li>Fields[] getDeclaredField(String name)：获取特定的成员变量，【不考虑】修饰符</li>
 </ul>
 </blockquote>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Class personClass = Person<span class="class">.<span class="keyword">class</span></span>;</span><br><span class="line"><span class="comment">//Fields[] getFields()：只会获取全部的【public修饰】的成员变量</span></span><br><span class="line">Field[] fields = personClass.getFields();</span><br><span class="line"><span class="keyword">for</span> (Field field : fields) &#123;</span><br><span class="line">    <span class="comment">//由于都是private，什么都不输出</span></span><br><span class="line">    System.out.println(field);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -408,7 +408,7 @@
 <li>exec()：调用exec函数</li>
 <li>calc.exe：调用计算器程序</li>
 </ul>
-<h2 id="类的初始化"><a href="#类的初始化" class="headerlink" title="类的初始化"></a>类的初始化</h2><p>这里我再写一个小demo吧：</p>
+<h2 id="类的初始化"><a href="#类的初始化" class="headerlink" title="类的初始化"></a>类的初始化</h2><p>这里我再写一个小demo：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> domain;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TrainPrint</span> </span>&#123;</span><br><span class="line">    <span class="comment">//初始块</span></span><br><span class="line">    &#123;</span><br><span class="line">        System.out.printf(<span class="string">"Empty block initial %s\n"</span>, <span class="keyword">this</span>.getClass());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//静态初始块</span></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.printf(<span class="string">"Static initial %s\n"</span>, TrainPrint<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//构造函数</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TrainPrint</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.printf(<span class="string">"Initial %s\n"</span>, <span class="keyword">this</span>.getClass());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>首先我写一个测试类，对于这个测试类，它有初始块，静态初始块，构造函数。</p>
@@ -447,7 +447,7 @@
 
 <p>详细解读，这里是一个疯狂套娃的过程：</p>
 <ol>
-<li>首先我要找到类对象，clazz，不多说了</li>
+<li>首先先要找到类对象，clazz，不多说了</li>
 <li>接下来我要告诉这个类对象我要执行的方法是<code>exec</code>，这个exec方法接受的参数类型是<code>String</code>类型，当然就是恶意命令字符串</li>
 <li>那么我们的invoke函数需要的操作就是<code>invoke(类对象，exec方法等待接收的参数)</code>，那么问题来了：Runtime类不允许<code>newInstance()</code>来实例化对象！！！但是他允许通过<code>getRuntime</code>方法返回一个对象，那么我就用getRuntime方法来返回一个对象！</li>
 <li>现在开始疯狂套娃！</li>
@@ -708,12 +708,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">349k</span>
+    <span title="站点总字数">350k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">9:42</span>
+    <span title="站点阅读时长">9:44</span>
   -->
 
 </div>
