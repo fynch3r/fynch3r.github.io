@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-pace-theme-flash.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<!--
+
+  <script src="//code.tidio.co/oixl41gwhy8tvqy6jte9uvglyrqcjrvc.js" async></script>
+
+-->
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"0range228.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+  <meta name="description" content="序言 一点浩然气，千里快哉风。  今天来记录自己Neo4j实战、爬坑记录。">
+<meta name="keywords" content="Neo4j">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Neo4j爬坑记">
+<meta property="og:url" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;Neo4j%E7%88%AC%E5%9D%91%E8%AE%B0&#x2F;index.html">
+<meta property="og:site_name" content="0range的小窝">
+<meta property="og:description" content="序言 一点浩然气，千里快哉风。  今天来记录自己Neo4j实战、爬坑记录。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Neo4j%E7%88%AC%E5%9D%91%E8%AE%B0&#x2F;image-20201218162301263.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Neo4j%E7%88%AC%E5%9D%91%E8%AE%B0&#x2F;image-20201218162951725.png">
+<meta property="og:updated_time" content="2020-12-22T08:31:40.761Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Neo4j%E7%88%AC%E5%9D%91%E8%AE%B0&#x2F;image-20201218162301263.png">
+
+<link rel="canonical" href="https://0range228.github.io/Neo4j%E7%88%AC%E5%9D%91%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>Neo4j爬坑记 | 0range的小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="0range的小窝" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+<a href="https://github.com/0range228" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#FFA500; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">0range的小窝</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Hello,World.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">18</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">7</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">31</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://0range228.github.io/Neo4j%E7%88%AC%E5%9D%91%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/yfy.png">
+      <meta itemprop="name" content="0range">
+      <meta itemprop="description" content="zzz">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="0range的小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Neo4j爬坑记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-18 15:35:26" itemprop="dateCreated datePublished" datetime="2020-12-18T15:35:26+08:00">2020-12-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-22 16:31:40" itemprop="dateModified" datetime="2020-12-22T16:31:40+08:00">2020-12-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">图数据库</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/Neo4j%E7%88%AC%E5%9D%91%E8%AE%B0/" class="post-meta-item leancloud_visitors" data-flag-title="Neo4j爬坑记" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度：</span>
+              <span class="leancloud-visitors-count"></span>
+              <span>°C</span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/Neo4j%E7%88%AC%E5%9D%91%E8%AE%B0/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Neo4j%E7%88%AC%E5%9D%91%E8%AE%B0/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>一点浩然气，千里快哉风。</p>
+</blockquote>
+<p>今天来记录自己Neo4j实战、爬坑记录。</p>
+<a id="more"></a>
+
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>图数据库只有两点：节点，关系。</p>
+<p>节点node可以类比理解为Java里面的对象实例，关系其实就是edge边信息。</p>
+<h1 id="查询语句CQL：CYPHER"><a href="#查询语句CQL：CYPHER" class="headerlink" title="查询语句CQL：CYPHER"></a>查询语句CQL：CYPHER</h1><p>类似SQL语句一样，在Neo4j里面是使用Cypher语句进行查询。</p>
+<p>Cypher句法由四个不同的部分组成，每一部分都有一个特殊的规则：</p>
+<ul>
+<li><p>start——查找图形中的起始节点。</p>
+</li>
+<li><p>match——匹配图形模式，可以定位感兴趣数据的子图形。</p>
+</li>
+<li><p>where——基于某些标准过滤数据。</p>
+</li>
+<li><p>return——返回感兴趣的结果。</p>
+</li>
+</ul>
+<p>Cypher的模式匹配性质使得图形模式成为任何查询的重点问题。</p>
+<p>常用的Neo4j CQL命令/条款如下：</p>
+<table>
+<thead>
+<tr>
+<th>S.No.</th>
+<th>CQL命令/条</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1。</td>
+<td>CREATE 创建</td>
+<td>创建节点，关系和属性</td>
+</tr>
+<tr>
+<td>2。</td>
+<td>MATCH 匹配</td>
+<td>检索有关节点，关系和属性数据</td>
+</tr>
+<tr>
+<td>3。</td>
+<td>RETURN 返回</td>
+<td>返回查询结果</td>
+</tr>
+<tr>
+<td>4。</td>
+<td>WHERE 哪里</td>
+<td>提供条件过滤检索数据</td>
+</tr>
+<tr>
+<td>5。</td>
+<td>DELETE 删除</td>
+<td>删除节点和关系</td>
+</tr>
+<tr>
+<td>6。</td>
+<td>REMOVE 移除</td>
+<td>删除节点和关系的属性</td>
+</tr>
+<tr>
+<td>7。</td>
+<td>ORDER BY以…排序</td>
+<td>排序检索数据</td>
+</tr>
+<tr>
+<td>8。</td>
+<td>SET 组</td>
+<td>添加或更新标签</td>
+</tr>
+</tbody></table>
+<h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><h3 id="CREATE创建"><a href="#CREATE创建" class="headerlink" title="CREATE创建"></a>CREATE创建</h3><p><strong>Neo4j CQL创建一个没有属性的节点</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE (&lt;node-name&gt;:&lt;label-name&gt;)  节点名：标签名</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE (emp:Employee)</span><br></pre></td></tr></table></figure>
+
+<p>或者</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE (:Employee)</span><br></pre></td></tr></table></figure>
+
+<p><strong>Neo4j CQL创建具有属性的节点</strong></p>
+<p>Neo4j CQL“CREATE”命令用于创建带有属性的节点。 它创建一个具有一些属性（键值对）的节点来存储数据。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">CREATE (</span><br><span class="line">   &lt;node-name&gt;:&lt;label-name&gt;</span><br><span class="line">   &#123;    </span><br><span class="line">      &lt;key&gt;:&lt;Value&gt;</span><br><span class="line">      ........</span><br><span class="line">      &lt;n-key&gt;:&lt;n-Value&gt;</span><br><span class="line">   &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE (dept:Dept &#123; deptno:10, dname:&quot;Accounting&quot;, location:&quot;Hyderabad&quot;&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><strong>创建多个标签到节点</strong></p>
+<p>语法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE (&lt;node-name&gt;:&lt;label-name1&gt;:&lt;label-name2&gt;.....:&lt;label-namen&gt;)复制代码</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE (m:Movie:Cinema:Film:Picture) 一个节点有多个标签</span><br></pre></td></tr></table></figure>
+
+<h3 id="MATCH查询"><a href="#MATCH查询" class="headerlink" title="MATCH查询"></a>MATCH查询</h3><p>Neo4j CQL MATCH命令用于</p>
+<ul>
+<li>从数据库获取有关节点和属性的数据</li>
+<li>从数据库获取有关节点，关系和属性的数据</li>
+</ul>
+<p>MATCH命令语法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MATCH </span><br><span class="line">(</span><br><span class="line">   &lt;node-name&gt;:&lt;label-name&gt;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MATCH (dept:Dept)</span><br></pre></td></tr></table></figure>
+
+<p>但是执行后会报错：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Neo.ClientError.Statement.SyntaxError: </span><br><span class="line">Query cannot conclude with MATCH </span><br><span class="line">(must be RETURN or an update clause) (line 1, column 1 (offset: 0))</span><br></pre></td></tr></table></figure>
+
+<p>如果你观察到错误消息，它告诉我们，我们可以使用MATCH命令与RETURN子句或UPDATE子句。</p>
+<h3 id="RETURN返回"><a href="#RETURN返回" class="headerlink" title="RETURN返回"></a>RETURN返回</h3><p>Neo4j CQL RETURN子句用于 -</p>
+<ul>
+<li>检索节点的某些属性</li>
+<li>检索节点的所有属性</li>
+<li>检索节点和关联关系的某些属性</li>
+<li>检索节点和关联关系的所有属性</li>
+</ul>
+<p>RETURN命令语法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">RETURN </span><br><span class="line">   &lt;node-name&gt;.&lt;property1-name&gt;,</span><br><span class="line">   ........</span><br><span class="line">   &lt;node-name&gt;.&lt;propertyn-name&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MATCH (e:Employee) RETURN e</span><br></pre></td></tr></table></figure>
+
+<p>或</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MATCH (dept: Dept)</span><br><span class="line">RETURN dept.deptno,dept.dname,dept.location</span><br></pre></td></tr></table></figure>
+
+<h3 id="关系基础"><a href="#关系基础" class="headerlink" title="关系基础"></a>关系基础</h3><p>Neo4j图数据库遵循属性图模型来存储和管理其数据。</p>
+<p>根据属性图模型，关系应该是定向的。 否则，Neo4j将抛出一个错误消息。</p>
+<p>基于方向性，Neo4j关系被分为两种主要类型。</p>
+<ul>
+<li>单向关系</li>
+<li>双向关系</li>
+</ul>
+<p><strong>使用新节点创建关系</strong></p>
+<p><strong>示例</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE (e:Employee)-[r:DemoRelation]-&gt;(c:Employee)</span><br></pre></td></tr></table></figure>
+
+<p>这句会创建节点e，节点c，以及e -&gt; c的关系r，这里需要注意方向，比如双向是</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE (e:Employee)&lt;-[r:DemoRelation]-&gt;(c:Employee)</span><br></pre></td></tr></table></figure>
+
+<p><strong>使用已知节点创建带属性的关系：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">MATCH (&lt;node1-label-name&gt;:&lt;node1-name&gt;),(&lt;node2-label-name&gt;:&lt;node2-name&gt;)</span><br><span class="line">CREATE  </span><br><span class="line">    (&lt;node1-label-name&gt;)-[&lt;relationship-label-name&gt;:&lt;relationship-name&gt;</span><br><span class="line">    &#123;&lt;define-properties-list&gt;&#125;]-&gt;(&lt;node2-label-name&gt;)</span><br><span class="line">RETURN &lt;relationship-label-name&gt;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>还是一系列键值对</p>
+</blockquote>
+<p><strong>示例</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MATCH (cust:Customer),(cc:CreditCard) </span><br><span class="line">CREATE (cust)-[r:DO_SHOPPING_WITH&#123;shopdate:<span class="string">"12/12/2014"</span>,price:<span class="number">55000</span>&#125;]-&gt;(cc) </span><br><span class="line">RETURN r</span><br></pre></td></tr></table></figure>
+
+<p><strong>检索关系节点的详细信息：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MATCH </span><br><span class="line">(&lt;node1-label-name&gt;)-[&lt;relationship-label-name&gt;:&lt;relationship-name&gt;]-&gt;(&lt;node2-label-name&gt;)</span><br><span class="line">RETURN &lt;relationship-label-name&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MATCH (cust)-[r:DO_SHOPPING_WITH]-&gt;(cc) </span><br><span class="line">RETURN cust,cc</span><br></pre></td></tr></table></figure>
+
+<h3 id="WHERE子句"><a href="#WHERE子句" class="headerlink" title="WHERE子句"></a>WHERE子句</h3><p>像SQL一样，Neo4j CQL在CQL MATCH命令中提供了WHERE子句来过滤MATCH查询的结果。</p>
+<p><strong>简单WHERE子句语法</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">WHERE &lt;property-name&gt; &lt;comparison-operator&gt; &lt;value&gt;</span><br></pre></td></tr></table></figure>
+
+<p>语法说明：</p>
+<table>
+<thead>
+<tr>
+<th>S.No.</th>
+<th>语法元素</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>WHERE</td>
+<td>它是一个Neo4j CQL关键字。</td>
+</tr>
+<tr>
+<td>2</td>
+<td>&lt;属性名称&gt;</td>
+<td>它是节点或关系的属性名称。</td>
+</tr>
+<tr>
+<td>3</td>
+<td>&lt;比较运算符&gt;</td>
+<td>它是Neo4j CQL比较运算符之一。</td>
+</tr>
+<tr>
+<td>4</td>
+<td>&lt;值&gt;</td>
+<td>它是一个字面值，如数字文字，字符串文字等。</td>
+</tr>
+</tbody></table>
+<p><strong>Neo4j CQL中的比较运算符</strong></p>
+<p>Neo4j 支持以下的比较运算符，在 Neo4j CQL WHERE 子句中使用来支持条件</p>
+<table>
+<thead>
+<tr>
+<th>S.No.</th>
+<th>布尔运算符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1.</td>
+<td>=</td>
+<td>它是Neo4j CQL“等于”运算符。</td>
+</tr>
+<tr>
+<td>2.</td>
+<td>&lt;&gt;</td>
+<td>它是一个Neo4j CQL“不等于”运算符。</td>
+</tr>
+<tr>
+<td>3.</td>
+<td>&lt;</td>
+<td>它是一个Neo4j CQL“小于”运算符。</td>
+</tr>
+<tr>
+<td>4.</td>
+<td>&gt;</td>
+<td>它是一个Neo4j CQL“大于”运算符。</td>
+</tr>
+<tr>
+<td>5.</td>
+<td>&lt;=</td>
+<td>它是一个Neo4j CQL“小于或等于”运算符。</td>
+</tr>
+<tr>
+<td>6.</td>
+<td>=</td>
+<td>它是一个Neo4j CQL“大于或等于”运算符。</td>
+</tr>
+</tbody></table>
+<p>我们可以使用布尔运算符在同一命令上放置多个条件。</p>
+<p><strong>Neo4j CQL中的布尔运算符</strong></p>
+<p>Neo4j支持以下布尔运算符在Neo4j CQL WHERE子句中使用以支持多个条件。</p>
+<table>
+<thead>
+<tr>
+<th>S.No.</th>
+<th>布尔运算符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>AND</td>
+<td>它是一个支持AND操作的Neo4j CQL关键字。</td>
+</tr>
+<tr>
+<td>2</td>
+<td>OR</td>
+<td>它是一个Neo4j CQL关键字来支持OR操作。</td>
+</tr>
+<tr>
+<td>3</td>
+<td>NOT</td>
+<td>它是一个Neo4j CQL关键字支持NOT操作。</td>
+</tr>
+<tr>
+<td>4</td>
+<td>XOR</td>
+<td>它是一个支持XOR操作的Neo4j CQL关键字。</td>
+</tr>
+</tbody></table>
+<p><strong>示例</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MATCH (emp:Employee) </span><br><span class="line">WHERE emp.name = <span class="string">'Abc'</span> OR emp.name = <span class="string">'Xyz'</span></span><br><span class="line">RETURN emp</span><br></pre></td></tr></table></figure>
+
+<p>利用<code>WHERE</code>创建指定关系节点：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MATCH (cust:Customer),(cc:CreditCard) </span><br><span class="line">WHERE cust.id = <span class="string">"1001"</span> AND cc.id= <span class="string">"5001"</span> </span><br><span class="line">CREATE (cust)-[r:DO_SHOPPING_WITH&#123;shopdate:<span class="string">"12/12/2014"</span>,price:<span class="number">55000</span>&#125;]-&gt;(cc) </span><br><span class="line">RETURN r</span><br></pre></td></tr></table></figure>
+
+<p>有必要补充一下，可以不使用WHERE达到<code>WHERE</code>的一些效果，比如</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MATCH p=(m:Bot&#123;id:<span class="number">123</span>&#125;)&lt;-[:BotRelation]-&gt;(:Bot)  RETURN p</span><br></pre></td></tr></table></figure>
+
+<h3 id="DELETE删除"><a href="#DELETE删除" class="headerlink" title="DELETE删除"></a>DELETE删除</h3><p>Neo4j使用CQL DELETE子句</p>
+<ul>
+<li>删除节点。</li>
+<li>删除节点及相关节点和关系。</li>
+</ul>
+<p><strong>DELETE节点子句语法</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DELETE &lt;node-name-list&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MATCH (e: Employee) DELETE e</span><br></pre></td></tr></table></figure>
+
+<p><strong>DELETE节点和关系子句语法</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DELETE &lt;node1-name&gt;,&lt;node2-name&gt;,&lt;relationship-name&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MATCH (cc: CreditCard)-[rel]-(c:Customer) </span><br><span class="line">DELETE cc,c,rel</span><br></pre></td></tr></table></figure>
+
+<h4 id="删除所有节点与关系——delete"><a href="#删除所有节点与关系——delete" class="headerlink" title="删除所有节点与关系——delete"></a>删除所有节点与关系——delete</h4><p>删除单个节点：<code>MATCH (n:Useless) DELETE n;</code><br>删除单个节点和连接它的关系：<code>MATCH (n { name: &#39;Andres&#39; })-[r]-() DELETE n, r</code><br>删除所有节点和关系：<code>MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE n,r</code></p>
+<p>删除某一类关系：<code>match (n)-[r:created]-() DELETE r</code></p>
+<h3 id="REMOVE删除"><a href="#REMOVE删除" class="headerlink" title="REMOVE删除"></a>REMOVE删除</h3><p>有时基于我们的客户端要求，我们需要向现有节点或关系添加或删除属性。</p>
+<p>我们使用Neo4j CQL SET子句向现有节点或关系添加新属性。</p>
+<p>我们使用Neo4j CQL REMOVE子句来删除节点或关系的现有属性。</p>
+<p>Neo4j CQL REMOVE命令用于</p>
+<ul>
+<li>删除节点或关系的标签</li>
+<li>删除节点或关系的属性</li>
+</ul>
+<p>Neo4j CQL DELETE和REMOVE命令之间的主要区别 -</p>
+<ul>
+<li>DELETE操作用于删除节点和关联关系。</li>
+<li>REMOVE操作用于删除标签和属性。</li>
+</ul>
+<p>Neo4j CQL DELETE和REMOVE命令之间的相似性 -</p>
+<ul>
+<li>这两个命令不应单独使用。</li>
+<li>两个命令都应该与MATCH命令一起使用。</li>
+</ul>
+<p><strong>1.REMOVE属性子句语法</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">REMOVE &lt;node-name&gt;.&lt;property1-name&gt;,&lt;node-name&gt;.&lt;property2-name&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MATCH (dc:DebitCard) </span><br><span class="line">REMOVE dc.cvv</span><br><span class="line">RETURN dc</span><br></pre></td></tr></table></figure>
+
+<p><strong>2.REMOVE一个Label子句语法：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">REMOVE &lt;label-name-list&gt;</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>S.No.</th>
+<th>语法元素</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1.</td>
+<td>REMOVE</td>
+<td>它是一个Neo4j CQL关键字。</td>
+</tr>
+<tr>
+<td>2.</td>
+<td></td>
+<td>它是一个标签列表，用于永久性地从节点或关系中删除它。</td>
+</tr>
+</tbody></table>
+<p>语法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;node-name&gt;:&lt;label2-name&gt;, </span><br><span class="line">.... </span><br><span class="line">&lt;node-name&gt;:&lt;labeln-name&gt; 复制代码</span><br></pre></td></tr></table></figure>
+
+<h4 id="删除标签与属性——remove"><a href="#删除标签与属性——remove" class="headerlink" title="删除标签与属性——remove"></a>删除标签与属性——remove</h4><p>删除属性：<code>MATCH (andres { name: &#39;Andres&#39; }) REMOVE andres.age RETURN andres;</code><br>删除节点的标签：<code>MATCH (n { name: &#39;Peter&#39; }) REMOVE n:German RETURN n;</code><br>删除多重标签：<code>MATCH (n { name: &#39;Peter&#39; }) REMOVE n:German:Swedish RETURN n</code></p>
+<h3 id="SET子句"><a href="#SET子句" class="headerlink" title="SET子句"></a>SET子句</h3><p>有时，根据我们的客户端要求，我们需要向现有节点或关系添加新属性。</p>
+<p>要做到这一点，Neo4j CQL提供了一个SET子句。</p>
+<p>Neo4j CQL已提供SET子句来执行以下操作。</p>
+<ul>
+<li>向现有节点或关系添加新属性</li>
+<li>添加或更新属性值</li>
+</ul>
+<p><strong>SET子句语法</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SET  &lt;node-label-name&gt;.&lt;property1-name&gt;,...&lt;node-laben-name&gt;.&lt;propertyn-name&gt;复制代码</span><br></pre></td></tr></table></figure>
+
+<p>语法说明：</p>
+<table>
+<thead>
+<tr>
+<th>S.No.</th>
+<th>语法元素</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>&lt;节点标签名称&gt;</td>
+<td>这是一个节点的标签名称。</td>
+</tr>
+<tr>
+<td>2</td>
+<td>&lt;属性名称&gt;</td>
+<td>它是一个节点的属性名。</td>
+</tr>
+</tbody></table>
+<p><strong>示例</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MATCH (dc:DebitCard)</span><br><span class="line">SET dc.atm_pin = <span class="number">3456</span></span><br><span class="line">RETURN dc</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="模式匹配"><a href="#模式匹配" class="headerlink" title="模式匹配"></a>模式匹配</h2><p>模式匹配是Cypher语句的重要部分</p>
+<p><img src="../images/Neo4j%E7%88%AC%E5%9D%91%E8%AE%B0/image-20201218162301263.png" alt="image-20201218162301263"></p>
+<p>当描述关系时，在方括号里面的冒号（：）后面指定关系的类型。当建立关系（句法上大小写敏感）时，类型必须与它定义的类型严格一致。这个简单的查询使用[：HAS_SEEN]句法描述了单个HAS_SEEN关系。</p>
+<p>关系方向的描述是在Cypher中用ASCII实现的。关系的连接是用ASCII箭 头（单个连字符接着一个大于号或前面有一个小于号[]-&gt;或&lt;-[]）连接着它 的端点。关系的起点使用单个连字符连接（[]-）。在前面的例子中，匹配用户看过的电影（match（user）-[：HAS_SEEN]-&gt;（movie））模式指定了从user节点指向movie节点的HAS_SEEN关系。</p>
+<p>在Cypher查询中，节点和关系都可以与标识关联，这种关联使得以后可以在同样的查询中引用同一个图形实体。下面的例子在返回语句中引用了 movie节点。</p>
+<p><img src="../images/Neo4j%E7%88%AC%E5%9D%91%E8%AE%B0/image-20201218162951725.png" alt="image-20201218162951725"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Neo4j/" rel="tag"><i class="fa fa-tag"></i>Neo4j</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" rel="prev" title="GadgetInspector源码分析">
+      <i class="fa fa-chevron-left"></i> GadgetInspector源码分析
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+      <!--
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://link.hhtjim.com/163/26348068.mp3"></iframe>
+      -->
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">2.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#查询语句CQL：CYPHER"><span class="nav-number">3.</span> <span class="nav-text">查询语句CQL：CYPHER</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#命令"><span class="nav-number">3.1.</span> <span class="nav-text">命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CREATE创建"><span class="nav-number">3.1.1.</span> <span class="nav-text">CREATE创建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MATCH查询"><span class="nav-number">3.1.2.</span> <span class="nav-text">MATCH查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RETURN返回"><span class="nav-number">3.1.3.</span> <span class="nav-text">RETURN返回</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关系基础"><span class="nav-number">3.1.4.</span> <span class="nav-text">关系基础</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WHERE子句"><span class="nav-number">3.1.5.</span> <span class="nav-text">WHERE子句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DELETE删除"><span class="nav-number">3.1.6.</span> <span class="nav-text">DELETE删除</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#删除所有节点与关系——delete"><span class="nav-number">3.1.6.1.</span> <span class="nav-text">删除所有节点与关系——delete</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#REMOVE删除"><span class="nav-number">3.1.7.</span> <span class="nav-text">REMOVE删除</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#删除标签与属性——remove"><span class="nav-number">3.1.7.1.</span> <span class="nav-text">删除标签与属性——remove</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SET子句"><span class="nav-number">3.1.8.</span> <span class="nav-text">SET子句</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模式匹配"><span class="nav-number">3.2.</span> <span class="nav-text">模式匹配</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="0range"
+      src="/images/yfy.png">
+  <p class="site-author-name" itemprop="name">0range</p>
+  <div class="site-description" itemprop="description">zzz</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/0range228" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;0range228" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart" aria-hidden="true"></i>
+  </span>
+   Powered By - 
+  <span class="author" itemprop="copyrightHolder">0range</span>
+
+  <!--
+    <span class="post-meta-divider"> | </span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">372k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">10:20</span>
+  -->
+
+</div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+            'X-LC-Key'    : 'l8KvoMr1i8urA7X7BzPMtQC7',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+      appKey     : 'l8KvoMr1i8urA7X7BzPMtQC7',
+      placeholder: "Say Something~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+
+<!--
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unjkp.com/valine/dist/Valine.min.js"></script>  
+  <script src="/js/Valine.min.js"></script> 
+
+   
+  
+  <script src="/js/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+        appKey: 'l8KvoMr1i8urA7X7BzPMtQC7',
+        placeholder: 'Say Something~',
+        avatar:'mm',
+        guest_info:['nick'] ,  //评论者只需要提供评论的昵称即可
+        pageSize:'10' || 10,
+    });
+  
+    var infoEle = document.querySelector('#comments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0){
+      infoEle.childNodes.forEach(function(item) {
+        item.parentNode.removeChild(item);
+      });
+    }
+  </script>
+
+-->
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/click_love.js"></script>
