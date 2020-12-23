@@ -1,12 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>iTerm2 快捷键速查手册</title>
+    <url>/iTerm2-%E5%BF%AB%E6%8D%B7%E9%94%AE%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C/</url>
+    <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>终南阴岭秀，积雪浮云端。</p>
+</blockquote>
+<p>整理敲板子过程中的快捷键 。</p>
+<a id="more"></a>
+
+<h1 id="Tab"><a href="#Tab" class="headerlink" title="Tab"></a>Tab</h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">新建标签：command + t</span><br><span class="line"></span><br><span class="line">关闭标签：command + w</span><br><span class="line"></span><br><span class="line">切换标签：command + 数字 / command + 左右方向键</span><br><span class="line"></span><br><span class="line">切换全屏：command + enter</span><br><span class="line"></span><br><span class="line">查找：command + f</span><br></pre></td></tr></table></figure>
+
+<h1 id="分屏"><a href="#分屏" class="headerlink" title="分屏"></a>分屏</h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">垂直分屏：command + d</span><br><span class="line"></span><br><span class="line">水平分屏：command + shift + d</span><br><span class="line"></span><br><span class="line">切换屏幕：command + option + 方向键 / command + [ 或 command + ]</span><br><span class="line"></span><br><span class="line">查看历史命令：command + ;</span><br><span class="line"></span><br><span class="line">查看剪贴板历史：command + shift + h</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="文本操作"><a href="#文本操作" class="headerlink" title="文本操作"></a>文本操作</h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">清除当前行：ctrl + u</span><br><span class="line"></span><br><span class="line">到行首：ctrl + a</span><br><span class="line"></span><br><span class="line">到行尾：ctrl + e</span><br><span class="line"></span><br><span class="line">前进后退：ctrl + f/b (相当于左右方向键)</span><br><span class="line"></span><br><span class="line">上一条命令：ctrl + p</span><br><span class="line"></span><br><span class="line">删除到文本末尾：ctrl + k</span><br><span class="line"></span><br><span class="line">搜索命令历史：ctrl + r</span><br><span class="line"></span><br><span class="line">删除当前光标的字符：ctrl + d</span><br><span class="line"></span><br><span class="line">删除光标之前的字符：ctrl + h</span><br><span class="line"></span><br><span class="line">删除光标之前的单词：ctrl + w</span><br><span class="line"></span><br><span class="line">交换光标处文本：ctrl + t</span><br><span class="line"></span><br><span class="line">清屏1：command + r</span><br><span class="line"></span><br><span class="line">清屏2：ctrl + l</span><br><span class="line"></span><br><span class="line">⌘ + 数字在各 tab 标签直接来回切换</span><br><span class="line"></span><br><span class="line">选择即复制 + 鼠标中键粘贴，这个很实用</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Shell</category>
+      </categories>
+      <tags>
+        <tag>iTerm2</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>IDEA 快捷键速查手册</title>
     <url>/IDEA-%E5%BF%AB%E6%8D%B7%E9%94%AE%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C/</url>
     <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
 <p>大漠孤烟直，长河落日圆。</p>
 </blockquote>
-<p>记录敲板子 。</p>
+<p>整理敲板子过程中的快捷键 。</p>
 <a id="more"></a>
 
 <h1 id="记录"><a href="#记录" class="headerlink" title="记录"></a>记录</h1><p>try-catch：ctrl+alt+t</p>
