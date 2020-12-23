@@ -1,6 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>IDEA 快捷键速查手册</title>
+    <url>/IDEA-%E5%BF%AB%E6%8D%B7%E9%94%AE%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C/</url>
+    <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>大漠孤烟直，长河落日圆。</p>
+</blockquote>
+<p>记录敲板子 。</p>
+<a id="more"></a>
+
+<h1 id="记录"><a href="#记录" class="headerlink" title="记录"></a>记录</h1><p>try-catch：ctrl+alt+t</p>
+<p>查看接口实现：option+cmd+b</p>
+<p>搜索查看，类，api：cmd+o</p>
+<p>函数调用：ctrl+option+h</p>
+<p>自动补全变量：option+command+v</p>
+<p>自动包围代码，例如添加try-catch代码块：option+command+t</p>
+<p>生成注释块：ctrl+shift+/</p>
+<p>生成方法注释：/**+tab</p>
+<p>查看所有方法：command+F12</p>
+<p>查看继承关系：Diagram-&gt;showDiagrams</p>
+<p>搜索：shift+command+F</p>
+<p>格式化代码块：command+option+L</p>
+<p>批量修改：shift+F6</p>
+<p>中文颜文字：shift+6</p>
+<p>一些for循环快捷键：</p>
+<p>其实所有for循环都在live templates里面，当然可以自定义：</p>
+<ol>
+<li>iter         <code>for (String arg : args)</code></li>
+<li>itar      Iterate elements of array   <code>for (int j = 0; j &lt; args.length; j++)</code></li>
+<li>itco     Iterate elements of java.util.Collection    <code>for (Iterator iterator = collection.iterator(); iterator.hasNext();)</code></li>
+<li>itit      Iterate java.util.Iterator     <code>while (iterator.hasNext())</code></li>
+<li>itli  Iterate elements of java.util.List <code>for (int j = 0; j &lt; list.size(); j++)</code></li>
+<li>fori           <code>for (int j = 0; j &lt; ; j++)</code></li>
+<li>foreach         <code>for(:)</code></li>
+</ol>
+<p>以上快捷键直接敲就行 不用.的方式去触发。</p>
+]]></content>
+      <categories>
+        <category>IDE</category>
+      </categories>
+      <tags>
+        <tag>IDEA</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Neo4j爬坑记</title>
     <url>/Neo4j%E7%88%AC%E5%9D%91%E8%AE%B0/</url>
     <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
@@ -3834,6 +3877,210 @@
 <h1 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h1><p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20200718202705757.png" alt="image-20200718202705757"></p>
 <h1 id="源代码环节"><a href="#源代码环节" class="headerlink" title="源代码环节"></a>源代码环节</h1><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="comment">//创建两个依赖类</span></span><br><span class="line">        Scene.v().loadClassAndSupport(<span class="string">"java.lang.Object"</span>);</span><br><span class="line">        Scene.v().loadClassAndSupport(<span class="string">"java.lang.System"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//声明目标类HelloWorld，他的父类当然是Object</span></span><br><span class="line">        SootClass sClass = <span class="keyword">new</span> SootClass(<span class="string">"HelloWorld"</span>, Modifier.PUBLIC);</span><br><span class="line">        sClass.setSuperclass(Scene.v().getSootClass(<span class="string">"java.lang.Object"</span>));</span><br><span class="line">        Scene.v().addClass(sClass);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//创建main方法，public static void main</span></span><br><span class="line">        SootMethod method = <span class="keyword">new</span> SootMethod(<span class="string">"main"</span>, Arrays.asList(<span class="keyword">new</span> Type[]&#123;ArrayType.v(RefType.v(<span class="string">"java.lang.String"</span>), <span class="number">1</span>)&#125;),</span><br><span class="line">                VoidType.v(), Modifier.PUBLIC | Modifier.STATIC);</span><br><span class="line">        sClass.addMethod(method);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//创建main方法内容，这里需要用到Jimple</span></span><br><span class="line">        &#123;</span><br><span class="line"></span><br><span class="line">            JimpleBody body = Jimple.v().newBody(method);</span><br><span class="line">            method.setActiveBody(body);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//工具组件</span></span><br><span class="line">            Chain units = body.getUnits();</span><br><span class="line">            Local arg,tmpRef;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//加入局部变量，java.lang.String l0</span></span><br><span class="line">            arg = Jimple.v().newLocal(<span class="string">"l0"</span>, ArrayType.v(RefType.v(<span class="string">"java.lang.String"</span>), <span class="number">1</span>));</span><br><span class="line">            body.getLocals().add(arg);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//加入局部变量，java.io.PrintStream tmpRef</span></span><br><span class="line">            tmpRef = Jimple.v().newLocal(<span class="string">"tmpRef"</span>, RefType.v(<span class="string">"java.io.PrintStream"</span>));</span><br><span class="line">            body.getLocals().add(tmpRef);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//组成链，l0 = @parameter0</span></span><br><span class="line">            units.add(Jimple.v().newIdentityStmt(arg,</span><br><span class="line">                    Jimple.v().newParameterRef(ArrayType.v</span><br><span class="line">                            (RefType.v(<span class="string">"java.lang.String"</span>), <span class="number">1</span>), <span class="number">0</span>)));</span><br><span class="line"></span><br><span class="line">            <span class="comment">//继续组成链，tmpRef = java.lang.System.out</span></span><br><span class="line">            units.add(Jimple.v().newAssignStmt(tmpRef, Jimple.v().newStaticFieldRef(</span><br><span class="line">                    Scene.v().getField(<span class="string">"&lt;java.lang.System: java.io.PrintStream out&gt;"</span>).makeRef())));</span><br><span class="line"></span><br><span class="line">            <span class="comment">// insert "tmpRef.println("Hello world!")"</span></span><br><span class="line">            &#123;</span><br><span class="line">                SootMethod toCall = Scene.v().getMethod(<span class="string">"&lt;java.io.PrintStream: void println(java.lang.String)&gt;"</span>);</span><br><span class="line">                units.add(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall.makeRef(), StringConstant.v(<span class="string">"Hello world!"</span>))));</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// insert "return"</span></span><br><span class="line">            units.add(Jimple.v().newReturnVoidStmt());</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        String fileName = SourceLocator.v().getFileNameFor(sClass, Options.output_format_class);</span><br><span class="line">        OutputStream streamOut = <span class="keyword">new</span> JasminOutputStream(<span class="keyword">new</span> FileOutputStream(fileName));</span><br><span class="line">        PrintWriter writerOut = <span class="keyword">new</span> PrintWriter(<span class="keyword">new</span> OutputStreamWriter(streamOut));</span><br><span class="line">        JasminClass jasminClass = <span class="keyword">new</span> soot.jimple.JasminClass(sClass);</span><br><span class="line">        jasminClass.print(writerOut);</span><br><span class="line">        writerOut.flush();</span><br><span class="line">        streamOut.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<h1 id="零散知识点"><a href="#零散知识点" class="headerlink" title="零散知识点"></a>零散知识点</h1><p>以$开头的都是堆栈位置，并不是源程序中的局部变量。</p>
+<p>没有$的局部变量则代表真正的局部变量。</p>
+<p>jtp是允许用户自定义的，wjtp全程序转换包</p>
+<p>Unit：</p>
+<p>语句，也就是Stmt</p>
+<p>Value：</p>
+<ul>
+<li>Locals</li>
+<li>Constants</li>
+<li>Expression（Expr）</li>
+<li>parameterRef，CaughtExceptionRef，ThisRef</li>
+</ul>
+<p>Box是指针！！！！！</p>
+<ul>
+<li>ValueBox，指向Values<ul>
+<li>对于一条Unit来说，他的ValueBox其实存的就在这条语句内部所用到的和所定义的语句。</li>
+</ul>
+</li>
+<li>UnitBox，指向Units<ul>
+<li>以goto语句为例，UnitBox其实存的就是goto所指的下一跳节点。</li>
+</ul>
+</li>
+</ul>
+<p>对于Unit来说，必须包含的方法有：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List <span class="title">getUseBoxes</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> List <span class="title">getDefBoxes</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> List <span class="title">getUseAndDefBoxes</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>这些方法会返回在这条Unit语句内部说Use的，Define的，或者两者都看。会以List of ValueBox的形式返回。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List <span class="title">getUnitBoxes</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>这个方法会返回一个List （UnitBox），包含所有被这个方法所指向的Unit。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List <span class="title">getBoxesPointingToThis</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>这个方法会返回一个List（UnitBox），包含那些指向这里的语句。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">fallsThrough</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">branches</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>处理在某条语句之后所需要做的事情。</p>
+<p>第一个方法：如果执行可以顺利流到紧挨着的下一条语句，就会返回True；</p>
+<p>第二个方法：如果执行可以继续流下去，但是并不会流到紧挨着的下一条语句，返回True。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">redirectJumpsToThisTo</span><span class="params">(Unit newLocation)</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>这个方法会用<code>getBoxesPointingToThis</code>方法去改变所有的Unit的跳转，让他们都指向这个新的<code>newLocation</code>。</p>
+<p>soot的控制流图在soot.toolkits.graph这个包内；</p>
+<p>DirectedGraph接口 可以获取：</p>
+<ul>
+<li>图的入口点和退出点；</li>
+<li>给定节点的前驱和后继；</li>
+<li>提供一个迭代器，可以便利图上的节点；</li>
+<li>图的大小规模（节点数）</li>
+</ul>
+<p>在Soot的控制流图中，基类是UnitGraph，它是一个抽象类，它提供了CFG的基础部分。</p>
+<p>它有三种不同的实现，BreifUnitGraph，ExceptionUnitGraph，TrapUnitGraph；</p>
+<p>BreifUnitGraph：</p>
+<ul>
+<li>很简单，它代表不含exception抛出的路径。</li>
+</ul>
+<p>ExceptionUnitGraph：</p>
+<ul>
+<li>包含从throw到catch的边，soot里面叫Trap</li>
+<li>它还会计算语句中隐含的异常抛出</li>
+<li>会有一条边从抛出异常那条语句的前驱节点指向异常处理的第一条语句Unit</li>
+<li>如果包含异常的语句包含一些副作用，那么有副作用的边也会被添加到图里面</li>
+<li></li>
+</ul>
+<p>TrapUnitGraph</p>
+<p>和Exception很像，他其实也是会把异常抛出边添加到图里面。</p>
+<ul>
+<li>边是从trap语句连接到trap handler，例如try块</li>
+<li>对于那些隐藏异常抛出的语句，这类图在他们的前驱节点并不会抛出一条边到handler</li>
+<li>但是在那些隐藏异常抛出的语句本身会抛出一条语句指向handler</li>
+</ul>
+<p>如果你要想生成一个上述的图，其实就是把JimpleBody对象直接传递给Graph类的构造函数就行了：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">UnitGraph g = <span class="keyword">new</span> ExceptionUnitGraph(body);</span><br></pre></td></tr></table></figure>
+
+
+
+<p>Annotating Code</p>
+<p>四个接口：</p>
+<ul>
+<li>Host：是可以容纳和管理标签的对象。就像SootClass、SootField、Body、Unit、Value、ValueBox等</li>
+<li>Tag：可以给Host打标记的对象，很通用，用来标记name-vlaue对给Host</li>
+<li>Attribute：是Tag的拓展。任何属于属性的东西都可以输出到文件中。Soot里有一个tool叫做SootClass，可以输出直接码ByteCode，任何应该输出到类文件的东西都必须extend JasminAttribute。ß</li>
+</ul>
+<p>Transformers</p>
+<ul>
+<li>BodyTransformer：Intra-procedural 单一方法 过程内</li>
+<li>SceneTransformer：Inter-procedural 整个程序 过程间</li>
+</ul>
+<p>均需要实现<code>internalTransform</code>方法</p>
+<p>CallGraph的构建：</p>
+<p>在全程序分析的模式下，当一个调用图构建时，我们可以用<code>Scene</code>类里面的<code>getCallGraph</code>方法。</p>
+<p>最简单的调用图是<code>CHA：Class Hierarchy Analysis</code></p>
+<p>CHA是最简单的分析方式，它是默认程序中所有的路径都是连通的。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">CHATransformer.v().transform();</span><br><span class="line">SootClass a = Scene.v().getClass(<span class="string">"testers.A"</span>);</span><br><span class="line"></span><br><span class="line">SootMethod src = Scene.v().getMainClass().getMethodByName(<span class="string">"doStuff"</span>);</span><br><span class="line">CallGraph cg = Scene.v().getCallGraph();</span><br></pre></td></tr></table></figure>
+
+
+
+<p>CallGraph的方法调用</p>
+<p>Soot中调用图的所有已知方法调用edge边的集合。</p>
+<p>包括：</p>
+<p>显式方法调用</p>
+<p>隐式静态初始化器</p>
+<p>隐式调用Thread.run()</p>
+<p>隐式调用</p>
+<p>调用图的每一条边edge对象都存在四个元素：</p>
+<p>源方法 source method</p>
+<p>源语句 source statement</p>
+<p>目标方法 target method、</p>
+<p>边的种类，例如静态调用invoke static 、虚拟调用 invoke virtual、接口调用invoke interface</p>
+<p>CallGraph也有几个经典方法：</p>
+<p><code>edgesInto(method)</code>：查询进入method方法的边</p>
+<p><code>edgesOutOf(method)</code>：从method方法流出来的边</p>
+<p><code>edgesOutOf(statement)</code>：从特定语句statement流出来的边</p>
+<p>每个方法其实都会返回一个Iterator来调度Edge边对象</p>
+<p>Soot提供了三个适配器来针对Edges进行分析：</p>
+<ul>
+<li>Sources：每条边的原方法</li>
+<li>Units：每条边的原语句</li>
+<li>Targets：每条边的目标方法</li>
+</ul>
+<p>例子：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printPossibleCallers</span><span class="params">(SootMethod target)</span></span>&#123;</span><br><span class="line">  CallGraph cg = Scene.v().getCallGraph();</span><br><span class="line">  Iterator sources = <span class="keyword">new</span> Sources(cg.edgesInto(target));</span><br><span class="line">  <span class="keyword">while</span>(sources.hasNext())&#123;</span><br><span class="line">    SootMethod src = (SootMethod)sources.next();</span><br><span class="line">    Sysytem.out.println(target + <span class="string">"might be called by "</span> + src);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>更详细的两个图类：</p>
+<p><code>ReachableMethods</code>  and <code>TransitiveTargets</code></p>
+<p><code>ReachableMethods</code></p>
+<p>表示能从entrypoints开始 能reach到的方法集合</p>
+<p>方法<code>contains(method)</code>表示去测试method方法能不能到达 能不能reachable</p>
+<p>方法<code>listener()</code>返回的是一个迭代器遍历所有可达方法。</p>
+<p><code>TransitiveTargets</code></p>
+<p>表示从一个特定的方法能指向的所有方法，<strong>这个方法可以用来分析调用链</strong>。</p>
+<p>构造函数接收（除了调用图之外）一个额外过滤器<code>Filter</code></p>
+<p>Filter表示调用图中满足给定的<code>EdgePredicate</code>的边的子集。</p>
+<p><code>EdgePredicate</code>是一组接口，它主要有两个实现，<code>ExplicitEdgespred</code> ,<code>InstanceInvokeEdgesPred</code>；</p>
+<p>Soot的IR</p>
+<p>关于这部分，值得好好写一写：</p>
+<p>Java的翻译是基于Jimple中间代码来表示的，所以我们需要了解JVM的指令是如何在Jimple里面表示的。</p>
+<p>Soot为中间代码的翻译建立了一系列的基础设施。</p>
+<p><code>AbstractStmtSwitch</code></p>
+<p><code>soot.jimple.AbstractJimpleValueSwitch</code></p>
+<p>等等还有很多switch，他们都是针对不同的语句进行了很多情况的分析。【深挖！！！】</p>
+<p>三个翻译器类：</p>
+<p>JavaTranslator、StmtTranslator、ExprTranslator</p>
+<p>JavaTranslator负责将给定的Java程序的方法进行翻译，然后将这些翻译之后的语句组合在一起。</p>
+<p>它会维护着一个数组，数组会在<code>makeMethod</code>方法之后被初始化。</p>
+<p><code>translate</code>方法是主要方法，这个方法会完成语句的翻译和链接。</p>
+<p>StmtTranslator继承了AbstractStmtSwitch，他会翻译单独、独立的语句。</p>
+<p>它的主要方法是<code>translateStmt</code>，这个方法其实会把StmtTranslator应用于语句，然后建立一个Map映射对，把Java语句和Jimple代码进行映射，对错误报告很方便。</p>
+<p>此外还有一个方法是<code>addStatement</code>，它会将给定的语句添加到指定的方法中，它是整个翻译过程中用来添加语句的方法。</p>
+<p>Subexpression是用ExprTranslator（它是AbstractJimpleValueSwitch类的拓展）来翻译的。</p>
+<p>切入点是<code>translateExpr</code>方法，他是将Exprtranslator应用到给定的ValueBox上面。</p>
+<p>两个有趣方法：</p>
+<p><code>caseSpecialInvokerExpr</code>和<code>handleCall</code>；</p>
+<p><code>caseSpecialInvokerExpr</code>是用来测试是否进行了对象的初始化，如果是的话，那么就创建一个Foo初始化语句；如果不是的话，那么就调用handleCall方法。</p>
+<h1 id="过程内分析"><a href="#过程内分析" class="headerlink" title="过程内分析"></a>过程内分析</h1><p>数据流分析在Soot里面用的是UnitGragh这个类。</p>
+<p>一个UnitGraph会把每条语句作为节点node，两个节点所对应的语句如果能够流通，那么在图上就会有一条边。</p>
+<p>每个节点会有两个集合，一个代表入集：in-set，一个代表出集：out-set。</p>
+<p>这些集合会随着程序运行实时保存记录，直到遇到一个fixed-point点结束。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sigtest</span></span>&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">Test</span><span class="params">()</span></span>&#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>m.getSignature()：&lt;Sigtest: int Test()&gt;  //会提示方法所属的相关类</p>
+<p>m.getSubsignature()：int Test() </p>
+<p>在Soot里面有三种数据流分析，分别是Forward/Backward/和Branched</p>
+<p>ForwardFlowAnalysis：就是正向的数据分析，从程序的入口点entry point顺着一路下来分析；</p>
+<p>BackWardsFlowAnalysis：逆向分析，从程序的结束点exit-node倒推。这里官方文档说可以顺着ForeardAnalysis来继续用，但是需要换成用InverseGraph，以后有空补上这个细节。</p>
+<p>ForwardBranchedAnalysis：也是正向分析的一种，只不过会对if这样的分支语句进行分支分析。例如if(p!=null)，那么在当分析这一条语句时候，他其实就会自动分出分支，将<code>p is not null</code>放到then分支，然后把<code>p is null</code>放到else分支。</p>
+<p><strong>实现Analysis接口</strong></p>
+<p>ForwardFlowAnalysis有两个参数：</p>
+<ul>
+<li><p>N：节点种类。通常是Unit</p>
+</li>
+<li><p>A：Abstraction Type 抽象类型。人们通常会用Set和Map来表示，但是，Soot要求抽象类型必须正确实现equals()和hashCode()方法，这样Soot才能确定何时到达一个固定点。</p>
+</li>
+</ul>
+<p>构造函数：</p>
+<p>要求：</p>
+<p>至少将<a href="https://www.sable.mcgill.ca/soot/doc/soot/toolkits/graph/DirectedGraph.html" target="_blank" rel="noopener"><code>DirectedGraph</code></a>接受为参数，并且将它传递给父类的constructor；</p>
+<p>并且在自定义的constructor最后，需要调用<code>doAnalysis()</code>函数，这个函数在最后才会分析数据流。</p>
+<p>在调用superconstructor和doAnalysis()函数之前，用户可以自定义分析组件。</p>
+<p>方法：</p>
+<p><code>newInitialFlow()</code>会返回一个抽象类型对象A，这个对象是每个node节点默认初始化的in-set和out-set。</p>
+<p>但是entry-point的in-set是通过<code>entryInitialFlow()</code>方法完成的。</p>
+<p>？</p>
+<p><code>copy()</code>方法接收两个参数，分别是source和target，该方法其实就是把source复制到target集合里面。</p>
+<blockquote>
+<p>The <code>copy(..)</code> method takes two arguments of type A (your abstraction), a source and a target. It merely copies the source into the target. Note that the class A has to provide appropriate methods. In particular, A may not be immutable. You can work around this limitation by using a box or set type for A.</p>
+</blockquote>
+<p><code>merge()</code>方法用来在分支汇聚点处汇聚flowsets</p>
+<p>它会接收3个参数，分别是左分支和右分支还有一个额外分支，这个额外分支其实是为了下一个节点汇聚而成的in-set。</p>
+<blockquote>
+<p>Opposed to <code>copy(..)</code> it takes three arguments, an out-set from the left-hand branch, an out-set from the right-hand branch and another set, which is going to be the newly merged in-set for the next statement after the merge point.</p>
+</blockquote>
+<p>最后需要实现的方法是<code>flowThrough()</code>;</p>
+<p><code>flowThrough()</code>方法会接收3个参数作为输入：</p>
+<ol>
+<li>A的in-set。</li>
+<li>node，也就需要待处理的语句。</li>
+<li>A的out-set。</li>
+</ol>
 ]]></content>
       <categories>
         <category>Java</category>
