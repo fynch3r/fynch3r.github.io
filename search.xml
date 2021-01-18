@@ -8176,6 +8176,24 @@
 <p><code>abc = $(date)</code>：将date执行，将结果赋值给abc变量的值</p>
 <h1 id="Vim"><a href="#Vim" class="headerlink" title="Vim"></a>Vim</h1><p>永远滴神</p>
 <p>没有菜单，只有命令</p>
+<h2 id="方向键"><a href="#方向键" class="headerlink" title="方向键"></a>方向键</h2><table>
+<thead>
+<tr>
+<th>H</th>
+<th>J</th>
+<th>K</th>
+<th>L</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⬅️</td>
+<td>⬇️</td>
+<td>⬆️</td>
+<td>➡️</td>
+</tr>
+</tbody></table>
+<p><code>10j</code>：向下跳十行</p>
+<p><code>10k</code>：向上跳10行</p>
 <h2 id="行号"><a href="#行号" class="headerlink" title="行号"></a>行号</h2><p><code>:set nu</code>：设置行号</p>
 <p><code>:set nonu</code>：取消行号</p>
 <h2 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h2><p><code>a</code>：是从目前光标所在位置的下一个位置插入</p>
@@ -8192,6 +8210,8 @@
 <p><code>w</code>：光标移至下个字的开头</p>
 <p><code>e</code>：光标移至下个字的字尾</p>
 <p><code>b</code>：光标移至上个字的开头</p>
+<p><code>W</code>：向右跳转到下一个单词</p>
+<p><code>B</code>：向左回跳到上一个单词</p>
 <h2 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h2><p><code>x</code>：每按一次，删除光标所在处的字符</p>
 <p><code>nx</code>：<code>6x</code>表示，删除光标后的6个字符</p>
 <p><code>X</code>：每按一次，删除光标前面的一个字符</p>
@@ -8201,12 +8221,14 @@
 <p><code>dG</code>：删除从光标所在行开始到文件末尾的内容</p>
 <p><code>D</code>：删除光标处到行尾的内容</p>
 <p><code>：n1,n2d</code>：删除<code>n1~n2</code>指定范围的行</p>
+<p><code>cc</code>：删掉整行</p>
 <h2 id="复制"><a href="#复制" class="headerlink" title="复制"></a>复制</h2><p><code>yy</code>：复制当前行</p>
 <p><code>nyy</code>：<code>6yy</code>表示复制当行往下数以下6行</p>
 <p><code>dd</code>：剪切当前行</p>
 <p><code>ndd</code>：<code>6dd</code>表示剪切当行往下数以下6行</p>
 <p><code>p</code>：粘贴在当前行下面</p>
 <p><code>P</code>：粘贴在当前行上面</p>
+<p><code>u</code>：撤销，恢复，undo</p>
 <h2 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h2><p><code>/string</code>：搜索指定字符串</p>
 <p><code>n</code>：搜索下一个出现的位置</p>
 <p><code>/</code>：<code>/范围 /要替换的/替换的/g</code></p>
@@ -8221,6 +8243,8 @@
 <h2 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h2><p><code>:r filename</code>：将文件内容导入到当前Vim文件中</p>
 <p><code>:r ! cmd</code>：将命令执行结果导入到当前文件之中</p>
 <h2 id="快捷键"><a href="#快捷键" class="headerlink" title="快捷键"></a>快捷键</h2><p><code>:map ^B 2251267401@qq.com</code>：定义ctrlB为快捷键，替换个人邮箱（尖括号是用ctrl+v+B敲出来）</p>
+<h2 id="vim配置文件"><a href="#vim配置文件" class="headerlink" title="vim配置文件"></a>vim配置文件</h2><p><code>:syntax on</code> ： 语法高亮</p>
+<p><code>:set number</code>：显示行号</p>
 ]]></content>
       <categories>
         <category>Linux</category>
