@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-pace-theme-flash.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<!--
+
+  <script src="//code.tidio.co/oixl41gwhy8tvqy6jte9uvglyrqcjrvc.js" async></script>
+
+-->
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"0range228.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+  <meta name="description" content="序言 空山新雨后，天色晚来秋。  整理Java Agent相关知识 。">
+<meta name="keywords" content="Java Agent">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java Agent解读">
+<meta property="og:url" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;Java-Agent%E8%A7%A3%E8%AF%BB&#x2F;index.html">
+<meta property="og:site_name" content="0range的小窝">
+<meta property="og:description" content="序言 空山新雨后，天色晚来秋。  整理Java Agent相关知识 。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java-Agent%E8%A7%A3%E8%AF%BB&#x2F;image-20210207121651182.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java-Agent%E8%A7%A3%E8%AF%BB&#x2F;image-20210207135925174.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java-Agent%E8%A7%A3%E8%AF%BB&#x2F;image-20210202230129428.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java-Agent%E8%A7%A3%E8%AF%BB&#x2F;image-20210201222948010.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java-Agent%E8%A7%A3%E8%AF%BB&#x2F;image-20210201223255740.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java-Agent%E8%A7%A3%E8%AF%BB&#x2F;image-20210201223426121.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java-Agent%E8%A7%A3%E8%AF%BB&#x2F;image-20210201223908739.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java-Agent%E8%A7%A3%E8%AF%BB&#x2F;image-20210201223920391.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java-Agent%E8%A7%A3%E8%AF%BB&#x2F;image-20210201223953455.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java-Agent%E8%A7%A3%E8%AF%BB&#x2F;image-20210201224546368.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java-Agent%E8%A7%A3%E8%AF%BB&#x2F;image-20210209211836621.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java-Agent%E8%A7%A3%E8%AF%BB&#x2F;image-20210209212017484.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java-Agent%E8%A7%A3%E8%AF%BB&#x2F;image-20210209212111604.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java-Agent%E8%A7%A3%E8%AF%BB&#x2F;image-20210209231744276.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java-Agent%E8%A7%A3%E8%AF%BB&#x2F;image-20210210034102611.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java-Agent%E8%A7%A3%E8%AF%BB&#x2F;image-20210210194815301.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java-Agent%E8%A7%A3%E8%AF%BB&#x2F;image-20210210200251210.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java-Agent%E8%A7%A3%E8%AF%BB&#x2F;image-20210210222948056.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java-Agent%E8%A7%A3%E8%AF%BB&#x2F;image-20210210223115419.png">
+<meta property="og:updated_time" content="2021-02-10T15:06:45.207Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java-Agent%E8%A7%A3%E8%AF%BB&#x2F;image-20210207121651182.png">
+
+<link rel="canonical" href="https://0range228.github.io/Java-Agent%E8%A7%A3%E8%AF%BB/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>Java Agent解读 | 0range的小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="0range的小窝" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+<a href="https://github.com/0range228" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#FFA500; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">0range的小窝</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Hello,World.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">21</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">35</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://0range228.github.io/Java-Agent%E8%A7%A3%E8%AF%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/yfy.png">
+      <meta itemprop="name" content="0range">
+      <meta itemprop="description" content="zzz">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="0range的小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java Agent解读
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-02-01 21:37:00" itemprop="dateCreated datePublished" datetime="2021-02-01T21:37:00+08:00">2021-02-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-02-10 23:06:45" itemprop="dateModified" datetime="2021-02-10T23:06:45+08:00">2021-02-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/Java-Agent%E8%A7%A3%E8%AF%BB/" class="post-meta-item leancloud_visitors" data-flag-title="Java Agent解读" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度：</span>
+              <span class="leancloud-visitors-count"></span>
+              <span>°C</span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/Java-Agent%E8%A7%A3%E8%AF%BB/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Java-Agent%E8%A7%A3%E8%AF%BB/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>23k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>38 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>空山新雨后，天色晚来秋。</p>
+</blockquote>
+<p>整理Java Agent相关知识 。</p>
+<a id="more"></a>
+
+<h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><h2 id="Java-Agent"><a href="#Java-Agent" class="headerlink" title="Java Agent"></a>Java Agent</h2><p>Java Agent是一个运行在目标JVM的特定程序，它的职责是负责从目标JVM中获取数据，然后将数据传递给外部进程。加载Agent的时机可以是目标JVM启动之时，也可以是在目标JVM运行时进行加载。</p>
+<p><img src="../images/Java-Agent%E8%A7%A3%E8%AF%BB/image-20210207121651182.png" alt="image-20210207121651182"></p>
+<h2 id="JVMTI"><a href="#JVMTI" class="headerlink" title="JVMTI"></a>JVMTI</h2><p><strong>==万物起源==</strong></p>
+<p>JVMTI(JVM Tool Interface)是Java虚拟机对外提供的Native编程接口，通过JVMTI，外部进程可以获取到运行时JVM的诸多信息，比如线程、GC等。</p>
+<h2 id="Instrumentation"><a href="#Instrumentation" class="headerlink" title="Instrumentation"></a>Instrumentation</h2><p>在Java SE 5之前，要实现一个Agent只能通过编写Native代码来实现。</p>
+<p>从Java SE 5开始，可以使用Java的Instrumentation接口（<strong>java.lang.instrument</strong>包）来编写Agent。</p>
+<p>从而 Java SE 6 的新特性改变了这种情况，通过 Java Tool API 中的 <strong>attach</strong> 方式，我们可以很方便地在运行过程中动态地设置加载代理类，以达到Instrumentation的目的。</p>
+<p>并且从Java SE 6开始，可以向native method插桩。</p>
+<p><strong>==无论是通过Native的方式还是通过Java Instrumentation接口的方式来编写Agent，它们的工作都是借助JVMTI来进行完成。==</strong></p>
+<h1 id="Instrumentation-1"><a href="#Instrumentation-1" class="headerlink" title="Instrumentation"></a>Instrumentation</h1><p>这里把Instrumentation单独拿出来细说<code>java.lang.instrument.Instrumentation</code>.</p>
+<p>Instrumentation接口设计初衷是为了收集Java程序运行时的数据，用于监控运行程序状态，记录日志，分析代码用的。</p>
+<p><img src="../images/Java-Agent%E8%A7%A3%E8%AF%BB/image-20210207135925174.png" alt="image-20210207135925174"></p>
+<p>目前可以实现(对应JVM方法)：</p>
+<ol>
+<li><p>动态添加或移除自定义的<code>ClassFileTransformer</code>（<code>addTransformer/removeTransformer</code>）</p>
+<p>JVM会在类加载时调用Agent中注册的<code>ClassFileTransformer</code>；</p>
+</li>
+<li><p>动态修改<code>classpath</code>（<code>appendToBootstrapClassLoaderSearch</code>、<code>appendToSystemClassLoaderSearch</code>）</p>
+<p>将Agent程序添加到<code>BootstrapClassLoader</code>和<code>SystemClassLoaderSearch</code>（对应的是<code>ClassLoader类的getSystemClassLoader方法</code>，默认是<code>sun.misc.Launcher$AppClassLoader</code>）中搜索；</p>
+</li>
+<li><p>动态获取所有<code>JVM</code>已加载的类(<code>getAllLoadedClasses</code>)；</p>
+</li>
+<li><p>动态获取某个类加载器已实例化的所有类(<code>getInitiatedClasses</code>)。</p>
+</li>
+<li><p>重定义某个已加载的类的字节码(<code>redefineClasses</code>)。</p>
+</li>
+<li><p>动态设置<code>JNI</code>前缀(<code>setNativeMethodPrefix</code>)，可以实现Hook native方法。</p>
+</li>
+<li><p>重新加载某个已经被JVM加载过的类字节码(<code>retransformClasses</code>)。</p>
+</li>
+</ol>
+<p>两种部署模式：</p>
+<p>Java Agent支持目标JVM启动时加载，也支持在目标JVM运行时加载，这两种不同的加载模式会使用不同的入口函数。</p>
+<p>Java Agent和普通的Java类并没有任何区别，普通的Java程序中规定了<code>main</code>方法为程序入口，而Java Agent则将<code>premain</code>（Agent模式）和<code>agentmain</code>（Attach模式）作为了Agent程序的入口，两者所接受的参数是完全一致的。</p>
+<p><code>Instrumentation</code>类方法如下：</p>
+<p><img src="../images/Java-Agent%E8%A7%A3%E8%AF%BB/image-20210202230129428.png" alt="image-20210202230129428"></p>
+<p>学习API最好的方法就是阅读JavaDoc</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> java.lang.instrument;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    该类提供了工具化Java编程语言代码所需的服务。</span><br><span class="line">    仪表化是指在方法中添加字节码，以收集数据，供工具使用。</span><br><span class="line">    由于这些变化是纯粹的加法，所以这些工具不会修改应用程序的状态或行为。</span><br><span class="line">    这种良性工具的例子包括监控代理、剖析器、覆盖率分析器和事件记录器。</span><br><span class="line">    </span><br><span class="line">    下面有两种方式来实例化Instrumentation接口：</span><br><span class="line">      <span class="number">1</span>.当JVM启动时，-javaagent：Agent.jar 指示代理类。在这种情况下，premain方法会接收一个Instrumentation实例作为入参。</span><br><span class="line">      <span class="number">2</span>.当JVM启动之后，可以Attach目标进程上。在这种情况下，agentmain方法会接收一个Instrumentation实例作为入参。</span><br><span class="line">     </span><br><span class="line">    一旦Agent获得一个Instrumentation实例，代理可以在任何时候调用实例上的方法。</span><br><span class="line">      </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addTransformer</span><span class="params">(ClassFileTransformer transformer,<span class="keyword">boolean</span> canRetransform)</span></span></span><br><span class="line"><span class="function">      注册所提供的Tranformer。从此以后所有类定义都会被Tranformer看到，但不包括任何已注册的Transformer所依赖的类的定义。</span></span><br><span class="line"><span class="function">      当类被加载时，当类被重新定义时，Tranformer被调用；</span></span><br><span class="line"><span class="function">      如果 canRetransform 为真，当类被重新转换时，变压器被调用。</span></span><br><span class="line"><span class="function">    	变换调用的顺序请参见 ClassFileTransformer.transformer。</span></span><br><span class="line"><span class="function">    	如果一个Transformer在执行过程中抛出了异常，JVM仍然会依次调用其他注册的Transformer。</span></span><br><span class="line"><span class="function">    	同一个Transformer可以被添加一次以上，但强烈不鼓励这样做，可以通过创建一个新的Transformer实例来避免这种情况。</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">removeTransformer</span><span class="params">(ClassFileTransformer transformer)</span></span></span><br><span class="line"><span class="function">      解除所提供的Transformer注册。今后的类定义将不会显示给Transformer。</span></span><br><span class="line"><span class="function">      删除Transformer最近添加的匹配实例。由于类加载的多线程特性，Transformer在被删除后可能会收到调用。</span></span><br><span class="line"><span class="function">      Transformer的编写应考虑到这种情况。</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">isRetransformClassesSupported</span><span class="params">()</span></span></span><br><span class="line"><span class="function">      返回当前JVM配置是否支持类的重新转换。</span></span><br><span class="line"><span class="function">      重构已经加载的类的能力是JVM的一个可选能力，只有当代理JAR中的Can-Retransform-Classes manifest属性被设置为<span class="keyword">true</span>时，才支持重构。</span></span><br><span class="line"><span class="function">      只有在代理 JAR 文件中 Can-Retransform-Classes manifest 属性被设置为 <span class="keyword">true</span>（如包规范中所述）且 JVM 支持此能力时，才会支持重构。</span></span><br><span class="line"><span class="function">      在单个JVM的单个实例化过程中，对该方法的多次调用将始终返回相同的答案。</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">retransformClasses</span><span class="params">(Class&lt;?&gt;... classes)</span> <span class="keyword">throws</span> UnmodifiableClassException</span></span><br><span class="line"><span class="function">      给Class&lt;?&gt; classes 中的若干类进行转换。</span></span><br><span class="line"><span class="function">      该方法便于对已经加载的类进行转换。</span></span><br><span class="line"><span class="function">      当类被初始加载或重新定义时，可以使用ClassFileTransformer对初始类文件字节进行转换。</span></span><br><span class="line"><span class="function">      这个函数会重新运行转换过程（无论之前是否发生过转换）。</span></span><br><span class="line"><span class="function">      重新转换遵循以下步骤：</span></span><br><span class="line"><span class="function">      1. 从初始的类文件字节开始</span></span><br><span class="line"><span class="function">      2. 对于每个添加了 canRetransform <span class="keyword">false</span> 的Transformer，由 transform 返回的字节将被重新使用，作为变换的输出，不做任何修改；</span></span><br><span class="line"><span class="function">      3. 对于每个添加了 canRetransform <span class="keyword">true</span> 的Transformer，这些Transformer都会调用 transform 方法。</span></span><br><span class="line"><span class="function">      4.转化后的类文件字节被安装为类的新定义。</span></span><br><span class="line"><span class="function">      变换的顺序在 transform 方法中描述。这个相同的顺序被用于自动重新应用无法变换的变换。</span></span><br><span class="line"><span class="function">      </span></span><br><span class="line"><span class="function">      初始类文件的字节代表传递给ClassLoader.defineClass或redefineClasses的字节（在任何转换行为之前），然而它们可能不完全匹配。常量池可能没有相同的布局或内容。常量池可能有更多或更少的条目。常量池条目的顺序可能不同，但是，方法字节码中的常量池索引会对应。一些属性可能不存在。在顺序没有意义的地方，例如方法的顺序，顺序可能不会被保留。</span></span><br><span class="line"><span class="function">      该方法会在一个集合上操作（看入参的形式就是一个不定数组），以允许同时对多个类进行相互依赖的改变（类 A 的重构可能需要类 B 的重构）。</span></span><br><span class="line"><span class="function">      如果一个重构的方法有高频活动的栈帧，这些活动帧将继续运行原方法的字节码。重构后的方法将在新的调用.<span class="title">invoke</span><span class="params">()</span>中使用。</span></span><br><span class="line"><span class="function">      这个方法不会引起任何初始化.换句话说，重新定义一个类不会导致其初始化。静态变量的值将保持在调用之前的状态。</span></span><br><span class="line"><span class="function">      重构后的类的实例不会受到影响。</span></span><br><span class="line"><span class="function">      重构可以改变方法体、常量池和类属性。重构不能增加、删除或重命名字段或方法，不能改变方法的签名，也不能改变继承。这些限制也许会在未来的版本中被取消。类文件字节的检查、验证和安装直到应用了转换之后才会进行，如果结果字节有错误，这个方法将抛出一个异常。</span></span><br><span class="line"><span class="function">      如果本方法抛出异常，说明没有类被重新转换。</span></span><br><span class="line"><span class="function">      </span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">isRedefineClassesSupported</span><span class="params">()</span></span></span><br><span class="line"><span class="function">      返回当前JVM配置是否支持类的重新定义。</span></span><br><span class="line"><span class="function">      重新定义已经加载的类的能力是JVM的一个可选能力，只有当代理JAR文件中的Can-Redefine-Classes manifest属性被设置为<span class="keyword">true</span>时，才会支持重新定义。</span></span><br><span class="line"><span class="function">      只有当代理JAR文件中的Can-Redefine-Classes manifest属性被设置为<span class="keyword">true</span>时，才会支持重新定义（如包规范中所述），并且JVM支持该能力。在单个JVM的单次实例化过程中，对该方法的多次调用将始终返回相同的答案。</span></span><br><span class="line"><span class="function">      </span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">redefineClasses</span><span class="params">(ClassDefinition... definitions)</span> <span class="keyword">throws</span> ClassNotFoundException,</span></span><br><span class="line"><span class="function">                     UnmodifiableClassException</span></span><br><span class="line"><span class="function">      </span></span><br><span class="line"><span class="function">      使用提供的类文件重新定义提供的类集。</span></span><br><span class="line"><span class="function">      这个方法用于替换类的定义，而不引用现有的类文件字节。</span></span><br><span class="line"><span class="function">      就像从源码重新编译以进行修复和继续调试时一样。当现有的类文件字节要被转换时（例如在字节码instrumentation中），应该使用retransformClasses。</span></span><br><span class="line"><span class="function">      这个方法在一个集合上操作，以便允许同时对多个类进行相互依赖的改变（对类A的重新定义可能需要对类B的重新定义）。</span></span><br><span class="line"><span class="function">      </span></span><br><span class="line"><span class="function">      </span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">isModifiableClass</span><span class="params">(Class&lt;?&gt; theClass)</span></span></span><br><span class="line"><span class="function">      确定一个类是否可以通过retransformClasses或redefineClasses进行修改。如果一个类是可修改的，那么本方法返回<span class="keyword">true</span>。如果一个类是不可修改的，那么这个方法返回<span class="keyword">false</span>。</span></span><br><span class="line"><span class="function">      要想对一个类进行重构，<span class="title">isRetransformClassesSupported</span><span class="params">()</span>也必须为真。但是is的值不会影响这个函数返回的值。要想重新定义一个类，<span class="title">isRedefineClassesSupported</span><span class="params">()</span>也必须为真，但<span class="title">isRedefineClassesSupported</span><span class="params">()</span>的值不会影响这个函数返回的值。</span></span><br><span class="line"><span class="function">      基元类（例如java.lang.Integer.TYPE）和数组类是永远不能修改的。                 </span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">Class[] <span class="title">getAllLoadedClasses</span><span class="params">()</span></span></span><br><span class="line"><span class="function">      返回JVM当前加载的所有类的数组。</span></span><br><span class="line"><span class="function">      </span></span><br><span class="line"><span class="function">Class[] <span class="title">getInitiatedClasses</span><span class="params">(ClassLoader loader)</span></span></span><br><span class="line"><span class="function">      返回一个数组，该数组包含了所有由loader加载的类。如果提供的Loader为空，则返回由bootstrap类Loader加载的类。</span></span><br><span class="line"><span class="function">      </span></span><br><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">getObjectSize</span><span class="params">(Object objectToSize)</span></span></span><br><span class="line"><span class="function">			返回指定对象消耗的存储量的近似值。这个结果可能包括对象的部分或全部开销，因此对于在单独一个实现内进行比较是有用的，但对于实现之间的比较是没有用的。在JVM的单次调用中，估计值可能会改变。</span></span><br><span class="line"><span class="function">                       </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">appendToBootstrapClassLoaderSearch</span><span class="params">(JarFile jarfile)</span></span></span><br><span class="line"><span class="function">      指定一个JAR文件（包含插桩类），让它由Bootstrap加载器加载。</span></span><br><span class="line"><span class="function">      当虚拟机内置的类加载器（称为 "bootstrap class loader"）搜索某个类不成功时，JAR文件中的条目也会被搜索。</span></span><br><span class="line"><span class="function">			本方法可以多次使用，按照本方法被调用的顺序添加多个JAR文件进行搜索。</span></span><br><span class="line"><span class="function">      Agent应该注意确保JAR文件中除了那些将由引导类加载器定义的类或资源，不包含任何其他类或资源。如果不遵守这个警告，可能会导致难以诊断的意外行为。例如，假设有一个加载器L，L的用于授权的父类是bootstrap类加载器。此外，L定义的类C中的一个方法引用了一个非公共的访问者类C$1，如果JAR文件中包含一个类C$1，那么授权给bootstrap类加载器将导致C$1被bootstrap类加载器定义。在这个例子中，一个IllegalAccessError将被抛出，可能会导致应用程序失败。避免这类问题的一个方法是为插桩类使用一个独特的包名。</span></span><br><span class="line"><span class="function">                       </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">appendToSystemClassLoaderSearch</span><span class="params">(JarFile jarfile)</span></span></span><br><span class="line"><span class="function">      指定一个JAR文件（包含插桩类），让它由SystemClassLoader。</span></span><br><span class="line"><span class="function">      这里面的SystemClassLoader其实就是ApplicationClassLoader。</span></span><br><span class="line"><span class="function">      当委托的系统类加载器（参见<span class="title">getSystemClassLoader</span><span class="params">()</span>）搜索一个类不成功时，JarFile中的条目将被搜索。</span></span><br><span class="line"><span class="function">本方法可以多次使用，按照本方法被调用的顺序添加多个JAR文件进行搜索。</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">			Agent应注意确保JAR中不包含除SystemClassLoader以外的任何类或资源。如果不遵守这个警告，可能会导致难以诊断的意外行为（参见appendToBootstrapClassLoaderSearch）。</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">			如果SystemClassLoader实现了一个名为appendToClassPathForInstrumentation的方法，那么它就支持添加一个要搜索的JAR文件，该方法接收一个类型为java.lang.String的单一参数。该方法不需要公开访问。JAR文件的名称是通过调用jarfile上的<span class="title">getName</span><span class="params">()</span>方法获得的，并作为参数提供给appendToClassPathForInstrumentation方法。</span></span><br><span class="line"><span class="function">			此方法不会改变java.class.path系统属性的值。</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">isNativeMethodPrefixSupported</span><span class="params">()</span></span></span><br><span class="line"><span class="function">      返回当前JVM配置是否支持设置本地方法前缀。设置本地方法前缀的能力是JVM的一个可选能力。</span></span><br><span class="line"><span class="function">      只有在代理 JAR 文件中 Can-Set-Native-Method-Prefix manifest 属性被设置为 <span class="keyword">true</span>（如包规范中所述）且 JVM 支持该能力时，才会支持设置本地方法前缀。</span></span><br><span class="line"><span class="function">      在单个JVM的单个实例化过程中，对该方法的多次调用将始终返回相同的答案。</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setNativeMethodPrefix</span><span class="params">(ClassFileTransformer transformer,String prefix)</span></span></span><br><span class="line"><span class="function">      设置<span class="keyword">native</span> method 前缀</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="ClassFileTransformer"><a href="#ClassFileTransformer" class="headerlink" title="ClassFileTransformer"></a>ClassFileTransformer</h1><p><code>java.lang.instrument.ClassFileTransformer</code>是一个转换类文件的代理接口，我们可以在获取到<code>Instrumentation</code>对象后通过<code>addTransformer</code>方法添加自定义类文件转换器。</p>
+<p>可以使用<code>addTransformer</code>注册一个我们自定义的<code>Transformer</code>到<code>Java Agent</code>，当有新的类被<code>JVM</code>加载时<code>JVM</code>会自动回调用我们自定义的<code>Transformer</code>类的<code>transform</code>方法，传入该类的<code>transform</code>信息(<code>类名、类加载器、类字节码</code>等)，==可以根据传入的类信息决定是否需要修改类字节码，修改完字节码后将新的类字节码返回给<code>JVM</code>==，<code>JVM</code>会验证类和相应的修改是否合法，如果符合类加载要求<code>JVM</code>会加载我们修改后的类字节码。</p>
+<p>继续读JavaDoc：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">通常，一个Agent提供了这个接口的实现，以便转换类文件。转换发生在JVM定义类之前。</span><br><span class="line">请注意，类文件这个术语在Java™虚拟机规范第<span class="number">3.1</span>节中定义，指的是类文件格式的字节序列，无论它们是否驻留在文件中。</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">byte</span>[] transform(ClassLoader loader,</span><br><span class="line">                 String className,</span><br><span class="line">                 Class&lt;?&gt; classBeingRedefined,</span><br><span class="line">                 ProtectionDomain protectionDomain,</span><br><span class="line">                 <span class="keyword">byte</span>[] classfileBuffer)</span><br><span class="line">          <span class="keyword">throws</span> IllegalClassFormatException</span><br><span class="line"></span><br><span class="line">	该方法的实现可以对提供的类文件进行转换，并返回一个新的替换类文件。</span><br><span class="line">  一旦用addTransformer注册了一个Transformer，那么每一个新的类定义和每一个类的重新定义都会调用这个变换器。能够重构的变换器也会在每次类重构时被调用。</span><br><span class="line">  新类定义的请求是通过ClassLoader.defineClass或其原生等价物来实现的。</span><br><span class="line">  对类的redefinition的请求是通过Instrumentation.redefineClasses或它的本机等价物提出的。</span><br><span class="line">  类的retransformation请求由 Instrumentation.retransformClasses 或其本机等价物发出。</span><br><span class="line">  在请求的处理过程中，在类文件字节被验证或应用之前，Transformer被调用。</span><br><span class="line">  当有多个Transformer时，Transformer是通过链式变换调用组成的。也就是说，一次变换调用返回的字节数组成为下一次调用的输入（通过classfileBuffer参数）。</span><br><span class="line">  </span><br><span class="line">  对于retransformation，不能重构的变换器不被调用，而是重用之前变换的结果。在所有其他情况下，这个方法都会被调用。在这些分组中，transformers按照注册的顺序被调用。原生变换器由Java虚拟机工具接口中的ClassFileLoadHook事件提供。</span><br><span class="line">  参数：</span><br><span class="line">  loader              定义要转换的类加载器；如果是引导加载器，则为 <span class="keyword">null</span></span><br><span class="line">	className           类名,如:java/lang/Runtime</span><br><span class="line">  classBeingRedefined 如果是被重定义或重转换触发，则为重定义或重转换的类；如果是类加载，则为 <span class="keyword">null</span></span><br><span class="line">  protectionDomain    要定义或重定义的类的保护域</span><br><span class="line">  classfileBuffer     类文件格式的输入字节缓冲区（不得修改）</span><br><span class="line">    </span><br><span class="line">  <span class="keyword">return</span> 字节码<span class="keyword">byte</span>数组</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>重写<code>transform</code>方法需要注意以下事项：</strong></p>
+<ol>
+<li><code>ClassLoader</code>如果是被<code>Bootstrap ClassLoader(引导类加载器)</code>所加载那么<code>loader</code>参数的值是空。</li>
+<li>修改类字节码时需要特别注意插入的代码在对应的<code>ClassLoader</code>中可以正确的获取到，否则会报<code>ClassNotFoundException</code>，比如修改<code>java.io.FileInputStream(该类由Bootstrap ClassLoader加载)</code>时插入了我们检测代码，那么我们将必须保证<code>FileInputStream</code>能够获取到我们的检测代码类。</li>
+<li><code>JVM</code>类名的书写方式路径方式：<code>java/lang/String</code> 而不是我们常用的类名方式：<code>java.lang.String</code>。</li>
+<li>类字节必须符合<code>JVM</code>校验要求，如果无法验证类字节码会导致<code>JVM</code>崩溃或者<code>VerifyError(类验证错误)</code>。</li>
+<li>如果修改的是<code>retransform</code>类(修改已被<code>JVM</code>加载的类)，修改后的类字节码不得<code>新增方法</code>、<code>修改方法参数</code>、<code>类成员变量</code>。</li>
+<li><code>addTransformer</code>时如果没有传入<code>retransform</code>参数(默认是<code>false</code>)就算<code>MANIFEST.MF</code>中配置了<code>Can-Redefine-Classes: true</code>而且手动调用了<code>retransformClasses</code>方法也一样无法<code>retransform</code>。一定要增加true参数！！！</li>
+<li>卸载<code>transform</code>时需要使用创建时的<code>Instrumentation</code>实例。</li>
+</ol>
+<p>Java Agent还限制了我们：</p>
+<ol>
+<li>必须以jar包的形式运行或加载；</li>
+<li>必须包含<code>/META-INF/MANIFEST.MF</code>文件，且该文件中必须定义好<code>Premain-Class</code>（启动前Agent模式）或<code>Agent-Class:</code>（运行中Agent模式）配置；</li>
+<li>如果需要修改已经被JVM加载过的类的字节码，那么还需要设置在<code>MANIFEST.MF</code>中添加<code>Can-Retransform-Classes: true</code>或<code>Can-Redefine-Classes: true</code>。</li>
+</ol>
+<h1 id="实验部分"><a href="#实验部分" class="headerlink" title="实验部分"></a>实验部分</h1><p>接下来进行实验，启动前<code>premain+-javaagent</code>以及启动中<code>Attach</code> 两种模式。</p>
+<h2 id="启动前指定Agent位置"><a href="#启动前指定Agent位置" class="headerlink" title="启动前指定Agent位置"></a>启动前指定Agent位置</h2><p>如果需要在目标JVM启动的同时加载Agent，实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[<span class="number">1</span>] <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">premain</span><span class="params">(String agentArgs, Instrumentation inst)</span></span>;</span><br><span class="line">[<span class="number">2</span>] <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">premain</span><span class="params">(String agentArgs)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>JVM将首先寻找[1]，如果没有发现[1]，再寻找[2]。</p>
+<h3 id="实战一：premain方法测试"><a href="#实战一：premain方法测试" class="headerlink" title="实战一：premain方法测试"></a>实战一：premain方法测试</h3><p>写一个demo做个实验：</p>
+<p>创建Agent类，声明premain方法：</p>
+<p><img src="../images/Java-Agent%E8%A7%A3%E8%AF%BB/image-20210201222948010.png" alt="image-20210201222948010"></p>
+<p>使用maven-jar-plugin，创建MANIFEST.MF：</p>
+<p><img src="../images/Java-Agent%E8%A7%A3%E8%AF%BB/image-20210201223255740.png" alt="image-20210201223255740"></p>
+<p>MANIFEST.MF：</p>
+<p><img src="../images/Java-Agent%E8%A7%A3%E8%AF%BB/image-20210201223426121.png" alt="image-20210201223426121"></p>
+<p><code>mvn clean install</code>生成jar包：<code>java_agent_01-1.0-SNAPSHOT</code></p>
+<p>待插桩类：</p>
+<p><img src="../images/Java-Agent%E8%A7%A3%E8%AF%BB/image-20210201223908739.png" alt="image-20210201223908739"></p>
+<p><img src="../images/Java-Agent%E8%A7%A3%E8%AF%BB/image-20210201223920391.png" alt="image-20210201223920391"></p>
+<p>同样打包，<code>example01-1.0-SNAPSHOT</code>：</p>
+<p><img src="../images/Java-Agent%E8%A7%A3%E8%AF%BB/image-20210201223953455.png" alt="image-20210201223953455"></p>
+<p>终端执行，成功插桩：</p>
+<p><img src="../images/Java-Agent%E8%A7%A3%E8%AF%BB/image-20210201224546368.png" alt="image-20210201224546368"></p>
+<h3 id="实战二：打印加载的类"><a href="#实战二：打印加载的类" class="headerlink" title="实战二：打印加载的类"></a>实战二：打印加载的类</h3><p>之前也提到，一旦你addTransformer之后，需要加载的每一个类都会经过transform方法。</p>
+<p>一旦用addTransformer注册了一个Transformer，那么每一个新的类定义和每一个类的重新定义都会调用这个变换器。</p>
+<p>首先addTranformer：</p>
+<p><img src="../images/Java-Agent%E8%A7%A3%E8%AF%BB/image-20210209211836621.png" alt="image-20210209211836621"></p>
+<p>这里ClassFileTransformerDemo()继承了ClassFileTransformer类，记得最后加上ture：</p>
+<p><img src="../images/Java-Agent%E8%A7%A3%E8%AF%BB/image-20210209212017484.png" alt="image-20210209212017484"></p>
+<p>这里就是简单的执行了打印在Tranformer之后加载的类：</p>
+<p><img src="../images/Java-Agent%E8%A7%A3%E8%AF%BB/image-20210209212111604.png" alt="image-20210209212111604"></p>
+<h3 id="实战三：代码插桩"><a href="#实战三：代码插桩" class="headerlink" title="实战三：代码插桩"></a>实战三：代码插桩</h3><p>这里复现一下<a href="https://zhishihezi.net/b/5d644b6f81cbc9e40460fe7eea3c7925#open" target="_blank" rel="noopener">yz</a>的实验。这个例子写得很好，类似于破解官方软件的一种绕过过程，毕竟白嫖才是最香的。</p>
+<p>首先这里有一个校验函数用来判断用户是否已经过了有效期，这个截止日期是硬编码在代码中的，由于是写死的那么就会一直提示已经过期：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CheckLicense</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> SimpleDateFormat DATE_FORMAT = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyy-MM-dd HH:mm:ss"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">checkExpiry</span><span class="params">(String expireDate)</span> <span class="keyword">throws</span> ParseException </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Date date = DATE_FORMAT.parse(expireDate);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 检测当前系统时间早于License授权截至时间</span></span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">new</span> Date().before(date)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ParseException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 设置一个已经过期的License时间</span></span><br><span class="line">        <span class="keyword">final</span> String expireDate = <span class="string">"2020-10-01 00:00:00"</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">                    <span class="keyword">try</span> &#123;</span><br><span class="line">                        String time = <span class="string">"["</span> + DATE_FORMAT.format(<span class="keyword">new</span> Date()) + <span class="string">"] "</span>;</span><br><span class="line">                        <span class="comment">// 检测license是否已经过期</span></span><br><span class="line">                        <span class="keyword">try</span> &#123;</span><br><span class="line">                            <span class="keyword">if</span> (checkExpiry(expireDate)) &#123;</span><br><span class="line">                                System.err.println(time + <span class="string">"您的授权已过期，请重新购买授权！"</span>);</span><br><span class="line">                            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                                System.out.println(time + <span class="string">"您的授权正常，截止时间为："</span> + expireDate);</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125; <span class="keyword">catch</span> (ParseException e) &#123;</span><br><span class="line">                            e.printStackTrace();</span><br><span class="line">                        &#125;</span><br><span class="line"></span><br><span class="line">                        <span class="comment">// sleep 1秒</span></span><br><span class="line">                        TimeUnit.SECONDS.sleep(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">                    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                        e.printStackTrace();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>硬编码有效期是一个已经过期的License时间<code>final String expireDate = &quot;2020-10-01 00:00:00&quot;;</code></p>
+<p>已经过期：</p>
+<p><img src="../images/Java-Agent%E8%A7%A3%E8%AF%BB/image-20210209231744276.png" alt="image-20210209231744276"></p>
+<p>这里开始编写Agent：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClassFileTransformerDemo</span>  <span class="keyword">implements</span> <span class="title">ClassFileTransformer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 需要被Hook的类</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String HOOK_CLASS = <span class="string">"com.sec.CheckLicense"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">byte</span>[] transform(ClassLoader loader, String className, Class&lt;?&gt; classBeingRedefined, ProtectionDomain protectionDomain, <span class="keyword">byte</span>[] classfileBuffer) <span class="keyword">throws</span> IllegalClassFormatException &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 将目录路径替换成Java类名</span></span><br><span class="line">        String cn = className.replace(<span class="string">"/"</span>, <span class="string">"."</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 只处理HOOK_CLASS类的字节码</span></span><br><span class="line">        <span class="keyword">if</span> (cn.equals(HOOK_CLASS)) &#123;</span><br><span class="line"></span><br><span class="line">            System.out.println(cn);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                ClassPool classPool = ClassPool.getDefault();</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 使用javassist将类二进制解析成CtClass对象</span></span><br><span class="line">                CtClass ctClass = classPool.makeClass(<span class="keyword">new</span> ByteArrayInputStream(classfileBuffer));</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 使用CtClass对象获取checkExpiry方法，类似于Java反射机制的clazz.getDeclaredMethod(xxx)</span></span><br><span class="line">                CtMethod ctMethod = ctClass.getDeclaredMethod(</span><br><span class="line">                        <span class="string">"checkExpiry"</span>, <span class="keyword">new</span> CtClass[]&#123;classPool.getCtClass(<span class="string">"java.lang.String"</span>)&#125;</span><br><span class="line">                );</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 在checkExpiry方法执行前插入输出License到期时间代码</span></span><br><span class="line">                ctMethod.insertBefore(<span class="string">"System.out.println(\"License到期时间：\" + $1);"</span>);</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 修改checkExpiry方法的返回值，将授权过期改为未过期</span></span><br><span class="line">                ctMethod.insertAfter(<span class="string">"return false;"</span>);</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 修改后的类字节码</span></span><br><span class="line">                <span class="keyword">return</span> ctClass.toBytecode();</span><br><span class="line"></span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> classfileBuffer;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里相当于将检测日期函数写死return false。</p>
+<p>打包，运行：</p>
+<p><img src="../images/Java-Agent%E8%A7%A3%E8%AF%BB/image-20210210034102611.png" alt="image-20210210034102611"></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-shade-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.2.4<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">phase</span>&gt;</span>package<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">goal</span>&gt;</span>shade<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">filters</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">filter</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;<span class="name">artifact</span>&gt;</span>*:*<span class="tag">&lt;/<span class="name">artifact</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">                                        <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>MANIFEST.MF<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                                        <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>META-INF/DEPENDENCIES<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                                        <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>META-INF/LICENSE*<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                                        <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>META-INF/NOTICE*<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">filters</span>&gt;</span></span><br><span class="line"></span><br><span class="line">                            <span class="tag">&lt;<span class="name">artifactSet</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">includes</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;<span class="name">include</span>&gt;</span>org.javassist:javassist:jar:*<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;/<span class="name">includes</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">artifactSet</span>&gt;</span></span><br><span class="line"></span><br><span class="line">                            <span class="comment">&lt;!-- 修改第三方依赖包名称 --&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">relocations</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">relocation</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>javassist<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;<span class="name">shadedPattern</span>&gt;</span>com.fxc.deps.javassist<span class="tag">&lt;/<span class="name">shadedPattern</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;/<span class="name">relocation</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">relocations</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="启动中进行Agent-Attach"><a href="#启动中进行Agent-Attach" class="headerlink" title="启动中进行Agent Attach"></a>启动中进行Agent Attach</h2><p>之前的<code>permain</code>方法只能在java程序启动之前执行，而Java SE 6的新特性改变了这种情况，可以通过Java Tool API中的attach方式来达到这种程序启动之后设置代理的效果。</p>
+<p>下面来分析一下动态加载Agent的相关技术细节。</p>
+<h3 id="AttachListener"><a href="#AttachListener" class="headerlink" title="AttachListener"></a>AttachListener</h3><p>Attach机制通过Attach Listener线程来进行相关事务的处理，下面来看一下Attach Listener线程是如何初始化的。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Starts the Attach Listener thread</span></span><br><span class="line"><span class="comment">//创建AttachListener线程</span></span><br><span class="line"><span class="keyword">void</span> AttachListener::init() &#123;</span><br><span class="line">  <span class="comment">// 创建线程相关部分代码被去掉了</span></span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">char</span> thread_name[] = <span class="string">"Attach Listener"</span>;</span><br><span class="line">  Handle <span class="built_in">string</span> = java_lang_String::create_from_str(thread_name, THREAD);</span><br><span class="line">  &#123; <span class="function">MutexLocker <span class="title">mu</span><span class="params">(Threads_lock)</span></span>;</span><br><span class="line">    JavaThread* listener_thread = <span class="keyword">new</span> JavaThread(&amp;attach_listener_thread_entry);</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>一个线程启动之后都需要指定一个入口来执行代码，Attach Listener线程的入口是attach_listener_thread_entry，下面看一下这个函数的具体实现：</p>
+<p>下面看attach_listener_thread_entry的具体实现：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">attach_listener_thread_entry</span><span class="params">(JavaThread* thread, TRAPS)</span> </span>&#123;</span><br><span class="line">  AttachListener::set_initialized();</span><br><span class="line">  <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">    	<span class="comment">//拉取一个需要执行的任务</span></span><br><span class="line">      AttachOperation* op = AttachListener::dequeue();</span><br><span class="line">      <span class="comment">// find the function to dispatch too</span></span><br><span class="line">      AttachOperationFunctionInfo* info = <span class="literal">NULL</span>;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; funcs[i].name != <span class="literal">NULL</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">char</span>* name = funcs[i].name;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">strcmp</span>(op-&gt;name(), name) == <span class="number">0</span>) &#123;</span><br><span class="line">          info = &amp;(funcs[i]); <span class="keyword">break</span>;</span><br><span class="line">        &#125;&#125;</span><br><span class="line">       <span class="comment">// dispatch to the function that implements this operation</span></span><br><span class="line">        res = (info-&gt;func)(op, &amp;st);</span><br><span class="line">      <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>整个函数执行逻辑，大概是这样的：</p>
+<ul>
+<li>拉取一个需要执行的任务：AttachListener::dequeue。</li>
+<li>查询匹配的命令处理函数。</li>
+<li>执行匹配到的命令执行函数。</li>
+</ul>
+<p>其中第二步里面存在一个命令函数表，整个表如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> AttachOperationFunctionInfo funcs[] = &#123;</span><br><span class="line">  &#123; <span class="string">"agentProperties"</span>,  get_agent_properties &#125;,</span><br><span class="line">  &#123; <span class="string">"datadump"</span>,         data_dump &#125;,</span><br><span class="line">  &#123; <span class="string">"dumpheap"</span>,         dump_heap &#125;,</span><br><span class="line">  &#123; <span class="string">"load"</span>,             load_agent &#125;,</span><br><span class="line">  &#123; <span class="string">"properties"</span>,       get_system_properties &#125;,</span><br><span class="line">  &#123; <span class="string">"threaddump"</span>,       thread_dump &#125;,</span><br><span class="line">  &#123; <span class="string">"inspectheap"</span>,      heap_inspection &#125;,</span><br><span class="line">  &#123; <span class="string">"setflag"</span>,          set_flag &#125;,</span><br><span class="line">  &#123; <span class="string">"printflag"</span>,        print_flag &#125;,</span><br><span class="line">  &#123; <span class="string">"jcmd"</span>,             jcmd &#125;,</span><br><span class="line">  &#123; <span class="literal">NULL</span>,               <span class="literal">NULL</span> &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>对于加载Agent来说，命令就是“load”。</p>
+<p>任务从哪来，这个秘密就藏在AttachListener::dequeue这行代码里面，接下来来分析一下dequeue这个函数：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">LinuxAttachOperation* LinuxAttachListener::dequeue() &#123;</span><br><span class="line">  <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">    <span class="comment">// wait for client to connect</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr</span> <span class="title">addr</span>;</span></span><br><span class="line">    <span class="keyword">socklen_t</span> len = <span class="keyword">sizeof</span>(addr);</span><br><span class="line">    RESTARTABLE(::accept(listener(), &amp;addr, &amp;len), s);</span><br><span class="line">    <span class="comment">// get the credentials of the peer and check the effective uid/guid</span></span><br><span class="line">    <span class="comment">// - check with jeff on this.</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ucred</span> <span class="title">cred_info</span>;</span></span><br><span class="line">    <span class="keyword">socklen_t</span> optlen = <span class="keyword">sizeof</span>(cred_info);</span><br><span class="line">    <span class="keyword">if</span> (::getsockopt(s, SOL_SOCKET, SO_PEERCRED, (<span class="keyword">void</span>*)&amp;cred_info, &amp;optlen) == <span class="number">-1</span>) &#123;</span><br><span class="line">      ::<span class="built_in">close</span>(s);</span><br><span class="line">      <span class="keyword">continue</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// peer credential look okay so we read the request</span></span><br><span class="line">    LinuxAttachOperation* op = read_request(s);</span><br><span class="line">    <span class="keyword">return</span> op;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码表明，Attach Listener在某个端口监听着，通过accept来接收一个连接，然后从这个连接里面将请求读取出来，然后将请求包装成一个AttachOperation类型的对象，之后就会从表里查询对应的处理函数，然后进行处理。</p>
+<p>Attach Listener使用一种被称为“懒加载”的策略进行初始化，也就是说，JVM启动的时候Attach Listener并不一定会启动起来。</p>
+<h3 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h3><p>运行时Attach方法里面的关键是调用VirtualMachine的attach方法进行Agent挂载的功能。</p>
+<p>下面分析一下VirtualMachine的attach方法具体是怎么实现的。</p>
+<p>Attach模式需要知道我们运行的Java程序进程ID，通过Java虚拟机的进程注入方式实现可以将我们的Agent程序动态的注入到一个已在运行中的Java程序中。</p>
+<p>还是之前那个例子，可以使用<code>jps -l</code>命令进行查看：</p>
+<p><img src="../images/Java-Agent%E8%A7%A3%E8%AF%BB/image-20210210194815301.png" alt="image-20210210194815301"></p>
+<p>Java代码实现可以使用<code>com.sun.tools.attach.VirtualMachine</code>的<code>list</code>方法即可获取本机所有运行的Java进程，如：</p>
+<p><img src="../images/Java-Agent%E8%A7%A3%E8%AF%BB/image-20210210200251210.png" alt="image-20210210200251210"></p>
+<p>有了进程ID我们就可以使用Attach API注入Agent了，Attach Java进程注入通用示例代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Java进程ID</span></span><br><span class="line">String pid = args[<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置Agent文件的绝对路径</span></span><br><span class="line">String agentPath = <span class="string">"/xxx/agent.jar"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注入到JVM虚拟机进程</span></span><br><span class="line">VirtualMachine vm = VirtualMachine.attach(pid);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注入Agent到目标JVM</span></span><br><span class="line">vm.loadAgent(agentPath);</span><br><span class="line">vm.detach();</span><br></pre></td></tr></table></figure>
+
+<p>使用Attach模式启动Agent程序时需要使用到JDK目录下的<code>lib/tools.jar</code>，如果没有配置<code>CLASS_PATH</code>环境变量的话需要在运行Agent程序时添加<code>-Xbootclasspath/a:$JAVA_HOME/lib/tools.jar</code>参数，否则无法使用Attach API。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -Xbootclasspath/a:$JAVA_HOME/lib/tools.jar -jar AgentAttach<span class="number">-1.0</span>-SNAPSHOT.jar</span><br></pre></td></tr></table></figure>
+
+<p>首先后台运行监测代码，用我们的jar包获取目标进程：16281</p>
+<p><img src="../images/Java-Agent%E8%A7%A3%E8%AF%BB/image-20210210222948056.png" alt="image-20210210222948056"></p>
+<p>接下来直接注入就完事了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -Xbootclasspath/a:$JAVA_HOME/lib/tools.jar -classpath $JAVA_HOME/lib/tools.jar:AgentAttach-<span class="number">1.0</span>-SNAPSHOT.jar -jar AgentAttach-<span class="number">1.0</span>-SNAPSHOT.jar <span class="number">16281</span></span><br></pre></td></tr></table></figure>
+
+<p>成功修改：</p>
+<p><img src="../images/Java-Agent%E8%A7%A3%E8%AF%BB/image-20210210223115419.png" alt="image-20210210223115419"></p>
+<p>代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AttachAgent</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 需要被Hook的类</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String HOOK_CLASS = <span class="string">"com.sec.CheckLicense"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (args.length == <span class="number">0</span>) &#123;</span><br><span class="line">            List&lt;VirtualMachineDescriptor&gt; list = VirtualMachine.list();</span><br><span class="line">            <span class="keyword">for</span> (VirtualMachineDescriptor desc : list) &#123;</span><br><span class="line">                System.out.println(<span class="string">"进程ID："</span> + desc.id() + <span class="string">"，进程名称："</span> + desc.displayName());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Java进程ID</span></span><br><span class="line">        String pid = args[<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 注入到JVM虚拟机进程</span></span><br><span class="line">            VirtualMachine vm = VirtualMachine.attach(pid);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 获取当前Agent的jar包路径</span></span><br><span class="line">            URL agentURL = AttachAgent<span class="class">.<span class="keyword">class</span>.<span class="title">getProtectionDomain</span>().<span class="title">getCodeSource</span>().<span class="title">getLocation</span>()</span>;</span><br><span class="line">            String agentPath = <span class="keyword">new</span> File(agentURL.toURI()).getAbsolutePath();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 注入Agent到目标JVM</span></span><br><span class="line">            vm.loadAgent(agentPath);</span><br><span class="line">            vm.detach();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">agentmain</span><span class="params">(String args, <span class="keyword">final</span> Instrumentation inst)</span> </span>&#123;</span><br><span class="line">        loadAgent(args, inst);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">loadAgent</span><span class="params">(String arg, <span class="keyword">final</span> Instrumentation inst)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 创建ClassFileTransformer对象</span></span><br><span class="line">        ClassFileTransformer classFileTransformer = createClassFileTransformer();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 添加自定义的Transformer，第二个参数true表示是否允许Agent Retransform，</span></span><br><span class="line">        <span class="comment">// 需配合MANIFEST.MF中的Can-Retransform-Classes: true配置</span></span><br><span class="line">        inst.addTransformer(classFileTransformer, <span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 获取所有已经被JVM加载的类对象</span></span><br><span class="line">        Class[] loadedClass = inst.getAllLoadedClasses();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (Class clazz : loadedClass) &#123;</span><br><span class="line">            String className = clazz.getName();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (inst.isModifiableClass(clazz)) &#123;</span><br><span class="line">                <span class="comment">// 使用Agent重新加载HelloWorld类的字节码</span></span><br><span class="line">                <span class="keyword">if</span> (className.equals(HOOK_CLASS)) &#123;</span><br><span class="line">                    <span class="keyword">try</span> &#123;</span><br><span class="line">                        inst.retransformClasses(clazz);</span><br><span class="line">                    &#125; <span class="keyword">catch</span> (UnmodifiableClassException e) &#123;</span><br><span class="line">                        e.printStackTrace();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> ClassFileTransformer <span class="title">createClassFileTransformer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ClassFileTransformer() &#123;</span><br><span class="line"></span><br><span class="line">            <span class="comment">/**</span></span><br><span class="line"><span class="comment">             * 类文件转换方法，重写transform方法可获取到待加载的类相关信息</span></span><br><span class="line"><span class="comment">             *</span></span><br><span class="line"><span class="comment">             * <span class="doctag">@param</span> loader              定义要转换的类加载器；如果是引导加载器，则为 null</span></span><br><span class="line"><span class="comment">             * <span class="doctag">@param</span> className           类名,如:java/lang/Runtime</span></span><br><span class="line"><span class="comment">             * <span class="doctag">@param</span> classBeingRedefined 如果是被重定义或重转换触发，则为重定义或重转换的类；如果是类加载，则为 null</span></span><br><span class="line"><span class="comment">             * <span class="doctag">@param</span> protectionDomain    要定义或重定义的类的保护域</span></span><br><span class="line"><span class="comment">             * <span class="doctag">@param</span> classfileBuffer     类文件格式的输入字节缓冲区（不得修改）</span></span><br><span class="line"><span class="comment">             * <span class="doctag">@return</span> 字节码byte数组。</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">byte</span>[] transform(ClassLoader loader, String className, Class&lt;?&gt; classBeingRedefined,</span><br><span class="line">                                    ProtectionDomain protectionDomain, <span class="keyword">byte</span>[] classfileBuffer) &#123;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 将目录路径替换成Java类名</span></span><br><span class="line">                className = className.replace(<span class="string">"/"</span>, <span class="string">"."</span>);</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 只处理HOOK_CLASS类的字节码</span></span><br><span class="line">                <span class="keyword">if</span> (className.equals(HOOK_CLASS)) &#123;</span><br><span class="line">                    <span class="keyword">try</span> &#123;</span><br><span class="line">                        ClassPool classPool = ClassPool.getDefault();</span><br><span class="line"></span><br><span class="line">                        <span class="comment">// 使用javassist将类二进制解析成CtClass对象</span></span><br><span class="line">                        CtClass ctClass = classPool.makeClass(<span class="keyword">new</span> ByteArrayInputStream(classfileBuffer));</span><br><span class="line"></span><br><span class="line">                        <span class="comment">// 使用CtClass对象获取checkExpiry方法，类似于Java反射机制的clazz.getDeclaredMethod(xxx)</span></span><br><span class="line">                        CtMethod ctMethod = ctClass.getDeclaredMethod(</span><br><span class="line">                                <span class="string">"checkExpiry"</span>, <span class="keyword">new</span> CtClass[]&#123;classPool.getCtClass(<span class="string">"java.lang.String"</span>)&#125;</span><br><span class="line">                        );</span><br><span class="line"></span><br><span class="line">                        <span class="comment">// 在checkExpiry方法执行前插入输出License到期时间代码</span></span><br><span class="line">                        ctMethod.insertBefore(<span class="string">"System.out.println(\"License到期时间：\" + $1);"</span>);</span><br><span class="line"></span><br><span class="line">                        <span class="comment">// 修改checkExpiry方法的返回值，将授权过期改为未过期</span></span><br><span class="line">                        ctMethod.insertAfter(<span class="string">"return false;"</span>);</span><br><span class="line"></span><br><span class="line">                        <span class="comment">// 修改后的类字节码</span></span><br><span class="line">                        classfileBuffer = ctClass.toBytecode();</span><br><span class="line">                        <span class="keyword">return</span> classfileBuffer;</span><br><span class="line">                    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                        e.printStackTrace();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">return</span> classfileBuffer;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Pom.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">project.build.sourceEncoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">project.build.sourceEncoding</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">project.reporting.outputEncoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">project.reporting.outputEncoding</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- https://mvnrepository.com/artifact/org.javassist/javassist --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.javassist<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>javassist<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.25.0-GA<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.sun<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>tools<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>system<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">systemPath</span>&gt;</span>$&#123;java.home&#125;/../lib/tools.jar<span class="tag">&lt;/<span class="name">systemPath</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-compiler-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.8.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">source</span>&gt;</span>8<span class="tag">&lt;/<span class="name">source</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">target</span>&gt;</span>8<span class="tag">&lt;/<span class="name">target</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-jar-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.2.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">archive</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">manifest</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">addClasspath</span>&gt;</span>true<span class="tag">&lt;/<span class="name">addClasspath</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">mainClass</span>&gt;</span>com.fxc.AttachAgent<span class="tag">&lt;/<span class="name">mainClass</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">manifestEntries</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">Agent-Class</span>&gt;</span>com.fxc.AttachAgent<span class="tag">&lt;/<span class="name">Agent-Class</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">Can-Redefine-Classes</span>&gt;</span>true<span class="tag">&lt;/<span class="name">Can-Redefine-Classes</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">Can-Retransform-Classes</span>&gt;</span>true<span class="tag">&lt;/<span class="name">Can-Retransform-Classes</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">manifestEntries</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">archive</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-shade-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.2.4<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">phase</span>&gt;</span>package<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">goal</span>&gt;</span>shade<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">filters</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">filter</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;<span class="name">artifact</span>&gt;</span>*:*<span class="tag">&lt;/<span class="name">artifact</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">                                        <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>MANIFEST.MF<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                                        <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>META-INF/DEPENDENCIES<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                                        <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>META-INF/LICENSE*<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                                        <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>META-INF/NOTICE*<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">filters</span>&gt;</span></span><br><span class="line"></span><br><span class="line">                            <span class="tag">&lt;<span class="name">artifactSet</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">includes</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;<span class="name">include</span>&gt;</span>org.javassist:javassist:jar:*<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line"></span><br><span class="line">                                <span class="tag">&lt;/<span class="name">includes</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">artifactSet</span>&gt;</span></span><br><span class="line"></span><br><span class="line">                            <span class="comment">&lt;!-- 修改第三方依赖包名称 --&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">relocations</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">relocation</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>javassist<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;<span class="name">shadedPattern</span>&gt;</span>com.fxc.deps.javassist<span class="tag">&lt;/<span class="name">shadedPattern</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;/<span class="name">relocation</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">relocations</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="坑点"><a href="#坑点" class="headerlink" title="坑点"></a>坑点</h1><ol>
+<li>在打包jar的时候，已经要记得将ASM/javassist打进去，maven-shade-plugin插件。</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java-Agent/" rel="tag"><i class="fa fa-tag"></i>Java Agent</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/JFR%E7%AC%94%E8%AE%B0/" rel="prev" title="JFR笔记">
+      <i class="fa fa-chevron-left"></i> JFR笔记
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+      <!--
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://link.hhtjim.com/163/26348068.mp3"></iframe>
+      -->
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#概念"><span class="nav-number">2.</span> <span class="nav-text">概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-Agent"><span class="nav-number">2.1.</span> <span class="nav-text">Java Agent</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JVMTI"><span class="nav-number">2.2.</span> <span class="nav-text">JVMTI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Instrumentation"><span class="nav-number">2.3.</span> <span class="nav-text">Instrumentation</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Instrumentation-1"><span class="nav-number">3.</span> <span class="nav-text">Instrumentation</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ClassFileTransformer"><span class="nav-number">4.</span> <span class="nav-text">ClassFileTransformer</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实验部分"><span class="nav-number">5.</span> <span class="nav-text">实验部分</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#启动前指定Agent位置"><span class="nav-number">5.1.</span> <span class="nav-text">启动前指定Agent位置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实战一：premain方法测试"><span class="nav-number">5.1.1.</span> <span class="nav-text">实战一：premain方法测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实战二：打印加载的类"><span class="nav-number">5.1.2.</span> <span class="nav-text">实战二：打印加载的类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实战三：代码插桩"><span class="nav-number">5.1.3.</span> <span class="nav-text">实战三：代码插桩</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动中进行Agent-Attach"><span class="nav-number">5.2.</span> <span class="nav-text">启动中进行Agent Attach</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AttachListener"><span class="nav-number">5.2.1.</span> <span class="nav-text">AttachListener</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#具体实现"><span class="nav-number">5.2.2.</span> <span class="nav-text">具体实现</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#坑点"><span class="nav-number">6.</span> <span class="nav-text">坑点</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="0range"
+      src="/images/yfy.png">
+  <p class="site-author-name" itemprop="name">0range</p>
+  <div class="site-description" itemprop="description">zzz</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/0range228" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;0range228" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart" aria-hidden="true"></i>
+  </span>
+   Powered By - 
+  <span class="author" itemprop="copyrightHolder">0range</span>
+
+  <!--
+    <span class="post-meta-divider"> | </span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">404k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">11:14</span>
+  -->
+
+</div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+            'X-LC-Key'    : 'l8KvoMr1i8urA7X7BzPMtQC7',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+      appKey     : 'l8KvoMr1i8urA7X7BzPMtQC7',
+      placeholder: "Say Something~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+
+<!--
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unjkp.com/valine/dist/Valine.min.js"></script>  
+  <script src="/js/Valine.min.js"></script> 
+
+   
+  
+  <script src="/js/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+        appKey: 'l8KvoMr1i8urA7X7BzPMtQC7',
+        placeholder: 'Say Something~',
+        avatar:'mm',
+        guest_info:['nick'] ,  //评论者只需要提供评论的昵称即可
+        pageSize:'10' || 10,
+    });
+  
+    var infoEle = document.querySelector('#comments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0){
+      infoEle.childNodes.forEach(function(item) {
+        item.parentNode.removeChild(item);
+      });
+    }
+  </script>
+
+-->
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/click_love.js"></script>

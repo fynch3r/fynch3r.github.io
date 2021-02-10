@@ -28,14 +28,15 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"0range228.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
-  <meta name="description" content="zzz">
+  <meta name="description" content="序言 愿君多采撷，此物最相思。  整理JFR相关知识 。">
+<meta name="keywords" content="JFR">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JFR笔记">
 <meta property="og:url" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;JFR%E7%AC%94%E8%AE%B0&#x2F;index.html">
 <meta property="og:site_name" content="0range的小窝">
-<meta property="og:description" content="zzz">
+<meta property="og:description" content="序言 愿君多采撷，此物最相思。  整理JFR相关知识 。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-01-20T01:58:30.492Z">
+<meta property="og:updated_time" content="2021-01-22T09:03:10.662Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://0range228.github.io/JFR%E7%AC%94%E8%AE%B0/">
@@ -128,7 +129,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">19</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">21</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -138,7 +139,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">34</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">35</span></a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -217,6 +218,22 @@
 
               <time title="创建时间：2021-01-20 09:58:30" itemprop="dateCreated datePublished" datetime="2021-01-20T09:58:30+08:00">2021-01-20</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-22 17:03:10" itemprop="dateModified" datetime="2021-01-22T17:03:10+08:00">2021-01-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
 
           
             <span id="/JFR%E7%AC%94%E8%AE%B0/" class="post-meta-item leancloud_visitors" data-flag-title="JFR笔记" title="热度">
@@ -246,14 +263,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>0</span>
+              <span>1.5k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -265,7 +282,52 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        
+        <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>愿君多采撷，此物最相思。</p>
+</blockquote>
+<p>整理JFR相关知识 。</p>
+<a id="more"></a>
+
+<h1 id="什么是JFR？"><a href="#什么是JFR？" class="headerlink" title="什么是JFR？"></a>什么是JFR？</h1><p>JFR 是 Java Flight Record （Java飞行记录） 的缩写，是 JVM 内置的基于事件的JDK监控记录框架。这个起名就是参考了黑匣子对于飞机的作用，将Java进程比喻成飞机飞行，==主要用于问题定位和持续监控==。</p>
+<p>JFR性能非常高效，对于业务影响很小，因为这个框架本来就是用来长期在线上部署的框架。这个记录可以输出成二进制文件，用户可以指定最大记录时间，或者最大记录大小，供用户在需要的时候输出成文件进行事后分析。</p>
+<p>JFR 的前身也是 JFR，只不过这个 J 不是 Java 而是 JRockit。在 JRockit 虚拟机时代，就有这样一个工具用来记录 Java 虚拟机运行时各项数据。在 Oracle 收购 Sun 公司之后，Hotspot 虚拟机时代，也一直延续了这个工具：</p>
+<ul>
+<li>JFR 0.9 版本对应 JDK 7 和JDK 8：</li>
+<li>在 JDK 8u40 之后，可以在运行时灵活地打开关闭 JFR。 </li>
+<li>JFR 1.0 版本对应 JDK 9 和 JDK 10： 在这一版本之后，增加了 JFR 事件接口，用户可以生产或者消费某种事件。 </li>
+<li>JFR 2.0 版本对应 JDK 11，详细讨论说明。</li>
+</ul>
+<p>JFR具有以下关键的特性： </p>
+<ul>
+<li><p>低开销，可在生产环境核心业务进程中始终在线运行。</p>
+</li>
+<li><p>可以进行运行时分析，可以分析 Java 应用程序，JVM 内部以及当前Java进程运行环境等多因素。</p>
+</li>
+<li><p>JFR基于事件采集，可以分析非常底层的信息，例如对象分配，方法采样与热点方法定位与调用堆栈，安全点分析与锁占用时长与堆栈分析，GC 相关分析以及 JIT 编译器相关分析（例如 CodeCache ）</p>
+</li>
+<li><p>完善的 API 定义，用户可以自定义事件的生产与消费。</p>
+</li>
+</ul>
+<h1 id="核心-Event事件"><a href="#核心-Event事件" class="headerlink" title="核心-Event事件"></a>核心-Event事件</h1><p>在 JFR中，一切皆为 Event： </p>
+<ul>
+<li>任意JVM行为都是一个Event，类加载对应 Class Load Event </li>
+<li>开启 JFR 记录也是一个Event，对应的就是 Recording Reason Event </li>
+<li>就算是有 Event 丢失，他也是一个 Event，对应 Data Loss Event</li>
+</ul>
+<p>Event 在特定的时间点产生，每个Event是由<strong>名称</strong>，<strong>时间戳</strong>还有 <strong>Event Payload</strong>组成。</p>
+<p>Event Payload包含例如 CPU负载、Event 发生之前还有之后的 Java 堆大小、 获取锁的线程 ID 等等。</p>
+<p>大部分的 Event，都有 Event 是在哪个线程发生的，Event 发生的时候这个线程的调用栈，Event 的持续时间。</p>
+<p>利用这些信息，我们可以回溯 Event 发生当时的情况。</p>
+<h2 id="Event-分类"><a href="#Event-分类" class="headerlink" title="Event 分类"></a>Event 分类</h2><p>Event 按照采集方式可以分为三种：</p>
+<ol>
+<li>Instant Event：顾名思义，这种 Event 在发生时就立刻采集。例如：Throw Exception Event 还有 Thread Start Event，类似于这种==在某一时刻发生的 Event==。</li>
+<li>Duration Event：这种 Event 需要耗费一些时间，在完成的时候会记录。对于这种类型的 Event，可以设置一个时间限制，超过这个时间限制的才会记录。例如 GC Event，Thread Sleep Event。</li>
+<li>Sample Event（Requestable Event）：按照一定的频率采集，这个频率是可以配置的。例如 Thread Dump Event，Method Sampling Event</li>
+</ol>
+<p>由于 JFR 会采集很多很多的数据，为了效率，最好配置自己感兴趣的事件采集；</p>
+<p>对于 Duration Event 设置时间限制，一般我们对于时间短的事件并不关心。</p>
+<p>Event 会被写入 .jfr 的二进制文件（二进制文件对于应用来说读写效率最高）中，以 little endian base 128 的形式编码，这里我们用一个 Event 举个例子：</p>
+
     </div>
 
     
@@ -273,6 +335,9 @@
     
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JFR/" rel="tag"><i class="fa fa-tag"></i>JFR</a>
+          </div>
 
         
 
@@ -283,7 +348,10 @@
     <a href="/iTerm2-%E5%BF%AB%E6%8D%B7%E9%94%AE%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C/" rel="prev" title="iTerm2 快捷键速查手册">
       <i class="fa fa-chevron-left"></i> iTerm2 快捷键速查手册
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/Java-Agent%E8%A7%A3%E8%AF%BB/" rel="next" title="Java Agent解读">
+      Java Agent解读 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -346,6 +414,7 @@
       -->
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是JFR？"><span class="nav-number">2.</span> <span class="nav-text">什么是JFR？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#核心-Event事件"><span class="nav-number">3.</span> <span class="nav-text">核心-Event事件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Event-分类"><span class="nav-number">3.1.</span> <span class="nav-text">Event 分类</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -361,7 +430,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -374,7 +443,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">21</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -419,12 +488,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">379k</span>
+    <span title="站点总字数">404k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">10:32</span>
+    <span title="站点阅读时长">11:14</span>
   -->
 
 </div>
