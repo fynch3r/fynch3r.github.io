@@ -1694,6 +1694,15 @@
 <blockquote>
 <p>对于任意的一个类。其实都必须由加载它的类加载器和这个类本身一起共同确立其在Java虚拟机中的唯一性，每一个类加载器，都拥有一个独立的类名称空间。两个类是否相等，其实只有这两个类都是由同一个类加载器加载的前提下才有意义。只要加载它们的类加载器不同，那么这两个类就必定不相等。</p>
 </blockquote>
+<p>Java的类加载体系：parent属性 理论关系</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Bootstrap Classloader -&gt; Extension ClassLoader -&gt; Application ClassLoader</span><br></pre></td></tr></table></figure>
+
+
+
+<p>JDK类实现体系：实现/继承的关系，通常继承URLClassLoader</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ClassLoader -&gt; Secure ClassLoader -&gt; URL ClassLoader -&gt; ExtClassLoader/AppClassLoader</span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/image-20210225193851385.png" alt="image-20210225193851385"></p>
 <h1 id="双亲委派机制"><a href="#双亲委派机制" class="headerlink" title="双亲委派机制"></a>双亲委派机制</h1><p>站在JVM角度来看，只存在两种不同的类加载器：</p>
 <ul>
 <li>启动类加载器 BootstrapClassLoader/使用C++实现</li>
@@ -1715,10 +1724,15 @@
 
 
 
-<h2 id="loadClass-String-name"><a href="#loadClass-String-name" class="headerlink" title="loadClass(String name)"></a>loadClass(String name)</h2><p>它接受一个全类名，然后返回一个 Class 类型的实例。</p>
-<h2 id="defineClass-byte-b"><a href="#defineClass-byte-b" class="headerlink" title="defineClass(byte[] b)"></a>defineClass(byte[] b)</h2><p>方法接受一组字节，然后将其具体化为一个 Class 类型实例，它一般从磁盘上加载一个文件，然后将文件的字节传递给 JVM ，通过 JVM （ native 方法）对于 Class 的定义，将其具体化，实例化为一个Class 类型实例。</p>
-<h2 id="getParent"><a href="#getParent" class="headerlink" title="getParent()"></a>getParent()</h2><p>返回其parent ClassLoader</p>
-<h2 id="findClass-String-name"><a href="#findClass-String-name" class="headerlink" title="findClass(String name)"></a>findClass(String name)</h2><p>查找名称为name都一个类是否存在，返回的结果是java.lang.Class类对象实例。</p>
+<p><code>ClassLoader</code>类有如下核心方法：</p>
+<ol>
+<li><code>loadClass</code>(加载指定的Java类) 它接受一个全类名，然后返回一个 Class 类型的实例。</li>
+<li><code>findClass</code>(查找指定的Java类) 查找名称为name都一个类是否存在，返回的结果是java.lang.Class类对象实例。</li>
+<li><code>findLoadedClass</code>(查找JVM已经加载过的类)</li>
+<li><code>defineClass</code>(定义一个Java类) 接受一组字节，实例化为一个Class 类型实例。</li>
+<li><code>resolveClass</code>(链接指定的Java类)</li>
+<li><code>getParent</code>返回其parent ClassLoader</li>
+</ol>
 <p>整个demo玩玩看；</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClassLoaderTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ClassLoader cl = Hello<span class="class">.<span class="keyword">class</span>.<span class="title">getClassLoader</span>()</span>;</span><br><span class="line">        System.out.println(cl);</span><br><span class="line"></span><br><span class="line">        ClassLoader clParent = cl.getParent();</span><br><span class="line">        System.out.println(clParent);</span><br><span class="line"></span><br><span class="line">        ClassLoader cl2 = clParent.getParent();</span><br><span class="line">        System.out.println(cl2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -1726,7 +1740,16 @@
 
 <p>输出：</p>
 <p><img src="../images/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/image-20201105164854799.png" alt="image-20201105164854799"></p>
-<h1 id="自定义ClassLoader"><a href="#自定义ClassLoader" class="headerlink" title="自定义ClassLoader"></a>自定义ClassLoader</h1><p> Java 中提供的默认 ClassLoader 只加载指定目录下面的 jar 和 class ，但是如果我们需要加载其他地方的 jar 和 class 时则无能为力了，这个时候就需要我们自己实现 ClassLoader 了。我们从上面了解到 ClassLoader是一个抽象类，实现自定义的 ClassLoader 需要继承该类并实现里面的方法。</p>
+<h1 id="类加载方式"><a href="#类加载方式" class="headerlink" title="类加载方式"></a>类加载方式</h1><p>显式加载：通常使用<code>Java反射</code>或者<code>ClassLoader</code>来动态加载一个类对象。也可以理解为类动态加载</p>
+<p>隐式加载：<code>类名.方法名()</code>或<code>new</code>类实例。</p>
+<p>Demo:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 反射加载Test示例</span></span><br><span class="line">Class.forName(<span class="string">"com.sec.Test"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// ClassLoader加载Test示例</span></span><br><span class="line"><span class="keyword">this</span>.getClass.getClassLoader().loadClass(<span class="string">"com.sec.Test"</span>);</span><br></pre></td></tr></table></figure>
+
+<p><code>Class.forName(&quot;类名&quot;)</code>默认会初始化被加载类的静态属性和方法</p>
+<p>如果不希望初始化类可以使用<code>Class.forName(&quot;类名&quot;, 是否初始化类, 类加载器)</code></p>
+<p>``ClassLoader.loadClass`默认不会初始化类方法。</p>
+<h1 id="自定义ClassLoader"><a href="#自定义ClassLoader" class="headerlink" title="自定义ClassLoader"></a>自定义ClassLoader</h1><p> Java 中提供的默认 ClassLoader 只加载指定目录下面的 jar 和 class ，我们从上面了解到 ClassLoader是一个抽象类，实现自定义的 ClassLoader 需要继承该类并实现里面的方法。</p>
+<p><strong><code>java.lang.ClassLoader</code>是所有的类加载器的父类。</strong></p>
 <p><strong>一般情况下，我们重写父类的 findClass 方法即可。</strong></p>
 <p><strong>双亲委派机制是loadClass()函数负责的。</strong></p>
 <p>*<em>一个ClassLoader创建时如果没有指定parent，那么它的parent默认就是AppClassLoader。 *</em></p>
@@ -1749,16 +1772,16 @@
 
 <p>最终实现方法调用：</p>
 <p><img src="../images/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/image-20201106092414009.png" alt="image-20201106092414009"></p>
-<h1 id="重要方法"><a href="#重要方法" class="headerlink" title="重要方法"></a>重要方法</h1><h2 id="loadClass"><a href="#loadClass" class="headerlink" title="loadClass"></a>loadClass</h2><p>直接看源码：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">protected</span> Class&lt;?&gt; loadClass(String name, <span class="keyword">boolean</span> resolve)</span><br><span class="line">        <span class="keyword">throws</span> ClassNotFoundException</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (getClassLoadingLock(name)) &#123;</span><br><span class="line">            <span class="comment">// 首先，检测是否已经加载</span></span><br><span class="line">            Class&lt;?&gt; c = findLoadedClass(name);</span><br><span class="line">            <span class="keyword">if</span> (c == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">long</span> t0 = System.nanoTime();</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> (parent != <span class="keyword">null</span>) &#123;</span><br><span class="line">                        <span class="comment">//父加载器不为空则调用父加载器的loadClass</span></span><br><span class="line">                        c = parent.loadClass(name, <span class="keyword">false</span>);</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        <span class="comment">//父加载器为空则调用Bootstrap Classloader</span></span><br><span class="line">                        c = findBootstrapClassOrNull(name);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">                    <span class="comment">// ClassNotFoundException thrown if class not found</span></span><br><span class="line">                    <span class="comment">// from the non-null parent class loader</span></span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (c == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    <span class="comment">// If still not found, then invoke findClass in order</span></span><br><span class="line">                    <span class="comment">// to find the class.</span></span><br><span class="line">                  	<span class="comment">// 父加载器没有找到，则调用findclass</span></span><br><span class="line">                    <span class="keyword">long</span> t1 = System.nanoTime();</span><br><span class="line">                    c = findClass(name);</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// this is the defining class loader; record the stats</span></span><br><span class="line">                    sun.misc.PerfCounter.getParentDelegationTime().addTime(t1 - t0);</span><br><span class="line">                    sun.misc.PerfCounter.getFindClassTime().addElapsedTimeFrom(t1);</span><br><span class="line">                    sun.misc.PerfCounter.getFindClasses().increment();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (resolve) &#123;</span><br><span class="line">              	<span class="comment">//需不需要连接阶段，调用resolveClass()</span></span><br><span class="line">                resolveClass(c);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> c;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="重要方法-loadClass"><a href="#重要方法-loadClass" class="headerlink" title="重要方法 loadClass"></a>重要方法 loadClass</h1><p>直接看源码：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">protected</span> Class&lt;?&gt; loadClass(String name, <span class="keyword">boolean</span> resolve)</span><br><span class="line">        <span class="keyword">throws</span> ClassNotFoundException</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (getClassLoadingLock(name)) &#123;</span><br><span class="line">            <span class="comment">// 首先，检测是否已经加载</span></span><br><span class="line">            Class&lt;?&gt; c = findLoadedClass(name);</span><br><span class="line">            <span class="keyword">if</span> (c == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">long</span> t0 = System.nanoTime();</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> (parent != <span class="keyword">null</span>) &#123;</span><br><span class="line">                        <span class="comment">//父加载器不为空则调用父加载器的loadClass</span></span><br><span class="line">                        c = parent.loadClass(name, <span class="keyword">false</span>);</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        <span class="comment">//父加载器为空则调用Bootstrap Classloader</span></span><br><span class="line">                        c = findBootstrapClassOrNull(name);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">                    <span class="comment">// ClassNotFoundException thrown if class not found</span></span><br><span class="line">                    <span class="comment">// from the non-null parent class loader</span></span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (c == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    <span class="comment">// If still not found, then invoke findClass in order</span></span><br><span class="line">                    <span class="comment">// to find the class.</span></span><br><span class="line">                  	<span class="comment">// 如果该类未被加载，并且父类加载器也没有找到，则调用findclass</span></span><br><span class="line">                    <span class="keyword">long</span> t1 = System.nanoTime();</span><br><span class="line">                  </span><br><span class="line">                  	<span class="comment">//！！！！！！！！！！！</span></span><br><span class="line">                    c = findClass(name);</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// this is the defining class loader; record the stats</span></span><br><span class="line">                    sun.misc.PerfCounter.getParentDelegationTime().addTime(t1 - t0);</span><br><span class="line">                    sun.misc.PerfCounter.getFindClassTime().addElapsedTimeFrom(t1);</span><br><span class="line">                    sun.misc.PerfCounter.getFindClasses().increment();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (resolve) &#123;</span><br><span class="line">              	<span class="comment">//需不需要连接阶段，调用resolveClass()</span></span><br><span class="line">                resolveClass(c);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> c;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
 <p>上面是方法原型，一般实现这个方法的步骤是</p>
 <ol>
 <li>执行<code>findLoadedClass(String)</code>去检测这个class是不是已经加载过了，已经加载过的都应该在缓存中。</li>
-<li>执行父加载器的<code>loadClass</code>方法。如果父加载器为null，则jvm内置的加载器去替代，也就是Bootstrap ClassLoader。这也解释了ExtClassLoader的parent为null,但仍然说Bootstrap ClassLoader是它的父加载器。</li>
+<li>执行父加载器的<code>loadClass</code>方法。如果父加载器为空，则Bootstrap ClassLoader加载器去加载。这也解释了ExtClassLoader的parent为null,但仍然说Bootstrap ClassLoader是它的父加载器。</li>
 <li>如果向上委托父加载器没有加载成功，则通过<code>findClass(String)</code>查找。</li>
 </ol>
-<p>如果class在上面的步骤中找到了，参数resolve又是true的话（上文提到的==resolveClass==，resolve参数就是表示需不需要连接阶段），那么<code>loadClass()</code>又会调用<code>resolveClass(Class)</code>这个方法来生成最终的Class对象。 </p>
+<p>如果class在上面的步骤中找到了，参数resolve又是true的话（上文提到的==resolveClass==，resolve参数就是表示需不需要连接阶段），那么<code>loadClass()</code>又会调用<code>resolveClass(Class)</code>这个方法去链接，来生成最终的Class对象。 </p>
 <h1 id="类加载主要的三个阶段"><a href="#类加载主要的三个阶段" class="headerlink" title="类加载主要的三个阶段"></a>类加载主要的三个阶段</h1><ol>
 <li><p>加载</p>
 </li>
