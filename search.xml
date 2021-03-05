@@ -8439,6 +8439,12 @@
 <p>对象.getClass()</p>
 </blockquote>
 <p>所有对象的父类都是Object类，这个类有自己的getClass方法，所有对象都可以拿来用</p>
+<h3 id="注意⚠️"><a href="#注意⚠️" class="headerlink" title="注意⚠️"></a>注意⚠️</h3><p>类名.class 最安全 性能最好</p>
+<p>Class.forName() 属于动态加载类。将字节码文件加载进内存，参数需要类的全限定名</p>
+<p>使用类名.class来创建Class对象的引用时，不会自动初始化该Class对象</p>
+<p>使用Class.forName()会自动初始化该Class对象</p>
+<p>Class.forName() 方法 当类加载进了内存，只有<strong>静态初始块</strong>得到了执行。</p>
+<p>getDeclaredxxx 不能获取父类的方法</p>
 <h2 id="实例demo"><a href="#实例demo" class="headerlink" title="实例demo"></a>实例demo</h2><h3 id="字节码阶段"><a href="#字节码阶段" class="headerlink" title="字节码阶段"></a>字节码阶段</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//Class.forName("全类名")</span></span><br><span class="line">Class cls1 = Class.forName(<span class="string">"domain.Person"</span>);</span><br><span class="line">System.out.println(cls1);</span><br></pre></td></tr></table></figure>
 
 <h3 id="内存阶段-1"><a href="#内存阶段-1" class="headerlink" title="内存阶段"></a>内存阶段</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//类名.class属性</span></span><br><span class="line">Class cls2 = Person<span class="class">.<span class="keyword">class</span></span>;</span><br><span class="line">System.out.println(cls2);</span><br></pre></td></tr></table></figure>
@@ -8453,7 +8459,7 @@
 <h2 id="获取Fields"><a href="#获取Fields" class="headerlink" title="获取Fields"></a>获取Fields</h2><blockquote>
 <p> 获取成员变量们：</p>
 <ul>
-<li>Fields[] getFields()：只获取所有public修饰的成员变量</li>
+<li>Fields[] getFields()：只能获取所有public修饰的成员变量</li>
 <li>Fields    getField(String name)：获取特定成员变量</li>
 <li>Fields[] getDeclaredFields()：获取所有的成员变量，【不考虑】修饰符</li>
 <li>Fields    getDeclaredField(String name)：获取特定的成员变量，【不考虑】修饰符</li>
@@ -8482,7 +8488,7 @@
 <p>获取成员方法们：</p>
 <p>Method[]  getMethods()//获取所有【public】修饰的方法，父类Object的方法也能看到</p>
 <p>Method getMethod(String name，类 &lt;?&gt; … parameterTypes)</p>
-<p>Method[] getDeclaredMethods()//</p>
+<p>Method[] getDeclaredMethods()//获取所有声明方法 不考虑修饰符</p>
 <p>Method getDeclaredMethod(String name，类 &lt;?&gt; … parameterTypes)</p>
 </blockquote>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Class personClass = Person<span class="class">.<span class="keyword">class</span></span>;</span><br><span class="line"><span class="comment">//获取制定名称的方法</span></span><br><span class="line">Method eat_Method = personClass.getMethod(<span class="string">"eat"</span>);</span><br><span class="line"><span class="comment">//进而执行方法,【invoke】，它需要一个真实的对象，以及方法的实际参数列表</span></span><br><span class="line">Person pp = <span class="keyword">new</span> Person();</span><br><span class="line"><span class="comment">//因为是空参方法，所以直接放进来一个对象就行</span></span><br><span class="line"><span class="comment">//执行方法，eat...</span></span><br><span class="line">eat_Method.invoke(pp);</span><br></pre></td></tr></table></figure>
@@ -8497,7 +8503,7 @@
 <p>这里分步解读：</p>
 <ol>
 <li>首先两个参数：<code>className</code>、<code>methodName</code>分别代表了传入的类名和方法名。</li>
-<li>首先<code>Class clazz = Class.forName(className);</code>这里的意思是在字节码层面，我先获取你的Class类对象，也就是<code>clazz</code></li>
+<li>首先<code>Class clazz = Class.forName(className);</code>这里的意思是在字节码层面，先获取你的Class类对象<code>clazz</code>。</li>
 <li>接下来<code>clazz.getMethod(methodName).invoke(clazz.newInstance());</code>这里的含义可以分步解读：<ol>
 <li><code>clazz.getMethod(methodName)</code>这里我先根据传进来的方法名<code>methodName</code>获取你的Method对象;</li>
 <li>接下来<code>.invoke(clazz.newInstance())</code>这个含义是对于我获取的method方法对象，我要执行这个方法，那么问题来了，我如何才能执行这个方法呢？？？</li>
@@ -8540,14 +8546,14 @@
 <p><code>Class.forName(&quot;C1$C2&quot;)</code>可以调用这个内部类。</p>
 <p>我们可以通过<code>Class.forName(&quot;java.lang.Runtime&quot;)</code>来获取类（java.lang.Runtime是Runtime类的完整路径）</p>
 <h2 id="getMethod"><a href="#getMethod" class="headerlink" title="getMethod"></a>getMethod</h2><p>Java中支持类的重载，我们不能仅通过函数名来确定一个函数。所以，在调用 getMethod 的时候，我们需要传给他你需要获取的函数的参数类型列表，如下：<br><code>Class.forName(&quot;java.lang.Runtime&quot;).getMethod(&quot;exec&quot;, String.class)</code></p>
-<h2 id="invoke"><a href="#invoke" class="headerlink" title="invoke"></a>invoke</h2><p>invoke方法位于Method类下，其的作用是传入参数，执行方法，<br><code>public Object invoke(Object obj, Object... args)</code><br>它的第一个参数是执行method的实例化对象：</p>
+<h2 id="invoke"><a href="#invoke" class="headerlink" title="invoke"></a>invoke</h2><p>invoke方法位于Method类下，其作用是传入参数，执行方法，<br><code>public Object invoke(Object obj, Object... args)</code><br>它的第一个参数是执行method的实例化对象：</p>
 <ul>
-<li>如果这个方法是一个普通方法，那么第一个参数是类对象</li>
-<li>如果这个方法是一个静态方法，那么第一个参数是类（之后会提到，这里其实不用那么死板），它接下来的参数才是需要传入的参数。</li>
+<li>如果这个方法是一个普通方法，那么第一个参数是类对象。</li>
+<li>如果这个方法是一个静态方法，那么第一个参数是类（之后会提到，这里其实不用那么死板，null也行），它接下来的参数才是需要传入的参数。</li>
 </ul>
-<p>由于我们的exec函数是一个普通方法，需要传入类对象，即<code>invoke(类对象，exec方法传入的参数)</code><br>之前说到Runtime的类对象不能通过newInstance()来获取对象（class.newInstance等于new class）,是因为Runtime的类构造函数是一个private构造函数，只能通过getRuntime方法返回一个对象。</p>
+<p>由于我们的exec函数是一个普通方法，需要传入类对象，即<code>invoke(类对象，exec方法传入的参数)</code> 。<br>之前说到Runtime的类对象不能通过newInstance()来获取对象（class.newInstance等于new class）,是因为Runtime的类构造函数是一个private构造函数，只能通过getRuntime方法返回一个对象。</p>
 <p>获取类对象：</p>
-<figure class="highlight plain"><figcaption><span>(由于getRuntime是一个静态方法，invoke传入Runtime类，进行调用)</span></figcaption><table><tr><td class="code"><pre><span class="line">`invoke(Class.forName(&quot;java.lang.Runtime&quot;).getMethod(&quot;getRuntime&quot;).invoke(Class.forName(&quot;java.lang.Runtime&quot;))，&quot;calc.exe&quot;)`</span><br><span class="line"></span><br><span class="line">合并：</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">Class.forName(&quot;java.lang.Runtime&quot;).getMethod(&quot;exec&quot;, String.class).</span><br><span class="line">                invoke(</span><br><span class="line">                        Class.forName(&quot;java.lang.Runtime&quot;).getMethod(&quot;getRuntime&quot;).invoke(</span><br><span class="line">                                Class.forName(&quot;java.lang.Runtime&quot;)),&quot;/Applications/Calculator.app/Contents/MacOS/Calculator&quot;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><figcaption><span>(由于getRuntime是一个静态方法，invoke传入Runtime类，进行调用)</span></figcaption><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">`invoke(Class.forName(&quot;java.lang.Runtime&quot;).getMethod(&quot;getRuntime&quot;).invoke(Class.forName(&quot;java.lang.Runtime&quot;))，&quot;calc.exe&quot;)`</span><br><span class="line"></span><br><span class="line">合并：</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">Class.forName(&quot;java.lang.Runtime&quot;).getMethod(&quot;exec&quot;, String.class).</span><br><span class="line">                invoke(</span><br><span class="line">                        Class.forName(&quot;java.lang.Runtime&quot;).getMethod(&quot;getRuntime&quot;).invoke(</span><br><span class="line">                                Class.forName(&quot;java.lang.Runtime&quot;)),&quot;/Applications/Calculator.app/Contents/MacOS/Calculator&quot;);</span><br></pre></td></tr></table></figure>
 
 <p><img src="../images/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/image-20200411221213662.png" alt="image-20200411221213662"></p>
 <p>再简化一下：</p>
