@@ -1781,10 +1781,18 @@
 <p>今天来总结类加载机制。</p>
 <a id="more"></a>
 
+
+
+<h1 id="编译器与解释器"><a href="#编译器与解释器" class="headerlink" title="编译器与解释器"></a>编译器与解释器</h1><p>我们通常会把编程语言的处理器分为<code>编译器</code>和<code>解释器</code>。</p>
+<p>编译器则是将某种语言代码转换为另外一种语言的程序，通常会转换为机器语言。</p>
+<p>解释器是一种用来执行程序的软件，它会根据程序代码中的算法执行运算，如果这个软件是根据虚拟的或者类似机器语言的程序设计语言写成，那也称为虚拟机。</p>
+<p>Java会混用解释器和编译器，Java会先通过编译器将源代码转换为Java二进制代码（字节码），并将这种虚拟的机器语言保存在文件中（通常是.class文件），之后通过Java虚拟机（JVM）的解释器来执行这段代码。</p>
 <h1 id="类和类加载器"><a href="#类和类加载器" class="headerlink" title="类和类加载器"></a>类和类加载器</h1><p>这里直接上《深入理解Java虚拟机》原文，写得很好：</p>
 <blockquote>
 <p>对于任意的一个类。其实都必须由加载它的类加载器和这个类本身一起共同确立其在Java虚拟机中的唯一性，每一个类加载器，都拥有一个独立的类名称空间。两个类是否相等，其实只有这两个类都是由同一个类加载器加载的前提下才有意义。只要加载它们的类加载器不同，那么这两个类就必定不相等。</p>
 </blockquote>
+<p>Java是面向对象的语言，字节码中包含了很多Class信息。在 JVM 解释执行的过程中，ClassLoader就是用来加载Java类的，它会将Java字节码加载到内存中。每个 Class 类对象的内部都有一个 classLoader 属性来标识自己是由哪个 ClassLoader 加载的。</p>
+<p><img src="../images/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/image-20210306155604696.png" alt="image-20210306155604696"></p>
 <p>Java的类加载体系：parent属性 理论关系</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Bootstrap Classloader -&gt; Extension ClassLoader -&gt; Application ClassLoader</span><br></pre></td></tr></table></figure>
 
@@ -1801,10 +1809,13 @@
 </ul>
 <h2 id="Bootstrap-ClassLoader-启动类加载器"><a href="#Bootstrap-ClassLoader-启动类加载器" class="headerlink" title="Bootstrap ClassLoader 启动类加载器"></a>Bootstrap ClassLoader 启动类加载器</h2><p>负责加载存放在<code>JAVA_HOME/lib</code>目录下，或者被-Xbooclasspath参数所指定的路径中存放的，并且可以被JVM识别的类库，加载到虚拟机的内存中。</p>
 <p>出于安全考虑，启动类只加载包名为：java、javax、sun开头的类。</p>
-<h2 id="Extension-ClassLoader-扩展类加载器"><a href="#Extension-ClassLoader-扩展类加载器" class="headerlink" title="Extension ClassLoader 扩展类加载器"></a>Extension ClassLoader 扩展类加载器</h2><p>负责加载Java的扩展类库，默认加载<code>JAVA_HOME/jre/lib/ext/</code>目下的所有jar。</p>
-<h2 id="Application-ClassLoader-系统类加载器"><a href="#Application-ClassLoader-系统类加载器" class="headerlink" title="Application ClassLoader 系统类加载器"></a>Application ClassLoader 系统类加载器</h2><p>负责加载应用程序<code>classpath</code>目录下的所有jar和class文件。</p>
+<p>它负责加载 JVM 运行时核心类，这些类位于 JAVA_HOME/lib/rt.jar 文件中，我们常用内置库 java.<em>.</em> 都在里面。这个 ClassLoader 比较特殊，它其实不是一个ClassLoader实例对象，而是由C代码实现。用户在实现自定义类加载器时，如果需要把加载请求委派给启动类加载器，那可以直接传入null作为 BootstrapClassLoader。</p>
+<h2 id="Extension-ClassLoader-扩展类加载器"><a href="#Extension-ClassLoader-扩展类加载器" class="headerlink" title="Extension ClassLoader 扩展类加载器"></a>Extension ClassLoader 扩展类加载器</h2><p>负责加载Java的扩展类库，默认加载<code>JAVA_HOME/jre/lib/ext/</code>目下的所有jar，库名通常以 javax 开头。</p>
+<h2 id="Application-ClassLoader-系统类加载器"><a href="#Application-ClassLoader-系统类加载器" class="headerlink" title="Application ClassLoader 系统类加载器"></a>Application ClassLoader 系统类加载器</h2><p>直接提供给用户使用的ClassLoader，它会加载 ClASSPATH 环境变量或者 java.class.path 属性里定义的路径中的 jar 包和目录，负责加载包括开发者代码中、第三方库中的类。</p>
 <p>如果应用程序中没有自定义过自己的类加载器，一般情况下这个就是程序中默认的类加载器。</p>
 <p>可以通过 ClassLoader.getSystemClassLoader() 来获取它。</p>
+<h2 id="特殊：URLClassloader"><a href="#特殊：URLClassloader" class="headerlink" title="特殊：URLClassloader"></a>特殊：URLClassloader</h2><p>ClassLoader抽象类的一种实现，它可以根据URL搜索类或资源，并进行远程加载。在JDK实现中，BootstrapClassLoader、ExtClassLoader、AppClassLoader等都是 URLClassLoader 的子类。</p>
+<p>ExtClassLoader 和 AppClassLoader 类的实现代码位于rt.jar 中的 sun.misc.Launcher 类中，Launcher是由BootstrapClassLoader加载的。</p>
 <h2 id="用户自定义类加载器"><a href="#用户自定义类加载器" class="headerlink" title="用户自定义类加载器"></a>用户自定义类加载器</h2><p>开发人员可以通过继承java.lang.ClassLoader 类的方式实现自己的类加载器，重写 findClass()方法，以满足一些特殊的需求。</p>
 <blockquote>
 <p>双亲委派模型工作过程是：如果一个类加载器收到类加载的请求，它首先不会自己去尝试加载这个类，而是把这个请求委派给父类加载器完成。每个类加载器都是如此，只有当父加载器在自己的搜索范围内找不到指定的类时（即ClassNotFoundException），子加载器才会尝试自己去加载。</p>
@@ -1824,6 +1835,15 @@
 <li><code>resolveClass</code>(链接指定的Java类)</li>
 <li><code>getParent</code>返回其parent ClassLoader</li>
 </ol>
+<p>重点逻辑：</p>
+<ul>
+<li><p>loadClass(String classname)，参数为需要加载的全限定类名，该方法会先查看目标类是否已经被加载，查看父级加载器并递归调用loadClass()，如果都没找到则调用findClass()。</p>
+</li>
+<li><p>findClass()，搜索类的位置，一般会根据名称或位置加载.class字节码文件，获取字节码数组，然后调用defineClass()。</p>
+</li>
+<li><p>defineClass()，将字节码转换为 JVM 的 java.lang.Class 对象。</p>
+</li>
+</ul>
 <p>整个demo玩玩看；</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClassLoaderTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ClassLoader cl = Hello<span class="class">.<span class="keyword">class</span>.<span class="title">getClassLoader</span>()</span>;</span><br><span class="line">        System.out.println(cl);</span><br><span class="line"></span><br><span class="line">        ClassLoader clParent = cl.getParent();</span><br><span class="line">        System.out.println(clParent);</span><br><span class="line"></span><br><span class="line">        ClassLoader cl2 = clParent.getParent();</span><br><span class="line">        System.out.println(cl2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -1838,7 +1858,8 @@
 
 <p><code>Class.forName(&quot;类名&quot;)</code>默认会初始化被加载类的静态属性和方法</p>
 <p>如果不希望初始化类可以使用<code>Class.forName(&quot;类名&quot;, 是否初始化类, 类加载器)</code></p>
-<p>``ClassLoader.loadClass`默认不会初始化类方法。</p>
+<p><code>ClassLoader.loadClass</code>默认不会初始化类，只是将类加载进JVM虚拟机。</p>
+<p><code>Class.forName()</code>可以加载数组，而<code>ClassLoader.loadClass()</code> 不能。</p>
 <h1 id="自定义ClassLoader"><a href="#自定义ClassLoader" class="headerlink" title="自定义ClassLoader"></a>自定义ClassLoader</h1><p> Java 中提供的默认 ClassLoader 只加载指定目录下面的 jar 和 class ，我们从上面了解到 ClassLoader是一个抽象类，实现自定义的 ClassLoader 需要继承该类并实现里面的方法。</p>
 <p><strong><code>java.lang.ClassLoader</code>是所有的类加载器的父类。</strong></p>
 <p><strong>一般情况下，我们重写父类的 findClass 方法即可。</strong></p>
