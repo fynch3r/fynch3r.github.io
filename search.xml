@@ -17,6 +17,7 @@
 <p>git pull     检查协同操作是否冲突</p>
 <p>git push   上传远程仓库</p>
 <p>git status  查看本地git任务状态</p>
+<p>git log 查看操作日志</p>
 <h1 id="实战记录"><a href="#实战记录" class="headerlink" title="实战记录"></a>实战记录</h1><h2 id="新建项目关联远程git仓库"><a href="#新建项目关联远程git仓库" class="headerlink" title="新建项目关联远程git仓库"></a>新建项目关联远程git仓库</h2><p>cd</p>
 <p>git init</p>
 <p>git add .</p>
