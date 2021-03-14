@@ -83,7 +83,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90&#x2F;image-20201202110252070.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90&#x2F;image-20201202110107440.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90&#x2F;image-20201202104037072.png">
-<meta property="og:updated_time" content="2020-12-18T07:48:58.501Z">
+<meta property="og:updated_time" content="2021-03-13T09:41:07.648Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90&#x2F;image-20201117095645316.png">
 
@@ -271,7 +271,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-12-18 15:48:58" itemprop="dateModified" datetime="2020-12-18T15:48:58+08:00">2020-12-18</time>
+                <time title="修改时间：2021-03-13 17:41:07" itemprop="dateModified" datetime="2021-03-13T17:41:07+08:00">2021-03-13</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -374,7 +374,7 @@
 <li>接着使用URLClassLoader将jarpath加载到类加载器，并返回这个类加载器；</li>
 </ul>
 <p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117102613592.png" alt="image-20201117102613592"></p>
-<h2 id="获取类加载器"><a href="#获取类加载器" class="headerlink" title="获取类加载器"></a>获取类加载器</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取类加载器</span></span><br><span class="line"><span class="keyword">final</span> ClassResourceEnumerator classResourceEnumerator = <span class="keyword">new</span> ClassResourceEnumerator(classLoader);</span><br></pre></td></tr></table></figure>
+<h2 id="包装类加载器"><a href="#包装类加载器" class="headerlink" title="包装类加载器"></a>包装类加载器</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取类加载器</span></span><br><span class="line"><span class="keyword">final</span> ClassResourceEnumerator classResourceEnumerator = <span class="keyword">new</span> ClassResourceEnumerator(classLoader);</span><br></pre></td></tr></table></figure>
 
 <p>这里就是将上一步加载我们jar的类加载器classLoader传入ClassResourceEnumerator。</p>
 <p>跟进ClassResourceEnumerator：</p>
@@ -386,7 +386,7 @@
 <p>目的是将rt.jar加载到这里作者注释也写到他用了一个<strong>比较hacky</strong>的方式：</p>
 <p>他先获取JDK内部的String类的路径，加载String类的同时，类加载器还会将rt.jar的全部类一起加载，那么最后就是将rt.jar的所有类都加入到ClassResource类型的result并且返回。</p>
 <p>其实就是获取rt.jar的所有class。</p>
-<p>回到<em>getAllClasses()</em>函数，其实拿到rt.jar里面的全部类之后，继续将传入的jar包内的类加入到result，并最后返回。</p>
+<p>回到<em>getAllClasses()</em>函数，其实拿到rt.jar之后，继续将传入的jar包内的类加入到result，并最后返回。</p>
 <p>总结：</p>
 <ul>
 <li><code>getRuntimeClasses</code>获取rt.jar的所有class</li>
@@ -696,7 +696,7 @@
       -->
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">2.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#流程介绍"><span class="nav-number">3.</span> <span class="nav-text">流程介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化"><span class="nav-number">3.1.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取类加载器"><span class="nav-number">3.2.</span> <span class="nav-text">获取类加载器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法探索-MethodDiscovery"><span class="nav-number">3.3.</span> <span class="nav-text">方法探索 MethodDiscovery</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#discover"><span class="nav-number">3.3.1.</span> <span class="nav-text">discover()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#save"><span class="nav-number">3.3.2.</span> <span class="nav-text">save()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流程图探索-PassthroughDiscovery"><span class="nav-number">3.4.</span> <span class="nav-text">流程图探索 PassthroughDiscovery</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#discover-1"><span class="nav-number">3.4.1.</span> <span class="nav-text">discover()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成passthrough数据流图"><span class="nav-number">3.4.2.</span> <span class="nav-text">生成passthrough数据流图</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法调用探索-CallGraphDiscovery"><span class="nav-number">3.5.</span> <span class="nav-text">方法调用探索 CallGraphDiscovery</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用链入口搜索-SourceDiscovery"><span class="nav-number">3.6.</span> <span class="nav-text">利用链入口搜索 SourceDiscovery</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">2.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#流程介绍"><span class="nav-number">3.</span> <span class="nav-text">流程介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化"><span class="nav-number">3.1.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#包装类加载器"><span class="nav-number">3.2.</span> <span class="nav-text">包装类加载器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法探索-MethodDiscovery"><span class="nav-number">3.3.</span> <span class="nav-text">方法探索 MethodDiscovery</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#discover"><span class="nav-number">3.3.1.</span> <span class="nav-text">discover()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#save"><span class="nav-number">3.3.2.</span> <span class="nav-text">save()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流程图探索-PassthroughDiscovery"><span class="nav-number">3.4.</span> <span class="nav-text">流程图探索 PassthroughDiscovery</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#discover-1"><span class="nav-number">3.4.1.</span> <span class="nav-text">discover()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成passthrough数据流图"><span class="nav-number">3.4.2.</span> <span class="nav-text">生成passthrough数据流图</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法调用探索-CallGraphDiscovery"><span class="nav-number">3.5.</span> <span class="nav-text">方法调用探索 CallGraphDiscovery</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用链入口搜索-SourceDiscovery"><span class="nav-number">3.6.</span> <span class="nav-text">利用链入口搜索 SourceDiscovery</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

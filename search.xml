@@ -44,6 +44,11 @@
 <p>git：粘贴github仓库地址</p>
 <p>git commit : 右键项目 -&gt;  commit directory -&gt; 在窗口中选择上传文件 上传记录</p>
 <p>git push 右上箭头即可</p>
+<p>不好使可以：</p>
+<p>git pull </p>
+<p>git pull origin master </p>
+<p>git pull origin master –allow-unrelated-histories</p>
+<p>git push -u origin master -f</p>
 <p>对于没有的项目</p>
 <p>可以VCS -&gt; Import into Version Control -&gt;Share Project on Github</p>
 <p>对于git clone下来的项目，如修改之后想再次提交 可以直接右上push 箭头可以直接提交 commit pull push</p>
@@ -1530,7 +1535,7 @@
 <li>接着使用URLClassLoader将jarpath加载到类加载器，并返回这个类加载器；</li>
 </ul>
 <p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117102613592.png" alt="image-20201117102613592"></p>
-<h2 id="获取类加载器"><a href="#获取类加载器" class="headerlink" title="获取类加载器"></a>获取类加载器</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//获取类加载器</span></span><br><span class="line"><span class="keyword">final</span> ClassResourceEnumerator classResourceEnumerator = <span class="keyword">new</span> ClassResourceEnumerator(classLoader);</span><br></pre></td></tr></table></figure>
+<h2 id="包装类加载器"><a href="#包装类加载器" class="headerlink" title="包装类加载器"></a>包装类加载器</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//获取类加载器</span></span><br><span class="line"><span class="keyword">final</span> ClassResourceEnumerator classResourceEnumerator = <span class="keyword">new</span> ClassResourceEnumerator(classLoader);</span><br></pre></td></tr></table></figure>
 
 <p>这里就是将上一步加载我们jar的类加载器classLoader传入ClassResourceEnumerator。</p>
 <p>跟进ClassResourceEnumerator：</p>
@@ -1542,7 +1547,7 @@
 <p>目的是将rt.jar加载到这里作者注释也写到他用了一个<strong>比较hacky</strong>的方式：</p>
 <p>他先获取JDK内部的String类的路径，加载String类的同时，类加载器还会将rt.jar的全部类一起加载，那么最后就是将rt.jar的所有类都加入到ClassResource类型的result并且返回。</p>
 <p>其实就是获取rt.jar的所有class。</p>
-<p>回到<em>getAllClasses()</em>函数，其实拿到rt.jar里面的全部类之后，继续将传入的jar包内的类加入到result，并最后返回。</p>
+<p>回到<em>getAllClasses()</em>函数，其实拿到rt.jar之后，继续将传入的jar包内的类加入到result，并最后返回。</p>
 <p>总结：</p>
 <ul>
 <li><code>getRuntimeClasses</code>获取rt.jar的所有class</li>
