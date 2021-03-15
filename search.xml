@@ -1,6 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>IDEA远程调试记录</title>
+    <url>/IDEA%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/</url>
+    <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>天街小雨润如酥，草色遥看近却无。</p>
+</blockquote>
+<p>记录IDEA远程调试过程。随时更新，参考<a href="https://zhishihezi.net/b/5d644b6f81cbc9e40460fe7eea3c7925#open" target="_blank" rel="noopener">yz</a>。</p>
+<a id="more"></a>
+
+<h1 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h1><p>点击工具栏的<code>Add Configuration...</code>，点击左侧的<code>+</code>号，选择<code>Remote</code>，如下图：</p>
+<p><img src="../images/IDEA%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/image-20210315144011945.png" alt="image-20210315144011945"></p>
+<p>创建之后，复制这段命令，记得要改成<code>suspend=y</code>。</p>
+<p><img src="../images/IDEA%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/image-20210315144220008.png" alt="image-20210315144220008"></p>
+<h1 id="开始调试"><a href="#开始调试" class="headerlink" title="开始调试"></a>开始调试</h1><h2 id="有源码调试"><a href="#有源码调试" class="headerlink" title="有源码调试"></a>有源码调试</h2><p>这里在IDEA自带的终端里演示（系统shell当然也可以）：</p>
+<p>cd classes:</p>
+<p><img src="../images/IDEA%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/image-20210315144259091.png" alt="image-20210315144259091"></p>
+<p>输入这条命令<code>java -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005 com.sec.Test</code></p>
+<p>注意末尾是你的包名类名，执行后终端会等待debug，这时候下断点可以看到终端里会配合输出。</p>
+<p><img src="../images/IDEA%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/image-20210315144746757.png" alt="image-20210315144746757"></p>
+<h2 id="无源码-只有jar包"><a href="#无源码-只有jar包" class="headerlink" title="无源码 只有jar包"></a>无源码 只有jar包</h2><p>这种需求更加常见，对于jar包里的代码，下端点调试的想法会更多，记录一下。</p>
+<p>首先，这里我是一个maven项目，<code>mvn clean package</code>即可，当然你直接shell打包也行：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cd src</span><br><span class="line">jar -cvf test.jar *</span><br></pre></td></tr></table></figure>
+
+<p>对于打包好的jar包，可以放在当前的IDEA项目下，右键-&gt;add as library，可以直接反编译源码</p>
+<p><img src="../images/IDEA%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/image-20210315150152050.png" alt="image-20210315150152050"></p>
+<p>打开jar包，在想看的地方下端点</p>
+<p>执行命令：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">java -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=<span class="number">5005</span> -cp Test.jar com.sec.Test</span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/IDEA%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/image-20210315150434825.png" alt="image-20210315150434825"></p>
+<p>点击小甲虫就完事了：</p>
+<p><img src="../images/IDEA%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/image-20210315150524937.png" alt="image-20210315150524937"></p>
+]]></content>
+      <categories>
+        <category>IDE</category>
+      </categories>
+      <tags>
+        <tag>IDEA</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Git笔记</title>
     <url>/Git%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
