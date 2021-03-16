@@ -1557,7 +1557,10 @@
 <li>SourceDiscovery：入口方法的搜索，只有具备某种特征的入口才会被标记收集</li>
 <li>GadgetChainDiscovery：整合以上数据，并通过判断调用链的最末端slink特征，从而判断出可利用的gadget chain</li>
 </ol>
-<h1 id="流程介绍"><a href="#流程介绍" class="headerlink" title="流程介绍"></a>流程介绍</h1><h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><p><em>加载jar包内部类</em></p>
+<h1 id="流程介绍"><a href="#流程介绍" class="headerlink" title="流程介绍"></a>流程介绍</h1><p>先写在这里：</p>
+<p>ASM的方法描述符：</p>
+<p>方法描述符使用小括号开始，小括号内部是方法入参的类型描述符按照顺序拼接的字符串，在加上返回值的类型描述符组成，返回值是void的时候，使用<strong>V</strong>。方法的描述符不包含方法名和参数名。</p>
+<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><p><em>加载jar包内部类</em></p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//初始化jar包，获得一个类加载器，该类加载器已经将其加载</span></span><br><span class="line">ClassLoader classLoader = initJar(args);</span><br></pre></td></tr></table></figure>
 
 <p>跟进<em>initJar</em>函数：</p>
@@ -1617,12 +1620,37 @@
 <p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117165701353.png" alt="image-20201117165701353"></p>
 <p>最后的save函数，保存格式为子类：父类：</p>
 <p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117165758797.png" alt="image-20201117165758797"></p>
+<p>这里说一下InheritanceMap是一个类，有两个fields：</p>
+<ol>
+<li>inheritanceMap 存放是子-&gt;父集合</li>
+<li>subClassMap存放的是父-&gt;子集合</li>
+</ol>
 <h2 id="流程图探索-PassthroughDiscovery"><a href="#流程图探索-PassthroughDiscovery" class="headerlink" title="流程图探索 PassthroughDiscovery"></a>流程图探索 PassthroughDiscovery</h2><p>在这环节中，需要将上一环节的成果也就是classes.dat，methods.dat和inheritanceMap.dat都利用起来。</p>
 <p>这里的passthrough数据流指的是<strong>每个方法的返回结果</strong>与<strong>方法参数</strong>的关系，这一步生成的数据会在生成passthrough调用图时用到。</p>
-<p>主要用以发现<strong>函数返回值</strong>与<strong>传参之间</strong>的<strong>污点关系</strong>，工作量最大的一个部分。</p>
-<p>因为不仅仅是信息搜集，还要做污点的信息判断，以及方法间的变量关联。</p>
+<p>主要用以发现<strong>函数返回值</strong>与<strong>传进来参数之间</strong>的<strong>污点关系</strong>，工作量最大的一个部分。</p>
+<p>参考<a href="https://paper.seebug.org/1034/#step2-passthrough" target="_blank" rel="noopener">seebug</a>，先看作者的一个demo：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210316110702699.png" alt="image-20210316110702699"></p>
+<p>成员/this，都是0；参数为1；</p>
+<p>FnConstant.invoke返回值与参数this(参数0，因为序列化时类的所有成员我们都能控制，所以所有成员变量都视为0参)、arg(参数1)的关系：</p>
+<ul>
+<li>与this的关系：返回了this.value，即与0参有关系</li>
+<li>与arg的关系：返回值与arg没有任何关系，即与1参没有关系</li>
+<li>结论就是FnConstant.invoke与参数0有关，表示为FnConstant.invoke()-&gt;0</li>
+</ul>
+<p>Fndefault.invoke返回值与参数this(参数0)、arg(参数1)的关系：</p>
+<ul>
+<li>与this的关系：返回条件的第二个分支与this.f有关系，即与0参有关系</li>
+<li>与arg的关系：返回条件的第一个分支与arg有关系，即与1参有关系</li>
+<li>结论就是FnConstant.invoke与0参，1参都有关系，表示为Fndefault.invoke()-&gt;0、Fndefault.invoke()-&gt;1</li>
+</ul>
+<p>回到gi，gadgetinspector是利用ASM来进行方法字节码的分析，主要逻辑是在类PassthroughDiscovery和TaintTrackingMethodVisitor中。特别是TaintTrackingMethodVisitor，它通过==标记追踪JVM虚拟机在执行方法时的stack和localvar==，并最终得到返回结果是否可以被参数标记污染。</p>
+<p>不仅仅是信息搜集，还要做污点的信息判断，以及方法间的变量关联。</p>
 <p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117170319531.png" alt="image-20201117170319531"></p>
-<h3 id="discover-1"><a href="#discover-1" class="headerlink" title="discover()"></a>discover()</h3><p>跟进discover方法，可以看到首先对之前的结果进行了加载：</p>
+<h3 id="discover-1"><a href="#discover-1" class="headerlink" title="discover()"></a>discover()</h3><p>这段很复杂 写个调用顺序在这：</p>
+<p>discoverMethodCalls-&gt;MethodCallDiscoveryClassVisitor-&gt;MethodCallDiscoveryMethodVisitor-&gt;更新calledMethods和methodCalls集合;</p>
+<p>topologicallySortMethodCalls-&gt;获得sortedMethods集合，存放着方法调用链逆拓扑结果</p>
+<p>calculatePassthroughDataflow-&gt;PassthroughDataflowClassVisitor-&gt;PassthroughDataflowMethodVisitor</p>
+<p>跟进discover方法，可以看到首先对之前的结果进行了加载：</p>
 <p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117204635986.png" alt="image-20201117204635986"></p>
 <p>跟进<em>discoverMethodCalls</em>函数：</p>
 <p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117204716978.png" alt="image-20201117204716978"></p>
@@ -1662,7 +1690,7 @@
 <li>对于待分析的方法，如果stack里面已经有了，那就不再入栈了</li>
 <li>如果之前已经分析过某方法（visitedNodes已经存在），那么也不会再入栈了</li>
 </ol>
-<p>接下来，将待分析方法所调用的所有方法集合都取出来，这里可以说是子方法集合outgoingRefs。</p>
+<p>接下来，将待分析方法所调用的所有方法集合都取出来，这里可以说是子方法集合outgoingReferences。</p>
 <p>之后开始遍历子方法集合，取出每一个子方法作为参数，开始迭代</p>
 <p>这其实就是DFS，当到达一个叶子结点的时候，由于没有子方法，就不会进入到循环，也就不会再次递归。</p>
 <p>这时就会弹出栈顶元素，也就是叶子结点，加入到visitedNodes和sortedMethods里面。</p>
@@ -1681,7 +1709,7 @@
 <p>首先passthroughDataflow主要负责的是存储参数污染结果，key对应方法名，value对应的是可以污染下去的参数索引集合。</p>
 <p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201130145525684.png" alt="image-20201130145525684"></p>
 <p>接下来，遍历经历过拓扑排序过的方法；</p>
-<p>首先第一步会跳过静态初始化代码，因为静态代码块基本上是没法被污染的，直接在类加载阶段就会执行。‘</p>
+<p>首先第一步会跳过静态初始化代码，因为静态代码块基本上是没法被污染的，直接在类加载阶段就会执行。</p>
 <p>第二步在遍历的每个方法过程中，获取它所属的类，对其进行ASM访问者模式的分析：</p>
 <p>跟进PassthroughDataflowClassVisitor中分析，重点还是在visitMethod方法中</p>
 <p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201130150835717.png" alt="image-20201130150835717"></p>
@@ -1698,10 +1726,13 @@
 <p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201130154944412.png" alt="image-20201130154944412"></p>
 <p>还有一个父类中的方法：</p>
 <p>visitVarInsn：这个方法在方法体内进行字节码操作变量时，会被调用。</p>
-<p>这里借鉴一下<a href="https://xz.aliyun.com/t/7058" target="_blank" rel="noopener">3dream</a>的例子：</p>
+<p>为了实现类似污点分析，去分析参数对方法的污染，其模仿了jvm，实现了两个集合，分别是本地变量表和操作数栈，通过其，实现具体的污点分析，那么具体是怎么进行的呢？</p>
+<p>这里借鉴一下<a href="https://xz.aliyun.com/t/7058" target="_blank" rel="noopener">threedr3am</a>的例子：</p>
 <p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201130160432170.png" alt="image-20201130160432170"></p>
-<p>拓扑结果：</p>
+<p>逆拓扑结果：</p>
 <p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201130160447220.png" alt="image-20201130160447220"></p>
+<p>这里写一下具体细节：</p>
+<p>visitCode-&gt;gadgetinspector.TaintTrackingMethodVisitor#visitVarInsn(在父类里面)-&gt;visitInsn更新污染表-&gt;gadgetinspector.PassthroughDiscovery#calculatePassthroughDataflow</p>
 <p>这里需要跟一下gadgetinspector的逻辑：</p>
 <ul>
 <li><p>A.method1:</p>
