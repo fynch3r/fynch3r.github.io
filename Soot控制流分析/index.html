@@ -38,7 +38,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Soot%E6%8E%A7%E5%88%B6%E6%B5%81%E5%88%86%E6%9E%90&#x2F;image-20200804170622760.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Soot%E6%8E%A7%E5%88%B6%E6%B5%81%E5%88%86%E6%9E%90&#x2F;image-20200803222051337.png">
-<meta property="og:updated_time" content="2020-08-16T06:16:21.050Z">
+<meta property="og:updated_time" content="2021-03-22T12:31:27.968Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Soot%E6%8E%A7%E5%88%B6%E6%B5%81%E5%88%86%E6%9E%90&#x2F;image-20200804170622760.png">
 
@@ -142,7 +142,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">38</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">39</span></a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -226,7 +226,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-08-16 14:16:21" itemprop="dateModified" datetime="2020-08-16T14:16:21+08:00">2020-08-16</time>
+                <time title="修改时间：2021-03-22 20:31:27" itemprop="dateModified" datetime="2021-03-22T20:31:27+08:00">2021-03-22</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -266,14 +266,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.9k</span>
+              <span>2.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
+              <span>4 分钟</span>
             </span>
 
         </div>
@@ -380,6 +380,10 @@
 <p>实际上，UnitGraph和BlockGraph都是抽象类，Soot自己也实现很多实例化的子类。</p>
 <p>例如CompleteUnitGraph、BriefUnitGraph、CompleteBlockGraph、BriefBlockGraph等。</p>
 <p>具体在soot.toolkits.graph有实现说明。</p>
+<h1 id="CG-amp-CFG-amp-ICFG"><a href="#CG-amp-CFG-amp-ICFG" class="headerlink" title="CG &amp; CFG &amp; ICFG"></a>CG &amp; CFG &amp; ICFG</h1><p>CallGraph &amp; Control Flow Graph &amp; Interprocedural Control-Flow Graph</p>
+<p>CG代表的是整个程序中方法之间调用关系的图，图中节点是函数，边代表的是调用关系。</p>
+<p>CFG代表的是一个方法内程序执行流的图，图中节点是语句组成的基本块，边代表执行流。CFG上条件语句节点的后缀会有多个，表示其后可能执行的不同branches。</p>
+<p>ICFG就是CG+CFG，可以看作是CG和CFG信息的叠加。ICFG可以看做是给所有方法的CFG加上这些方法之间互相调用的边（CG）所形成的图。调用边（call edge）从调用语句（call site）连到被调方法（callee）的入口。与CG不同的是，ICFG除了调用边，还包含相应的返回边（return edge），从callee的出口连到call site之后执行的下一个语句。</p>
 
     </div>
 
@@ -467,7 +471,7 @@
       -->
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Soot的基本对象"><span class="nav-number">2.</span> <span class="nav-text">Soot的基本对象</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Soot阶段图：Pack-Transformer"><span class="nav-number">3.</span> <span class="nav-text">Soot阶段图：Pack/Transformer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Pack"><span class="nav-number">3.1.</span> <span class="nav-text">Pack</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Transformer"><span class="nav-number">3.2.</span> <span class="nav-text">Transformer</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Soot控制流的表达方法"><span class="nav-number">4.</span> <span class="nav-text">Soot控制流的表达方法</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Soot的基本对象"><span class="nav-number">2.</span> <span class="nav-text">Soot的基本对象</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Soot阶段图：Pack-Transformer"><span class="nav-number">3.</span> <span class="nav-text">Soot阶段图：Pack/Transformer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Pack"><span class="nav-number">3.1.</span> <span class="nav-text">Pack</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Transformer"><span class="nav-number">3.2.</span> <span class="nav-text">Transformer</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Soot控制流的表达方法"><span class="nav-number">4.</span> <span class="nav-text">Soot控制流的表达方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CG-amp-CFG-amp-ICFG"><span class="nav-number">5.</span> <span class="nav-text">CG &amp; CFG &amp; ICFG</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -483,7 +487,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-count">39</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -541,12 +545,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">453k</span>
+    <span title="站点总字数">470k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">12:34</span>
+    <span title="站点阅读时长">13:03</span>
   -->
 
 </div>
