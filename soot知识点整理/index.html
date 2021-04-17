@@ -59,8 +59,13 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210325152047653.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210326153604047.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210326153831632.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210329152634399.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210329152706388.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210327155003872.png">
-<meta property="og:updated_time" content="2021-03-28T14:04:59.736Z">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210329152722190.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210329153258001.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210329153345586.png">
+<meta property="og:updated_time" content="2021-04-17T05:02:48.186Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210324104136273.png">
 
@@ -248,7 +253,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-28 22:04:59" itemprop="dateModified" datetime="2021-03-28T22:04:59+08:00">2021-03-28</time>
+                <time title="修改时间：2021-04-17 13:02:48" itemprop="dateModified" datetime="2021-04-17T13:02:48+08:00">2021-04-17</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -295,7 +300,7 @@
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>42 分钟</span>
+              <span>41 分钟</span>
             </span>
 
         </div>
@@ -406,8 +411,8 @@
 <p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210325104642746.png" alt="image-20210325104642746"></p>
 <p>上图可以看出来：</p>
 <ul>
-<li>一个Unit有多个UnitBox，但是每个UnitBox只能指向一个Unit。GotoStmt 需要知道目标的Unit是什么，所以一个Unit会包含其它的UnitBox，通过 UnitBox获取下一个Unit</li>
-<li>一个value可以对应多个ValueBox，但是一个Valuebox只能对应一个Value，对于一个Unit，可以得到很多个ValueBox，包含着这条语句内部的所用到和所定义的语句。</li>
+<li><strong>一个Unit有多个UnitBox，但是每个UnitBox只能指向一个Unit</strong>。GotoStmt 需要知道目标的Unit是什么，所以一个Unit会包含其它的UnitBox，通过 UnitBox获取下一个Unit。</li>
+<li><strong>一个Value可以对应多个ValueBox，但是一个ValueBox只能对应一个Value</strong>，对于一个Unit，可以得到很多个ValueBox，包含着这条语句内部的所用到和所定义的语句。</li>
 </ul>
 <p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210325213104028.png" alt="image-20210325213104028"></p>
 <p>两种Box：</p>
@@ -422,7 +427,7 @@
 </ul>
 </li>
 </ul>
-<p>i1=0 等于是一个Stmt, i1是一个Valuebox，里面包含这i0这个local 的value。</p>
+<p>i1=0 等于是一个Stmt,  i1是一个Valuebox，里面包含这i0这个local 的value。</p>
 <p>举例常量叠加：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a  = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">int</span> b = <span class="number">2</span>;</span><br><span class="line"><span class="keyword">int</span> c = a + b;</span><br><span class="line"><span class="keyword">return</span> c;</span><br></pre></td></tr></table></figure>
 
@@ -447,7 +452,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List <span class="title">getBoxesPointingToThis</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
 
 <p>上面这个方法会返回一个List（UnitBox），包含那些指向这个Unit的Unit语句。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">fallsThrough</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">branches</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">fallsThrough</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">branches</span><span class="params">()</span></span>; <span class="comment">//如：IfStmt、GotoStmt</span></span><br></pre></td></tr></table></figure>
 
 <p>处理在某条语句之后的执行流有关。</p>
 <p>第一个方法：如果执行可以顺利流到紧挨着的下一条语句，就会返回True；</p>
@@ -646,7 +651,7 @@
 <p>在全程序分析的模式下，当一个调用图构建时，我们可以用<code>Scene</code>类里面的<code>getCallGraph</code>方法。</p>
 <p>包含3个处理的办法，</p>
 <p>CHA     SPARK      Paddle,</p>
-<p>其中**默认生成call graph使用的是CHA，CHA生成速度快，但是是最不准确的。</p>
+<p>其中<strong>默认生成call graph使用的是CHA</strong>，CHA生成速度快，但是是最不准确的。</p>
 <p>CHA是最简单的分析方式，它是默认程序中所有的路径都是连通的。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CHATransformer.v().transform();</span><br><span class="line">SootClass a = Scene.v().getClass(<span class="string">"testers.A"</span>);</span><br><span class="line"></span><br><span class="line">SootMethod src = Scene.v().getMainClass().getMethodByName(<span class="string">"doStuff"</span>);</span><br><span class="line">CallGraph cg = Scene.v().getCallGraph();</span><br></pre></td></tr></table></figure>
 
@@ -684,6 +689,7 @@
 <p>右边列表示，两个变量的指向的集合中交集是否为空。不空为true,空为false。</p>
 <p>【结果分析】可以看出，c1自己与自己是有交集的。c1与c2是没有交集的。（c1, c3也是如此）</p>
 <h1 id="数据流分析"><a href="#数据流分析" class="headerlink" title="数据流分析"></a>数据流分析</h1><p>在soot里面分为过程内数据流分析和过程间数据流分析。</p>
+<p>程序可以看成是状态（数据）和状态之间的转移（控制）两部分，因为状态转移的条件都被忽略了，核心分析的部分是状态数据在转移过程中的变化，所以叫做数据流分析。</p>
 <p>首先，总体来说：</p>
 <ol>
 <li>每个语句相当于一个小的加工厂，加工厂加工需要一定的原料（输入 in）,并且会产生一定的效果（输出 out）。</li>
@@ -748,6 +754,10 @@
 <p>ForwardFlowAnalysis：以UnitGraph的<strong>entry statement</strong>作为开始并开始传播；</p>
 <p>BackwardsFlowAnalysis：以UnitGraph的<strong>exit node(s)</strong>作为分析并且向后开始传播（当然可以将UnitGraph转换产生inverseGraph，然后再使用ForwardFlowAnalysis进行分析）；</p>
 <p>ForwardBranchedFlowAnalysis：本质上也是Forward分析，但是它允许你在不同分支处传递不同的flow sets。例如：如果传播到如if(p!=null)语句处，当“p is not null”时，传播进入“then”分支，当“p is null”时传播进入“else”分支（Forward、backward分析都在分支处会将分析结果merge合并掉）。</p>
+<img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210329152634399.png" alt="image-20210329152634399" style="zoom:67%;">
+
+<img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210329152706388.png" alt="image-20210329152706388" style="zoom:67%;">
+
 <p>在soot中，FlowAnalysis是一个抽象类。</p>
 <h3 id="ForwardFlowAnalysis"><a href="#ForwardFlowAnalysis" class="headerlink" title="ForwardFlowAnalysis"></a>ForwardFlowAnalysis</h3><p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210327155003872.png" alt="image-20210327155003872"></p>
 <p>ForwardFlowAnalysis是抽象类，继承关系如下：</p>
@@ -760,7 +770,9 @@
 <li><p>A：Abstraction Type 抽象类型。人们通常会用Set和Map来表示，但是，Soot要求抽象类型必须正确实现equals()和hashCode()方法，这样Soot才能确定何时到达一个固定点。</p>
 </li>
 </ul>
-<h3 id="关键方法"><a href="#关键方法" class="headerlink" title="关键方法"></a>关键方法</h3><p>构造函数</p>
+<h3 id="关键方法"><a href="#关键方法" class="headerlink" title="关键方法"></a>关键方法</h3><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210329152722190.png" alt="image-20210329152722190" style="zoom:67%;">
+
+<p>构造函数</p>
 <p>必须实现一个携带<code>DirectedGraph</code>作为参数的构造函数，并且将该参数传递给super constructor。然后，在构造函数结束时调用doAnalysis()，doAnalysis()将真正执行数据流分析。而在调用super constructor和doAnalysis之间，可以自定义数据分析结构。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">MyAnalysis</span><span class="params">(DirectedGraph graph)</span> </span>&#123; <span class="comment">//构造函数</span></span><br><span class="line">  </span><br><span class="line">	<span class="keyword">super</span>(graph);<span class="comment">//传递给父类</span></span><br><span class="line">  </span><br><span class="line">	<span class="comment">// TODO Auto-generated constructor stub</span></span><br><span class="line">	emptySet = <span class="keyword">new</span> ArraySparseSet();<span class="comment">//自定义面试</span></span><br><span class="line">  </span><br><span class="line">	doAnalysis();<span class="comment">//执行fixed-point</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -799,48 +811,19 @@
 <p>上述方法足以使flow sets成为一个有效的lattice元素。</p>
 <p>而对于有边界的flowset，需要实现BoundedFlowSet接口</p>
 <p>它需要提供方法，该方法能够产生set‘s complement（补集）和它的topped set（全集）（一个lattice element包括所有的可能的值的集合）。</p>
+<img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210329153258001.png" alt="image-20210329153258001" style="zoom:80%;">
+
 <h3 id="四种flow-sets的实现"><a href="#四种flow-sets的实现" class="headerlink" title="四种flow sets的实现"></a>四种flow sets的实现</h3><p>ArraySparseSet,ArrayPackedSet,ToppedSet和DavaFlowSet。</p>
+<img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210329153345586.png" alt="image-20210329153345586" style="zoom:67%;">
+
 <p>ArraySparseSet:是一个无界限的flowset。该set代表一个数组引用。注意：当比较元素是否相等时，一般使用继承自Object对象的equals。但是在soot中的元素都是代表一些代码结构，不能覆写equals方法。而是实现了interface soot.EquivTo。因此，如果你需要一个包含类似binary operation expressions的集合，你需要使用equivTo方法实现自定义的比较方法去比较是否相等。</p>
 <p>ArrayPackedSet 有界flow set。需要提供FlowUniverse 对象，即代表全集的容器。由一个在integer和object双向map和一个用来表示全集成员是否在内的bit vector表示。</p>
 <p>ToppedSet 在基于上面两种的set前提下，加入额外信息来表示其为lattice中的Top。</p>
-<h1 id="零散知识点"><a href="#零散知识点" class="headerlink" title="零散知识点"></a>零散知识点</h1><p>以$开头的都是堆栈位置，并不是源程序中的局部变量。</p>
+<h1 id="零散知识点"><a href="#零散知识点" class="headerlink" title="零散知识点"></a>零散知识点</h1><p>以$开头的都是临时变量，表示相对堆栈位置，并不是源程序中的局部变量，。</p>
 <p>没有$的局部变量则代表真正的局部变量。</p>
 <p>jtp是允许用户自定义的，wjtp全程序转换包</p>
 <p><strong>clinit</strong>方法<strong>clinit是</strong>类构造器方法，也就是在jvm在进行类加载-验证-解析-初始化中的<strong>初始化</strong>阶段，jvm会调用<strong>clinit</strong>. <strong>clinit</strong>方法<strong>是</strong>在类加载过程中执行的，而init方法<strong>是</strong>在对象实例化执行的。</p>
 <p>soot的控制流图在soot.toolkits.graph这个包内；</p>
-<p>DirectedGraph接口 可以获取：</p>
-<ul>
-<li>图的入口点和退出点；</li>
-<li>给定节点的前驱和后继；</li>
-<li>提供一个迭代器，可以便利图上的节点；</li>
-<li>图的大小规模（节点数）</li>
-</ul>
-<p>在Soot的控制流图中，基类是UnitGraph，它是一个抽象类，它提供了CFG的基础部分。</p>
-<p>它有三种不同的实现，BreifUnitGraph，ExceptionUnitGraph，TrapUnitGraph；</p>
-<p>BreifUnitGraph：</p>
-<ul>
-<li>很简单，它代表不含exception抛出的路径。</li>
-</ul>
-<p>ExceptionUnitGraph：</p>
-<ul>
-<li>包含从throw到catch的边，soot里面叫Trap</li>
-<li>它还会计算语句中隐含的异常抛出</li>
-<li>会有一条边从抛出异常那条语句的前驱节点指向异常处理的第一条语句Unit</li>
-<li>如果包含异常的语句包含一些副作用，那么有副作用的边也会被添加到图里面</li>
-<li></li>
-</ul>
-<p>TrapUnitGraph</p>
-<p>和Exception很像，他其实也是会把异常抛出边添加到图里面。</p>
-<ul>
-<li>边是从trap语句连接到trap handler，例如try块</li>
-<li>对于那些隐藏异常抛出的语句，这类图在他们的前驱节点并不会抛出一条边到handler</li>
-<li>但是在那些隐藏异常抛出的语句本身会抛出一条语句指向handler</li>
-</ul>
-<p>如果你要想生成一个上述的图，其实就是把JimpleBody对象直接传递给Graph类的构造函数就行了：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UnitGraph g = <span class="keyword">new</span> ExceptionUnitGraph(body);</span><br></pre></td></tr></table></figure>
-
-
-
 <p>Annotating Code</p>
 <p>四个接口：</p>
 <ul>
@@ -1105,12 +1088,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">487k</span>
+    <span title="站点总字数">490k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">13:32</span>
+    <span title="站点阅读时长">13:37</span>
   -->
 
 </div>

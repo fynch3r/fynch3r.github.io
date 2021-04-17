@@ -3409,13 +3409,13 @@
     <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
 <p>返景入深林，复照青苔上。</p>
 </blockquote>
-<p>越来越发现基础知识的重要，前一阵又跟着老师过了一遍，理解更加深入了，顺便写点笔记。</p>
+<p>越来越发现基础知识的重要，前一阵又跟着老师过了一遍，理解更加深入了，顺便整理笔记。</p>
 <a id="more"></a>
 
 <h1 id="01"><a href="#01" class="headerlink" title="01"></a>01</h1><h2 id="PL：Programming-Language"><a href="#PL：Programming-Language" class="headerlink" title="PL：Programming Language"></a>PL：Programming Language</h2><p>理论：语言设计，类型系统，语义和逻辑</p>
 <p>环境：编译器，运行系统</p>
 <p>应用：程序分析，程序验证，程序合成</p>
-<p>技术：抽象解释（Abstract interpretation），数据流分析（Data-flow analysis, ），Hoare logic，Model checking，Symbolic execution等等</p>
+<p>技术：抽象解释（Abstract interpretation），数据流分析（Data-flow analysis），Hoare logic，Model checking，Symbolic execution等等</p>
 <p><strong>静态分析作用</strong>：程序可靠性、程序安全性、编译优化、程序理解（调用关系、类型识别）。</p>
 <h2 id="Soundness-amp-Completeness"><a href="#Soundness-amp-Completeness" class="headerlink" title="Soundness &amp; Completeness"></a>Soundness &amp; Completeness</h2><p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200817120652100.png" alt="image-20200817120652100"></p>
 <p>解释：</p>
@@ -3457,8 +3457,11 @@
 <p><strong>IR</strong>：低级，更接近于机器码，不依赖语言种类，压缩且简洁，包含控制流信息。是静态分析的基础。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200816170139381.png" alt="image-20200816170139381"></p>
 <h2 id="3AC-3地址码"><a href="#3AC-3地址码" class="headerlink" title="3AC-3地址码"></a>3AC-3地址码</h2><p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200816173735317.png" alt="image-20200816173735317"></p>
-<h2 id="Soot"><a href="#Soot" class="headerlink" title="Soot"></a>Soot</h2><p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200816192800941.png" alt="image-20200816192800941"></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// java IR（Jimple）基本知识</span></span><br><span class="line">invokespecial：call constructor, call superclass methods, call <span class="keyword">private</span> methods</span><br><span class="line">invokevirtual: <span class="function">instance methods <span class="title">call</span> <span class="params">(virtual dispatch)</span> 派生</span></span><br><span class="line"><span class="function">invokeinterface: cannot optimization, checking interface implementation</span></span><br><span class="line"><span class="function">invokestatic:call <span class="keyword">static</span> methods</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">Java 7: invokedynamic -&gt; Java <span class="keyword">static</span> typing, dynamic language runs on JVM</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">method signature: class name, return type, method <span class="title">name</span><span class="params">(parameter1 type, parameter2 type)</span></span></span><br></pre></td></tr></table></figure>
+<h2 id="soot"><a href="#soot" class="headerlink" title="soot"></a>soot</h2><p>soot用得是typed 3AC 是在3AC内部存在类型的形式 Jimple：typed 3-address code</p>
+<p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200816192800941.png" alt="image-20200816192800941"></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// java IR（Jimple）基本知识</span></span><br><span class="line">invokespecial：call constructor, call superclass methods, call <span class="keyword">private</span> methods</span><br><span class="line">invokevirtual: <span class="function">instance methods <span class="title">call</span> <span class="params">(virtual dispatch)</span> 派生</span></span><br><span class="line"><span class="function">invokeinterface: cannot optimization, checking interface implementation</span></span><br><span class="line"><span class="function">invokestatic:call <span class="keyword">static</span> methods</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">Java 7: invokedynamic -&gt; Java <span class="keyword">static</span> typing, dynamic language runs on JVM</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">method signature: class name, return type, method <span class="title">name</span><span class="params">(parameter1_type, parameter2_type)</span></span></span><br><span class="line"><span class="function">  </span></span><br><span class="line"><span class="function">clinit是类的初始化复制</span></span><br><span class="line"><span class="function">  Class A</span>&#123;</span><br><span class="line">   B b = ...<span class="comment">//会调用B的clinit方法，给类属性复制</span></span><br></pre></td></tr></table></figure>
+
+
 
 <h2 id="BasicBlock-BB-基本块"><a href="#BasicBlock-BB-基本块" class="headerlink" title="BasicBlock BB 基本块"></a>BasicBlock BB 基本块</h2><p><strong>定义</strong>：只有唯一1个开头入口和唯一1个结尾出口的<strong>最长</strong>3-地址指令序列。</p>
 <p><strong>识别基本块的算法</strong>：</p>
@@ -3517,11 +3520,12 @@
 <h3 id="停止条件"><a href="#停止条件" class="headerlink" title="停止条件"></a>停止条件</h3><p>OUT[B] = genB U (IN[B] - killB)</p>
 <p><strong>大致理解</strong>：genB和 killB是不变的，只有IN[B]在变化，所以说OUT[B]只会增加不会减少，n向量长度是有限的，所以最终肯定会停止。in决定out，out又决定in。</p>
 <h1 id="04"><a href="#04" class="headerlink" title="04"></a>04</h1><h2 id="Live-Variables-Analysis"><a href="#Live-Variables-Analysis" class="headerlink" title="Live Variables Analysis"></a>Live Variables Analysis</h2><p>may analysis</p>
-<p><strong>问题定义</strong>：某程序点p处的变量v，从p开始到exit块的CFG中是否有某条路径用到了v，如果用到了v，则v在p点为live，否则为dead。其中有一个隐含条件，在点p和引用点之间不能重定义v。</p>
+<p><strong>问题定义</strong>：某程序点p处的变量v，从p开始到exit块的CFG中是否有某条路径用到了v，如果用到了v，则v在p点为live，否则为dead。<strong>其中有一个隐含条件，在点p和引用点之间不能重定义v</strong>。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200819145537874.png" alt="image-20200819145537874"></p>
 <p><strong>应用场景</strong>：可用于寄存器分配，如果寄存器满了，就需要替换掉不会被用到的变量。</p>
 <p><strong>抽象表示</strong>：程序中的n个变量用长度为n bit的向量来表示，对应bit为1，则该变量为live，反之为0则为dead。</p>
-<h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><p><strong>Control Flow</strong>：OUT[B] = US a_successor_of_BIN[S]</p>
+<h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><p>backward-analysis</p>
+<p><strong>Control Flow</strong>：OUT[B] = US a_successor_of_BIN[S]</p>
 <p><strong>理解</strong>：逆向分析，只要有一条子路是live，父节点就是live。</p>
 <p><strong>Transfer Function</strong>：IN[B] = useB U (OUT[B] - defB)</p>
 <p><strong>理解</strong>：IN[B] = 本块中use出现在define之前的变量 U （OUT[B]出口的live情况 - 本块中出现了define的变量）。define指的是定义/赋值。</p>
@@ -3557,7 +3561,7 @@
 <p><strong>方法</strong>：首先将OUT[entry]初始化为空，所有基本块的OUT[B]<strong>初始化为1…1</strong>。遍历每一个基本块B，按以上两个公式计算块B的IN[B]和OUT[B]，只要这次遍历时有某个块的OUT[B]发生变化，则重新遍历一次（因为有循环，只要某块的OUT[B]变了，就意味后继块的IN[B]变了）。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200820135942083.png" alt="image-20200820135942083"></p>
 <h3 id="例子-2"><a href="#例子-2" class="headerlink" title="例子"></a>例子</h3><p><strong>抽象表示</strong>：程序中的n个表达式，用长度为n bit的向量来表示，1表示可用，0表示不可用。</p>
-<p><strong>说明</strong>：黑色-初始化；红色-第1次；蓝色-第2次。</p>
+<p><strong>说明</strong>：黑色-初始化；红色-第1次；蓝色-第2次。先kill再gen</p>
 <p><strong>结果</strong>：2次遍历后，OUT[B]不再变化，遍历结束。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200820140035092.png" alt="image-20200820140035092"></p>
 <h2 id="三种分析方法对比"><a href="#三种分析方法对比" class="headerlink" title="三种分析方法对比"></a>三种分析方法对比</h2><table>
@@ -3597,7 +3601,7 @@
 <td><strong>Initialization</strong></td>
 <td>OUT[B]=<img src="https://math.jianshu.com/math?formula=%5Cphi" alt="\phi"></td>
 <td>IN[B]=<img src="https://math.jianshu.com/math?formula=%5Cphi" alt="\phi"></td>
-<td>OUT[B]=<img src="https://math.jianshu.com/math?formula=%5Ccap" alt="\cap"></td>
+<td>OUT[B]=U</td>
 </tr>
 <tr>
 <td><strong>Transfer function</strong></td>
@@ -3775,7 +3779,7 @@
 <ol>
 <li><p>reciever object的具体类型：<strong>c</strong></p>
 </li>
-<li><p>调用点的函数签名：<strong>m</strong>。（通过signature可以唯一确定一个函数）</p>
+<li><p>调用点的函数签名：<strong>m</strong>。（通过signature可以唯一确定一个函数）soot采取的格式</p>
 <ol>
 <li>signature = 函数所在的类 + 函数名 + 描述符</li>
 <li>描述符 = 返回类型 + 参数类型</li>
@@ -3791,9 +3795,9 @@
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200822210617432.png" alt="image-20200822210617432"></p>
 <p>理解：</p>
 <p>Dispatch（B,A.foo()）先对B类自己进行，但是B没有foo方法，向上找父类A才有。</p>
-<p>Dispatch（C,A.foo()）C自己本身就有，那么就是C自己的父方法。</p>
+<p>Dispatch（C,A.foo()）C自己本身就有，那么就是C自己的方法。</p>
 <h2 id="Class-Hierarchy-Analysis-CHA-类层次分析"><a href="#Class-Hierarchy-Analysis-CHA-类层次分析" class="headerlink" title="Class Hierarchy Analysis CHA  类层次分析"></a>Class Hierarchy Analysis CHA  类层次分析</h2><p><strong>目的</strong>：根据每个virtual call 的 receiver varible 的<strong>声明类型</strong>来求解所有可能调用的目标函数。如 <code>A a = ... ;</code>  <code>a.foo();</code> 这个a就是receiver varible，声明类型就是A。</p>
-<p>CHA假定a可以指向A以及A<strong>所有子类对象</strong>，CHA的过程就是从A和子类中去找目标函数。</p>
+<p>CHA假定a可以指向A以及 A<strong>所有子类对象</strong>，CHA的过程就是从A和子类中去找目标函数。</p>
 <p><strong>算法</strong>：Resolve(cs)——利用CHA算法找到调用点所有可能的调用目标。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200822214448736.png" alt="image-20200822214448736"></p>
 <p><strong>示例</strong>：</p>
@@ -3839,7 +3843,7 @@
 <li>Return edges：从return语句连到Return site（Call site后面一条语句）</li>
 </ul>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200823112520799.png" alt="image-20200823112520799"></p>
-<p><strong>说明</strong>：对ICFG进行数据流分析，没有标准的一套算法。</p>
+<p><strong>说明</strong>：对ICFG进行数据流分析，<strong>目前没有标准的一套算法</strong>。</p>
 <p><strong>对比</strong>：</p>
 <table>
 <thead>
@@ -3862,7 +3866,7 @@
 </tbody></table>
 <p><strong>常量传播数据流分析</strong>：</p>
 <ul>
-<li>Node transfer：与过程内分析相同，对每个调用点，将等号左边部分kill掉。</li>
+<li>Node transfer：与过程内分析相同，对每个调用点，将等号左边kill掉。</li>
 <li>Call edge transfer：传参</li>
 <li>Return edge transfer：传返回值</li>
 </ul>
@@ -3873,11 +3877,15 @@
 <p>call的时候kill掉左手边变量，直接flow过去，就算有值也是return过来的。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200823121556416.png" alt="image-20200823121556416"></p>
 <p><strong>说明</strong>：黄色背景边必须有，从<code>b = addOne(a)</code>到<code>c=b-3</code>，a通过此边传递，b通过addOne()传递。若a也通过addOne()传递，会额外消耗系统资源。</p>
+<p>在倒数第二个</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">b = ten();</span><br></pre></td></tr></table></figure>
+
+<p>需要把b在flowset中kill掉，因为b的值会在返回值里面被改掉</p>
 <h1 id="08-amp-09"><a href="#08-amp-09" class="headerlink" title="08 &amp; 09"></a>08 &amp; 09</h1><p>终于来到了指针分析</p>
 <p><strong>指针分析必要性</strong>：</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200823152109890.png" alt="image-20200823152109890"></p>
 <h2 id="指针分析"><a href="#指针分析" class="headerlink" title="指针分析"></a>指针分析</h2><p><strong>目标</strong>：分析程序指针可以指向哪些内存区域。对于Java等面向对象语言，主要分析指针指向哪个对象。</p>
-<p><strong>说明</strong>：指针分析属于may analysis，分析的结果是某指针所有可能指向哪些对象Object，是个over-approximation集合。</p>
+<p><strong>说明</strong>：<strong>指针分析属于may analysis</strong>，分析的结果是某指针所有可能指向哪些对象Object，是个over-approximation集合。</p>
 <p><strong>示例</strong>：面向对象语言中的指针指向问题。对于setB()函数，this指向<code>new A()</code>，因为是调用者是a.setB()；setB()中的b是x传过来的，所以b指向new B()，A.b指向 new B()。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200823153545185.png" alt="image-20200823153545185"></p>
 <p><strong>区别</strong>：</p>
@@ -3917,7 +3925,7 @@
 <td>• <strong>Whole-program</strong>    • Demand-driven</td>
 </tr>
 </tbody></table>
-<h3 id="堆抽象-Allocation-Site（内存建模）"><a href="#堆抽象-Allocation-Site（内存建模）" class="headerlink" title="堆抽象 Allocation Site（内存建模）"></a>堆抽象 Allocation Site（内存建模）</h3><p><strong>问题</strong>：程序动态执行时，堆对象个数理论上是无穷无尽的，但静态分析无法处理这个问题。所以为保证指针分析可以终止，我们采用堆抽象技术，将无穷的具体对象抽象成有限的抽象对象。也即，将有共性的对象抽象成1个静态对象，从而限制静态分析对象的个数。</p>
+<h3 id="堆抽象-Allocation-Site（内存建模）"><a href="#堆抽象-Allocation-Site（内存建模）" class="headerlink" title="堆抽象 Allocation Site（内存建模）"></a>堆抽象 Allocation Site（内存建模）</h3><p><strong>问题</strong>：程序动态执行时，堆对象个数理论上是无穷无尽的，但静态分析无法处理这个问题。所以为<strong>保证指针分析可以终止</strong>，我们采用堆抽象技术，将无穷的具体对象抽象成有限的抽象对象。也即，将有共性的对象抽象成1个静态对象，从而限制静态分析对象的个数。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200823160046190.png" alt="image-20200823160046190"></p>
 <p>我们只学习<code>Allocation-Site</code>技术，最常见也最常被使用。</p>
 <p><strong><code>Allocation-Site</code>原理</strong>：将动态对象抽象成它们的创建点（<code>Allocation-Site</code>），来表示在该点创建的所有动态对象。<code>Allocation-Site</code>个数是有限的。</p>
@@ -3925,20 +3933,20 @@
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200823160313045.png" alt="image-20200823160313045"></p>
 <h3 id="上下文敏感Context-Sensitivity"><a href="#上下文敏感Context-Sensitivity" class="headerlink" title="上下文敏感Context Sensitivity"></a>上下文敏感Context Sensitivity</h3><p><strong>问题</strong>：考虑是否区分不同call-site对同一函数的调用。</p>
 <ul>
-<li>Context-sensitive：根据某函数调用上下文的不同，多次分析同一函数。</li>
+<li>Context-sensitive：根据某函数调用上下文的不同，<strong>多次分析同一函数</strong>。</li>
 <li>Context-insensitive：每个函数只分析一次。</li>
 </ul>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200823161014112.png" alt="image-20200823161014112"></p>
 <h3 id="流敏感-Flow-Sensitivity-控制流建模"><a href="#流敏感-Flow-Sensitivity-控制流建模" class="headerlink" title="流敏感 Flow Sensitivity 控制流建模"></a>流敏感 Flow Sensitivity 控制流建模</h3><p><strong>问题</strong>：考虑语句顺序（控制流）的影响  vs 把程序当做无序语句的集合。</p>
-<p><strong>方法</strong>：流敏感会在每个程序点都保存一份<strong>指针指向关系映射表</strong>，而流不敏感则对整个程序保存一份指向关系映射。</p>
-<p><strong>说明</strong>：目前流敏感对Java提升不大，不过在C中很有效，本课程分析的是Java，所以重点讨论流不敏感技术。</p>
+<p><strong>方法</strong>：流敏感会在<strong>每个程序点</strong>都保存一份<strong>指针指向关系映射表</strong>，而流不敏感则对整个程序保存一份指向关系映射。</p>
+<p><strong>说明</strong>：目前流敏感对Java提升不大，不过在C中很有效，本课程分析的是Java，所以Java重点讨论流不敏感技术。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200823161210004.png" alt="image-20200823161210004"></p>
 <p><strong>指针分析示例</strong>：</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200823164736418.png" alt="image-20200823164736418"></p>
 <h3 id="分析范围-Analysis-Scope"><a href="#分析范围-Analysis-Scope" class="headerlink" title="分析范围 Analysis Scope"></a>分析范围 Analysis Scope</h3><p><strong>问题</strong>：分析程序的哪一部分？</p>
 <ul>
 <li>Whole-program 全程序：分析全程序的指向关系。</li>
-<li>Demand-driven 需求驱动：只分析影响特定域的指针的指向关系。</li>
+<li>Demand-driven 需求驱动：只分析影响特定域的指针的指向关系。会很耗费资源。</li>
 </ul>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200823164722791.png" alt="image-20200823164722791"></p>
 <h2 id="分析语句种类"><a href="#分析语句种类" class="headerlink" title="分析语句种类"></a>分析语句种类</h2><p><strong>问题</strong>：哪些语句会影响指针指向，那就只分析这些语句。</p>
@@ -3947,7 +3955,7 @@
 <ol>
 <li><strong>Lacal variable: x</strong></li>
 <li>Static field:C.f   （有时称为全局变量）——不分析</li>
-<li><strong>Instance field: x.f</strong>    （对象的field）</li>
+<li><strong>Instance field: x.f</strong>    对象的field 把他们的组合看成是一个pointer object</li>
 <li>Array element: array[i]  ——不分析，因为静态分析无法确定下标，所以将array中所有成员映射到一个field中，等价于<strong>Instance field</strong>，所以不重复分析。如下图所示：</li>
 </ol>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200823170722727.png" alt="image-20200823170722727"></p>
@@ -4015,12 +4023,20 @@
 <p>理解：</p>
 <p>强化一下AddEdge算法：</p>
 <p>AddEdge(s，t)的意思就是如果PFG里面没有，那么就新增一条s-&gt;t的边，</p>
-<p>接下来不要忘了指向信息的传播，如果s的指针集里面还有东西，那么也要吧s指针集里面的东西让t也能指到。也就是新增&lt;t,pt(s)&gt;到WorkList集合里面。</p>
+<p>接下来不要忘了指向信息的传播，如果<strong>s的指针集里面还有东西</strong>，那么也要把s指针集里面的东西让t也能指到。也就是新增&lt;t,pt(s)&gt;到WorkList集合里面。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">s = t ;</span><br><span class="line">指向：-----&gt;</span><br><span class="line">流向：&lt;-----</span><br></pre></td></tr></table></figure>
+
+<p>对于上面这个语句：</p>
+<p>s是指针，s指向了t，那么t属于pt(s)，pt(s)={t};</p>
+<p>也可以理解为pt(t)指针集里面的东西向左流给了pt(s)，这里如果pt(t)里有东西，那么也要向左流给s，也就是pt(s)={pt(t)};</p>
+<p>Oi.f可能会被别的变量指向</p>
 <p>强化理解一下Propagate算法：</p>
 <p>如果pts不是空集，那么就是把增量加入到ptn。</p>
 <p>接下来还要把新的指针集都改了，继续传播下去。</p>
 <p>取出所有的n指向的边，也就是n的后继s，将&lt;s,pts&gt;加入到WL中，这里其实就是将指向信息传递给同名指针。</p>
-<h3 id="例子-3"><a href="#例子-3" class="headerlink" title="例子"></a>例子</h3><p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200824151533801.png" alt="image-20200824151533801"></p>
+<p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20210408170110240.png" alt="image-20210408170110240"></p>
+<h3 id="例子-3"><a href="#例子-3" class="headerlink" title="例子"></a>例子</h3><p>流不敏感指针分析</p>
+<p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200824151533801.png" alt="image-20200824151533801"></p>
 <table>
 <thead>
 <tr>
@@ -4062,7 +4078,7 @@
 </tr>
 <tr>
 <td align="center">4</td>
-<td align="center">[&lt;c, {o3}&gt;], &lt;a, {o1}&gt;]</td>
+<td align="center">[&lt;c, {o3}&gt;], [&lt;a, {o1}&gt;]</td>
 <td align="center"></td>
 <td align="center">a &lt;- b；d &lt;- c；</td>
 <td></td>
@@ -4188,10 +4204,14 @@
 </tr>
 </tbody></table>
 <hr>
+<p>课后总结：</p>
+<p>有人提问：流敏感指针分析有什么区别？</p>
+<p>TT答：流敏感指针分析是在程序的特定运行位置维护一个指针集，对于Java来说开销极大并且benifit不明显，所以<strong>在Java业界主要还是流不敏感的指针分析</strong>。<strong>如果提升精度，主要选择上下文敏感的指针分析</strong>。</p>
+<p>上述算法和WALA的实现比较像。</p>
 <h1 id="10"><a href="#10" class="headerlink" title="10"></a>10</h1><h2 id="指针分析处理函数调用"><a href="#指针分析处理函数调用" class="headerlink" title="指针分析处理函数调用"></a>指针分析处理函数调用</h2><p><strong>构造调用图技术对比</strong>：</p>
 <ul>
 <li>CHA：基于声明类型，不精确，引入错误的调用边和指针关系。</li>
-<li>指针分析：基于pt(a)，即a指向的类型，更精确，构造更准的CG并对指针分析有正反馈（所以过程间指针分析和CG构造同时进行，很复杂）。</li>
+<li>指针分析：基于pt(a)，即a指向的类型，更精确，构造更准的CG并对指针分析有正反馈（所以过程间指针分析和CG构造同时进行，很复杂）。aka. <code>on-the-fly</code> call-graph construction</li>
 </ul>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(A a)</span> </span>&#123;   </span><br><span class="line">  <span class="comment">// pt(a) = ???</span></span><br><span class="line">  ...</span><br><span class="line">    b = a.bar();    </span><br><span class="line">  <span class="comment">// pt(b) = ???  把a的指向分析清楚了，就能确定a.bar()到底调用哪个对象的bar()函数，那么b的指向也明确了。</span></span><br><span class="line">    ... </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -4203,12 +4223,19 @@
 <li><strong>传参数</strong>：pt(aj), 1&lt;=j&lt;=n  传给m函数，即p(mpj), 1&lt;=j&lt;=n。<strong>建立PFG边</strong>，a1-&gt;mp1，…，an-&gt;mpn。</li>
 <li><strong>传返回值</strong>：pt(mret)传给pt(r)。<strong>建立PFG边</strong>，r &lt;- mret。</li>
 </ol>
-<p><strong>问题</strong>：为什么PFG中不添加x-&gt;mthis边？因为mthis只和自己这个对象相关，而可能有pt(x)={new A, new B, new C}，指定对象的x只流向对应的对象，是无法跨对象传递的。</p>
-<h3 id="过程间PTA算法"><a href="#过程间PTA算法" class="headerlink" title="过程间PTA算法"></a>过程间PTA算法</h3><p><strong>问题</strong>：由于指针分析和CG调用图的构造互相依赖，所以每次迭代只分析可达的函数和语句。然后不断发现和分析新的可达函数。</p>
+<p><strong>问题</strong>：为什么PFG中不添加x-&gt;mthis边？</p>
+<p><strong>答</strong>：因为this只和自己这个对象相关，而可能有pt(x)={new A, new B, new C}，</p>
+<img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20210409144614271.png" alt="image-20210409144614271" style="zoom:80%;">
+
+<p>指定对象的x只流向对应的对象，是无法跨对象传递的。</p>
+<p>连上这条this边，就会有很多错误的边。</p>
+<p>参数没法决定receiver object是哪个 所以随便连 没关系的</p>
+<h3 id="过程间PTA算法"><a href="#过程间PTA算法" class="headerlink" title="过程间PTA算法"></a>过程间PTA算法</h3><p><strong>问题</strong>：由于<strong>指针分析和CG调用图的构造互相依赖</strong>，所以每次迭代只分析可达的函数和语句。然后不断发现和分析新的可达函数。</p>
 <p><strong>方法</strong>：“一起做”。从main入口开始做，开始建边，分析可达性方法，不断挖掘。</p>
 <p><strong>可达示例</strong>：</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200824220851231.png" alt="image-20200824220851231"></p>
 <p><strong>算法</strong>：</p>
+<p>上下文不敏感 每个方法只统计一次</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200824221040655.png" alt="image-20200824221040655"></p>
 <p><strong>符号</strong>：</p>
 <ul>
@@ -4221,14 +4248,21 @@
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200824221625840.png" alt="image-20200824221625840"></p>
 <p>理解：</p>
 <ol>
-<li><p>AddReachable就是拓展世界的函数，两处调用：</p>
+<li><p>AddReachable就是拓展世界的函数，只有两处会调用：</p>
 <ol>
 <li>程序入口点；</li>
 <li>新的调用边被发现；</li>
 </ol>
 <p>在新方法加入之后，先<strong>只看new和assign赋值语句</strong>，因为load和store是随着改变而改变，先研究也没有意义。</p>
 </li>
-<li><p>ProcessCall里面，l就是call site，m就是解出来的目标方法。</p>
+<li><p>ProcessCall里面，x表示的是一个变量，是receiver object，oi表示的是流向x的某个新来的对象。</p>
+<p>首先遍历与x有关的调用语句，先调用dispatch，取出真正的目标方法m</p>
+<p>接下来将&lt;this,oi&gt;加入到worklist中，也就是将receiver object传递给this变量</p>
+<p>l就是call site，m就是解出来的目标方法</p>
+<p>如果l-m这条边在CG中没有的话，添加一条边</p>
+<p>AddReachable拓展m方法</p>
+<p>传递形参</p>
+<p>传递返回值</p>
 </li>
 <li><p><strong>问题</strong>：为什么ProcessCall(x, oi)中，要判断<code>L-&gt;m</code>这条边是否已经加入到CG？因为x可能指向多个对象，就会多次处理L这个调用指令，可能x中别的对象oj早就已经将这条边加入进去了。</p>
 </li>
@@ -4385,6 +4419,7 @@
 <p><strong>结果</strong>：</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200824231630468.png" alt="image-20200824231630468"></p>
 <p><strong>问题</strong>：没有入口函数的？如对库函数处理，生成调用库函数的程序。</p>
+<p>理解rule 4条： dispatch解目标方法，传this，传参数，传返回值</p>
 <h1 id="11"><a href="#11" class="headerlink" title="11"></a>11</h1><h2 id="上下文不敏感分析"><a href="#上下文不敏感分析" class="headerlink" title="上下文不敏感分析"></a>上下文不敏感分析</h2><p><strong>说明</strong>：上下文敏感分析是对指针分析的准确性提升最有效的技术。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200825134216437.png" alt="image-20200825134216437"></p>
 <p><strong>问题</strong>：上下文不敏感时，分析常量传播这个问题，由于没有明确调用id()的上下文，会把不同的调用混合在一起，对id函数内的变量n只有一种表示（<strong>没有对局部变量进行区分</strong>），导致n指向的对象集合增大，将i识别为非常量NAC。实际上，x.get()的值只来自于One()对象，i应该是常量1。</p>
@@ -4392,53 +4427,98 @@
 <h2 id="上下文敏感分析"><a href="#上下文敏感分析" class="headerlink" title="上下文敏感分析"></a>上下文敏感分析</h2><p><strong>概念</strong>：</p>
 <ul>
 <li>call-site sensitivity (call-string)：根据<strong>调用点位置</strong>的不同来区分上下文，<code>3：id(n1)</code> / <code>4：id(n2)</code>。</li>
-<li>Cloning-Based Context Sensitivity：每种上下文对应一个节点，标记调用者行数。克隆多少数据，后面会讨论。</li>
+<li>Cloning-Based Context Sensitivity：每种上下文对应一个节点，标记调用者的<strong>行数</strong>。克隆多少数据，后面会讨论。</li>
 <li>Context-Sensitive Heap：面向对象程序（如Java）会频繁修改堆对象，称为heap-insensitive。所以不仅要给变量加上下文，也要给堆抽象加上下文，称为heap context（本课程是基于allocate-site来进行堆抽象的）。</li>
+</ul>
+<p>Context Insensitivity 上下文不敏感的原因：</p>
+<ul>
+<li><strong>在动态执行的过程中，一个方法可能在不同的上下文条件下被调用多次</strong>。</li>
+<li>在不同的上下文过程中，方法的参数返回值也会指向不同的对象。</li>
+<li>在上下文不敏感的分析中，不同上下文调用的参数会被<strong>混合</strong>，然后会将错误结果传播继续往下传播，造成不准确</li>
+<li></li>
 </ul>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200825135441351.png" alt="image-20200825135441351"></p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200825141714234.png" alt="image-20200825141714234"></p>
+<p>会得到粒度更细的堆抽象</p>
 <p><strong>堆抽象上下文示例</strong>：</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200825164309086.png" alt="image-20200825164309086"></p>
-<p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200825165114916.png" alt="image-20200825165114916"></p>
-<p><strong>堆抽象上下文不敏感</strong>：如果不区分<code>8 X x = new X();</code>调用的堆抽象的上下文，导致只有1个o8.f，把两个上下文调用产生的o8.f指向集合都合并了，得出了o8.f的错误指向的结果。</p>
-<p><strong>堆抽象上下文敏感</strong>：用不同的调用者来区分堆抽象，如<code>3:o8</code>、<code>4:o8</code>是不同的堆抽象。所以说，既要根据上下文的不同来区分局部变量，也要区分堆抽象，例如：<code>3:p</code>是给变量加上下文，<code>3:o8</code>是给堆抽象加上下文。</p>
-<p><strong>规则</strong>：谁敏感谁加行号区分，行号其实就是上下文环境。</p>
-<h2 id="上下文敏感指针分析：规则"><a href="#上下文敏感指针分析：规则" class="headerlink" title="上下文敏感指针分析：规则"></a>上下文敏感指针分析：规则</h2><p><strong>标记</strong>：根据调用者的行数来区分不同上下文，只要区分了函数、变量、堆对象，就能够区分实例域、上下文敏感的指针（变量+对象域）。C—上下文（暂时用调用点的行数表示），O—对象，F—对象中的域。</p>
+<p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20210412114030719.png" alt="image-20210412114030719"></p>
+<p><strong>堆抽象上下文不敏感</strong>：如果不区分<code>8 ：X x = new X();</code>调用的堆抽象的上下文，导致只有1个o8.f，把两个上下文调用产生的o8.f指向集合都合并了，得出了o8.f的错误指向的结果。</p>
+<p><strong>堆抽象上下文敏感</strong>：用不同的调用者来区分堆抽象，如<code>3:o8</code>、<code>4:o8</code>是不同上下文创建的堆抽象。所以说，既要根据上下文的不同来区分局部变量，也要区分堆抽象，<strong>例如：<code>3:p</code>是给变量加上下文，<code>3:o8</code>是给堆抽象加上下文</strong>。</p>
+<p><strong>规则</strong>：<strong>变量上下文标号和堆上下文标号都是缺一不可的</strong>。谁敏感谁加行号区分，行号其实就是上下文环境。</p>
+<h2 id="上下文敏感指针分析：规则"><a href="#上下文敏感指针分析：规则" class="headerlink" title="上下文敏感指针分析：规则"></a>上下文敏感指针分析：规则</h2><p>指针两种：变量 &amp; field</p>
+<p><strong>标记</strong>：根据调用者的行数来区分不同上下文，只要区分了函数、变量、堆对象，就能够区分实例域、上下文敏感的指针（变量+对象域）。C—上下文（暂时用调用点的行数表示），O—对象，F—对象中的域。</p>
+<p>方法、变量、对象都需要上下文前缀</p>
+<p>field不存在上下文，但是实例对象的object的fields是有上下文前缀的</p>
+<p>指针(上下文敏感指针的)指向的对象是有上下文前缀的</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200825165457684.png" alt="image-20200825165457684"></p>
 <p><strong>基本规则</strong>：跟之前区别不大，只是增加了个上下文标记，有细微区别。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200825170905512.png" alt="image-20200825170905512"></p>
 <p>很经典的一张图，值得细细品味。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200825170932518.png" alt="image-20200825170932518"></p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200825173755842.png" alt="image-20200825173755842"></p>
+<p><strong>解读</strong>：</p>
+<ol>
+<li>首先<code>l: r = x.k(a1,...,an)</code>意思是在c上下文中，x所指向oi的对象，oi它的上下文为c’</li>
+<li>第二步，解析目标方法，依然是dispatch</li>
+<li>多了一步，<strong>select 选择方法的上下文</strong>，对于目标函数m选择上下文，根据调用点的信息，获得不同上下文条件下的目标方法ct</li>
+<li>传this：传的是ct上下文条件下m方法的this变量</li>
+<li>传参数：也是在特定上下文方法下的参数，会区分开数据流</li>
+<li>传返回值：从哪来，回哪里去。（不敏感就是到处瞎走，敏感就是自己知道该回哪去）</li>
+</ol>
 <h2 id="Context-Sensitive-Pointer-Analysis：Algorithms"><a href="#Context-Sensitive-Pointer-Analysis：Algorithms" class="headerlink" title="Context Sensitive Pointer Analysis：Algorithms"></a>Context Sensitive Pointer Analysis：Algorithms</h2><p><strong>区别</strong>：和过程间指针分析相比，仍然分为两个过程，分别是构造PFG和根据PFG传递指向信息。主要区别是添加了上下文。</p>
+<img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20210412144246826.png" alt="image-20210412144246826" style="zoom:67%;">
+
 <p><strong>PFG构造</strong>：边添加规则和之前一样，Assign、Store、Load、Call，Call需要加参数传递、返回值传递的边。</p>
+<p>节点为上下文敏感的指针，每个节点都带有上下文的信息；</p>
+<p>边：节点之间的关系，指针集的流向关系。</p>
+<p>其实就是每个关键的上下文都需要记录下来</p>
+<img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20210412150447980.png" alt="image-20210412150447980" style="zoom:50%;">
+
 <p><strong>符号</strong>：</p>
 <ul>
 <li>S：可达语句的集合（就是RM中的语句）</li>
 <li>Sm：函数m中的语句</li>
-<li>RM：可达函数的集合</li>
-<li>CG：调用图的边</li>
+<li>RM：可达函数的集合，带有上下文信息</li>
+<li>CG：调用图的边，带有上下文信息</li>
 </ul>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200825211520919.png" alt="image-20200825211520919"></p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200825212747860.png" alt="image-20200825212747860"></p>
 <h2 id="Context-Sensitivity-Variants-上下文Select函数选取规则"><a href="#Context-Sensitivity-Variants-上下文Select函数选取规则" class="headerlink" title="Context Sensitivity Variants 上下文Select函数选取规则"></a>Context Sensitivity Variants 上下文Select函数选取规则</h2><p><strong>上下文的选取主要采用3类</strong>：</p>
 <ul>
-<li>Call-Site Sensitivity</li>
+<li>Call-Site Sensitivity </li>
 <li>Object Sensitivity</li>
 <li>Type Sensitivity</li>
 <li>…</li>
 </ul>
-<p><strong>说明</strong>：Select(c,l,c’:o<sub>i</sub>,m)，c—调用者上下文，l—调用者，c’:o<sub>i</sub>—接收对象（含堆的上下文信息）,m方法。</p>
+<p><strong>说明</strong>：Select(c,l,c’:o<sub>i</sub>,m)，c—调用者上下文，l—调用者语句，c’:o<sub>i</sub>—接收对象（含堆的上下文信息）,m目标方法。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200825214950322.png" alt="image-20200825214950322"></p>
 <h3 id="Call-site-Sensitivity"><a href="#Call-site-Sensitivity" class="headerlink" title="Call-site Sensitivity"></a>Call-site Sensitivity</h3><p><strong>原理</strong>：又称为k-call-site sensitivity / k-CFA，不断添加调用行号。</p>
 <blockquote>
 <p>Select(<strong>c,l</strong>,c’:oi,m) = (l’,…,l’’, l)</p>
 </blockquote>
+<img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20210412163639405.png" alt="image-20210412163639405" style="zoom:50%;">
+
+<p>维护一个抽象调用栈。</p>
 <p><strong>问题</strong>：如果函数调用自身，导致无限递归，如何限制上下文长度？</p>
-<p><strong>解决</strong>：k-limiting Context Abstraction。只取最后k个上下文，通常取k&lt;=3。例如，函数方法的上下文通常取2，堆上下文通常取1。</p>
+<p><strong>解决</strong>：k-limiting Context Abstraction。对上下文加以限制，只取最后k个上下文，通常取k&lt;=3。</p>
+<p>例如，函数方法的上下文通常取2，堆上下文通常取1。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200825220600403.png" alt="image-20200825220600403"></p>
 <p><strong>示例</strong>：采用1-Call-Site，省略heap上下文。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200825223106171.png" alt="image-20200825223106171"></p>
+<p>步骤：</p>
+<p>初始化全部为空，接下来AddrReachable处理入口方法，上下文为空[]。首先入口方法为main方法，进到AddReachable之后，RM可达方法集合为<code>{[]:C.main()}</code>，WL中添加<code>[&lt;[]:c,{o3}&gt;]</code>注意是带有上下文的。接下来处理WL中的项，先做差集，o3加到带有上下文的指针集。这里没有load和store，走到processcall。进到processcall之后，select结果ct是4，代表是第四行进行了调用。接下来传递receiverobject，也就是<code>[&lt;[4]:C.mthis,{o3}&gt;]</code>放到WL中，表示将o3传递给4环境下的C类的this对象，接下来构建CG，也就是<code>{[]:4-&gt;[4]:C.m()}</code>表示在上下文为起始方法时，在第四行调用了C类的m方法，并且调用时候的上下文是4也就是在第四行调用的。接下来AddReachable，这时候RM可达方法集合为<code>{[]:C.main(),[4].C.m()}</code>，处理new语句，WL现状：<code>[&lt;[4]:C.mthis,{o3}&gt;,&lt;[4]:n1,{o12}&gt;,&lt;[4]:n2,{o13}&gt;]</code>表示在上下文为4的背景下，new出来了两个对象，分别在第12行和第13行创建。然后传参传返回值都是空，所以结束。</p>
+<p>接下来处理WL中的下一个，应该是<code>&lt;[4]:C.mthis,{o3}&gt;</code>，首先propagate，算差集，this之前指针集还是空，那么o3就放到<code>[4]:C.mthis</code>的指针集里面。往下走，没有load和store，但是有两个方法调用，那么进入processcall，dispatch求得目标函数为<code>m=C.id(Number)</code>，上下文ct为[14]，往下走，先处理14行的上下文：构建CG调用边，CG目前现状：<code>{[]:4-&gt;[4]:C.m(),[4]:14-&gt;[14]:C.id(Number)}</code>，AddReachable将RM更新为<code>{[]:C.main(),[4].C.m(),[14]:C.id(Number)}</code>表示新添加的方法可达，接下来传参，<code>[4]:n1-&gt;[14]:n</code>表示n1参数作为实参传递给14行的形参；传返回值也类似：<code>[14]:n-&gt;[4]:x</code>表示14行的n作为返回值，传递给了4上下文下的x。接下来处理15行的上下文，m还是<code>m=C.id(Number)</code>，上下文ct为[15]，CG为：<code>{[]:4-&gt;[4]:C.m(),[4]:14-&gt;[14]:C.id(Number),[4]:15-&gt;[15]:C.id(Number)}</code>，RM为<code>{[]:C.main(),[4].C.m(),[14]:C.id(Number),[15]:C.id(Number)}</code> ，接下来传参，<code>[4]:n2-&gt;[15]:n</code> ，传返回值<code>[15]:n-&gt;[4]:y</code> 这也就是通过上下文将数据流分开。</p>
+<img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20210413110026476.png" alt="image-20210413110026476" style="zoom:50%;">
+
+<p>接下来继续处理WL里面剩余的参数，该轮到<code>&lt;[4]:n1,{o12}&gt;</code>和<code>&lt;[4]:n2,{o13}&gt;</code>了 这里同理快进，其实就是把o12和o13接到了PFG上面，开始传播</p>
+<img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20210413110628280.png" alt="image-20210413110628280" style="zoom:50%;">
+
+<p>当o12传递给x之后，执行<code>x.get()</code>方法调用</p>
+<img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20210413110820741.png" alt="image-20210413110820741" style="zoom:50%;">
+
+<p>最终结果：</p>
+<p>&lt;img src=”../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20210413110839543.png” alt=”image-20210413110839543” style=”zoom:50%;” /</p>
 <table>
 <thead>
 <tr>
@@ -4611,20 +4691,22 @@
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200825230355976.png" alt="image-20200825230355976"></p>
 <p><strong>上下文不敏感vs上下文敏感（1-Call-Site）</strong>：</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200825230709085.png" alt="image-20200825230709085"></p>
-<h3 id="Object-Sensitivity"><a href="#Object-Sensitivity" class="headerlink" title="Object Sensitivity"></a>Object Sensitivity</h3><p><strong>原理</strong>：针对面向对象语言，用<code>receiver object</code>来表示上下文。对比1层的调用点敏感和对象敏感，时间和准确性上对象敏感显然更优，这是由面向对象语言的特点所确定的。</p>
+<p>左边callsite不敏感会产生误报，认为16也会调用Two.get</p>
+<h3 id="Object-Sensitivity"><a href="#Object-Sensitivity" class="headerlink" title="Object Sensitivity"></a>Object Sensitivity</h3><p><strong>原理</strong>：针对面向对象语言，<strong>用<code>receiver object</code>来表示上下文</strong>。对比1层的调用点敏感和对象敏感，时间和准确性上对象敏感显然更优，这是由面向对象语言的特点所确定的。</p>
 <blockquote>
 <p> Select(c,l,<strong>c’:oi</strong>,m) = [oj, … , ok, oi] （c’ = [oj, … , ok]）</p>
 </blockquote>
 <p><strong>示例</strong>：选取1-object，最终pt(x)=o3。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200826010740396.png" alt="image-20200826010740396"></p>
 <p><strong>对比</strong>：对比<code>1-Call-Site</code>和<code>1-object</code>上下文，在这个示例中<code>1-object</code>明显更准确。原因是面向对象语言的特性，多态性产生很多继承链，一层一层调用子对象，其中最关键的是<code>receiver object</code>，<code>receiver object</code>决定了调用者的根源。本例有多层调用，若采用2-Call-Site就不会出错。</p>
+<p>规律：this所指的变量一定是自己的上下文</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200826011344657.png" alt="image-20200826011344657"></p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200826011439285.png" alt="image-20200826011439285"></p>
 <p><strong>示例2</strong>：在本示例中，<code>1-Call-Site</code>明显更准确。因为同一个<code>receiver object</code>用不同参数多次调用了子函数，导致局部变量无法区分。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200826012027064.png" alt="image-20200826012027064"></p>
-<p><strong>结论</strong>：所以理论上，对象敏感与callsite敏感的准确度无法比较。但是对于面向对象语言，对象敏感的准确度要优于callsite敏感。</p>
+<p><strong>结论</strong>：所以理论上，object敏感与callsite敏感的准确度无法比较。但是<strong>对于面向对象语言，object敏感的准确度和效率要优于callsite敏感</strong>。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200826012335207.png" alt="image-20200826012335207"></p>
-<h3 id="Type-Sensitivity"><a href="#Type-Sensitivity" class="headerlink" title="Type Sensitivity"></a>Type Sensitivity</h3><p><strong>原理</strong>：牺牲精度，提高速度。基于创建点所在的类型，是基于对象敏感粗粒度的抽象，精度较低。</p>
+<h3 id="Type-Sensitivity"><a href="#Type-Sensitivity" class="headerlink" title="Type Sensitivity"></a>Type Sensitivity</h3><p><strong>原理</strong>：牺牲精度，提高速度。<strong>基于创建点所在类的类型</strong>，是<strong>基于对象敏感粗粒度的抽象</strong>，精度较低。</p>
 <p>调用点所在的类型作为上下文；</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200826012857854.png" alt="image-20200826012857854"></p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200826012846362.png" alt="image-20200826012846362"></p>
@@ -4637,7 +4719,7 @@
 <h2 id="信息流安全"><a href="#信息流安全" class="headerlink" title="信息流安全"></a>信息流安全</h2><p><strong>访问控制</strong>：关注信息访问。但是程序获得信息之后去做了什么，访问控制监管不到。</p>
 <p><strong>信息流安全</strong>：关注信息传播。保证程序以安全的程序处理信息，防止泄露。</p>
 <p><strong>信息流</strong>：<code>x-&gt;y</code>表示x的值流向y。</p>
-<p><strong>信息等级</strong>：对不同<strong>变量</strong>进行分级，即安全等级，H-高密级，L-低密级。</p>
+<p><strong>信息等级</strong>：对不同<strong>变量</strong>进行<strong>分级</strong>，即安全等级，H-高密级，L-低密级。可以用格进行分类，给优先级排序。</p>
 <p><strong>安全策略</strong>：非干涉策略，高密级变量H的信息不能影响（流向）低密级变量L。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200826134802054.png" alt="image-20200826134802054"></p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200826135734797.png" alt="image-20200826135734797"></p>
@@ -4647,31 +4729,39 @@
 <p><strong>完整性更宽泛的定义</strong>：准确性、完整性、一致性。准确性表示关键数据不被不可信数据破坏；完整性表示系统存储了所有的数据；一致性表示发送的数据和接收的数据是一致的。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200826140937303.png" alt="image-20200826140937303"></p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200826141241983.png" alt="image-20200826141241983"></p>
-<h2 id="显示流和隐藏信道-Explicit-Flows-and-Covert-Channels"><a href="#显示流和隐藏信道-Explicit-Flows-and-Covert-Channels" class="headerlink" title="显示流和隐藏信道-Explicit Flows and Covert Channels"></a>显示流和隐藏信道-Explicit Flows and Covert Channels</h2><p><strong>显示流</strong>：直接的数值传递。由于显示流能泄露更多信息，所以本课程关注显示流的信息泄露。</p>
+<h2 id="显示流和隐藏信道-Explicit-Flows-and-Covert-Channels"><a href="#显示流和隐藏信道-Explicit-Flows-and-Covert-Channels" class="headerlink" title="显示流和隐藏信道-Explicit Flows and Covert Channels"></a>显示流和隐藏信道-Explicit Flows and Covert Channels</h2><p><strong>显示流</strong>：直接用<code>=</code>数值传递。由于显示流能泄露更多信息，所以本课程关注显示流的信息泄露。</p>
 <p><strong>隐式信息流—侧信道</strong>：程序可能会以一些意想不到的方式泄露数据。</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Eg1 隐式流</span></span><br><span class="line"><span class="keyword">if</span> (secret_H &lt; <span class="number">0</span>) </span><br><span class="line">  public_L = <span class="number">1</span>; </span><br><span class="line"><span class="keyword">else</span> Public_L = <span class="number">0</span>;</span><br><span class="line"><span class="comment">// Eg2 终止信道</span></span><br><span class="line"><span class="keyword">while</span>(secret_H &lt; <span class="number">0</span>) &#123; ... &#125;;</span><br><span class="line"><span class="comment">// Eg3 时间信道</span></span><br><span class="line"><span class="keyword">if</span> (secret_H &lt; <span class="number">0</span>)</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i&lt; <span class="number">1000000</span>; ++i) &#123; ... &#125;;</span><br><span class="line"><span class="comment">// Eg4 异常</span></span><br><span class="line"><span class="keyword">if</span> (secret_H &lt; <span class="number">0</span>)</span><br><span class="line">  <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">"..."</span>);</span><br><span class="line"><span class="comment">// Eg5 如果访问数组越界，则可以推断secret可以为负数</span></span><br><span class="line"><span class="keyword">int</span> sa_H[] = getSecretArray();</span><br><span class="line">sa_H[secret_H] = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
 
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200826145727101.png" alt="image-20200826145727101"></p>
 <p><strong>Covert Channels</strong>：信道指的是传递信息的机制，convert_channel指的是那些原本目的不是为了传递信息的信道。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200826154238766.png" alt="image-20200826154238766"></p>
-<h2 id="污点分析"><a href="#污点分析" class="headerlink" title="污点分析"></a>污点分析</h2><p><strong>说明</strong>：使用最广的信息流分析技术，需将程序数据分为两类，把感兴趣的数据标记为污点数据。</p>
+<h2 id="污点分析"><a href="#污点分析" class="headerlink" title="污点分析"></a>污点分析</h2><p><strong>说明</strong>：使用最广的<strong>信息流分析技术</strong>，需将程序数据分为两类，把感兴趣的数据标记为污点数据。</p>
 <h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p><strong><code>Sources</code> &amp; <code>Sink</code></strong>：</p>
-<p><code>Sources</code>是污点数据的源，一般是有些函数的返回值，如<code>read()</code>；</p>
+<p><code>Sources</code>是污点数据的源，<strong>一般是某些方法的返回值</strong>，如<code>read()</code>；</p>
 <p><code>Sink</code>是特定的程序点，某些敏感函数。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200826155325353.png" alt="image-20200826155325353"></p>
 <p><strong>保密性</strong>：Source是秘密数据，Sink是泄露点，信息泄露漏洞。</p>
 <p><strong>完整性</strong>：Source是不可信数据，Sink是关键计算，注入漏洞。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200826155805722.png" alt="image-20200826155805722"></p>
-<h3 id="污点分析具体规则"><a href="#污点分析具体规则" class="headerlink" title="污点分析具体规则"></a>污点分析具体规则</h3><p><strong>定义</strong>：关注的是，污点数据是否能流向sink点。或者说，sink点处的指针指向哪些污点数据。</p>
+<h3 id="污点分析具体规则"><a href="#污点分析具体规则" class="headerlink" title="污点分析具体规则"></a>污点分析具体规则</h3><p><strong>定义</strong>：关注的是，<strong>一个污点数据是否能流向sink点</strong>。或者说，<strong>指向sink点处的指针会不会指向污点数据</strong>。</p>
+<p>污点分析更关心数据，而不是变量，是对数据打标签。</p>
 <p><strong>TA/PTA对比</strong>：污点分析与指针分析，一个是污点数据的流向，一个是抽象对象的流向。</p>
-<p>可把污点数据看作是对象，source看作allocation-site，借助指针分析来实现污点分析。</p>
-<p><strong>标记</strong>：t<sub>i</sub>表示调用点i返回的污点数据，t<sub>i</sub>指针集就包含普通对象+污点数据。</p>
+<p>指针分析其实就是盯着程序中的抽象对象的流向，</p>
+<p>思想：</p>
+<blockquote>
+<p>可把污点数据看作是                                                                                                                                                                                            </p>
+<p>特殊的对象</p>
+<p>source看作这些对象的allocation-site</p>
+<p>借助指针分析来实现污点分析</p>
+</blockquote>
+<p><strong>标记</strong>：t<sub>i</sub>表示调用点i(call site i)返回的污点数据，t<sub>i</sub>指针集就包含普通对象+污点数据。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200826160638720.png" alt="image-20200826160638720"></p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200826161010695.png" alt="image-20200826161010695"></p>
 <p><strong>规则</strong>：</p>
 <ol>
-<li>Source：先看CG图，如果程序有语句在l处调用了m方法，有调用边。条件是如果m属于分析的Source方法集合内，那么我们就把返回值标记为污点值tl，更新<code>receiver object</code> r的指向。</li>
-<li>Sink：在Sink的调用点检查就可以了。主要就是看调用点的调用目标方法，如果目标方法属于Sink集合，那么就开始检查参数，遍历参数，看参数他们的指针集。如果指针集之中发现了污点数据，那么就产生了TaintFlows，会报告说污点数据tj会流到m方法中。</li>
+<li>Source：先看CG图，如果程序有语句在l处调用了m方法，有调用边。条件是如果m属于分析的Source方法集合内，那么我们就把返回值标记为污点值tl，更新返回值r的指向。</li>
+<li>Sink：在Sink的调用点检查就可以了。主要就是看调用点的调用目标方法，如果目标方法属于Sink集合，那么就开始<strong>检查参数，遍历参数，看参数他们的指针集</strong>。如果指针集之中发现了污点数据，那么就产生了TaintFlows，会报告说污点数据tj会流到m方法中。</li>
 </ol>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200826162027035.png" alt="image-20200826162027035"></p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200826162045978.png" alt="image-20200826162045978"></p>
@@ -4779,14 +4869,16 @@
 <p>如chord（java+Datalog实现）</p>
 </li>
 </ol>
-<h1 id="15"><a href="#15" class="headerlink" title="15"></a>15</h1><p>目标：以图可达性分析来进行程序分析，没有了数据流传播的过程。</p>
-<h2 id="Infeasible-and-Realizable-Paths——基本概念"><a href="#Infeasible-and-Realizable-Paths——基本概念" class="headerlink" title="Infeasible and Realizable Paths——基本概念"></a>Infeasible and Realizable Paths——基本概念</h2><p><strong>Infeasible Paths</strong>：CFG中实际动态运行中不会执行到的路径，如不匹配的调用返回边。这种路径可能会影响到程序分析的结果，但静态分析不能<strong>完全</strong>判定路径是否可达，会造成误报。</p>
-<p><strong>Realizable Paths</strong>：跨函数调用产生的返回边和对应的call-site边匹配，这样的path。它可能不会被执行，</p>
+<h1 id="15"><a href="#15" class="headerlink" title="15"></a>15</h1><p><strong>目标</strong>：以<strong>图可达性分析</strong>来进行程序分析，没有了数据流传播的过程。</p>
+<h2 id="Infeasible-and-Realizable-Paths——基本概念"><a href="#Infeasible-and-Realizable-Paths——基本概念" class="headerlink" title="Infeasible and Realizable Paths——基本概念"></a>Infeasible and Realizable Paths——基本概念</h2><p><strong>Infeasible Paths</strong>：<strong>CFG中存在，但是实际动态运行中不会执行到的路径</strong>，如不匹配的调用返回边。这种路径可能会影响到程序分析的结果，但静态分析不能<strong>完全</strong>判定路径是否可达，会造成误报。</p>
+<p>也就是说，如果CG上存在假边，那么静态分析时，dataflow会绕着假边来流动，造成误报。我们希望假边尽可能少，误报也就尽可能少。</p>
+<p><strong>Realizable Paths</strong>：跨函数调用产生的return边和对应的call-site的call边匹配，这样的path。它可能不会被执行</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200827213547440.png" alt="image-20200827213547440"></p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200828104139957.png" alt="image-20200828104139957"></p>
-<p><strong>目标</strong>：识别<code>Realizable path</code>，避免沿着<code>Unrealizable path</code>来传播数据分析。</p>
+<p><strong>目标</strong>：识别<code>Realizable path</code>，避免沿着<code>Unrealizable path</code>来传播数据分析。沿着对儿来匹配，从1来回到1，从2来回到2。</p>
 <p><strong>方法</strong>：<code>CFL-Reachablity</code>。</p>
 <h2 id="CFL-Reachablity（IFDS的理论基础，识别Realizable-path）"><a href="#CFL-Reachablity（IFDS的理论基础，识别Realizable-path）" class="headerlink" title="CFL-Reachablity（IFDS的理论基础，识别Realizable path）"></a>CFL-Reachablity（IFDS的理论基础，识别Realizable path）</h2><p><strong>CFL-Reachablity</strong>：path连接A和B，或者说A能到达B，当且仅当path所有边的labels连接起来 是<code>context-free language</code>（CFL）中的一个word（或者说经过CFG语法变换之后可以得到该<code>path word</code>）。CFL是编译原理中的概念，遵循CFG语法。</p>
+<p>简单来说：在边上添加label，那么一个路径realizable即这个路径上的边label组成了一个word，这个word是符合定义的上下文无关文法（CFG）的。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200828105754052.png" alt="image-20200828105754052"></p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200828105808896.png" alt="image-20200828105808896"></p>
 <p>理解：</p>
@@ -4794,20 +4886,23 @@
 <p><strong>部分括号匹配问题（Partially Balanced-Parenthesis）</strong>：利用CFL来解决括号匹配问题，以识别<code>Realizable path</code>。</p>
 <ul>
 <li>部分——有<code>)i</code>一定要有<code>(i</code>，反之有<code>(i</code>不一定要有<code>)i</code>，也即可以调用子函数而不返回。</li>
+<li>对于每个调用点i，将其调用边加 <code>(i</code> 的标签，将其返回边加 <code>)i</code>的标签；</li>
 <li>标记，调用边——<code>(i</code>；返回边——<code>)i</code>；其他边——e。</li>
 </ul>
-<p><strong>CFL-Reachablity</strong>：若path word（所有edge的label连起来组成的单词）可用CFL L(realizable)表示（可进行各种替换），则为<code>Realizable Path</code>。示例如下，(1(2e)2)1(3就是边的label相连接形成的，绿色是可匹配的部分，<code>realizable</code>可被替换为<code>matched realizable</code>、<code>(i realizable</code>、ɛ。语法替换规则如下，这也是一个CFL语言示例：</p>
+<p><strong>CFL-Reachablity</strong>：若path word（所有edge的label连起来组成的单词）可用CFL L(realizable)表示（可进行各种替换），则为<code>Realizable Path</code>。</p>
+<p>示例如下，(1(2e)2)1(3就是边的label相连接形成的，绿色是可匹配的部分，<code>realizable</code>可被替换为<code>matched realizable</code>、<code>(i realizable</code>、ɛ。语法替换规则如下，这也是一个CFL语言示例：</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200828111138550.png" alt="image-20200828111138550"></p>
 <p>示例：</p>
 <p>看边就行了</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200828122836984.png" alt="image-20200828122836984"></p>
 <h2 id="IFDS"><a href="#IFDS" class="headerlink" title="IFDS"></a>IFDS</h2><p><strong>IFDS含义</strong>：</p>
-<p>Interprocedural，Finite，Distributive，Subset Problem</p>
-<p>Interprocedural—全程序分析,</p>
-<p>Finite—域有限（如live variables、definitions）,</p>
-<p><strong>Distributive</strong>—<code>Transfer Function</code>满足f(aub)=f(a)uf(b)，</p>
-<p>Subset—子集问题。</p>
-<p><strong>利用图可达性的程序分析框架</strong>：采用的操作——Meet-Over-All-Realizable-Paths（MRP），MRPn比MOPn更加精确，范围更小。MOP对所有路径进行meet操作，MRP只对<code>realizable path</code>进行meet操作，更准确。</p>
+<p>Interprocedural，Finite，Distributive，Subset   - Problem</p>
+<p>Interprocedural—全程序分析</p>
+<p>Finite—域有限（如live variables、definitions）</p>
+<p><strong>Distributive</strong>—<code>Transfer Function</code>满足f(aub)=f(a)uf(b)</p>
+<p>Subset—子集问题</p>
+<p><strong>利用图可达性的程序分析框架</strong>：采用的操作——Meet-Over-All-Realizable-Paths（MRP），MRPn比MOPn更加精确，范围更小。</p>
+<p>MOP对所有路径进行meet操作，MRP只对<code>realizable path</code>进行meet操作，更准确。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200828163341454.png" alt="image-20200828163341454"></p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200828163422557.png" alt="image-20200828163422557"></p>
 <h2 id="Supergraph（之前叫iCFG）-amp-Flow-Functions"><a href="#Supergraph（之前叫iCFG）-amp-Flow-Functions" class="headerlink" title="Supergraph（之前叫iCFG）&amp; Flow Functions"></a>Supergraph（之前叫iCFG）&amp; Flow Functions</h2><h3 id="IFDS步骤一：构造Supergraph"><a href="#IFDS步骤一：构造Supergraph" class="headerlink" title="IFDS步骤一：构造Supergraph"></a>IFDS步骤一：构造Supergraph</h3><p><strong>说明</strong>：之前叫iCFG，给每个<strong>node</strong>定义<code>transfer function</code>；现在叫做Supergraph，给每个<strong>edge</strong>定义<code>transfer function</code>。</p>
@@ -4824,7 +4919,7 @@
 </li>
 </ul>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200828170124984.png" alt="image-20200828170124984"></p>
-<h3 id="IFDS步骤一：设计流函数"><a href="#IFDS步骤一：设计流函数" class="headerlink" title="IFDS步骤一：设计流函数"></a>IFDS步骤一：设计流函数</h3><p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200828171430697.png" alt="image-20200828171430697"></p>
+<h3 id="IFDS步骤一：设计流函数-flow-functions"><a href="#IFDS步骤一：设计流函数-flow-functions" class="headerlink" title="IFDS步骤一：设计流函数 flow functions"></a>IFDS步骤一：设计流函数 flow functions</h3><p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200828171430697.png" alt="image-20200828171430697"></p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200828173236760.png" alt="image-20200828173236760"></p>
 <p><strong>示例</strong>：</p>
 <ul>
@@ -4860,31 +4955,35 @@
 </ul>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/6349402-1f2401da0b53aa3a.png" alt="img"></p>
 <p><strong>Tabulation算法优点</strong>：传统的worklist算法是利用了queue的特性，每次循环只考虑与被改变值结点的相关结点。论文中用于解决图可达问题的Tabulation 算法是基于worklist的动态规划算法，比传统worklist算法考虑interprocedure问题更精确也更省时。</p>
-<h2 id="Understanding-the-Distributivity-of-IFDS"><a href="#Understanding-the-Distributivity-of-IFDS" class="headerlink" title="Understanding the Distributivity of IFDS"></a>Understanding the Distributivity of IFDS</h2><p><strong>问题</strong>：不能用IFDS进行常量传播分析、指针分析。</p>
-<p><strong>原因</strong>：由IFDS的框架决定，一次只能处理1个变量。例如，表示若x和y都存在则…，无法表示这种关系。不满足<code>F(x^y)=F(x)^F(y)</code>。</p>
-<p><strong>总结</strong>：给定语句S，如果输出取决于多个输入的<code>data fact</code>，则该分析不具备可分配性，不能用IFDS表达。IFDS中，每个<code>data fact</code>（圆圈）与其传播（边）都可以各自处理，且不影响最终结果。</p>
+<h2 id="Understanding-the-Distributivity-of-IFDS"><a href="#Understanding-the-Distributivity-of-IFDS" class="headerlink" title="Understanding the Distributivity of IFDS"></a>Understanding the Distributivity of IFDS</h2><p><strong>结论</strong>：<strong>不能用IFDS进行常量传播分析、指针分析</strong>。</p>
+<p><strong>原因</strong>：<strong>由IFDS的框架决定，一次只能处理1个变量</strong>。例如，表示若x和y都存在则会冲突，无法表示这种关系。不满足<code>F(x^y)=F(x)^F(y)</code>。</p>
+<p><strong>总结</strong>：<strong>给定语句S，如果输出取决于多个输入的<code>data fact</code>，则该分析不具备可分配性，不能用IFDS表达</strong>。IFDS中，每个<code>data fact</code>（圆圈）与其传播（边）都可以各自处理，且不影响最终结果。</p>
+<p><strong>IDE</strong>：IDE（Interprocedural，Distributive，Environment problem）作为IFDS的优化，可以解决infinite的问题，但是仍需满足distributive。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200829213817200.png" alt="image-20200829213817200"></p>
-<p><strong>指针分析</strong>：箭头表示变量是否指向<code>new T</code>，但由于缺乏别名信息<code>alias(x,y)</code> / <code>alias(x.f,y.f)</code>，导致分析结果错误。归根结底，要想在IFDS中获取别名信息<code>alias(x,y)</code>，需要考虑多个输入<code>data fact</code>（x、y），所以不能用IFDS。</p>
+<p><strong>指针分析</strong>：箭头表示变量是否指向<code>new T</code>，但由于缺乏别名信息<code>alias(x,y)</code> / <code>alias(x.f,y.f)</code>，导致分析结果错误。也就是说正常应该有一个红色的虚线边，但是由于缺少了别名分析，导致分析错误。</p>
+<p>归根结底，要想在IFDS中获取别名信息<code>alias(x,y)</code>，需要考虑多个输入<code>data fact</code>（x、y），所以不能用IFDS。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200829215602083.png" alt="image-20200829215602083"></p>
 <h1 id="16"><a href="#16" class="headerlink" title="16"></a>16</h1><h2 id="Soundness-amp-Soundiness"><a href="#Soundness-amp-Soundiness" class="headerlink" title="Soundness &amp; Soundiness"></a>Soundness &amp; Soundiness</h2><p>分析真实复杂程序时，产生的问题都与Soundiness有关，是最前沿的topic之一。</p>
-<p><strong>Soundness</strong>：保守估计，分析结果能包含程序所有可能的执行。学术界和工业界都做不到。</p>
+<p><strong>Soundness</strong>：保守估计，分析结果能<strong>包含程序所有可能的执行</strong>，<strong>OVER</strong>。学术界和工业界都做不到。</p>
 <p><strong>复杂语言特性</strong>：导致分析结果不精确。</p>
 <ul>
 <li>Java：Reflection, native code, dynamic class loading, etc.</li>
 <li>JavaScript：eval（执行任意命令）, document object model (DOM，和DOM加护), etc.</li>
-<li>C/C++：Pointer arithmetic（指针地址+1或乘以）, function pointers, etc.</li>
+<li>C/C++：Pointer arithmetic（指针地址加或乘操作）, function pointers, etc.</li>
 </ul>
 <p><strong>现状</strong>：有些文章不提这类问题，或者随意一提（如eval）。极具误导性，导致相信该工具很sound，且影响专家的评判。</p>
 <p><strong>Soundiness</strong>：直观相信的”truth”，但没有任何事实和证据。</p>
+<p><strong>sound analysis</strong>：分析大部分都是sound的，并且对于hard-to-analysis部分来说，明确说出来是怎么处理的。</p>
 <p><strong>词语对比</strong>：</p>
 <ul>
-<li>sound analysis：能捕捉所有动态运行行为，理想化。</li>
+<li>sound analysis：能捕捉所有动态运行行为，纯理想化分析。</li>
 <li>soundy analysis：目标是捕捉所有动态行为，但对于某些复杂语言特性可以unsound。</li>
 <li>unsound analysis：为了效率、精度，故意不处理某些行为。</li>
 </ul>
 <h2 id="复杂语言特性一：Java-Reflection—反射"><a href="#复杂语言特性一：Java-Reflection—反射" class="headerlink" title="复杂语言特性一：Java Reflection—反射"></a>复杂语言特性一：Java Reflection—反射</h2><h3 id="什么是Java反射"><a href="#什么是Java反射" class="headerlink" title="什么是Java反射"></a>什么是Java反射</h3><p><strong>Java Reflection</strong>：反射机制很重要的一点就是“运行时”，其使得我们可以在程序运行时加载、探索以及使用编译期间完全未知的 <code>.class</code> 文件。换句话说，Java 程序可以加载一个运行时才得知名称的 <code>.class</code> 文件，然后获悉其完整构造，并生成其对象实体、或对其 fields（变量）设值、或调用其 methods（方法）。</p>
 <p><strong>三个MetaObject</strong>：</p>
 <p>Class-class，Method-method，Field-field分别对应。</p>
+<p>反射世界虽然复杂，但是离不开第一步入口：获取Class对象。</p>
 <p><strong>说明</strong>：非反射代码在编译时就能确定对象；反射代码在运行时才确定对象，如c指向什么，”Person”也可能是的字符串指针，很难静态分析。分析该类代码很有必要，如弄清对象到底调用了哪个目标函数、对象域的指向关系等。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200830164532751.png" alt="image-20200830164532751"></p>
 <h3 id="分析方法"><a href="#分析方法" class="headerlink" title="分析方法"></a>分析方法</h3><p><strong>分析方法</strong>：String Contant analysis + Pointer Analysis（Reflection Analysis for Java——APLAS 2005）。</p>
@@ -4897,19 +4996,23 @@
 <li>知道了是调用<code>Person</code>类的<code>setName</code>函数</li>
 </ul>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200830165227825.png" alt="image-20200830165227825"></p>
-<p><strong>问题</strong>：若字符串的值无法通过静态分析得到，则反射目标不能求解。Eg，字符串来自配置文件、网络、命令行、复杂字符串处理、动态生成、加密。</p>
-<h3 id="改进"><a href="#改进" class="headerlink" title="改进"></a>改进</h3><p><strong>解决方法</strong>：Type Inference + String analysis + Pointer Analysis（<a href="https://yuleisui.github.io/publications/ecoop14.pdf" target="_blank" rel="noopener">Self-Inferencing Reflection Resolution for Java</a>——ECOOP 2014，李樾，谭添老师的成果）。在创造点不可推，但在使用点可推。</p>
-<p><strong>示例</strong>：【搜集隐藏线索】类名依赖cmd参数，解不出来；但在调用点，通过Java的类型系统推导<code>parameters</code>，发现<code>parameters</code>是this指针。推出结论就是，175行的目标函数有1个参数，且声明类型要么是<code>FrameworkCommandInterpreter</code>要么是其子类。结果推断出50个反射目标函数，48个为true。</p>
+<p><strong>问题</strong>：<strong>若字符串的值无法通过静态分析得到，则反射目标不能求解</strong>。Eg，字符串来自配置文件、网络、命令行、复杂字符串处理、动态生成、加密。</p>
+<h3 id="改进"><a href="#改进" class="headerlink" title="改进"></a>改进</h3><p><strong>解决方法</strong>：Type Inference + String analysis + Pointer Analysis（<a href="https://yuleisui.github.io/publications/ecoop14.pdf" target="_blank" rel="noopener">Self-Inferencing Reflection Resolution for Java</a>——ECOOP 2014，李樾，谭添老师的成果）。</p>
+<p><strong>在创造点不可推，但在使用点可推</strong>。</p>
+<p><strong>示例</strong>：【搜集隐藏线索】类名依赖cmd参数，解不出来；但在调用点，通过Java的类型系统推导<code>parameters</code>，发现<code>parameters</code>是this指针。</p>
+<p>推出结论就是，175行的目标函数肯定有1个参数，且这个参数的声明类型要么是<code>FrameworkCommandInterpreter</code>要么是其子类。</p>
+<p>结果推断出50个反射目标函数，48个为true。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200830171109282.png" alt="image-20200830171109282"></p>
 <p><strong>最新工作</strong>：<a href="https://yuelee.bitbucket.io/papers/tosem19.pdf" target="_blank" rel="noopener">Understanding and Analyzing Java Reflection</a> (TOSEM 2019) <em>Yue Li, Tian Tan, Jingling Xue</em>。不仅求解反射对象更准确更多，而且能说出哪里解的不准。</p>
 <p><strong>常用方法</strong>：<a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.445.5090&rep=rep1&type=pdf" target="_blank" rel="noopener">Taming reflection: Aiding static analysis in the presence of reflection and custom class loaders</a> (ICSE 2011)。利用动态分析来解，缺点是测试用例的覆盖路径有限，优点是只要解出来，结果都为真。</p>
 <h2 id="复杂语言特性二：Native-Code"><a href="#复杂语言特性二：Native-Code" class="headerlink" title="复杂语言特性二：Native Code"></a>复杂语言特性二：Native Code</h2><p><strong>Native Code</strong>：一个Native Method就是一个java调用非java代码的接口。该方法的实现由非java语言实现，已被编译为特定于处理器的机器码的代码，这些代码可以直接被虚拟机执行，与字节码的区别：虚拟机是一个把通用字节码转换成用于特定处理器的本地代码的程序，比如C。这个特征并非java所特有，很多其它的编程语言都有这一机制，比如在C++中，你可以用extern “C”告知C++编译器去调用一个C的函数。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200830172333870.png" alt="image-20200830172333870"></p>
 <p><strong>Java Native Interface(JNI)</strong>：是一种编程框架（函数模型，反映参数格式等），使得Java虚拟机中的Java程序可以调用本地应用/或库，也可以被其他程序调用。 本地程序一般是用其它语言（C、C++或汇编语言等）编写的，并且被编译为基于本机硬件和操作系统的程序。</p>
+<p>也就是说，Java应用或者Lib包都是class文件，可以通过JVM内部的JNI接口与Native App&amp;Lib原生来交互。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200830205416161.png" alt="image-20200830205416161"></p>
 <p><strong>示例</strong>：先加载Native库，声明Native函数，<code>*env</code>变量可以在Native代码中用于创建对象、访问域、调用Java中的方法等，支持230个JNI函数。<strong>问题是跨语言之后，如何静态分析<code>je.guessMe()</code>这个调用？</strong></p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200830211838150.png" alt="image-20200830211838150"></p>
-<p><strong>方法</strong>：对重要的<code>native code</code>手动建模。例如，对经常调用的<code>arraycopy()</code>函数进行建模，建模后就是一个拷贝循环，但从指针分析角度来讲，看到这个循环，我们就把数组指针进行传递。</p>
+<p><strong>方法</strong>：对重要的<code>native code</code><strong>手动建模</strong>。例如，对经常调用的<code>arraycopy()</code>函数进行建模，建模后就是一个拷贝循环，但从指针分析角度来讲，看到这个循环，我们就把数组指针进行传递。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200830214334563.png" alt="image-20200830214334563"></p>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://www.jianshu.com/u/a12c5b882be2" target="_blank" rel="noopener">1</a></p>
 ]]></content>
@@ -5356,8 +5459,8 @@
 <p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210325104642746.png" alt="image-20210325104642746"></p>
 <p>上图可以看出来：</p>
 <ul>
-<li>一个Unit有多个UnitBox，但是每个UnitBox只能指向一个Unit。GotoStmt 需要知道目标的Unit是什么，所以一个Unit会包含其它的UnitBox，通过 UnitBox获取下一个Unit</li>
-<li>一个value可以对应多个ValueBox，但是一个Valuebox只能对应一个Value，对于一个Unit，可以得到很多个ValueBox，包含着这条语句内部的所用到和所定义的语句。</li>
+<li><strong>一个Unit有多个UnitBox，但是每个UnitBox只能指向一个Unit</strong>。GotoStmt 需要知道目标的Unit是什么，所以一个Unit会包含其它的UnitBox，通过 UnitBox获取下一个Unit。</li>
+<li><strong>一个Value可以对应多个ValueBox，但是一个ValueBox只能对应一个Value</strong>，对于一个Unit，可以得到很多个ValueBox，包含着这条语句内部的所用到和所定义的语句。</li>
 </ul>
 <p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210325213104028.png" alt="image-20210325213104028"></p>
 <p>两种Box：</p>
@@ -5372,7 +5475,7 @@
 </ul>
 </li>
 </ul>
-<p>i1=0 等于是一个Stmt, i1是一个Valuebox，里面包含这i0这个local 的value。</p>
+<p>i1=0 等于是一个Stmt,  i1是一个Valuebox，里面包含这i0这个local 的value。</p>
 <p>举例常量叠加：</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> a  = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">int</span> b = <span class="number">2</span>;</span><br><span class="line"><span class="keyword">int</span> c = a + b;</span><br><span class="line"><span class="keyword">return</span> c;</span><br></pre></td></tr></table></figure>
 
@@ -5397,7 +5500,7 @@
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List <span class="title">getBoxesPointingToThis</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
 
 <p>上面这个方法会返回一个List（UnitBox），包含那些指向这个Unit的Unit语句。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">fallsThrough</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">branches</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">fallsThrough</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">branches</span><span class="params">()</span></span>; <span class="comment">//如：IfStmt、GotoStmt</span></span><br></pre></td></tr></table></figure>
 
 <p>处理在某条语句之后的执行流有关。</p>
 <p>第一个方法：如果执行可以顺利流到紧挨着的下一条语句，就会返回True；</p>
@@ -5596,7 +5699,7 @@
 <p>在全程序分析的模式下，当一个调用图构建时，我们可以用<code>Scene</code>类里面的<code>getCallGraph</code>方法。</p>
 <p>包含3个处理的办法，</p>
 <p>CHA     SPARK      Paddle,</p>
-<p>其中**默认生成call graph使用的是CHA，CHA生成速度快，但是是最不准确的。</p>
+<p>其中<strong>默认生成call graph使用的是CHA</strong>，CHA生成速度快，但是是最不准确的。</p>
 <p>CHA是最简单的分析方式，它是默认程序中所有的路径都是连通的。</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">CHATransformer.v().transform();</span><br><span class="line">SootClass a = Scene.v().getClass(<span class="string">"testers.A"</span>);</span><br><span class="line"></span><br><span class="line">SootMethod src = Scene.v().getMainClass().getMethodByName(<span class="string">"doStuff"</span>);</span><br><span class="line">CallGraph cg = Scene.v().getCallGraph();</span><br></pre></td></tr></table></figure>
 
@@ -5634,6 +5737,7 @@
 <p>右边列表示，两个变量的指向的集合中交集是否为空。不空为true,空为false。</p>
 <p>【结果分析】可以看出，c1自己与自己是有交集的。c1与c2是没有交集的。（c1, c3也是如此）</p>
 <h1 id="数据流分析"><a href="#数据流分析" class="headerlink" title="数据流分析"></a>数据流分析</h1><p>在soot里面分为过程内数据流分析和过程间数据流分析。</p>
+<p>程序可以看成是状态（数据）和状态之间的转移（控制）两部分，因为状态转移的条件都被忽略了，核心分析的部分是状态数据在转移过程中的变化，所以叫做数据流分析。</p>
 <p>首先，总体来说：</p>
 <ol>
 <li>每个语句相当于一个小的加工厂，加工厂加工需要一定的原料（输入 in）,并且会产生一定的效果（输出 out）。</li>
@@ -5698,6 +5802,10 @@
 <p>ForwardFlowAnalysis：以UnitGraph的<strong>entry statement</strong>作为开始并开始传播；</p>
 <p>BackwardsFlowAnalysis：以UnitGraph的<strong>exit node(s)</strong>作为分析并且向后开始传播（当然可以将UnitGraph转换产生inverseGraph，然后再使用ForwardFlowAnalysis进行分析）；</p>
 <p>ForwardBranchedFlowAnalysis：本质上也是Forward分析，但是它允许你在不同分支处传递不同的flow sets。例如：如果传播到如if(p!=null)语句处，当“p is not null”时，传播进入“then”分支，当“p is null”时传播进入“else”分支（Forward、backward分析都在分支处会将分析结果merge合并掉）。</p>
+<img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210329152634399.png" alt="image-20210329152634399" style="zoom:67%;">
+
+<img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210329152706388.png" alt="image-20210329152706388" style="zoom:67%;">
+
 <p>在soot中，FlowAnalysis是一个抽象类。</p>
 <h3 id="ForwardFlowAnalysis"><a href="#ForwardFlowAnalysis" class="headerlink" title="ForwardFlowAnalysis"></a>ForwardFlowAnalysis</h3><p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210327155003872.png" alt="image-20210327155003872"></p>
 <p>ForwardFlowAnalysis是抽象类，继承关系如下：</p>
@@ -5710,7 +5818,9 @@
 <li><p>A：Abstraction Type 抽象类型。人们通常会用Set和Map来表示，但是，Soot要求抽象类型必须正确实现equals()和hashCode()方法，这样Soot才能确定何时到达一个固定点。</p>
 </li>
 </ul>
-<h3 id="关键方法"><a href="#关键方法" class="headerlink" title="关键方法"></a>关键方法</h3><p>构造函数</p>
+<h3 id="关键方法"><a href="#关键方法" class="headerlink" title="关键方法"></a>关键方法</h3><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210329152722190.png" alt="image-20210329152722190" style="zoom:67%;">
+
+<p>构造函数</p>
 <p>必须实现一个携带<code>DirectedGraph</code>作为参数的构造函数，并且将该参数传递给super constructor。然后，在构造函数结束时调用doAnalysis()，doAnalysis()将真正执行数据流分析。而在调用super constructor和doAnalysis之间，可以自定义数据分析结构。</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">MyAnalysis</span><span class="params">(DirectedGraph graph)</span> </span>&#123; <span class="comment">//构造函数</span></span><br><span class="line">  </span><br><span class="line">	<span class="keyword">super</span>(graph);<span class="comment">//传递给父类</span></span><br><span class="line">  </span><br><span class="line">	<span class="comment">// TODO Auto-generated constructor stub</span></span><br><span class="line">	emptySet = <span class="keyword">new</span> ArraySparseSet();<span class="comment">//自定义面试</span></span><br><span class="line">  </span><br><span class="line">	doAnalysis();<span class="comment">//执行fixed-point</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -5749,48 +5859,19 @@
 <p>上述方法足以使flow sets成为一个有效的lattice元素。</p>
 <p>而对于有边界的flowset，需要实现BoundedFlowSet接口</p>
 <p>它需要提供方法，该方法能够产生set‘s complement（补集）和它的topped set（全集）（一个lattice element包括所有的可能的值的集合）。</p>
+<img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210329153258001.png" alt="image-20210329153258001" style="zoom:80%;">
+
 <h3 id="四种flow-sets的实现"><a href="#四种flow-sets的实现" class="headerlink" title="四种flow sets的实现"></a>四种flow sets的实现</h3><p>ArraySparseSet,ArrayPackedSet,ToppedSet和DavaFlowSet。</p>
+<img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210329153345586.png" alt="image-20210329153345586" style="zoom:67%;">
+
 <p>ArraySparseSet:是一个无界限的flowset。该set代表一个数组引用。注意：当比较元素是否相等时，一般使用继承自Object对象的equals。但是在soot中的元素都是代表一些代码结构，不能覆写equals方法。而是实现了interface soot.EquivTo。因此，如果你需要一个包含类似binary operation expressions的集合，你需要使用equivTo方法实现自定义的比较方法去比较是否相等。</p>
 <p>ArrayPackedSet 有界flow set。需要提供FlowUniverse 对象，即代表全集的容器。由一个在integer和object双向map和一个用来表示全集成员是否在内的bit vector表示。</p>
 <p>ToppedSet 在基于上面两种的set前提下，加入额外信息来表示其为lattice中的Top。</p>
-<h1 id="零散知识点"><a href="#零散知识点" class="headerlink" title="零散知识点"></a>零散知识点</h1><p>以$开头的都是堆栈位置，并不是源程序中的局部变量。</p>
+<h1 id="零散知识点"><a href="#零散知识点" class="headerlink" title="零散知识点"></a>零散知识点</h1><p>以$开头的都是临时变量，表示相对堆栈位置，并不是源程序中的局部变量，。</p>
 <p>没有$的局部变量则代表真正的局部变量。</p>
 <p>jtp是允许用户自定义的，wjtp全程序转换包</p>
 <p><strong>clinit</strong>方法<strong>clinit是</strong>类构造器方法，也就是在jvm在进行类加载-验证-解析-初始化中的<strong>初始化</strong>阶段，jvm会调用<strong>clinit</strong>. <strong>clinit</strong>方法<strong>是</strong>在类加载过程中执行的，而init方法<strong>是</strong>在对象实例化执行的。</p>
 <p>soot的控制流图在soot.toolkits.graph这个包内；</p>
-<p>DirectedGraph接口 可以获取：</p>
-<ul>
-<li>图的入口点和退出点；</li>
-<li>给定节点的前驱和后继；</li>
-<li>提供一个迭代器，可以便利图上的节点；</li>
-<li>图的大小规模（节点数）</li>
-</ul>
-<p>在Soot的控制流图中，基类是UnitGraph，它是一个抽象类，它提供了CFG的基础部分。</p>
-<p>它有三种不同的实现，BreifUnitGraph，ExceptionUnitGraph，TrapUnitGraph；</p>
-<p>BreifUnitGraph：</p>
-<ul>
-<li>很简单，它代表不含exception抛出的路径。</li>
-</ul>
-<p>ExceptionUnitGraph：</p>
-<ul>
-<li>包含从throw到catch的边，soot里面叫Trap</li>
-<li>它还会计算语句中隐含的异常抛出</li>
-<li>会有一条边从抛出异常那条语句的前驱节点指向异常处理的第一条语句Unit</li>
-<li>如果包含异常的语句包含一些副作用，那么有副作用的边也会被添加到图里面</li>
-<li></li>
-</ul>
-<p>TrapUnitGraph</p>
-<p>和Exception很像，他其实也是会把异常抛出边添加到图里面。</p>
-<ul>
-<li>边是从trap语句连接到trap handler，例如try块</li>
-<li>对于那些隐藏异常抛出的语句，这类图在他们的前驱节点并不会抛出一条边到handler</li>
-<li>但是在那些隐藏异常抛出的语句本身会抛出一条语句指向handler</li>
-</ul>
-<p>如果你要想生成一个上述的图，其实就是把JimpleBody对象直接传递给Graph类的构造函数就行了：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">UnitGraph g = <span class="keyword">new</span> ExceptionUnitGraph(body);</span><br></pre></td></tr></table></figure>
-
-
-
 <p>Annotating Code</p>
 <p>四个接口：</p>
 <ul>
