@@ -252,7 +252,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0&#x2F;image-20200830205416161.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0&#x2F;image-20200830211838150.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0&#x2F;image-20200830214334563.png">
-<meta property="og:updated_time" content="2021-04-15T07:12:03.132Z">
+<meta property="og:updated_time" content="2021-04-23T05:48:27.275Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0&#x2F;image-20200817120652100.png">
 
@@ -440,7 +440,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-15 15:12:03" itemprop="dateModified" datetime="2021-04-15T15:12:03+08:00">2021-04-15</time>
+                <time title="修改时间：2021-04-23 13:48:27" itemprop="dateModified" datetime="2021-04-23T13:48:27+08:00">2021-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -889,7 +889,7 @@
 <p>理解：</p>
 <p>Dispatch（B,A.foo()）先对B类自己进行，但是B没有foo方法，向上找父类A才有。</p>
 <p>Dispatch（C,A.foo()）C自己本身就有，那么就是C自己的方法。</p>
-<h2 id="Class-Hierarchy-Analysis-CHA-类层次分析"><a href="#Class-Hierarchy-Analysis-CHA-类层次分析" class="headerlink" title="Class Hierarchy Analysis CHA  类层次分析"></a>Class Hierarchy Analysis CHA  类层次分析</h2><p><strong>目的</strong>：根据每个virtual call 的 receiver varible 的<strong>声明类型</strong>来求解所有可能调用的目标函数。如 <code>A a = ... ;</code>  <code>a.foo();</code> 这个a就是receiver varible，声明类型就是A。</p>
+<h2 id="Class-Hierarchy-Analysis-CHA-类层次分析"><a href="#Class-Hierarchy-Analysis-CHA-类层次分析" class="headerlink" title="Class Hierarchy Analysis CHA  类层次分析"></a>Class Hierarchy Analysis CHA  类层次分析</h2><p><strong>目的</strong>：根据每个virtual call 的 receiver varible 的<strong>声明类型</strong>来求解所有可能调用的目标函数。如 <code>A a = ... ;</code>  <code>a.foo();</code> 这个a就是receiver object，声明类型就是A。</p>
 <p>CHA假定a可以指向A以及 A<strong>所有子类对象</strong>，CHA的过程就是从A和子类中去找目标函数。</p>
 <p><strong>算法</strong>：Resolve(cs)——利用CHA算法找到调用点所有可能的调用目标。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200822214448736.png" alt="image-20200822214448736"></p>

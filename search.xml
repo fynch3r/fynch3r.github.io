@@ -3796,7 +3796,7 @@
 <p>理解：</p>
 <p>Dispatch（B,A.foo()）先对B类自己进行，但是B没有foo方法，向上找父类A才有。</p>
 <p>Dispatch（C,A.foo()）C自己本身就有，那么就是C自己的方法。</p>
-<h2 id="Class-Hierarchy-Analysis-CHA-类层次分析"><a href="#Class-Hierarchy-Analysis-CHA-类层次分析" class="headerlink" title="Class Hierarchy Analysis CHA  类层次分析"></a>Class Hierarchy Analysis CHA  类层次分析</h2><p><strong>目的</strong>：根据每个virtual call 的 receiver varible 的<strong>声明类型</strong>来求解所有可能调用的目标函数。如 <code>A a = ... ;</code>  <code>a.foo();</code> 这个a就是receiver varible，声明类型就是A。</p>
+<h2 id="Class-Hierarchy-Analysis-CHA-类层次分析"><a href="#Class-Hierarchy-Analysis-CHA-类层次分析" class="headerlink" title="Class Hierarchy Analysis CHA  类层次分析"></a>Class Hierarchy Analysis CHA  类层次分析</h2><p><strong>目的</strong>：根据每个virtual call 的 receiver varible 的<strong>声明类型</strong>来求解所有可能调用的目标函数。如 <code>A a = ... ;</code>  <code>a.foo();</code> 这个a就是receiver object，声明类型就是A。</p>
 <p>CHA假定a可以指向A以及 A<strong>所有子类对象</strong>，CHA的过程就是从A和子类中去找目标函数。</p>
 <p><strong>算法</strong>：Resolve(cs)——利用CHA算法找到调用点所有可能的调用目标。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200822214448736.png" alt="image-20200822214448736"></p>
