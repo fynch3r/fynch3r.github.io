@@ -5398,7 +5398,7 @@
 <p>Chain：</p>
 <p>链。</p>
 <p>每个Body里面有三个主链，分别是Units链、Locals链、Traps链。</p>
-<p>Units：方法体内的语句。对于每个局部变量，可以自己包装，实现我们getinfo一串信息。s</p>
+<p>Units：方法体内的语句。</p>
 <p>Locals：方法内的局部变量。</p>
 <p>Traps：方法内的异常处理。</p>
 <p>四种Body：</p>
