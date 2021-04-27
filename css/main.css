@@ -40,7 +40,8 @@ a {
 abbr[title] {
   border-bottom: none; /* 1 */
   text-decoration: underline; /* 2 */
-  text-decoration: underline dotted; /* 2 */
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted; /* 2 */
 }
 b,
 strong {
@@ -158,6 +159,10 @@ template {
 }
 [hidden] {
   display: none;
+}
+::-moz-selection {
+  background: #262a30;
+  color: #fff;
 }
 ::selection {
   background: #262a30;
@@ -427,6 +432,9 @@ code {
   padding: 2px 4px;
   overflow-wrap: break-word;
   word-wrap: break-word;
+}
+.highlight *::-moz-selection {
+  background: #d6d6d6;
 }
 .highlight *::selection {
   background: #d6d6d6;
@@ -1203,7 +1211,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #f18726;
+  background: #ff1fa4;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -1427,41 +1435,14 @@ pre .javascript .function {
   color: #FFA500;
   display: inline-block;
   margin: 0 5px;
-  animation: iconAnimate 1.33s ease-in-out infinite;
+  -webkit-animation: iconAnimate 1.33s ease-in-out infinite;
+          animation: iconAnimate 1.33s ease-in-out infinite;
 }
 .powered-by,
 .theme-info {
   display: inline-block;
 }
-@-moz-keyframes iconAnimate {
-  0%, 100% {
-    transform: scale(1);
-  }
-  10%, 30% {
-    transform: scale(0.9);
-  }
-  20%, 40%, 60%, 80% {
-    transform: scale(1.1);
-  }
-  50%, 70% {
-    transform: scale(1.1);
-  }
-}
 @-webkit-keyframes iconAnimate {
-  0%, 100% {
-    transform: scale(1);
-  }
-  10%, 30% {
-    transform: scale(0.9);
-  }
-  20%, 40%, 60%, 80% {
-    transform: scale(1.1);
-  }
-  50%, 70% {
-    transform: scale(1.1);
-  }
-}
-@-o-keyframes iconAnimate {
   0%, 100% {
     transform: scale(1);
   }
@@ -2057,7 +2038,8 @@ pre .javascript .function {
   padding-bottom: 3px;
 }
 .event-list .event .event-summary::before {
-  animation: dot-flash 1s alternate infinite ease-in-out;
+  -webkit-animation: dot-flash 1s alternate infinite ease-in-out;
+          animation: dot-flash 1s alternate infinite ease-in-out;
   color: #fff;
   content: '\f111';
   display: inline-block;
@@ -2107,30 +2089,11 @@ pre .javascript .function {
 }
 .event-list .event-past .event-summary::before,
 .event-list .event-past .event-details::before {
-  animation: none;
+  -webkit-animation: none;
+          animation: none;
   color: #bbb;
 }
-@-moz-keyframes dot-flash {
-  from {
-    opacity: 1;
-    transform: scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-}
 @-webkit-keyframes dot-flash {
-  from {
-    opacity: 1;
-    transform: scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-}
-@-o-keyframes dot-flash {
   from {
     opacity: 1;
     transform: scale(1);

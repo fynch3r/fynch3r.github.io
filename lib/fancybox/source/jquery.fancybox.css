@@ -22,7 +22,6 @@ body.compensate-for-scrollbar {
     position: fixed;
     -webkit-tap-highlight-color: transparent;
     top: 0;
-    -ms-touch-action: manipulation;
     touch-action: manipulation;
     transform: translateZ(0);
     width: 100%;
@@ -180,7 +179,8 @@ body.compensate-for-scrollbar {
 }
 
 .fancybox-slide--image .fancybox-content {
-    animation-timing-function: cubic-bezier(.5, 0, .14, 1);
+    -webkit-animation-timing-function: cubic-bezier(.5, 0, .14, 1);
+            animation-timing-function: cubic-bezier(.5, 0, .14, 1);
     -webkit-backface-visibility: hidden;
     background: transparent;
     background-repeat: no-repeat;
@@ -191,7 +191,6 @@ body.compensate-for-scrollbar {
     padding: 0;
     position: absolute;
     top: 0;
-    -ms-transform-origin: top left;
     transform-origin: top left;
     transition-property: transform, opacity;
     -webkit-user-select: none;
@@ -383,9 +382,7 @@ body.compensate-for-scrollbar {
     position: absolute;
     right: 0;
     top: 0;
-    -ms-transform: scaleX(0);
     transform: scaleX(0);
-    -ms-transform-origin: 0;
     transform-origin: 0;
     transition-property: transform;
     transition-timing-function: linear;
@@ -511,7 +508,8 @@ body.compensate-for-scrollbar {
 /* Loading indicator */
 
 .fancybox-loading {
-    animation: fancybox-rotate 1s linear infinite;
+    -webkit-animation: fancybox-rotate 1s linear infinite;
+            animation: fancybox-rotate 1s linear infinite;
     background: transparent;
     border: 4px solid #888;
     border-bottom-color: #fff;
@@ -525,6 +523,12 @@ body.compensate-for-scrollbar {
     top: 50%;
     width: 50px;
     z-index: 99999;
+}
+
+@-webkit-keyframes fancybox-rotate {
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 @keyframes fancybox-rotate {
@@ -589,19 +593,16 @@ body.compensate-for-scrollbar {
 
 .fancybox-fx-rotate.fancybox-slide--previous {
     opacity: 0;
-    -ms-transform: rotate(-360deg);
     transform: rotate(-360deg);
 }
 
 .fancybox-fx-rotate.fancybox-slide--next {
     opacity: 0;
-    -ms-transform: rotate(360deg);
     transform: rotate(360deg);
 }
 
 .fancybox-fx-rotate.fancybox-slide--current {
     opacity: 1;
-    -ms-transform: rotate(0deg);
     transform: rotate(0deg);
 }
 
