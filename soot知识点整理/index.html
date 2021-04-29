@@ -41,6 +41,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210324104437621.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210325104642746.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210325213104028.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210429202819731.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210323212112768.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210325112408646.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210325112426889.png">
@@ -65,7 +66,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210329152722190.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210329153258001.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210329153345586.png">
-<meta property="og:updated_time" content="2021-04-29T11:54:09.341Z">
+<meta property="og:updated_time" content="2021-04-29T12:33:33.204Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210324104136273.png">
 
@@ -253,7 +254,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-29 19:54:09" itemprop="dateModified" datetime="2021-04-29T19:54:09+08:00">2021-04-29</time>
+                <time title="修改时间：2021-04-29 20:33:33" itemprop="dateModified" datetime="2021-04-29T20:33:33+08:00">2021-04-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -391,7 +392,7 @@
 <p><code>AbstractStmtSwitch</code></p>
 <p><code>soot.jimple.AbstractJimpleValueSwitch</code></p>
 <p>等等还有很多switch，他们都是针对不同的语句进行了很多情况的分析。</p>
-<p>AssignStmt表示赋值语句；而IdentityStmt表示将参数赋值给Local这样的语句。</p>
+<p><strong>AssignStmt表示赋值语句；而IdentityStmt表示将参数赋值给Local这样的语句。</strong></p>
 <h2 id="Value-amp-Box"><a href="#Value-amp-Box" class="headerlink" title="Value&amp;Box"></a>Value&amp;Box</h2><p>Value：</p>
 <ul>
 <li>Locals</li>
@@ -428,6 +429,10 @@
 </li>
 </ul>
 <p>i1=0 等于是一个Stmt,  i1是一个Valuebox，里面包含这i0这个local 的value。</p>
+<p>多说几句：</p>
+<p>DefBox是什么？</p>
+<p>List defBoxes = ut.getDefBoxes();</p>
+<p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210429202819731.png" alt="image-20210429202819731"></p>
 <p>举例常量叠加：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a  = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">int</span> b = <span class="number">2</span>;</span><br><span class="line"><span class="keyword">int</span> c = a + b;</span><br><span class="line"><span class="keyword">return</span> c;</span><br></pre></td></tr></table></figure>
 
