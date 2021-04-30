@@ -5626,7 +5626,7 @@
 <p>soot中UnitGraph是一个抽象程度较高的语句图。</p>
 <p>重点说一下UnitGraph：</p>
 <p>UnitGraph的优点是简化了控制流图，<strong>没有了基本块的概念</strong>。</p>
-<p>使用它可以简化传统的非传统的固定点数据流分析的实现。(fixed point data flow analysis)</p>
+<p>使用它可以简化传统的固定点数据流分析的实现。(fixed point data flow analysis)</p>
 <p>但是缺点是由于没有了基本块，那么也就增加了分析时间的开销。</p>
 <h3 id="UnitGraph的四个子类"><a href="#UnitGraph的四个子类" class="headerlink" title="UnitGraph的四个子类"></a>UnitGraph的四个子类</h3><p>继承UnitGraph的有4种：</p>
 <ul>
@@ -5649,7 +5649,6 @@
 <li>它还会计算语句中隐含的异常抛出</li>
 <li>会有一条边从抛出异常那条语句的前驱节点指向异常处理的第一条语句Unit</li>
 <li>如果包含异常的语句包含一些副作用，那么有副作用的边也会被添加到图里面</li>
-<li></li>
 </ul>
 <p>TrapUnitGraph：</p>
 <p>【相对于ExceptionalUnitGraph】一些很普通的语句也会跳转到异常流程中。（比如nop,goto[?=nop]）—-&gt;<strong>认为try 中包含的所有的语句都有可能触发异常</strong>。</p>
@@ -5660,24 +5659,6 @@
 </ul>
 <p>通过以下代码对给定的函数创建CFG：</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">UnitGraph g = <span class="keyword">new</span> ExceptionalUnitGraph(body);</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -5794,7 +5775,7 @@
 
 <p>在这段代码的结尾x 的分析结果是<code>如果a &gt; 0 则为1，a &lt;= 0 则为2</code>。</p>
 <p>这样分析的精度就高了很多，但是付出的代价是顺着control flow，path 的『分情况讨论』数量随指数增长。当然也有一些优化策略可以在某些情况下降低这个复杂度（比如property simulation）。</p>
-<h2 id="soot三种数据流分析"><a href="#soot三种数据流分析" class="headerlink" title="soot三种数据流分析"></a>soot三种数据流分析</h2><p><strong>过程内数据流分析</strong></p>
+<h2 id="soot实现数据流分析"><a href="#soot实现数据流分析" class="headerlink" title="soot实现数据流分析"></a>soot实现数据流分析</h2><p><strong>过程内数据流分析</strong></p>
 <p>在sootwiki有说到：</p>
 <blockquote>
 <p>过程内数据分析是在以UnitGraph为主的cfg上操作的。</p>
@@ -5802,6 +5783,23 @@
 <p>数据流分析将两个元素与UnitGraph中的每个节点联系起来，通常是两个集合：一个inset和一个outset。这些集合首先初始化，然后沿着语句节点在UnitGraph中传播，直到达到一个固定点fixed-point。</p>
 <p>最后，你要做的就是在每个语句前后检查inset与outset。通过分析的设计，你的集合特征应该准确地告诉你所需要的信息。</p>
 </blockquote>
+<h3 id="四步走"><a href="#四步走" class="headerlink" title="四步走"></a>四步走</h3><p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210430161058053.png" alt="image-20210430161058053"></p>
+<ol>
+<li>前向or后向？是否考虑分支情况？</li>
+<li>问题域？那种语句会影响？</li>
+<li>如何为每一种IR形式的语句写transfer function？</li>
+<li>如何说明开始情况下的近似值？</li>
+</ol>
+<h3 id="义务，必须要做的事情，关键方法"><a href="#义务，必须要做的事情，关键方法" class="headerlink" title="义务，必须要做的事情，关键方法"></a>义务，必须要做的事情，关键方法</h3><p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210430161544317.png" alt="image-20210430161544317"></p>
+<p><strong>实现你的分析框架，一定要做的事情</strong>：</p>
+<ol>
+<li>必须继承FlowAnalysis抽象类</li>
+<li>实现抽象方法 ： merge() and copy()</li>
+<li>实现数据流分析函数 ：flowThrough()</li>
+<li>实现初始化函数：newInitialFlow() and entryInitialFlow()</li>
+<li>框架的构造函数内必须调用 doAnalysis()</li>
+</ol>
+<p><strong>这里面doAnalysis() ，其实soot已经实现了在CFG上运用worklist算法进行程序内数据流分析。</strong></p>
 <p><strong>三种数据流分析</strong></p>
 <p>ForwardFlowAnalysis：以UnitGraph的<strong>entry statement</strong>作为开始并开始传播；</p>
 <p>BackwardsFlowAnalysis：以UnitGraph的<strong>exit node(s)</strong>作为分析并且向后开始传播（当然可以将UnitGraph转换产生inverseGraph，然后再使用ForwardFlowAnalysis进行分析）；</p>
@@ -5822,7 +5820,7 @@
 <li><p>A：Abstraction Type 抽象类型。人们通常会用Set和Map来表示，但是，<strong>Soot要求抽象类型必须正确实现equals()和hashCode()方法，这样Soot才能确定何时到达一个固定点</strong>。</p>
 </li>
 </ul>
-<h3 id="关键方法"><a href="#关键方法" class="headerlink" title="关键方法"></a>关键方法</h3><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210329152722190.png" alt="image-20210329152722190" style="zoom:67%;">
+<h3 id="关键方法举例"><a href="#关键方法举例" class="headerlink" title="关键方法举例"></a>关键方法举例</h3><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210329152722190.png" alt="image-20210329152722190" style="zoom:67%;">
 
 <p><strong>构造函数</strong></p>
 <p>必须实现一个携带<code>DirectedGraph</code>作为参数的构造函数，并且将该参数传递给super constructor。然后，在构造函数结束时调用doAnalysis()，doAnalysis()将真正执行数据流分析。而在调用super constructor和doAnalysis之间，可以自定义数据分析结构。</p>
@@ -5871,6 +5869,9 @@
 <p>ArraySparseSet:是一个无界限的flowset。该set代表一个数组引用。注意：当比较元素是否相等时，一般使用继承自Object对象的equals。但是在soot中的元素都是代表一些代码结构，不能覆写equals方法。而是实现了interface soot.EquivTo。因此，如果你需要一个包含类似binary operation expressions的集合，你需要使用equivTo方法实现自定义的比较方法去比较是否相等。</p>
 <p>ArrayPackedSet 有界flow set。需要提供FlowUniverse 对象，即代表全集的容器。由一个在integer和object双向map和一个用来表示全集成员是否在内的bit vector表示。</p>
 <p>ToppedSet 在基于上面两种的set前提下，加入额外信息来表示其为lattice中的Top。</p>
+<h2 id="soot官方例子"><a href="#soot官方例子" class="headerlink" title="soot官方例子"></a>soot官方例子</h2><h3 id="Live-Variables-Analysis"><a href="#Live-Variables-Analysis" class="headerlink" title="Live Variables Analysis"></a>Live Variables Analysis</h3><p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210430181603345.png" alt="image-20210430181603345"></p>
+<p>变量v是live状态的条件是：</p>
+<p>从v的定义点p开始，v就是活跃的，一直到use(v)地方，中间没有对v的<strong>重定义</strong>；</p>
 <h1 id="零散知识点"><a href="#零散知识点" class="headerlink" title="零散知识点"></a>零散知识点</h1><p>以$开头的都是临时变量，表示相对堆栈位置，并不是源程序中的局部变量，。</p>
 <p>没有$的局部变量则代表真正的局部变量。</p>
 <p>jtp是允许用户自定义的，wjtp全程序转换包</p>
