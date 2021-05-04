@@ -52,6 +52,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210328220439227.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210325165632527.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210325200427960.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210504165107321.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210325101740004.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210504163639221.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210504164347627.png">
@@ -83,7 +84,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210501172943670.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210504160140618.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210504161739103.png">
-<meta property="og:updated_time" content="2021-05-04T08:49:19.532Z">
+<meta property="og:updated_time" content="2021-05-04T08:51:08.273Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210324104136273.png">
 
@@ -271,7 +272,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-04 16:49:19" itemprop="dateModified" datetime="2021-05-04T16:49:19+08:00">2021-05-04</time>
+                <time title="修改时间：2021-05-04 16:51:08" itemprop="dateModified" datetime="2021-05-04T16:51:08+08:00">2021-05-04</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -632,7 +633,8 @@
 
 
 
-<h1 id="Call-Graph-amp-Point-to"><a href="#Call-Graph-amp-Point-to" class="headerlink" title="Call Graph &amp; Point-to"></a>Call Graph &amp; Point-to</h1><h2 id="CG-amp-CFG-amp-ICFG"><a href="#CG-amp-CFG-amp-ICFG" class="headerlink" title="CG &amp; CFG &amp; ICFG"></a>CG &amp; CFG &amp; ICFG</h2><p>CallGraph &amp; Control Flow Graph &amp; Interprocedural Control-Flow Graph</p>
+<h1 id="Call-Graph-amp-Point-to"><a href="#Call-Graph-amp-Point-to" class="headerlink" title="Call Graph &amp; Point-to"></a>Call Graph &amp; Point-to</h1><p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210504165107321.png" alt="image-20210504165107321"></p>
+<h2 id="CG-amp-CFG-amp-ICFG"><a href="#CG-amp-CFG-amp-ICFG" class="headerlink" title="CG &amp; CFG &amp; ICFG"></a>CG &amp; CFG &amp; ICFG</h2><p>CallGraph &amp; Control Flow Graph &amp; Interprocedural Control-Flow Graph</p>
 <p>CG代表的是整个程序中方法之间调用关系的图，图中节点是函数，边代表的是调用关系。</p>
 <p>CFG代表的是一个方法内程序执行流的图，图中节点是语句组成的基本块，边代表执行流。CFG上条件语句节点的后缀会有多个，表示其后可能执行的不同branches。</p>
 <p>ICFG就是CG+CFG，可以看作是CG和CFG信息的叠加。ICFG可以看做是给所有方法的CFG加上这些方法之间互相调用的边（CG）所形成的图。调用边（call edge）从调用语句（call site）连到被调方法（callee）的入口。与CG不同的是，ICFG除了调用边，还包含相应的返回边（return edge），从callee的出口连到call site之后执行的下一个语句。</p>
