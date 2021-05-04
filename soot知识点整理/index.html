@@ -86,7 +86,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210501172943670.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210504160140618.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210504161739103.png">
-<meta property="og:updated_time" content="2021-05-04T09:26:54.440Z">
+<meta property="og:updated_time" content="2021-05-04T09:33:18.728Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210324104136273.png">
 
@@ -274,7 +274,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-04 17:26:54" itemprop="dateModified" datetime="2021-05-04T17:26:54+08:00">2021-05-04</time>
+                <time title="修改时间：2021-05-04 17:33:18" itemprop="dateModified" datetime="2021-05-04T17:33:18+08:00">2021-05-04</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -706,11 +706,11 @@
 <p>右边列表示，两个变量的指向的集合中交集是否为空。不空为true,空为false。</p>
 <p>【结果分析】可以看出，c1自己与自己是有交集的。c1与c2是没有交集的。（c1, c3也是如此）</p>
 <h2 id="Point-to"><a href="#Point-to" class="headerlink" title="Point-to"></a>Point-to</h2><p>interface</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">reachingObjects(Local) 返回指向某个Local变量的指针集合PointsToSet</span><br><span class="line">x = y</span><br><span class="line"></span><br><span class="line">reachingObjects(SootField)  返回指向某某个静态属性的指针集合PointsToSet</span><br><span class="line">x = C.f</span><br><span class="line"> </span><br><span class="line">reachingObjects(Local,SootField) 返回指向某个实例对象的field指针集合PointsToSet</span><br><span class="line">x = y.f</span><br><span class="line">  </span><br><span class="line">possibleTypes() 返回某个对象的所有可能类型</span><br><span class="line">returns a set of the possible types of the objects in the points-to set</span><br><span class="line"></span><br><span class="line">hasNonEmptyIntersection(PointsToSet) 判断两个指针集合是否重叠（重叠当然就是alias别名关系）</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">reachingObjects(Local) 返回指向某个Local变量的指针集合PointsToSet</span><br><span class="line">x = y</span><br><span class="line"></span><br><span class="line">reachingObjects(SootField)  返回指向某个静态属性的指针集合PointsToSet</span><br><span class="line">x = C.f</span><br><span class="line"> </span><br><span class="line">reachingObjects(Local,SootField) 返回指向某个实例对象的field指针集合PointsToSet</span><br><span class="line">x = y.f</span><br><span class="line">  </span><br><span class="line">possibleTypes() 返回某个对象的所有可能类型</span><br><span class="line">returns a set of the possible types of the objects in the points-to set</span><br><span class="line"></span><br><span class="line">hasNonEmptyIntersection(PointsToSet) 判断两个指针集合是否重叠（重叠当然就是alias别名关系）</span><br></pre></td></tr></table></figure>
 
 <h4 id="例子a"><a href="#例子a" class="headerlink" title="例子a"></a>例子a</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">o.m()</span><br><span class="line">如果想知道上面调用中，o对象的所有类型</span><br><span class="line">Local o;</span><br><span class="line">PointsToAnalysis pa = Scene.v().getPointsToAnalysis();</span><br><span class="line">PointsToSet ptset = pa.reachingObjects( o );</span><br><span class="line">java.util.Set types = ptset.possibleTypes()</span><br></pre></td></tr></table></figure>
 
-<h4 id="例子b"><a href="#例子b" class="headerlink" title="例子b"></a>例子b</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">x.f = <span class="number">5</span>;</span><br><span class="line">y.f = <span class="number">6</span>;</span><br><span class="line">z = x.f;</span><br><span class="line">如果想判断x,y是否是别名关系</span><br><span class="line"></span><br><span class="line">Local x, y;</span><br><span class="line">PointsToAnalysis pa = Scene.v().getPointsToAnalysis();</span><br><span class="line">PointsToSet xset = pa.reachingObjects( x );</span><br><span class="line">PointsToSet yset = pa.reachingObjects( y );</span><br></pre></td></tr></table></figure>
+<h4 id="例子b"><a href="#例子b" class="headerlink" title="例子b"></a>例子b</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">x.f = <span class="number">5</span>;</span><br><span class="line">y.f = <span class="number">6</span>;</span><br><span class="line">z = x.f;</span><br><span class="line">如果想判断x,y是否是别名关系</span><br><span class="line"></span><br><span class="line">Local x, y;</span><br><span class="line">PointsToAnalysis pa = Scene.v().getPointsToAnalysis();</span><br><span class="line">PointsToSet xset = pa.reachingObjects( x );</span><br><span class="line">PointsToSet yset = pa.reachingObjects( y );</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(xset.hasNonEmptyIntersection(yset))</span><br><span class="line"><span class="comment">// they’re possibly aliased</span></span><br></pre></td></tr></table></figure>
 
 
 
@@ -1217,7 +1217,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">13:41</span>
+    <span title="站点阅读时长">13:42</span>
   -->
 
 </div>
