@@ -5715,7 +5715,7 @@
 <p><strong>发现并不是绝对的准确的结果</strong></p>
 <p>备注：</p>
 <p>PackMananger是负责进行阶段处理的，它控制着各种执行的运行，<strong>不启动则不会运行相应的阶段</strong>。</p>
-<h3 id="Spark"><a href="#Spark" class="headerlink" title="Spark"></a>Spark</h3><p><a href="https://blog.csdn.net/raintungli/article/details/102635324" target="_blank" rel="noopener">Spark</a>分析</p>
+<h2 id="Spark"><a href="#Spark" class="headerlink" title="Spark"></a>Spark</h2><p><a href="https://blog.csdn.net/raintungli/article/details/102635324" target="_blank" rel="noopener">Spark</a>分析</p>
 <p><a href="https://blog.csdn.net/TheSnowBoy_2/article/details/53414419?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522161665612916780261990999%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fblog.%2522%257D&request_id=161665612916780261990999&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~first_rank_v2~times_rank-12-53414419.pc_v2_rank_blog_default&utm_term=soot" target="_blank" rel="noopener">参考</a></p>
 <p>Spark针对的是对于Java的指向分析，支持 基于集合的分析，以及 基于等值的分析。</p>
 <p>但是，<strong>Spark提供的是基于上下文不敏感的子集的点对点分析</strong>。</p>
@@ -5732,6 +5732,15 @@
 <p>左边列的数字表明，变量初始化的点。（比如：[4,8] Container intersect? false，中的数字表示在第4行初始化的变量，以及在第8行初始化的变量 ） </p>
 <p>右边列表示，两个变量的指向的集合中交集是否为空。不空为true,空为false。</p>
 <p>【结果分析】可以看出，c1自己与自己是有交集的。c1与c2是没有交集的。（c1, c3也是如此）</p>
+<h2 id="Point-to"><a href="#Point-to" class="headerlink" title="Point-to"></a>Point-to</h2><p>interface</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">reachingObjects(Local) 返回指向某个Local变量的指针集合PointsToSet</span><br><span class="line">x = y</span><br><span class="line"></span><br><span class="line">reachingObjects(SootField)  返回指向某某个静态属性的指针集合PointsToSet</span><br><span class="line">x = C.f</span><br><span class="line"> </span><br><span class="line">reachingObjects(Local,SootField) 返回指向某个实例对象的field指针集合PointsToSet</span><br><span class="line">x = y.f</span><br><span class="line">  </span><br><span class="line">possibleTypes() 返回某个对象的所有可能类型</span><br><span class="line">returns a set of the possible types of the objects in the points-to set</span><br><span class="line"></span><br><span class="line">hasNonEmptyIntersection(PointsToSet) 判断两个指针集合是否重叠（重叠当然就是alias别名关系）</span><br></pre></td></tr></table></figure>
+
+<h4 id="例子a"><a href="#例子a" class="headerlink" title="例子a"></a>例子a</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">o.m()</span><br><span class="line">如果想知道上面调用中，o对象的所有类型</span><br><span class="line">Local o;</span><br><span class="line">PointsToAnalysis pa = Scene.v().getPointsToAnalysis();</span><br><span class="line">PointsToSet ptset = pa.reachingObjects( o );</span><br><span class="line">java.util.Set types = ptset.possibleTypes()</span><br></pre></td></tr></table></figure>
+
+<h4 id="例子b"><a href="#例子b" class="headerlink" title="例子b"></a>例子b</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">x.f = <span class="number">5</span>;</span><br><span class="line">y.f = <span class="number">6</span>;</span><br><span class="line">z = x.f;</span><br><span class="line">如果想判断x,y是否是别名关系</span><br><span class="line"></span><br><span class="line">Local x, y;</span><br><span class="line">PointsToAnalysis pa = Scene.v().getPointsToAnalysis();</span><br><span class="line">PointsToSet xset = pa.reachingObjects( x );</span><br><span class="line">PointsToSet yset = pa.reachingObjects( y );</span><br></pre></td></tr></table></figure>
+
+
+
 <h1 id="数据流分析"><a href="#数据流分析" class="headerlink" title="数据流分析"></a>数据流分析</h1><p>在soot里面分为过程内数据流分析和过程间数据流分析。</p>
 <p>程序可以看成是状态（数据）和状态之间的转移（控制）两部分，因为状态转移的条件都被忽略了，核心分析的部分是状态数据在转移过程中的变化，所以叫做数据流分析。</p>
 <p>首先，总体来说：</p>
