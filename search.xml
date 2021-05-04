@@ -5664,8 +5664,9 @@
 
 <h1 id="Call-Graph-amp-Point-to"><a href="#Call-Graph-amp-Point-to" class="headerlink" title="Call Graph &amp; Point-to"></a>Call Graph &amp; Point-to</h1><p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210504165107321.png" alt="image-20210504165107321"></p>
 <h2 id="CG-amp-CFG-amp-ICFG"><a href="#CG-amp-CFG-amp-ICFG" class="headerlink" title="CG &amp; CFG &amp; ICFG"></a>CG &amp; CFG &amp; ICFG</h2><p>CallGraph &amp; Control Flow Graph &amp; Interprocedural Control-Flow Graph</p>
-<p>CG代表的是整个程序中方法之间调用关系的图，图中节点是函数，边代表的是调用关系。</p>
-<p>CFG代表的是一个方法内程序执行流的图，图中节点是语句组成的基本块，边代表执行流。CFG上条件语句节点的后缀会有多个，表示其后可能执行的不同branches。</p>
+<p>CG代表的是整个程序中方法之间调用关系的图，<strong>图中节点是函数，边代表的是调用关系</strong>。</p>
+<p>CFG代表的是一个方法内程序执行流的图，<strong>图中节点是语句组成的基本块，边代表执行流</strong>。</p>
+<p>CFG上条件语句节点的后缀会有多个，表示其后可能执行的不同branches。</p>
 <p>ICFG就是CG+CFG，可以看作是CG和CFG信息的叠加。ICFG可以看做是给所有方法的CFG加上这些方法之间互相调用的边（CG）所形成的图。调用边（call edge）从调用语句（call site）连到被调方法（callee）的入口。与CG不同的是，ICFG除了调用边，还包含相应的返回边（return edge），从callee的出口连到call site之后执行的下一个语句。</p>
 <h2 id="CG-Call-Graph"><a href="#CG-Call-Graph" class="headerlink" title="CG Call Graph"></a>CG Call Graph</h2><p>调用图，调用图是静态分析的关键，方法调用图包含着整个函数调用的关系图。</p>
 <p>edge：</p>
@@ -5676,6 +5677,7 @@
 <h4 id="Reachable-Methods"><a href="#Reachable-Methods" class="headerlink" title="Reachable Methods"></a>Reachable Methods</h4><p>记录从entry method开始可以到达的方法们</p>
 <p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210504164817152.png" alt="image-20210504164817152"></p>
 <p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210504164833065.png" alt="image-20210504164833065"></p>
+<h4 id="Transitive-Targets"><a href="#Transitive-Targets" class="headerlink" title="Transitive Targets"></a>Transitive Targets</h4><p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210504165304260.png" alt="image-20210504165304260"></p>
 <p>CallGraph结构：</p>
 <p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210325111055645.png" alt="image-20210325111055645"></p>
 <p>Call Graph对象里包含了所有的Edges的集合，同时也包含了了几个关键Map</p>
@@ -5713,9 +5715,10 @@
 <p><strong>发现并不是绝对的准确的结果</strong></p>
 <p>备注：</p>
 <p>PackMananger是负责进行阶段处理的，它控制着各种执行的运行，<strong>不启动则不会运行相应的阶段</strong>。</p>
-<h3 id="SPARK"><a href="#SPARK" class="headerlink" title="SPARK"></a>SPARK</h3><p><a href="https://blog.csdn.net/raintungli/article/details/102635324" target="_blank" rel="noopener">SPARK</a>分析</p>
+<h3 id="Spark"><a href="#Spark" class="headerlink" title="Spark"></a>Spark</h3><p><a href="https://blog.csdn.net/raintungli/article/details/102635324" target="_blank" rel="noopener">Spark</a>分析</p>
 <p><a href="https://blog.csdn.net/TheSnowBoy_2/article/details/53414419?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522161665612916780261990999%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fblog.%2522%257D&request_id=161665612916780261990999&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~first_rank_v2~times_rank-12-53414419.pc_v2_rank_blog_default&utm_term=soot" target="_blank" rel="noopener">参考</a></p>
-<p>SPARK针对的是对于Java的指向分析，支持 基于集合的分析，以及 基于等值的分析。</p>
+<p>Spark针对的是对于Java的指向分析，支持 基于集合的分析，以及 基于等值的分析。</p>
+<p>但是，S<strong>park提供的是基于上下文不敏感的子集的点对点分析</strong>。</p>
 <p>指向分析（points-to）只是SPARK分析的一部分，一系列不同层次，不同方面的分析，可以通过配置options来实现。</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">HashMap opt = <span class="keyword">new</span> HashMap();</span><br><span class="line">opt.put(<span class="string">"verbose"</span>,<span class="string">"true"</span>);</span><br><span class="line">opt.put(<span class="string">"propagator"</span>,<span class="string">"worklist"</span>);</span><br><span class="line">opt.put(<span class="string">"simple-edges-bidirectional"</span>,<span class="string">"false"</span>);</span><br><span class="line">opt.put(<span class="string">"on-fly-cg"</span>,<span class="string">"true"</span>);</span><br><span class="line">opt.put(<span class="string">"set-impl"</span>,<span class="string">"double"</span>);</span><br><span class="line">opt.put(<span class="string">"double-set-old"</span>,<span class="string">"hybrid"</span>);</span><br><span class="line">opt.put(<span class="string">"double-set-new"</span>,<span class="string">"hybrid"</span>);</span><br><span class="line">SparkTransformer.v().transform(<span class="string">""</span>,opt);</span><br></pre></td></tr></table></figure>
 
