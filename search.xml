@@ -5669,6 +5669,7 @@
 <h2 id="CG-Call-Graph"><a href="#CG-Call-Graph" class="headerlink" title="CG Call Graph"></a>CG Call Graph</h2><p>调用图，调用图是静态分析的关键，方法调用图包含着整个函数调用的关系图。</p>
 <p>edge：</p>
 <p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210325101740004.png" alt="image-20210325101740004"></p>
+<p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210504163639221.png" alt="image-20210504163639221"></p>
 <p>CallGraph结构：</p>
 <p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210325111055645.png" alt="image-20210325111055645"></p>
 <p>Call Graph对象里包含了所有的Edges的集合，同时也包含了了几个关键Map</p>
