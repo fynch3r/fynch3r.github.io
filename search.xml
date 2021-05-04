@@ -5662,7 +5662,7 @@
 
 
 
-<h1 id="Point-to-amp-Call-Graph"><a href="#Point-to-amp-Call-Graph" class="headerlink" title="Point-to &amp; Call Graph"></a>Point-to &amp; Call Graph</h1><h2 id="CG-amp-CFG-amp-ICFG"><a href="#CG-amp-CFG-amp-ICFG" class="headerlink" title="CG &amp; CFG &amp; ICFG"></a>CG &amp; CFG &amp; ICFG</h2><p>CallGraph &amp; Control Flow Graph &amp; Interprocedural Control-Flow Graph</p>
+<h1 id="Call-Graph-amp-Point-to"><a href="#Call-Graph-amp-Point-to" class="headerlink" title="Call Graph &amp; Point-to"></a>Call Graph &amp; Point-to</h1><h2 id="CG-amp-CFG-amp-ICFG"><a href="#CG-amp-CFG-amp-ICFG" class="headerlink" title="CG &amp; CFG &amp; ICFG"></a>CG &amp; CFG &amp; ICFG</h2><p>CallGraph &amp; Control Flow Graph &amp; Interprocedural Control-Flow Graph</p>
 <p>CG代表的是整个程序中方法之间调用关系的图，图中节点是函数，边代表的是调用关系。</p>
 <p>CFG代表的是一个方法内程序执行流的图，图中节点是语句组成的基本块，边代表执行流。CFG上条件语句节点的后缀会有多个，表示其后可能执行的不同branches。</p>
 <p>ICFG就是CG+CFG，可以看作是CG和CFG信息的叠加。ICFG可以看做是给所有方法的CFG加上这些方法之间互相调用的边（CG）所形成的图。调用边（call edge）从调用语句（call site）连到被调方法（callee）的入口。与CG不同的是，ICFG除了调用边，还包含相应的返回边（return edge），从callee的出口连到call site之后执行的下一个语句。</p>
@@ -5671,6 +5671,10 @@
 <p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210325101740004.png" alt="image-20210325101740004"></p>
 <p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210504163639221.png" alt="image-20210504163639221"></p>
 <h4 id="Querying-Call-Graph"><a href="#Querying-Call-Graph" class="headerlink" title="Querying Call Graph"></a>Querying Call Graph</h4><p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210504164347627.png" alt="image-20210504164347627"></p>
+<p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210504164650563.png" alt="image-20210504164650563"></p>
+<h4 id="Reachable-Methods"><a href="#Reachable-Methods" class="headerlink" title="Reachable Methods"></a>Reachable Methods</h4><p>记录从entry method开始可以到达的方法们</p>
+<p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210504164817152.png" alt="image-20210504164817152"></p>
+<p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210504164833065.png" alt="image-20210504164833065"></p>
 <p>CallGraph结构：</p>
 <p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210325111055645.png" alt="image-20210325111055645"></p>
 <p>Call Graph对象里包含了所有的Edges的集合，同时也包含了了几个关键Map</p>
