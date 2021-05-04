@@ -5900,8 +5900,7 @@
 
 
 
-<h3 id="Branched-Nullness-Analysis"><a href="#Branched-Nullness-Analysis" class="headerlink" title="Branched Nullness Analysis"></a>Branched Nullness Analysis</h3><p> 1</p>
-<h3 id><a href="#" class="headerlink" title></a></h3><h1 id="零散知识点"><a href="#零散知识点" class="headerlink" title="零散知识点"></a>零散知识点</h1><p>以$开头的都是临时变量，表示相对堆栈位置，并不是源程序中的局部变量，。</p>
+<h3 id="Branched-Nullness-Analysis"><a href="#Branched-Nullness-Analysis" class="headerlink" title="Branched Nullness Analysis"></a>Branched Nullness Analysis</h3><h3 id><a href="#" class="headerlink" title></a></h3><h1 id="零散知识点"><a href="#零散知识点" class="headerlink" title="零散知识点"></a>零散知识点</h1><p>以$开头的都是临时变量，表示相对堆栈位置，并不是源程序中的局部变量，。</p>
 <p>没有$的局部变量则代表真正的局部变量。</p>
 <p>jtp是允许用户自定义的，wjtp全程序转换包</p>
 <p><strong>clinit</strong>方法<strong>clinit是</strong>类构造器方法，也就是在jvm在进行类加载-验证-解析-初始化中的<strong>初始化</strong>阶段，jvm会调用<strong>clinit</strong>. <strong>clinit</strong>方法<strong>是</strong>在类加载过程中执行的，而init方法<strong>是</strong>在对象实例化执行的。</p>
