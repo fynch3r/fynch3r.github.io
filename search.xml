@@ -3562,7 +3562,7 @@
 <li>在最后一次使用<code>x op y</code>之后，没有重定义操作数x、y。（如果重定义了x 或 y，如x = <code>a op2 b</code>，则原来的表达式<code>x op y</code>中的x或y就会被替代）。</li>
 </ol>
 <p><strong>应用场景</strong>：用于优化，检测全局公共子表达式。</p>
-<p><strong>抽象表示</strong>：程序中的n个表达式，用长度为n bit的向量来表示，1表示可用，0表示不可用。</p>
+<p><strong>抽象表示</strong>：程序中的n个<strong>表达式</strong>，用长度为n bit的向量来表示，1表示可用，0表示不可用。</p>
 <h3 id="分析-2"><a href="#分析-2" class="headerlink" title="分析"></a>分析</h3><p><strong>Transfer Function</strong>：OUT[B] = genB U (IN[B] - killB)</p>
 <p><strong>理解</strong>：genB—基本块B中所有新的表达式（并且在这个表达式之后，不能对表达式中出现的变量进行重定义）–&gt;加入到OUT；killB—从IN中删除变量被重新定义的表达式。</p>
 <p><strong>Control Flow</strong>：</p>
