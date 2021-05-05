@@ -3535,7 +3535,7 @@
 <p><strong>应用场景</strong>：可用于寄存器分配，如果寄存器满了，就需要替换掉不会被用到的变量。</p>
 <p><strong>抽象表示</strong>：程序中的n个变量用长度为n bit的向量来表示，对应bit为1，则该变量为live，反之为0则为dead。</p>
 <h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><p><strong>Control Flow</strong>：OUT[B] = US a_successor_of_BIN[S]</p>
-<p><strong>理解</strong>：逆向分析，只要有一条子路是live，父节点就是live。</p>
+<p><strong>理解</strong>：逆向分析，只要有一条path是live，父节点就是live。</p>
 <p><strong>Transfer Function</strong>：IN[B] = useB U (OUT[B] - defB)</p>
 <p><strong>理解</strong>：IN[B] = 本块中use出现在define之前的变量 U （OUT[B]出口的live情况 - 本块中出现了define的变量）。define指的是定义/赋值。</p>
 <p>IN[B] = useB U (OUT[B] - defB)</p>
