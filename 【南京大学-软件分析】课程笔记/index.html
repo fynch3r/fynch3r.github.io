@@ -254,7 +254,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0&#x2F;image-20200830205416161.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0&#x2F;image-20200830211838150.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0&#x2F;image-20200830214334563.png">
-<meta property="og:updated_time" content="2021-05-05T09:57:54.075Z">
+<meta property="og:updated_time" content="2021-05-05T11:32:41.834Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0&#x2F;image-20200817120652100.png">
 
@@ -442,7 +442,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-05 17:57:54" itemprop="dateModified" datetime="2021-05-05T17:57:54+08:00">2021-05-05</time>
+                <time title="修改时间：2021-05-05 19:32:41" itemprop="dateModified" datetime="2021-05-05T19:32:41+08:00">2021-05-05</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -581,8 +581,8 @@
 <p>may-analysis：绝大部分静态分析都是may，会有误报</p>
 <p>must-analysis：会有漏报</p>
 <p>一般来说：</p>
-<p>May都是union</p>
-<p>Must都是intersection</p>
+<p>May都是union，初始化都是空，bottom</p>
+<p>Must都是intersection。初始化是all，top</p>
 <p>三要素：Nodes (BBs/statements)、Edges (control flows)、CFG (a program)</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200817152835145.png" alt="image-20200817152835145"></p>
 <p>不同的数据流分析 有 不同的数据<strong>抽象表达</strong> 和 不同的<strong>安全近似策略</strong>，如 不同的 <strong>转换规则</strong> 和 <strong>控制流</strong>处理。</p>
@@ -642,14 +642,14 @@
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200820134652089.png" alt="image-20200820134652089"></p>
 <h3 id="算法-1"><a href="#算法-1" class="headerlink" title="算法"></a>算法</h3><p><strong>初始化规律</strong>：一般情况下，may analysis 全部初始化为空，must analysis全部初始化为all。</p>
 <p><strong>目的</strong>：输入CFG，计算好每个基本块中的defB（重定义）和useB（出现在重定义之前的使用）。输出每个基本块的IN[B]和OUT[B]。</p>
-<p><strong>方法</strong>：首先初始化每个基本块的IN[B]为空集。遍历每一个基本块B，按以上两个公式计算块B的OUT[B]和IN[B]，只要这次遍历时有某个块的IN[B]发生变化，则重新遍历一次（因为有循环，只要某块的IN[B]变了，就意味前驱块的OUT[B]变了）。</p>
+<p><strong>方法</strong>：首先初始化每个基本块的IN[B]为<strong>空集</strong>。遍历每一个基本块B，按以上两个公式计算块B的OUT[B]和IN[B]，只要这次遍历时有某个块的IN[B]发生变化，则重新遍历一次（因为有循环，只要某块的IN[B]变了，就意味前驱块的OUT[B]变了）。</p>
 <p><strong>问题</strong>：遍历基本块的顺序有要求吗？ 没有要求，但是会影响遍历的次数。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200819173409266.png" alt="image-20200819173409266"></p>
 <h3 id="例子-1"><a href="#例子-1" class="headerlink" title="例子"></a>例子</h3><p><strong>抽象表示</strong>：程序中的n个变量用长度为n bit的向量来表示，对应bit为1，则该变量为live，反之为0则为dead。</p>
 <p><strong>说明</strong>：从下往上遍历基本块，黑色-初始化；红色-第1次；蓝色-第2次；绿色-第3次。</p>
 <p><strong>结果</strong>：3次遍历后，IN[B]不再变化，遍历结束。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200819231636245.png" alt="image-20200819231636245"></p>
-<h2 id="Available-Expression-Analysis"><a href="#Available-Expression-Analysis" class="headerlink" title="Available Expression Analysis"></a>Available Expression Analysis</h2><p><strong>Forward &amp; MUST Analysis</strong></p>
+<h2 id="Available-Expression-Analysis"><a href="#Available-Expression-Analysis" class="headerlink" title="Available Expression Analysis"></a>Available Expression Analysis</h2><p><strong>Forward &amp; MUST</strong></p>
 <p><strong>问题定义</strong>：</p>
 <p>程序点p处的表达式<code>x op y</code>可用需满足2个条件：</p>
 <ol>
