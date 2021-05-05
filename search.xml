@@ -3510,9 +3510,9 @@
 <p><strong>解释</strong>：基本块B的输出 = B内的所有变量v的定义（赋值/修改）语句  U （基本块B的输入-程序中其它所有定义v的地方）。本质就是本块与前驱修改变量的语句 作用之和（去掉前驱中已经定义的语句）。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200817155923509.png" alt="image-20200817155923509"></p>
 <p>简单例子：</p>
-<p>以第一个基本块为例，gen就是d1,d2,d3三个定义语句，kill需要杀掉的就是在d1,d2,d3中定义的变量(i,j,a)在别处也被定义的语句，图里就是d4,d5,d6，他们三个都需要被kill掉。</p>
-<p><strong>Control Flow</strong>：IN[B] = Up a_predecesso_of_B Out[P] ——怎么理解，就是基于控制流而得到。</p>
-<p><strong>解释</strong>：基本块B的输入 = 块B所有前驱块P的输出的并集。注意，所有前驱块意味着只要有一条路径能够到达块B，就是它的前驱，包括条件跳转与无条件跳转，所以需要搞并集union。</p>
+<p>以第一个基本块为例，gen就是d1,d2,d3三个定义语句，kill需要杀掉的就是在d1,d2,d3中定义的变量(i,j,a)在别处也被定义的语句，图里就是d4、d5、d6、d7，他们四个都需要被kill掉。</p>
+<p><strong>Control Flow</strong>：IN[B] = UNIONp a_predecesso_of_B Out[P] ——怎么理解，就是基于控制流而得到。</p>
+<p><strong>解释</strong>：基本块B的输入 = 块B所有前驱块P的输出的<strong>并集</strong>。注意，所有前驱块意味着只要有一条路径能够到达块B，就是它的前驱，包括条件跳转与无条件跳转，所以需要搞并集union。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200817160542369.png" alt="image-20200817160542369"></p>
 <h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><p><strong>目的</strong>：输入CFG，计算好每个基本块的killB（程序中其它块中定义了变量v的语句）和genB（块B内的所有变量v的定义语句），输出每个基本块的IN[B]和OUT[B]。</p>
 <p><strong>方法</strong>：首先所有基本块的OUT[B]初始化为空。遍历每一个基本块B，按以上两个公式计算块B的IN[B]和OUT[B]，只要这次遍历时有某个块的OUT[B]发生变化，则重新遍历一次（因为程序中有循环存在，只要某块的OUT[B]变了，就意味着后继块的IN[B]变了）。</p>
@@ -3575,7 +3575,7 @@
 <p><strong>方法</strong>：首先将OUT[entry]初始化为空，所有基本块的OUT[B]<strong>初始化为1…1</strong>。遍历每一个基本块B，按以上两个公式计算块B的IN[B]和OUT[B]，只要这次遍历时有某个块的OUT[B]发生变化，则重新遍历一次（因为有循环，只要某块的OUT[B]变了，就意味后继块的IN[B]变了）。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200820135942083.png" alt="image-20200820135942083"></p>
 <h3 id="例子-2"><a href="#例子-2" class="headerlink" title="例子"></a>例子</h3><p><strong>抽象表示</strong>：程序中的n个表达式，用长度为n bit的向量来表示，1表示可用，0表示不可用。</p>
-<p><strong>说明</strong>：黑色-初始化；红色-第1次；蓝色-第2次。先kill再gen</p>
+<p><strong>说明</strong>：黑色-初始化；红色-第1次；蓝色-第2次。<strong>先kill再gen</strong>。</p>
 <p><strong>结果</strong>：2次遍历后，OUT[B]不再变化，遍历结束。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200820140035092.png" alt="image-20200820140035092"></p>
 <h2 id="三种分析方法对比"><a href="#三种分析方法对比" class="headerlink" title="三种分析方法对比"></a>三种分析方法对比</h2><table>
