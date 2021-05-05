@@ -3564,11 +3564,12 @@
 <p><strong>应用场景</strong>：用于优化，检测全局公共子表达式。</p>
 <p><strong>抽象表示</strong>：程序中的n个<strong>表达式</strong>，用长度为n bit的向量来表示，1表示可用，0表示不可用。</p>
 <h3 id="分析-2"><a href="#分析-2" class="headerlink" title="分析"></a>分析</h3><p><strong>Transfer Function</strong>：OUT[B] = genB U (IN[B] - killB)</p>
-<p><strong>理解</strong>：genB—基本块B中所有新的表达式（并且在这个表达式之后，不能对表达式中出现的变量进行重定义）–&gt;加入到OUT；killB—从IN中删除变量被重新定义的表达式。</p>
+<p><strong>理解</strong>：</p>
+<p>genB：基本块B中所有新的表达式（并且在这个表达式之后，不能对表达式中出现的变量进行重定义）–&gt;加入到OUT；killB：从IN中删除和被重新定义变量有关的表达式。</p>
 <p><strong>Control Flow</strong>：</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200820135804188.png" alt="image-20200820135804188"></p>
-<p><strong>理解</strong>：从entry到p点的所有路径都必须经过该表达式。</p>
-<p><strong>问题</strong>：该分析为什么属于must analysis呢？因为我们允许有漏报，不能有误报，比如以上示例中，改为x=3，去掉 b=e16*x，该公式会把该表达式识别为不可用。但事实是可用的，因为把x=3替换到表达式中并不影响该表达式的形式。这里虽然漏报了，但是不影响程序分析结果的正确性。</p>
+<p><strong>理解</strong>：从entry到p点的<strong>所有路径</strong>都必须经过该表达式。</p>
+<p><strong>问题</strong>：该分析为什么属于must analysis呢？因为我们<strong>允许有漏报，不能有误报</strong>，比如以上示例中，改为x=3，去掉 b=e16*x，该公式会把该表达式识别为不可用。但事实是可用的，因为把x=3替换到表达式中并不影响该表达式的形式。这里虽然漏报了，但是不影响程序分析结果的正确性。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200820135717376.png" alt="image-20200820135717376"></p>
 <h3 id="算法-2"><a href="#算法-2" class="headerlink" title="算法"></a>算法</h3><p><strong>目的</strong>：输入CFG，提前计算好genB和killB。</p>
 <p><strong>方法</strong>：首先将OUT[entry]初始化为空，所有基本块的OUT[B]<strong>初始化为1…1</strong>。遍历每一个基本块B，按以上两个公式计算块B的IN[B]和OUT[B]，只要这次遍历时有某个块的OUT[B]发生变化，则重新遍历一次（因为有循环，只要某块的OUT[B]变了，就意味后继块的IN[B]变了）。</p>
