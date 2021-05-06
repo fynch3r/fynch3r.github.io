@@ -3614,6 +3614,7 @@
 <h3 id="半格"><a href="#半格" class="headerlink" title="半格"></a>半格</h3><p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200820200526298.png" alt="image-20200820200526298"></p>
 <h3 id="全格"><a href="#全格" class="headerlink" title="全格"></a>全格</h3><p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200820200608864.png" alt="image-20200820200608864"></p>
 <p>理解：</p>
+<p>finite -&gt; complete 但是complete不能保证是finite的</p>
 <p>全格，<strong>任意子集</strong>都有最大上界和最小下界。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200820201238630.png" alt="image-20200820201238630"></p>
 <h3 id="格点积"><a href="#格点积" class="headerlink" title="格点积"></a>格点积</h3><p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200820202412900.png" alt="image-20200820202412900"></p>
