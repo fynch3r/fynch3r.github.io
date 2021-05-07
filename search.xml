@@ -3683,6 +3683,10 @@
 <li>分析从top到bottom，达到的就是最大不动点，离truth最近，那么该最大不动点得到的解就是最优的——must analysis得到的解是最大不动点，就是最优解–为什么是最大不动点，tricky一下，最上面都是11111，最下面都是00000，是一个递减的过程，得到的第一个不动点当然是<strong>最大不动点</strong></li>
 </ul>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200821152451027.png" alt="image-20200821152451027"></p>
+<p>战术“多讲几句”：</p>
+<p>tranfer function和control flow</p>
+<p>前者是写死的，control flow里面有join还是meet决定了很多</p>
+<p>比如说000和001去join，是001，其实join就是获得了最小上界lub而不是一大步直接迈到111(111是上界 但不是lub)，每次也都是迈出了最小的一步，minimal step</p>
 <h2 id="MOP-amp-Distributivity"><a href="#MOP-amp-Distributivity" class="headerlink" title="MOP &amp; Distributivity"></a>MOP &amp; Distributivity</h2><p>MOP: Meet-over-all-paths solution </p>
 <p>将所有路径都join/meet的方法，通常用来衡量精度。</p>
 <p>这里的meet是统称meet和join两种合并操作。</p>
