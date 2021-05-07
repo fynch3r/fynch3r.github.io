@@ -251,7 +251,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0&#x2F;image-20200830205416161.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0&#x2F;image-20200830211838150.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0&#x2F;image-20200830214334563.png">
-<meta property="og:updated_time" content="2021-05-07T02:22:08.446Z">
+<meta property="og:updated_time" content="2021-05-07T03:11:45.754Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0&#x2F;image-20200817120652100.png">
 
@@ -439,7 +439,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-07 10:22:08" itemprop="dateModified" datetime="2021-05-07T10:22:08+08:00">2021-05-07</time>
+                <time title="修改时间：2021-05-07 11:11:45" itemprop="dateModified" datetime="2021-05-07T11:11:45+08:00">2021-05-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -748,11 +748,11 @@
 <ul>
 <li><p>从bottom开始，bottom代表的是<strong>所有定义都是可达的</strong>——这就是不安全的结果（因为验证本质上是一个查错的工具，现在的验证结果是没有任何一个错误，这就是不可靠的）</p>
 </li>
-<li><p>图中的<strong>no definitions can reach</strong>这个是根据可达性定义的应用来考虑的。可达性定义会应用在变量是否初始化中，它会在entry给每个变量一个假定义，这边的意思就是指所有的假定义都无法到达，那么就意味着程序中会将每个变量都初始化——那么就是该程序无未初始化错误——分析的结果是不安全的</p>
+<li><p>图中的<strong>no definitions can reach</strong>这个是根据可达性定义的应用来考虑的。可达性定义会应用在变量是否初始化中，它会在entry给每个变量一个UNDEF(图里的definitions只是个形式化表达)，这里的意思就是指所有的UNDEF都无法到达，那么就意味着程序中会将每个变量都初始化——那么就是该程序无未初始化错误——分析的结果是不安全的</p>
 </li>
 <li><p>最上面到top，top代表的是<strong>所有定义都是不可达的</strong>——从查错角度来讲，这句话是安全的，因为所有定义都有可能存在错误，但是这句话没有用——程序未验证前，就可以说这句话了——所以是<strong>safe but useless</strong></p>
 </li>
-<li><p>图中的<strong>all definition may reach</strong>就是指，可达性定义应用中的那些个假定义，都是可达的，那么所有变量都是未初始化的——所有变量都存在未初始化的错误——分析的结果是安全的</p>
+<li><p>图中的<strong>all definition may reach</strong>就是指，可达性定义应用中的那些个UNDEF，都是可达的，那么所有变量都是未初始化的——所有变量都<strong>可能</strong>存在未初始化的错误——分析的结果是安全的，但是是个废话</p>
 </li>
 <li><p>中间的truth：</p>
 <p>表明最准确的验证结果，假设{a,c}是truth，那么包括其以上的都是safe的，一下的都是unsafe，就是上图的阴影和非阴影。</p>
@@ -760,7 +760,7 @@
 </li>
 <li><p>并且都是从不安全到安全的过程——所以箭头从下向上</p>
 </li>
-<li><p>从bottom开始，得到的是最小不动点，就是离truth最近的，<strong>是最准确的</strong>。 向上还有多个不动点，但是<strong>准确度越来越不准</strong>（直到top就是最不准的）——may analysis得到的解是最小不动点，就是最优解，是<strong>最准</strong>的那一个。</p>
+<li><p>从bottom开始，得到的是<strong>最小不动点</strong>，就是离truth最近的，<strong>是最准确的</strong>。 向上还有多个不动点，但是<strong>准确度越来越不准</strong>（直到top就是最不准的）——bottom都是000000，top都是111111，may analysis得到的解是最小不动点，就是最优解，是<strong>最准</strong>的那一个。</p>
 <p>——所以，可达定义得到的是最准确的结果，虽然还是soundness的（过近似）</p>
 </li>
 </ul>
@@ -768,10 +768,11 @@
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200821152431420.png" alt="image-20200821152431420"></p>
 <p>must analysis以available表达式为例。</p>
 <ul>
-<li>从top开始，代表所有表达式都是可用的——是最unsafe的——如果是利用在表达式计算优化中，那就是有很多已经被重新定义的表达是也被优化了（实际上不能被优化）——那么该优化就是错误的</li>
+<li>从top开始，代表所有表达式都是可用的——是最unsafe的——top是1111111</li>
+<li>如果是利用在表达式计算优化中，那就是有很多已经被重新定义的表达式也被优化了（实际上不能被优化）——那么该优化就是错误的</li>
 <li>到bottom，代表没有表达式是可用的——是安全的，但是是无用的</li>
-<li>从top开始到bottom，就是不安全到安全的转变，存在一个truth，代表程序真实的结果；</li>
-<li>分析从top到bottom，达到的就是最大不动点，离truth最近，那么该最大不动点得到的解就是最优的——must analysis得到的解是最大不动点，就是最优解</li>
+<li>从top开始到bottom，就是unsafe到safe的转变，存在一个truth，代表程序真实的结果；</li>
+<li>分析从top到bottom，达到的就是最大不动点，离truth最近，那么该最大不动点得到的解就是最优的——must analysis得到的解是最大不动点，就是最优解–为什么是最大不动点，tricky一下，最上面都是11111，最下面都是00000，是一个递减的过程，得到的第一个不动点当然是<strong>最大不动点</strong></li>
 </ul>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200821152451027.png" alt="image-20200821152451027"></p>
 <h2 id="MOP-amp-Distributivity"><a href="#MOP-amp-Distributivity" class="headerlink" title="MOP &amp; Distributivity"></a>MOP &amp; Distributivity</h2><p>MOP: Meet-over-all-paths solution </p>
