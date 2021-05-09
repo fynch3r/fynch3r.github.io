@@ -45,7 +45,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0&#x2F;image-20200429205618717.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0&#x2F;image-20200429205702501.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0&#x2F;image-20200429214541228.png">
-<meta property="og:updated_time" content="2021-05-09T14:09:49.731Z">
+<meta property="og:updated_time" content="2021-05-09T14:10:58.390Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0&#x2F;image-20200428120710735.png">
 
@@ -233,7 +233,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-09 22:09:49" itemprop="dateModified" datetime="2021-05-09T22:09:49+08:00">2021-05-09</time>
+                <time title="修改时间：2021-05-09 22:10:58" itemprop="dateModified" datetime="2021-05-09T22:10:58+08:00">2021-05-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -318,10 +318,15 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Father child = <span class="keyword">new</span> son();</span><br><span class="line">编译类型         运行类型</span><br><span class="line">  </span><br><span class="line">child.doWork();</span><br></pre></td></tr></table></figure>
 
 <p>理解：</p>
+<p>编译类型由声明该变量的类型决定<code>声明啥是啥</code>，运行类型由实际赋值给的变量决定<code>new啥是啥</code></p>
+<p>如果这两个类型不一样，那么就是多态。</p>
+<p>属性不具有多态，也就是对象在调用属性的时候，总会访问它<code>编译类型</code>的属性，而不是运行类型。</p>
 <p>首先声明了一个引用类型<code>Father child</code>，用它来指向son类的一个实例。</p>
 <p>在程序运行时，首先会调用父类的构造器，然后再调用子类的构造器。</p>
 <p>在编译过程中，会自动检查引用变量<code>Father child</code>的编译类型，发现是Father类，会检查是否拥有<code>doWork</code>方法。</p>
-<p>但是在JVM实际运行中，调用的是子类的<code>doWork</code>方法，而不是父类的，这也就是多态的一种（运行时多态）。</p>
+<p>但是在JVM实际运行中，调用的是子类的<code>doWork</code>方法，而不是父类的，这就是运行时多态。</p>
+<p>找方法，先找子类：</p>
+<p>如果子类没有，再去找父类</p>
 <h1 id="Scanner-类"><a href="#Scanner-类" class="headerlink" title="Scanner 类"></a>Scanner 类</h1><blockquote>
 <p>java.lang.String : 接受用户的键盘输入</p>
 </blockquote>
