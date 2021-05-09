@@ -8605,7 +8605,12 @@
 <p>在编译过程中，会自动检查引用变量<code>Father child</code>的编译类型，发现是Father类，会检查是否拥有<code>doWork</code>方法。</p>
 <p>但是在JVM实际运行中，调用的是子类的<code>doWork</code>方法，而不是父类的，这就是运行时多态。</p>
 <p>找方法，先找子类：</p>
-<p>如果子类没有，再去找父类</p>
+<p>如果子类没有，再去找父类。</p>
+<h1 id="方法重写override-与重载overload"><a href="#方法重写override-与重载overload" class="headerlink" title="方法重写override 与重载overload"></a>方法重写override 与重载overload</h1><h2 id="Override-重写-子类对父类方法重写）"><a href="#Override-重写-子类对父类方法重写）" class="headerlink" title="Override 重写 (子类对父类方法重写）"></a>Override 重写 (子类对父类方法重写）</h2><p><strong>名称+参数列表必须完全相同</strong></p>
+<p>返回值类型 如果不同的话，必须是兼容类型 </p>
+<p>构造方法 final 和 static方法 不能重写</p>
+<h2 id="Overload-重载-一个方法内"><a href="#Overload-重载-一个方法内" class="headerlink" title="Overload 重载 (一个方法内)"></a>Overload 重载 (一个方法内)</h2><p>方法名称必须相同，参数必须不同</p>
+<p>返回值没要求</p>
 <h1 id="Scanner-类"><a href="#Scanner-类" class="headerlink" title="Scanner 类"></a>Scanner 类</h1><blockquote>
 <p>java.lang.String : 接受用户的键盘输入</p>
 </blockquote>
