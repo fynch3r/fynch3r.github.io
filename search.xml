@@ -8578,11 +8578,9 @@
 <p>本篇将会是一篇长文，会陆续更新。</p>
 <a id="more"></a>
 
-
-
-
-
-<h1 id="Scanner-类"><a href="#Scanner-类" class="headerlink" title="Scanner 类"></a>Scanner 类</h1><blockquote>
+<h1 id="Java应用类型"><a href="#Java应用类型" class="headerlink" title="Java应用类型"></a>Java应用类型</h1><p>一共五种：</p>
+<p>类 / 数组 / 接口 / 枚举 / 注解</p>
+<h1 id="接口与抽象类的区别"><a href="#接口与抽象类的区别" class="headerlink" title="接口与抽象类的区别"></a>接口与抽象类的区别</h1><h1 id="Scanner-类"><a href="#Scanner-类" class="headerlink" title="Scanner 类"></a>Scanner 类</h1><blockquote>
 <p>java.lang.String : 接受用户的键盘输入</p>
 </blockquote>
 <p>导包的一般步骤：</p>
