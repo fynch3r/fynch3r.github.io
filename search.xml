@@ -8580,7 +8580,13 @@
 
 <h1 id="Java应用类型"><a href="#Java应用类型" class="headerlink" title="Java应用类型"></a>Java应用类型</h1><p>一共五种：</p>
 <p>类 / 数组 / 接口 / 枚举 / 注解</p>
-<h1 id="接口与抽象类的区别"><a href="#接口与抽象类的区别" class="headerlink" title="接口与抽象类的区别"></a>接口与抽象类的区别</h1><h1 id="Scanner-类"><a href="#Scanner-类" class="headerlink" title="Scanner 类"></a>Scanner 类</h1><blockquote>
+<h1 id="接口与抽象类的区别"><a href="#接口与抽象类的区别" class="headerlink" title="接口与抽象类的区别"></a>接口与抽象类的区别</h1><h2 id="抽象类"><a href="#抽象类" class="headerlink" title="抽象类"></a>抽象类</h2><p>只要类中有抽象方法，那么他就是抽象类</p>
+<p>抽象方法：abstract+只有方法名 默认public abstract修饰</p>
+<p>final 与 abstract不可以同时修饰</p>
+<p>抽象类可以有成员变量、构造方法、抽象方法</p>
+<p>只支持单继承</p>
+<p>继承抽象类的子类必须extends，实现<strong>全部抽象方法</strong></p>
+<h2 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h2><h1 id="Scanner-类"><a href="#Scanner-类" class="headerlink" title="Scanner 类"></a>Scanner 类</h1><blockquote>
 <p>java.lang.String : 接受用户的键盘输入</p>
 </blockquote>
 <p>导包的一般步骤：</p>
