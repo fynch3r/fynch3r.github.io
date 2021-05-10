@@ -36,7 +36,7 @@
 <meta property="og:site_name" content="0range的小窝">
 <meta property="og:description" content="序言 事不凝滞,理贵变通。  写框架离不开Java注解，今天来总结。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-05-10T02:46:04.668Z">
+<meta property="og:updated_time" content="2021-05-10T03:29:08.524Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://0range228.github.io/Java%E6%B3%A8%E8%A7%A3/">
@@ -223,7 +223,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-10 10:46:04" itemprop="dateModified" datetime="2021-05-10T10:46:04+08:00">2021-05-10</time>
+                <time title="修改时间：2021-05-10 11:29:08" itemprop="dateModified" datetime="2021-05-10T11:29:08+08:00">2021-05-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -263,14 +263,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.5k</span>
+              <span>3k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
+              <span>5 分钟</span>
             </span>
 
         </div>
@@ -298,9 +298,9 @@
 <p>四个：@Retention @Target @Docuement @Inherited</p>
 </blockquote>
 <p><strong>@Retention</strong>：注解的保留位置　　　　　　　　　</p>
-<p>​    @Retention(RetentionPolicy.SOURCE)   //注解仅存在于源码中，不会被class包含</p>
-<p>​    @Retention(RetentionPolicy.CLASS)     // 默认的保留策略，注解会在class字节码文件中存在，但运行时无法获得，</p>
-<p>​    @Retention(RetentionPolicy.RUNTIME)  // 注解会在class字节码文件中存在，在运行时可以通过反射获取到</p>
+<p>​    @Retention(RetentionPolicy.SOURCE)   //注解仅存在于源码中，在编译期就被丢掉了，不会被class包含。</p>
+<p>​    @Retention(RetentionPolicy.CLASS)     // 不会加载进JVM，注解会在class字节码文件中存在，但运行时无法获得。</p>
+<p>​    @Retention(RetentionPolicy.RUNTIME)  // 注解会在class字节码文件中存在，在运行时可以通过反射获取到。</p>
 <p><strong>这里如果@Retention未标注，默认是CLASS阶段</strong>。</p>
 <p>通常我们自定义的都是RUNTIME阶段，一定要标注。</p>
 <p><strong>@Target</strong>：注解的作用目标</p>
@@ -314,7 +314,7 @@
 <p>​    @Target(ElementType.PACKAGE) ///包   </p>
 <p><strong>@Document</strong>：说明该注解将被包含在javadoc中</p>
 <p><strong>@Inherited</strong>：说明子类可以继承父类中的该注解。</p>
-<p>@Inherited仅针对@Target(ElementType.TYPE)类型的注解有效，并且仅针对<code>class</code>的继承，对<code>interface</code>的继承无效：</p>
+<p>​    @Inherited仅针对@Target(ElementType.TYPE)类型的注解有效，并且仅针对类的继承，对接口的继承无效。</p>
 <h1 id="Java注解的使用"><a href="#Java注解的使用" class="headerlink" title="Java注解的使用"></a>Java注解的使用</h1><p>写个小demo：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Target</span>(ElementType.METHOD)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Report &#123;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">id</span><span class="params">()</span> <span class="keyword">default</span> <span class="keyword">false</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">type</span><span class="params">()</span> <span class="keyword">default</span> 0</span>;</span><br><span class="line">    <span class="function">String <span class="title">level</span><span class="params">()</span> <span class="keyword">default</span> "info"</span>;</span><br><span class="line">    <span class="function">String <span class="title">value</span><span class="params">()</span> <span class="keyword">default</span> ""</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -326,6 +326,52 @@
 <p>如果注解想在多个target使用：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Target</span>(&#123;</span><br><span class="line">        ElementType.METHOD,</span><br><span class="line">        ElementType.TYPE</span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Report &#123;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">id</span><span class="params">()</span> <span class="keyword">default</span> <span class="keyword">false</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">type</span><span class="params">()</span> <span class="keyword">default</span> 0</span>;</span><br><span class="line">    <span class="function">String <span class="title">level</span><span class="params">()</span> <span class="keyword">default</span> "info"</span>;</span><br><span class="line">    <span class="function">String <span class="title">value</span><span class="params">()</span> <span class="keyword">default</span> ""</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+
+
+<h1 id="自定义注解"><a href="#自定义注解" class="headerlink" title="自定义注解"></a>自定义注解</h1><p>必须要写：</p>
+<ul>
+<li>@Target</li>
+<li>@Retention</li>
+</ul>
+<p>可定义多个参数和默认值，核心参数使用value名称。</p>
+<p>应当设置@Retention(RetentionPolicy.RUNTIME)便于运行期读取该Annotation。</p>
+<p>Java提供的使用反射API读取<code>Annotation</code>的方法包括：</p>
+<p>判断某个注解是否存在于<code>Class</code>、<code>Field</code>、<code>Method</code>或<code>Constructor</code>：</p>
+<ul>
+<li><code>Class.isAnnotationPresent(Class)</code></li>
+<li><code>Field.isAnnotationPresent(Class)</code></li>
+<li><code>Method.isAnnotationPresent(Class)</code></li>
+<li><code>Constructor.isAnnotationPresent(Class)</code></li>
+</ul>
+<p>例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 判断@Report是否存在于Person类:</span><br><span class="line">Person.class.isAnnotationPresent(Report.class);</span><br></pre></td></tr></table></figure>
+
+<p>使用反射API读取Annotation：</p>
+<ul>
+<li><code>Class.getAnnotation(Class)</code></li>
+<li><code>Field.getAnnotation(Class)</code></li>
+<li><code>Method.getAnnotation(Class)</code></li>
+<li><code>Constructor.getAnnotation(Class)</code></li>
+</ul>
+<p>例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 获取Person定义的@Report注解:</span><br><span class="line">Report report = Person.class.getAnnotation(Report.class);</span><br><span class="line">int type = report.type();</span><br><span class="line">String level = report.level();</span><br></pre></td></tr></table></figure>
+
+
+
+<p>demo:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Target</span>(ElementType.FIELD)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Range &#123;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">min</span><span class="params">()</span> <span class="keyword">default</span> 0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">max</span><span class="params">()</span> <span class="keyword">default</span> 255</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>某个JavaBean：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Range</span>(min=<span class="number">1</span>, max=<span class="number">20</span>)</span><br><span class="line">    <span class="keyword">public</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Range</span>(max=<span class="number">10</span>)</span><br><span class="line">    <span class="keyword">public</span> String city;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编写一个<code>Person</code>实例的检查方法，它可以检查<code>Person</code>实例的<code>String</code>字段长度是否满足<code>@Range</code>的定义：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">check</span><span class="params">(Person person)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">  <span class="comment">// 遍历所有Field:</span></span><br><span class="line">    <span class="keyword">for</span> (Field field : person.getClass().getFields()) &#123;</span><br><span class="line">        <span class="comment">// 获取Field定义的@Range:</span></span><br><span class="line">        Range range = field.getAnnotation(Range<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        <span class="comment">// 如果@Range存在:</span></span><br><span class="line">        <span class="keyword">if</span> (range != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">// 获取Field的值:</span></span><br><span class="line">            Object value = field.get(person);</span><br><span class="line">            <span class="comment">// 如果值是String:</span></span><br><span class="line">            <span class="keyword">if</span> (value <span class="keyword">instanceof</span> String) &#123;</span><br><span class="line">                String s = (String) value;</span><br><span class="line">                <span class="comment">// 判断值是否满足@Range的min/max:</span></span><br><span class="line">                <span class="keyword">if</span> (s.length() &lt; range.min() || s.length() &gt; range.max()) &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Invalid field: "</span> + field.getName());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>参考：</p>
+<p><a href="https://www.liaoxuefeng.com/wiki/1252599548343744/1265102803921888" target="_blank" rel="noopener">liaoxuefeng</a></p>
+<p><a href="https://www.cnblogs.com/peida/archive/2013/04/24/3036689.html" target="_blank" rel="noopener">竹子</a></p>
 
     </div>
 
@@ -413,7 +459,7 @@
       -->
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java元注解"><span class="nav-number">2.</span> <span class="nav-text">Java元注解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java注解的使用"><span class="nav-number">3.</span> <span class="nav-text">Java注解的使用</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java元注解"><span class="nav-number">2.</span> <span class="nav-text">Java元注解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java注解的使用"><span class="nav-number">3.</span> <span class="nav-text">Java注解的使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#自定义注解"><span class="nav-number">4.</span> <span class="nav-text">自定义注解</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -519,12 +565,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">496k</span>
+    <span title="站点总字数">497k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">13:47</span>
+    <span title="站点阅读时长">13:49</span>
   -->
 
 </div>
