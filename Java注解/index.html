@@ -36,7 +36,7 @@
 <meta property="og:site_name" content="0range的小窝">
 <meta property="og:description" content="序言 事不凝滞,理贵变通。  写框架离不开Java注解，今天来总结。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-05-10T02:44:57.864Z">
+<meta property="og:updated_time" content="2021-05-10T02:46:04.668Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://0range228.github.io/Java%E6%B3%A8%E8%A7%A3/">
@@ -223,7 +223,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-10 10:44:57" itemprop="dateModified" datetime="2021-05-10T10:44:57+08:00">2021-05-10</time>
+                <time title="修改时间：2021-05-10 10:46:04" itemprop="dateModified" datetime="2021-05-10T10:46:04+08:00">2021-05-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -314,7 +314,7 @@
 <p>​    @Target(ElementType.PACKAGE) ///包   </p>
 <p><strong>@Document</strong>：说明该注解将被包含在javadoc中</p>
 <p><strong>@Inherited</strong>：说明子类可以继承父类中的该注解。</p>
-<p>@Inherited仅针对<code>@Target(ElementType.TYPE)</code>类型的<code>annotation</code>有效，并且仅针对<code>class</code>的继承，对<code>interface</code>的继承无效：</p>
+<p>@Inherited仅针对@Target(ElementType.TYPE)类型的注解有效，并且仅针对<code>class</code>的继承，对<code>interface</code>的继承无效：</p>
 <h1 id="Java注解的使用"><a href="#Java注解的使用" class="headerlink" title="Java注解的使用"></a>Java注解的使用</h1><p>写个小demo：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Target</span>(ElementType.METHOD)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Report &#123;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">id</span><span class="params">()</span> <span class="keyword">default</span> <span class="keyword">false</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">type</span><span class="params">()</span> <span class="keyword">default</span> 0</span>;</span><br><span class="line">    <span class="function">String <span class="title">level</span><span class="params">()</span> <span class="keyword">default</span> "info"</span>;</span><br><span class="line">    <span class="function">String <span class="title">value</span><span class="params">()</span> <span class="keyword">default</span> ""</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 

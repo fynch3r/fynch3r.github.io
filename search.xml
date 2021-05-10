@@ -8603,7 +8603,7 @@
 <p>​    @Target(ElementType.PACKAGE) ///包   </p>
 <p><strong>@Document</strong>：说明该注解将被包含在javadoc中</p>
 <p><strong>@Inherited</strong>：说明子类可以继承父类中的该注解。</p>
-<p>@Inherited仅针对<code>@Target(ElementType.TYPE)</code>类型的<code>annotation</code>有效，并且仅针对<code>class</code>的继承，对<code>interface</code>的继承无效：</p>
+<p>@Inherited仅针对@Target(ElementType.TYPE)类型的注解有效，并且仅针对<code>class</code>的继承，对<code>interface</code>的继承无效：</p>
 <h1 id="Java注解的使用"><a href="#Java注解的使用" class="headerlink" title="Java注解的使用"></a>Java注解的使用</h1><p>写个小demo：</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Target</span>(ElementType.METHOD)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Report &#123;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">id</span><span class="params">()</span> <span class="keyword">default</span> <span class="keyword">false</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">type</span><span class="params">()</span> <span class="keyword">default</span> 0</span>;</span><br><span class="line">    <span class="function">String <span class="title">level</span><span class="params">()</span> <span class="keyword">default</span> "info"</span>;</span><br><span class="line">    <span class="function">String <span class="title">value</span><span class="params">()</span> <span class="keyword">default</span> ""</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
