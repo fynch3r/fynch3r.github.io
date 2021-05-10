@@ -28,13 +28,13 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"0range228.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
-  <meta name="description" content="序言 江山留胜迹，我辈复登临。  兜兜转转好几圈，发现还是用soot的人多。借此机会，再跟一遍tutorials。">
+  <meta name="description" content="序言 江山留胜迹，我辈复登临。  兜兜转转好几圈，发现还是用soot的人多。借此机会，再跟一遍tutorials，写点我自己的理解。 同步项目：MySootScript">
 <meta name="keywords" content="Soot">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Soot知识点整理">
 <meta property="og:url" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;index.html">
 <meta property="og:site_name" content="0range的小窝">
-<meta property="og:description" content="序言 江山留胜迹，我辈复登临。  兜兜转转好几圈，发现还是用soot的人多。借此机会，再跟一遍tutorials。">
+<meta property="og:description" content="序言 江山留胜迹，我辈复登临。  兜兜转转好几圈，发现还是用soot的人多。借此机会，再跟一遍tutorials，写点我自己的理解。 同步项目：MySootScript">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210324104136273.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210325093439720.png">
@@ -89,7 +89,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210501172943670.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210504160140618.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210504161739103.png">
-<meta property="og:updated_time" content="2021-05-10T01:10:42.824Z">
+<meta property="og:updated_time" content="2021-05-10T08:44:47.467Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86&#x2F;image-20210324104136273.png">
 
@@ -277,7 +277,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-10 09:10:42" itemprop="dateModified" datetime="2021-05-10T09:10:42+08:00">2021-05-10</time>
+                <time title="修改时间：2021-05-10 16:44:47" itemprop="dateModified" datetime="2021-05-10T16:44:47+08:00">2021-05-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -339,7 +339,8 @@
         <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
 <p>江山留胜迹，我辈复登临。</p>
 </blockquote>
-<p>兜兜转转好几圈，发现还是用soot的人多。借此机会，再跟一遍<a href="https://github.com/soot-oss/soot/wiki/Tutorials" target="_blank" rel="noopener">tutorials</a>。</p>
+<p>兜兜转转好几圈，发现还是用soot的人多。借此机会，再跟一遍<a href="https://github.com/soot-oss/soot/wiki/Tutorials" target="_blank" rel="noopener">tutorials</a>，写点我自己的理解。</p>
+<p>同步项目：<a href="https://github.com/0range228/MySootScript" target="_blank" rel="noopener">MySootScript</a></p>
 <a id="more"></a>
 
 <h1 id="SSA"><a href="#SSA" class="headerlink" title="SSA"></a>SSA</h1><p><strong>SSA</strong> 是static single assignment 的缩写，也就是<strong>静态</strong>单赋值形式。 顾名思义，就是每个变量只赋值一次。</p>
@@ -1221,7 +1222,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">497k</span>
+    <span title="站点总字数">498k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
