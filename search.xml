@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Java注解</title>
+    <url>/Java%E6%B3%A8%E8%A7%A3-1/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>使用soot创建类文件</title>
     <url>/%E4%BD%BF%E7%94%A8soot%E5%88%9B%E5%BB%BA%E7%B1%BB%E6%96%87%E4%BB%B6/</url>
     <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
@@ -8566,6 +8571,36 @@
       </categories>
       <tags>
         <tag>IDEA</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java基础温习</title>
+    <url>/Java%E6%B3%A8%E8%A7%A3/</url>
+    <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>事不凝滞,理贵变通。</p>
+</blockquote>
+<p>写框架离不开Java注解，今天来总结。</p>
+<a id="more"></a>
+
+
+
+<h1 id="Java原生注解"><a href="#Java原生注解" class="headerlink" title="Java原生注解"></a>Java原生注解</h1><blockquote>
+<p>注解在Java语言中放在  { 类、方法、字段、参数 } 前的一个特殊的“注释”。</p>
+<p>注解是一种用作标注的“元数据”。</p>
+</blockquote>
+<h2 id="元注解"><a href="#元注解" class="headerlink" title="元注解"></a>元注解</h2><blockquote>
+<p>四个：@Retention @Target @Docuement @Inherited</p>
+</blockquote>
+<p><strong>@Retention</strong>：注解的保留位置　　　　　　　　　</p>
+<p>​    @Retention(RetentionPolicy.SOURCE)   //注解仅存在于源码中，不会被class包含</p>
+<p>​    @Retention(RetentionPolicy.CLASS)     // 默认的保留策略，注解会在class字节码文件中存在，但运行时无法获得，</p>
+<p>​    @Retention(RetentionPolicy.RUNTIME)  // 注解会在class字节码文件中存在，在运行时可以通过反射获取到</p>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>Java基础</tag>
       </tags>
   </entry>
   <entry>

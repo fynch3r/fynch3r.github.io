@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://0range228.github.io/"/>
-  <updated>2021-03-25T02:26:43.635Z</updated>
+  <updated>2021-05-10T02:16:22.175Z</updated>
   <id>https://0range228.github.io/</id>
   
   <author>
@@ -15,6 +15,21 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Java注解</title>
+    <link href="https://0range228.github.io/Java%E6%B3%A8%E8%A7%A3-1/"/>
+    <id>https://0range228.github.io/Java%E6%B3%A8%E8%A7%A3-1/</id>
+    <published>2021-05-10T02:16:22.000Z</published>
+    <updated>2021-05-10T02:16:22.175Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+    
+  </entry>
   
   <entry>
     <title>使用soot创建类文件</title>
@@ -507,32 +522,6 @@
     
     
       <category term="污点分析基础" scheme="https://0range228.github.io/tags/%E6%B1%A1%E7%82%B9%E5%88%86%E6%9E%90%E5%9F%BA%E7%A1%80/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>[soot]如何反编译类文件</title>
-    <link href="https://0range228.github.io/soot-%E5%A6%82%E4%BD%95%E5%8F%8D%E7%BC%96%E8%AF%91%E7%B1%BB%E6%96%87%E4%BB%B6/"/>
-    <id>https://0range228.github.io/soot-%E5%A6%82%E4%BD%95%E5%8F%8D%E7%BC%96%E8%AF%91%E7%B1%BB%E6%96%87%E4%BB%B6/</id>
-    <published>2020-07-19T07:42:06.000Z</published>
-    <updated>2020-07-19T08:37:20.230Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote><p>江山留胜迹，我辈复登临。</p></blockquote><p>今天继续跟Soot，来看如何反汇编class文件。</p><a id="more"></a><h1 id="Soot基本用途"><a href="#Soot基本用途" class="headerlink" title="Soot基本用途"></a>Soot基本用途</h1><p>Soot有两个基本用途：它可以用作独立的命令行工具或Java编译器框架。</p><p>作为命令行工具，Soot可以：</p><ul><li>反汇编类文件</li><li>汇编类文件</li><li>优化类文件</li></ul><p>作为Java编译器框架，Soot可用作开发新优化的测试平台。然后，可以将这些新的优化添加到Soot命令行工具调用的优化基础集。添加的优化部分可以应用于单个类文件，也可以应用于整个应用程序。</p><p>Soot通过能够以各种不同形式处理类文件来完成这些无数的任务。目前，Soot接受来自以下来源的代码，并输出其任何中间表示：</p><ul><li>Java（字节码和Java 7之前的源代码），包括编译成Java字节码的其他语言，例如Scala</li><li>Android字节码</li><li>简单的中间表示</li><li>Jasmin，低级别的中间表示。</li></ul><p>通过使用-help选项调用Soot，可以看到输出格式：</p><p><img src="../images/soot-%E5%A6%82%E4%BD%95%E5%8F%8D%E7%BC%96%E8%AF%91%E7%B1%BB%E6%96%87%E4%BB%B6/image-20200719155822000.png" alt="image-20200719155822000"></p><p>Soot中目前使用六个中间表示形式：baf，jimple，shimple，grimp，jasmin和classfile。每种形式的简要说明如下：</p><ul><li><code>baf</code> 字节码的简化表示形式。用于检查Java字节码作为堆栈代码，但格式更好。有两种文本表示形式（一种缩写（.b文件），一种完整（.baf文件）。）</li><li><code>jimple</code> 键入3地址代码。用于执行优化和检查字节码的非常方便的表示形式。有两个文本表示形式（.jimp文件和.jimple文件。）</li><li><code>shimple</code> Jimple的SSA变体。有两个文本表示形式（.shimp文件和.shimple文件。）</li><li><code>grimp</code> 聚集的（相对于表达式树）jimple。检查反汇编代码的最佳中间表示。有两个文本表示形式（.grimp文件和.grimple文件。）</li><li><code>jasmin</code> 凌乱的汇编器格式。主要用于调试Soot。Jasmin文件以“ .jasmin”结尾。</li><li><code>classfiles</code> 原始Java字节码格式。二进制（非文本）表示形式。通常的.class文件。</li></ul><h1 id="生成一个Jimple文件"><a href="#生成一个Jimple文件" class="headerlink" title="生成一个Jimple文件"></a>生成一个Jimple文件</h1><p>先实现一个简单的Jimple类：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Hello</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Hello world!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>只需编译该类（使用javac或其他编译器），然后在Hello.class所在的目录中尝试以下命令。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java soot.Main -cp CLASSPATH -f jimple Hello</span><br></pre></td></tr></table></figure><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -cp soot-<span class="number">4.2</span><span class="number">.1</span>.jar soot.Main -cp . -f J -pp Hello</span><br></pre></td></tr></table></figure><p>名为Hello.jimple的文件应包含：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Hello</span> <span class="keyword">extends</span> <span class="title">java</span>.<span class="title">lang</span>.<span class="title">Object</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> &lt;init&gt;()</span><br><span class="line">    &#123;</span><br><span class="line">        Hello r0;</span><br><span class="line"></span><br><span class="line">        r0 := <span class="meta">@this</span>: Hello;</span><br><span class="line">        specialinvoke r0.&lt;java.lang.Object: <span class="keyword">void</span> &lt;init&gt;()&gt;();</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(java.lang.String[])</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        java.lang.String[] r0;</span><br><span class="line">        java.io.PrintStream $r1;</span><br><span class="line"></span><br><span class="line">        r0 := <span class="meta">@parameter</span>0: java.lang.String[];</span><br><span class="line">        $r1 = &lt;java.lang.System: java.io.PrintStream out&gt;;</span><br><span class="line">        virtualinvoke $r1.&lt;java.io.PrintStream: <span class="function"><span class="keyword">void</span> <span class="title">println</span><span class="params">(java.lang.String)</span>&gt;<span class="params">(<span class="string">"Hello world!"</span>)</span></span>;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h1 id="例子：为Java基础类库生成baf文件"><a href="#例子：为Java基础类库生成baf文件" class="headerlink" title="例子：为Java基础类库生成baf文件"></a>例子：为Java基础类库生成baf文件</h1><p>接下来尝试为任何类文件生成.b，.baf，.jimp，.jimple，.grimp和.grimple文件。一个特别好的测试是JDK库中的类文件。所以像这样的命令：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -cp soot-<span class="number">4.2</span><span class="number">.1</span>.jar soot.Main -cp . -f baf -pp java.lang.String</span><br></pre></td></tr></table></figure><p>应该会产生一个文件java.lang.String.baf，其中包含以下格式的文本：</p><p><img src="../images/soot-%E5%A6%82%E4%BD%95%E5%8F%8D%E7%BC%96%E8%AF%91%E7%B1%BB%E6%96%87%E4%BB%B6/image-20200719163210595.png" alt="image-20200719163210595"></p><h1 id="输出java文件"><a href="#输出java文件" class="headerlink" title="输出java文件"></a>输出java文件</h1><p>Soot不仅可以产生<code>.jimple</code>文件还可以产生<code>.java</code>文件。如果<code>–f dava</code>用于反编译为Java，请确保该文件<code>/lib/jce.jar</code>位于Soot的类路径中。</p><p>举例：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -cp soot-<span class="number">4.2</span><span class="number">.1</span>.jar soot.Main -cp . -f d  -pp lll</span><br></pre></td></tr></table></figure><p>该文件下有一个lll.class文件,直接选择<code>-f d</code>，将其变为java文件：</p><p><img src="../images/soot-%E5%A6%82%E4%BD%95%E5%8F%8D%E7%BC%96%E8%AF%91%E7%B1%BB%E6%96%87%E4%BB%B6/image-20200719163643401.png" alt="image-20200719163643401"></p><p>lll.java代码如下：</p><p><img src="../images/soot-%E5%A6%82%E4%BD%95%E5%8F%8D%E7%BC%96%E8%AF%91%E7%B1%BB%E6%96%87%E4%BB%B6/image-20200719163715708.png" alt="image-20200719163715708"></p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;序言&quot;&gt;&lt;a href=&quot;#序言&quot; class=&quot;headerlink&quot; title=&quot;序言&quot;&gt;&lt;/a&gt;序言&lt;/h1&gt;&lt;blockquote&gt;
-&lt;p&gt;江山留胜迹，我辈复登临。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;今天继续跟Soot，来看如何反汇编class文件。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="Java" scheme="https://0range228.github.io/categories/Java/"/>
-    
-    
-      <category term="Soot" scheme="https://0range228.github.io/tags/Soot/"/>
     
   </entry>
   
