@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-pace-theme-flash.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<!--
+
+  <script src="//code.tidio.co/oixl41gwhy8tvqy6jte9uvglyrqcjrvc.js" async></script>
+
+-->
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"0range228.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+  <meta name="description" content="序言 温故而知新。  站在巨人们的肩膀上，总结Java反序列化漏洞利用链，会持续更新。 同步项目：Gadgets">
+<meta name="keywords" content="漏洞分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java反序列化利用链补全计划">
+<meta property="og:url" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;index.html">
+<meta property="og:site_name" content="0range的小窝">
+<meta property="og:description" content="序言 温故而知新。  站在巨人们的肩膀上，总结Java反序列化漏洞利用链，会持续更新。 同步项目：Gadgets">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210511172731640.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210511173117069.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210511174136473.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210511192758582.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210511175925746.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210511165114468.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210511193717145.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210511195908151.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210511201023679.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210511201250404.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210511201521952.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210511204935728.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210511205231393.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210511231600583.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210511232113101.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210511232345462.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210512000356313.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210512000617960.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210512000702874.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210511224336952.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210512003551060.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210512003709417.png">
+<meta property="og:updated_time" content="2021-05-11T16:51:07.150Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210511172731640.png">
+
+<link rel="canonical" href="https://0range228.github.io/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>Java反序列化利用链补全计划 | 0range的小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="0range的小窝" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+<a href="https://github.com/0range228" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#FFA500; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">0range的小窝</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Hello,World.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">23</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">10</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">41</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://0range228.github.io/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/yfy.png">
+      <meta itemprop="name" content="0range">
+      <meta itemprop="description" content="zzz">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="0range的小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java反序列化利用链补全计划
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-05-11 16:19:57" itemprop="dateCreated datePublished" datetime="2021-05-11T16:19:57+08:00">2021-05-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-12 00:51:07" itemprop="dateModified" datetime="2021-05-12T00:51:07+08:00">2021-05-12</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/" class="post-meta-item leancloud_visitors" data-flag-title="Java反序列化利用链补全计划" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度：</span>
+              <span class="leancloud-visitors-count"></span>
+              <span>°C</span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>温故而知新。</p>
+</blockquote>
+<p>站在巨人们的肩膀上，总结Java反序列化漏洞利用链，会持续更新。</p>
+<p>同步项目：<a href="https://github.com/0range228/Gadgets" target="_blank" rel="noopener">Gadgets</a></p>
+<a id="more"></a>
+
+<h1 id="写在最前面"><a href="#写在最前面" class="headerlink" title="写在最前面"></a>写在最前面</h1><p>Java反序列化RCE三要素：<strong>readobject反序列化利用点 + 利用链 + RCE触发点</strong>。</p>
+<h1 id="readObject源码分析"><a href="#readObject源码分析" class="headerlink" title="readObject源码分析"></a>readObject源码分析</h1><p>梦开始的地方。</p>
+<p>正常使用反序列化，就会执行java.io.ObjectInputStream类中的readObejct方法。</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210511172731640.png" alt="image-20210511172731640"></p>
+<p><strong>重点分析readObject0方法，它是核心方法。</strong>跟进去看：</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210511173117069.png" alt="image-20210511173117069"></p>
+<p>这里最重要的是进行了对象类型的选择，根据不同类型执行操作。</p>
+<p>这里会先执行readOrdinaryObject方法，unshared是false。</p>
+<p>进去看看：</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210511174136473.png" alt="image-20210511174136473"></p>
+<p>看到点眉目了，<strong>readSerialData其实才是真正反序列化对象</strong>，进入readSerialData函数看看：</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210511192758582.png" alt="image-20210511192758582"></p>
+<p>到这里，可以理清整个过程的关键步骤了。</p>
+<p>在readSerialData中比较关键的是这个判断条件：</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210511175925746.png" alt="image-20210511175925746"></p>
+<p>其中slotDesc.hasReadObjectMethod()获取的是readObjectMethod这个属性，<strong>如果反序列化的类没有重写readobject()，那么readObjectMethod这个属性就是空</strong>，如果这个类重写了readobject()，就会执行readObject()方法。</p>
+<p>所以这也就是为什么，挖掘这类漏洞，上来第一件事就是要：<strong>找到哪些类有重写readObject()方法</strong>。</p>
+<h1 id="URLDNS"><a href="#URLDNS" class="headerlink" title="URLDNS"></a>URLDNS</h1><blockquote>
+<p>readobject反序列化利用点 + DNS查询，主要用来确认反序列化漏洞利用点的存在。</p>
+</blockquote>
+<p>最适合新手分析的反序列化链。ysoserial的一部分。</p>
+<p>只依赖原生类，没有jdk版本限制。</p>
+<p>dnslog平台可以选择：<a href="http://www.dnslog.cn/" target="_blank" rel="noopener">DNSLog.cn</a>，<a href="http://ceye.io" target="_blank" rel="noopener">ceye</a>，我选择了DNSLog。</p>
+<h2 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h2><p>jdk版本：jdk8u162，网上PoC很多，这里用<a href="https://www.anquanke.com/post/id/201762" target="_blank" rel="noopener">lalajun</a>师傅的为例。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">URLDNS</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">//0x01.生成payload</span></span><br><span class="line">        <span class="comment">//设置一个hashMap</span></span><br><span class="line">        HashMap&lt;URL, String&gt; hashMap = <span class="keyword">new</span> HashMap&lt;URL, String&gt;();</span><br><span class="line">        <span class="comment">//设置我们可以接受DNS查询的地址</span></span><br><span class="line">        URL url = <span class="keyword">new</span> URL(<span class="string">"http://oh6pfs.dnslog.cn"</span>);</span><br><span class="line">        <span class="comment">//将URL的hashCode字段设置为允许修改</span></span><br><span class="line">        Field f = Class.forName(<span class="string">"java.net.URL"</span>).getDeclaredField(<span class="string">"hashCode"</span>);</span><br><span class="line">        f.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">      </span><br><span class="line">        <span class="comment">//**以下的蜜汁操作是为了不在put中触发URLDNS查询，如果不这么写就会触发两次（之后会解释）**</span></span><br><span class="line">        <span class="comment">//1. 设置url的hashCode字段为0xdeadbeef（随意的值）</span></span><br><span class="line">        f.set(url, <span class="number">0xdeadbeef</span>); </span><br><span class="line">        <span class="comment">//2. 将url放入hashMap中，右边参数随便写</span></span><br><span class="line">        hashMap.put(url, <span class="string">"rmb122"</span>);</span><br><span class="line">        <span class="comment">//修改url的hashCode字段为-1，为了触发DNS查询</span></span><br><span class="line">        f.set(url, -<span class="number">1</span>); </span><br><span class="line">      </span><br><span class="line">        <span class="comment">//0x02.写入文件模拟网络传输</span></span><br><span class="line">        ObjectOutputStream oos = <span class="keyword">new</span> ObjectOutputStream(<span class="keyword">new</span> FileOutputStream(<span class="string">"out.bin"</span>));</span><br><span class="line">        oos.writeObject(hashMap);</span><br><span class="line">        <span class="comment">//0x03.读取文件，进行反序列化触发payload</span></span><br><span class="line">        ObjectInputStream ois = <span class="keyword">new</span> ObjectInputStream(<span class="keyword">new</span> FileInputStream(<span class="string">"out.bin"</span>));</span><br><span class="line">        ois.readObject();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>成功触发dns查询记录：</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210511165114468.png" alt="image-20210511165114468"></p>
+<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>三要素：HashMap / URL / HashCode</p>
+<p>大体流程：</p>
+<ol>
+<li>new一个HashMap对象，key-value对为URL-String类型，key设置为我们的dnslog的地址</li>
+<li>暴力反射，将URL类的hashCode字段改为public，默认是private</li>
+<li>将url对象的hashCode字段随便改成一个值</li>
+<li>将url对象放入HashMap中作为key，value也随便写一个</li>
+<li>将f对象的hashCode字段改为-1，<strong>触发漏洞</strong></li>
+</ol>
+<p>最终的payload结构是 一个HashMap，里面包含了 一个修改了hashCode为-1的URL类对象。</p>
+<p><strong>由于HashMap类自己有实现readObject方法，那么在反序列化过程中就会执行他自己的readObject。</strong></p>
+<h3 id="搞懂HashMap"><a href="#搞懂HashMap" class="headerlink" title="搞懂HashMap"></a>搞懂HashMap</h3><blockquote>
+<p><strong>HashMap 可以看作是一个链表散列的数据结构 , 也就是数组和链表的结合体.</strong></p>
+</blockquote>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210511193717145.png" alt="image-20210511193717145"></p>
+<p>对于主干来说，当要存放一个entry的时候，步骤如下：</p>
+<ol>
+<li>计算key的hash：hash(k)</li>
+<li>通过hash(k)映射到有限的数组a的位置i</li>
+<li>在a[i]的位置存入value</li>
+</ol>
+<p>自然就会想到，<strong>如果哈希冲突了怎么办？</strong>HashMap对于不同的元素，如果hash值相同，会采用链表指针的方式来挂在后面。</p>
+<blockquote>
+<p><strong>HashMap的主干是一个Entry数组</strong>，主干数组的长度一定是2的次幂。</p>
+<p>Entry是HashMap的基本组成单元，每一个Entry包含一个key-value键值对。（其实所谓Map其实就是保存了两个对象之间的映射关系的一种集合）</p>
+</blockquote>
+<p>看源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">transient</span> Entry&lt;K,V&gt;[] table = (Entry&lt;K,V&gt;[]) EMPTY_TABLE;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Entry是HashMap中的一个静态内部类。</span></span><br><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; <span class="keyword">implements</span> <span class="title">Map</span>.<span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">  <span class="keyword">final</span> K key;</span><br><span class="line">  V value;</span><br><span class="line">  Entry&lt;K,V&gt; next;<span class="comment">//存储指向下一个Entry的引用，单链表结构</span></span><br><span class="line">  <span class="keyword">int</span> hash;<span class="comment">//对key进行hash运算后得到的值，存储在Entry中，避免重复计算</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">  * Creates new entry.</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">  Entry(<span class="keyword">int</span> h, K k, V v, Entry&lt;K,V&gt; n) &#123;</span><br><span class="line">    value = v;</span><br><span class="line">    next = n;</span><br><span class="line">    key = k;</span><br><span class="line">    hash = h;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>看图：</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210511195908151.png" alt="image-20210511195908151"></p>
+<h3 id="HashMap-readObject"><a href="#HashMap-readObject" class="headerlink" title="HashMap.readObject()"></a>HashMap.readObject()</h3><p>看源码（跳过一些初始化操作）：</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210511201023679.png" alt="image-20210511201023679"></p>
+<p>putVal是向Map存放Entry的操作，在放入时会计算<strong>key的hash</strong>作为转化为数组位置<strong>i</strong>的映射依据。</p>
+<p><strong>DNS查询正是在计算URL类的对象的hash的过程中触发的</strong>，即<strong>hash(key)</strong>。</p>
+<p>看hash()方法源码：</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210511201250404.png" alt="image-20210511201250404"></p>
+<p>不同对象的hash计算方法是在各自的类中实现的，如果传入的key是一个URL对象，这里key.hashCode()就会调用URL类中的hashCode方法：java.net.URL#hashCode。</p>
+<p>java.net.URL#hashCode 源码：</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210511201521952.png" alt="image-20210511201521952"></p>
+<p>仔细看，用到了两个field：</p>
+<blockquote>
+<p><strong>transient</strong> URLStreamHandler handler;  // handler是一个transient临时类型，它不会被反序列化（但之后会用到）</p>
+<p><strong>private</strong> <strong>int</strong> hashCode = -1;   //hashCode是private类型，需要手动开放控制权才可以修改。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="comment">//如果hashCode不为-1，直接返回hashCode的值</span></span><br><span class="line">  <span class="keyword">if</span> (hashCode != -<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> hashCode;</span><br><span class="line">	<span class="comment">//如果hashCode为-1，直接计算handler的hashcode，并返回</span></span><br><span class="line">  hashCode = handler.hashCode(<span class="keyword">this</span>);</span><br><span class="line">  <span class="keyword">return</span> hashCode;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>那就继续看handler所属的类：URLStreamHandler</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210511204935728.png" alt="image-20210511204935728"></p>
+<p>getHostAddress也是限制了IP地址不会解析：</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210511205231393.png" alt="image-20210511205231393"></p>
+<img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210511231600583.png" alt="image-20210511231600583" style="zoom:50%;">
+
+<p>这里面必须提一下上面的hostAddress参数，<strong>如果 Host 字段为一个域名 , 且我们之前解析过这个域名 , 那么程序会将解析后的 IP 地址缓存到 hostAddress 参数中 , 当我们再次请求时 , 由于 hostAddress 已有值 , 就不会走完剩下的 POP Chain 了。</strong></p>
+<p>继续跟，会到java.net.InetAddress#getAllByName()这个方法：</p>
+<img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210511232113101.png" alt="image-20210511232113101" style="zoom:50%;">
+
+<p>进入getAllByName0:</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210511232345462.png" alt="image-20210511232345462"></p>
+<p><strong>总结一下到目前为止可以利用的调用链</strong>：</p>
+<ol>
+<li>HashMap.readObject() -&gt; HashMap.hash() </li>
+<li>HashMap.hash() -&gt; URL.hashCode()</li>
+<li>URL.hashCode() -&gt; URLStreamHandler.hashCode()</li>
+<li>URLStreamHandler.hashCode() -&gt; URLStreamHandler.getHostAddress()</li>
+<li>URLStreamHandler.getHostAddress() -&gt; InetAddress.getByName() -&gt; … -&gt; getAddressFromNameService()</li>
+</ol>
+<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p>满足两个条件：</p>
+<ol>
+<li>为了能走到URL.hashCode()，要保证map里面存放着一个Entry，这个Entry的key满足URL类型</li>
+<li>为了能走到URLStreamHandler.hashCode()，需要hashCode这个field为-1，绕过if判断</li>
+</ol>
+<p>往前翻PoC：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">f.set(url, <span class="number">0xdeadbeef</span>); </span><br><span class="line">hashMap.put(url, <span class="string">"rmb122"</span>);</span><br><span class="line">f.set(url, -<span class="number">1</span>);</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p><strong>为什么这里首先给url的hashCode属性先设置成一个值，put到map之后，再改成另一个值？</strong></p>
+<p>这里我们先做一件事，看一下之前提到的HashMap.readObject()方法：</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210512000356313.png" alt="image-20210512000356313"></p>
+<p>这里面的s其实是ObjectInputStream对象。既然key和value都是从s.readObejct()方法出来的(之后进行了cast强转)，那我们先看一下对应的HashMap.writeObject方法：</p>
+<img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210512000617960.png" alt="image-20210512000617960" style="zoom:50%;">
+
+<p>跟到internalWriteEntries方法：</p>
+<img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210512000702874.png" alt="image-20210512000702874" style="zoom:50%;">
+
+<p>可以看到，分别对entry内部的key和value进行了writeObject，tab的值即HashMap中table的值，也就是横向数组。</p>
+<p>想一下，如果你想向一个HashMap中存放一个entry，那么就要执行HashMap.put()方法：</p>
+<p>再看一下HashMap的put方法：</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210511224336952.png" alt="image-20210511224336952"></p>
+<p>可以看到，这里用到了HashMap.hash()方法，如果这里面的key就是URL，那么后续利用链就能接上。</p>
+<p>也就是说，<strong>仅仅一次put操作，就会触发一次DNS查询</strong>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DNSTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        HashMap map = <span class="keyword">new</span> HashMap();</span><br><span class="line">        URL url = <span class="keyword">new</span> URL(your_dns_url);</span><br><span class="line">        map.put(url,<span class="number">123</span>); <span class="comment">//此时就会产生一次dns查询</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里就可以回答之前的问题：</p>
+<p><strong>为什要改两次，因为我们要规避掉put操作产生的DNS查询。</strong></p>
+<p>之后再改回-1，是为了可以成功触发反序列化时候的漏洞。</p>
+<p>也就是这里还有一条小链：</p>
+<blockquote>
+<p>HashMap.put() -&gt; HashMap.hash() </p>
+<p>HashMap.hash() -&gt; URL.hashCode()</p>
+<p>…</p>
+<p>触发DNS查询</p>
+</blockquote>
+<h2 id="ysoserial实现版本"><a href="#ysoserial实现版本" class="headerlink" title="ysoserial实现版本"></a>ysoserial实现版本</h2><p>十分优雅</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210512003551060.png" alt="image-20210512003551060"></p>
+<p>这里首先有一个SilentURLStreamHandler对象，跟进去看看：</p>
+<img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210512003709417.png" alt="image-20210512003709417" style="zoom:50%;">
+
+<p>可以发现这个类其实就是继承URLStreamHandler类，并且把这两个方法改成了返回null，这样就规避了在生成payload的时候的那一次DNS查询，也就是我们之前看到的HashMap.put的那次操作。</p>
+<p>这次put的时候，由于handler是SilentURLStreamHandler类，完全不会出发DNS解析，实在是妙。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://www.anquanke.com/post/id/201762" target="_blank" rel="noopener">lalajun</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" rel="tag"><i class="fa fa-tag"></i>漏洞分析</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Java%E6%B3%A8%E8%A7%A3/" rel="prev" title="Java注解">
+      <i class="fa fa-chevron-left"></i> Java注解
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+      <!--
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://link.hhtjim.com/163/26348068.mp3"></iframe>
+      -->
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#写在最前面"><span class="nav-number">2.</span> <span class="nav-text">写在最前面</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#readObject源码分析"><span class="nav-number">3.</span> <span class="nav-text">readObject源码分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#URLDNS"><span class="nav-number">4.</span> <span class="nav-text">URLDNS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞复现"><span class="nav-number">4.1.</span> <span class="nav-text">漏洞复现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞分析"><span class="nav-number">4.2.</span> <span class="nav-text">漏洞分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#搞懂HashMap"><span class="nav-number">4.2.1.</span> <span class="nav-text">搞懂HashMap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HashMap-readObject"><span class="nav-number">4.2.2.</span> <span class="nav-text">HashMap.readObject()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞利用"><span class="nav-number">4.3.</span> <span class="nav-text">漏洞利用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ysoserial实现版本"><span class="nav-number">4.4.</span> <span class="nav-text">ysoserial实现版本</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="0range"
+      src="/images/yfy.png">
+  <p class="site-author-name" itemprop="name">0range</p>
+  <div class="site-description" itemprop="description">zzz</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/0range228" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;0range228" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      友链
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://m0d9.me/" title="http:&#x2F;&#x2F;m0d9.me&#x2F;" rel="noopener" target="_blank">yangbh</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.0kami.cn/" title="https:&#x2F;&#x2F;blog.0kami.cn&#x2F;" rel="noopener" target="_blank">wh1t3p1g</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.kingkk.com/" title="https:&#x2F;&#x2F;www.kingkk.com&#x2F;" rel="noopener" target="_blank">kingkk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/tr1ple/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;tr1ple&#x2F;" rel="noopener" target="_blank">tr1ple</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.yuque.com/ni4n/blogs" title="https:&#x2F;&#x2F;www.yuque.com&#x2F;ni4n&#x2F;blogs" rel="noopener" target="_blank">Ni4n</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://anemone.top/" title="http:&#x2F;&#x2F;anemone.top" rel="noopener" target="_blank">Anemone</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://summersec.github.io/" title="https:&#x2F;&#x2F;summersec.github.io" rel="noopener" target="_blank">SummerSec</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.zhihu.com/people/chenwengang" title="https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;chenwengang" rel="noopener" target="_blank">ApsarasX</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart" aria-hidden="true"></i>
+  </span>
+   Powered By - 
+  <span class="author" itemprop="copyrightHolder">0range</span>
+
+  <!--
+    <span class="post-meta-divider"> | </span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">503k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">13:58</span>
+  -->
+
+</div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+            'X-LC-Key'    : 'l8KvoMr1i8urA7X7BzPMtQC7',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+      appKey     : 'l8KvoMr1i8urA7X7BzPMtQC7',
+      placeholder: "Say Something~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+
+<!--
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unjkp.com/valine/dist/Valine.min.js"></script>  
+  <script src="/js/Valine.min.js"></script> 
+
+   
+  
+  <script src="/js/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+        appKey: 'l8KvoMr1i8urA7X7BzPMtQC7',
+        placeholder: 'Say Something~',
+        avatar:'mm',
+        guest_info:['nick'] ,  //评论者只需要提供评论的昵称即可
+        pageSize:'10' || 10,
+    });
+  
+    var infoEle = document.querySelector('#comments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0){
+      infoEle.childNodes.forEach(function(item) {
+        item.parentNode.removeChild(item);
+      });
+    }
+  </script>
+
+-->
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/click_love.js"></script>
