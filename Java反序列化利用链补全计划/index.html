@@ -101,7 +101,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210513182135950.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210513182402111.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210513183528337.png">
-<meta property="og:updated_time" content="2021-05-13T13:35:20.586Z">
+<meta property="og:updated_time" content="2021-05-13T15:54:14.538Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210511172731640.png">
 
@@ -289,7 +289,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-13 21:35:20" itemprop="dateModified" datetime="2021-05-13T21:35:20+08:00">2021-05-13</time>
+                <time title="修改时间：2021-05-13 23:54:14" itemprop="dateModified" datetime="2021-05-13T23:54:14+08:00">2021-05-13</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -739,8 +739,8 @@
 <li>[支线任务开启]寻找invoke调用2点，发现InvokerTransformer内部的transform方法符合反射调用，有可控潜力</li>
 <li>为了符合exp的构造条件，发现ConstantTransformer可以参与</li>
 <li>将一句话分别由多个Transformer来hold，形成了ChainedTransformer，为了让ChainedTransformer.transform可以自动化调用，下一步需要去找哪里用了transform方法</li>
-<li>查看transform的调用，发现TransformedMap内部类有checkSetValue方法调用了transform方法</li>
-<li>同时发现checkSetValue是抽象类AbstractInputCheckedMapDecorator的方法，同时该类内部静态类Entry的setValue方法调用了transform方法</li>
+<li>查看transform的调用，发现TransformedMap类中有checkSetValue方法调用了transform方法</li>
+<li>同时发现checkSetValue是抽象类AbstractInputCheckedMapDecorator的方法，同时该类内部静态类MapEntry的setValue方法调用了checkSetValue方法</li>
 <li>实现AbstractInputCheckedMapDecorator的类有四个，TransformedMap算一个。所以TransformedMap1既是readObject复写点，又是执行链的起点(更改map中的值)[支线任务结束]</li>
 <li>如何来自动更改值，还是去找readObejct复写点，发现AnnotationInvocationHandler十分合适，既复写了readObject，又修改了map的值，可以包装到最外面</li>
 <li>编写Exp</li>
@@ -798,7 +798,7 @@
 <p>发现AnnotationInvocationHandler内部的invoke调用了get方法：</p>
 <p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210513153931088.png" alt="image-20210513153931088"></p>
 <p>我们可以发现在这个类中，memberValues是Map对象，并且有对map的get操作。</p>
-<p>LazyMap也是Map的子类，重写了get方法，所以这里如果memberValues是LazyMap类对象，会成功调用LazyMap的get方法，就可以漏洞。</p>
+<p>LazyMap也是Map的子类，重写了get方法，所以这里如果memberValues是LazyMap类对象，会成功调用LazyMap的get方法，就可以触发漏洞。</p>
 <p>所以如何触发这个invoke函数呢？</p>
 <h4 id="PoC构造"><a href="#PoC构造" class="headerlink" title="PoC构造"></a>PoC构造</h4><p>需要依赖动态代理，参考<a href="https://0range228.github.io/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E9%82%A3%E7%82%B9%E4%BA%8B/">之前的博客</a>：</p>
 <p><strong>总结就是被动态代理的对象调用任意方法都会调用对应的InvocationHandler的invoke方法。</strong></p>
@@ -807,12 +807,16 @@
 <p>目前已有条件：</p>
 <ul>
 <li>AnnotationInvocationHandler的readObject方法可以触发setValue，</li>
-<li>Map的setValue方法可以调用transform方法</li>
+<li>cc里面很多Map的setValue方法可以调用transform方法</li>
 <li>LazyMap的invoke可以调用Map.get方法，LazyMap重写的get方法可以触发transform方法</li>
 <li>ChainedTransformer的transform方法可以将里面InvokerTransformer的内容进行成环invoke触发</li>
 </ul>
-<p>所以我们只要创建一个LazyMap类的动态代理，让这个代理在调用LazyMap方法，这样就可以执行LazyMap的invoke方法了。</p>
-<p>我们发现:</p>
+<p>这个感觉就像：</p>
+<p>handler是一个InvocationHandler类对象，他内部有invoke方法</p>
+<p>我们可以做一个代理类a，让这个代理类代理LazyMap对象,handler也参与，负责invoke</p>
+<p>这样的话，无论以后a调用了LazyMap内部的任何方法，他都会先走一遍handler的invoke方法。</p>
+<p>注意最后一句话，我们想让”他都会先走一遍handler的invoke方法”这句话内部的<strong>invoke方法</strong>，就是LazyMap的invoke方法。</p>
+<p>抱着这个目标，我们还可以发现:</p>
 <ul>
 <li>AnnotationInvocationHandler继承了InvocationHandler，可以当动态代理，也可以作为handler</li>
 <li>AnnotationInvocationHandler类的readObject方法，可以触发setValue</li>
@@ -1050,7 +1054,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">527k</span>
+    <span title="站点总字数">528k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
