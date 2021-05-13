@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://0range228.github.io/"/>
-  <updated>2021-05-13T07:31:33.067Z</updated>
+  <updated>2021-05-13T07:35:27.002Z</updated>
   <id>https://0range228.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://0range228.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AF%B9%E7%BA%BFrt-jar/"/>
     <id>https://0range228.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AF%B9%E7%BA%BFrt-jar/</id>
     <published>2021-05-13T06:39:35.000Z</published>
-    <updated>2021-05-13T07:31:33.067Z</updated>
+    <updated>2021-05-13T07:35:27.002Z</updated>
     
     <content type="html"><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote><p>独立三边静，轻生一剑知。</p></blockquote><p>记录一次对线rt.jar的经历。</p><a id="more"></a><h1 id="过程全记录"><a href="#过程全记录" class="headerlink" title="过程全记录"></a>过程全记录</h1><p>前一阵在复习CC链的时候，想着从PoC来逆向分析ysoserial师傅们的挖掘思路。</p><p>LayMap函数的get函数很有挖掘潜力，所以我需要找哪些类调用了get方法。</p><p>已知答案是AnnotationInvocationHandler的invoke函数调用了get函数，可以执行下去。</p><p>现在我想用IDEA搜索一下，但是无奈没有找到。</p><p>发现这个类属于sun.reflect.annotation包，位于rt.jar中，主动去搜索这个类你是可以看到的。</p><p><strong>IDEA可以反编译出来rt.jar的源码，但是不会帮你进去搜索代码细节，因为它没有源码</strong></p><p>直接去翻$JAVA_HOME，src.zip里面是jdk源码，但是并没有sun包。。</p><p><img src="../images/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AF%B9%E7%BA%BFrt-jar/image-20210513153049164.png" alt="image-20210513153049164"></p><p>搜索资料，我发现sun是oracle选择闭源的几个包之一。</p><p>Oracle选择性闭源？无奈又好笑，这能忍？</p><p>如何拿到rt.jar的源码，火速学习了一波。</p><p>所以我想着先去搞到openJDK7的源码。</p><p>搜了一波，发现<a href="http://hg.openjdk.java.net/" target="_blank" rel="noopener">http://hg.openjdk.java.net/</a>可以搞到源码，网速感人，要有耐心。。。</p><p>以我自己的7u21为例子：</p><p><img src="../images/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AF%B9%E7%BA%BFrt-jar/image-20210513150521166.png" alt="image-20210513150521166"></p><p>点击jdk7u-jdk，进去之后点击browse可以看内容</p><p><img src="../images/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AF%B9%E7%BA%BFrt-jar/image-20210513150614447.png" alt="image-20210513150614447"></p><p>也可以不废话，直接点击zip下载</p><p>然后就拿到了一个zip解压：</p><p><img src="../images/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AF%B9%E7%BA%BFrt-jar/image-20210513150829266.png" alt="image-20210513150829266"></p><p>然后依次进入src-share-classes，看到了sun：</p><p><img src="../images/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AF%B9%E7%BA%BFrt-jar/image-20210513150912940.png" alt="image-20210513150912940"></p><p>也就是说，IDEA无法帮我们搜索的内容，我们现在可以自己添加进去了。</p><p>如何关联？</p><p>来到Project Structure - SKDs，把我们的源码的classes添加进去就可以了</p><p><img src="../images/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AF%B9%E7%BA%BFrt-jar/image-20210513151529264.png" alt="image-20210513151529264"></p><p>这次再搜索一下，直接find in path 搜索path</p><p>就可以看到了：</p><p><img src="../images/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AF%B9%E7%BA%BFrt-jar/image-20210513151800556.png" alt="image-20210513151800556"></p><p>翻出了JD-GUI，比较一下。</p><p>我是直接来到$JAVA_HOME，进入jre/lib，这些东西会参与java-runtime</p><p>啪的一下很快奥！</p><p><img src="../images/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AF%B9%E7%BA%BFrt-jar/image-20210513152337666.png" alt="image-20210513152337666"></p><p><img src="../images/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AF%B9%E7%BA%BFrt-jar/image-20210513152445982.png" alt="image-20210513152445982"></p><p>不得不佩服西方老师傅门的耐心，漏洞在牛角尖上。</p><h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://my.oschina.net/u/2518341/blog/1931088" target="_blank" rel="noopener">获取openJDK源码</a></p><p><a href="https://www.jianshu.com/p/96334b23f4f0" target="_blank" rel="noopener">JDK（rt.jar）源码和IDE关联</a></p><p><a href="http://hg.openjdk.java.net/" target="_blank" rel="noopener">http://hg.openjdk.java.net/</a></p>]]></content>
     
@@ -38,7 +38,7 @@
       <category term="Java代码审计" scheme="https://0range228.github.io/categories/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
     
     
-      <category term="实战" scheme="https://0range228.github.io/tags/%E5%AE%9E%E6%88%98/"/>
+      <category term="实战记录" scheme="https://0range228.github.io/tags/%E5%AE%9E%E6%88%98%E8%AE%B0%E5%BD%95/"/>
     
   </entry>
   
