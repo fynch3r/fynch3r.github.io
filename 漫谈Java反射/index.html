@@ -28,20 +28,29 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"0range228.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
-  <meta name="description" content="序言今天来总结一下Java反射，在它面前，任何事物没有任何隐私。">
+  <meta name="description" content="序言  看试手，补天裂。  今天来总结一下Java反射，在它面前，任何事物没有任何隐私。">
 <meta name="keywords" content="Java反射">
 <meta property="og:type" content="article">
 <meta property="og:title" content="漫谈Java反射">
 <meta property="og:url" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84&#x2F;index.html">
 <meta property="og:site_name" content="0range的小窝">
-<meta property="og:description" content="序言今天来总结一下Java反射，在它面前，任何事物没有任何隐私。">
+<meta property="og:description" content="序言  看试手，补天裂。  今天来总结一下Java反射，在它面前，任何事物没有任何隐私。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84&#x2F;image-20200411205831842.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84&#x2F;image-20200411221213662.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84&#x2F;image-20200411224713717.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84&#x2F;image-20200412135058766.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84&#x2F;image-20200412135158822.png">
-<meta property="og:updated_time" content="2021-03-16T02:19:21.923Z">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84&#x2F;image-20210512223546220.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84&#x2F;image-20210512225432055.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84&#x2F;image-20210512231233941.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84&#x2F;image-20210512232314719.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84&#x2F;image-20210512232520503.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84&#x2F;image-20210512232900943.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84&#x2F;image-20210512232631973.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84&#x2F;image-20210512233149513.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84&#x2F;image-20210512233242268.png">
+<meta property="og:updated_time" content="2021-05-13T07:32:41.634Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84&#x2F;image-20200411205831842.png">
 
@@ -135,17 +144,17 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">23</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">24</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">10</span></a>
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">11</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">41</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">42</span></a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -204,7 +213,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/yfy.png">
       <meta itemprop="name" content="0range">
-      <meta itemprop="description" content="zzz">
+      <meta itemprop="description" content="focus">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -229,7 +238,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-16 10:19:21" itemprop="dateModified" datetime="2021-03-16T10:19:21+08:00">2021-03-16</time>
+                <time title="修改时间：2021-05-13 15:32:41" itemprop="dateModified" datetime="2021-05-13T15:32:41+08:00">2021-05-13</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -269,14 +278,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>16k</span>
+              <span>19k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>26 分钟</span>
+              <span>31 分钟</span>
             </span>
 
         </div>
@@ -288,7 +297,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><p>今天来总结一下Java反射，在它面前，任何事物没有任何隐私。</p>
+        <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p> 看试手，补天裂。</p>
+</blockquote>
+<p>今天来总结一下Java反射，在它面前，任何事物没有任何隐私。</p>
 <a id="more"></a>
 
 <h1 id="什么是Java反射？"><a href="#什么是Java反射？" class="headerlink" title="什么是Java反射？"></a>什么是Java反射？</h1><blockquote>
@@ -552,6 +564,80 @@
 <h2 id="回来继续构造调用"><a href="#回来继续构造调用" class="headerlink" title="回来继续构造调用"></a>回来继续构造调用</h2><p>上面我们只是获取到了getRuntime方法，我们还没有调用这个方法获取其Runtime对象</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//普通调用形式</span></span><br><span class="line">Runtime.getRuntime()</span><br><span class="line"><span class="comment">// 反射调用</span></span><br><span class="line">Class.forName(<span class="string">"java.lang.Runtime"</span>).getMethod(<span class="string">"getRuntime"</span>).invoke(Class.forName(<span class="string">"java.lang.Runtime"</span>))</span><br><span class="line"><span class="comment">// 经过变形的反射调用</span></span><br><span class="line">Method method = (Method) Class.forName(<span class="string">"java.lang.Class"</span>)</span><br><span class="line">                .getMethod("getMethod", new Class[] &#123;String.class, Class[].class &#125;)//得到getMethod方法，这个方法需要两个型参，这里要列好，分别是String和Class</span><br><span class="line">  .invoke(Class.forName(<span class="string">"java.lang.Runtime"</span>),<span class="string">"getRuntime"</span>,<span class="keyword">new</span> Class[<span class="number">0</span>]);<span class="comment">//调用getMethod方法，得到getRuntime方法</span></span><br><span class="line"><span class="comment">//以上等于执行Class.forName("java.lang.Runtime").getMethod("getRuntime")</span></span><br><span class="line"><span class="comment">//调用Runtime.getRuntime函数，传入的obj根据上面的分析可以随便写</span></span><br><span class="line">method.invoke(Class.forName(<span class="string">"java.lang.Runtime"</span>),<span class="keyword">new</span> Object[<span class="number">0</span>]);</span><br><span class="line">method.invoke(<span class="keyword">null</span>,<span class="keyword">new</span> Object[<span class="number">0</span>]);</span><br><span class="line">method.invoke(Class.forName(<span class="string">"java.lang.String"</span>),<span class="keyword">new</span> Object[<span class="number">0</span>]);</span><br></pre></td></tr></table></figure>
 
+
+
+<h1 id="搞懂invoke函数"><a href="#搞懂invoke函数" class="headerlink" title="搞懂invoke函数"></a>搞懂invoke函数</h1><p>直接上源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> java.lang.reflect;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Method</span> <span class="keyword">extends</span> <span class="title">AccessibleObject</span> <span class="keyword">implements</span> <span class="title">GenericDeclaration</span>,<span class="title">Member</span>...</span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">Object</span> <span class="title">invoke</span>(<span class="title">Object</span> <span class="title">obj</span>, <span class="title">Object</span>... <span class="title">args</span>)</span></span><br><span class="line"><span class="class">        <span class="title">throws</span> <span class="title">IllegalAccessException</span>, <span class="title">IllegalArgumentException</span>,</span></span><br><span class="line"><span class="class">           <span class="title">InvocationTargetException</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!override) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!Reflection.quickCheckMemberAccess(clazz, modifiers)) &#123;</span><br><span class="line">                Class&lt;?&gt; caller = Reflection.getCallerClass(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">                checkAccess(caller, clazz, obj, modifiers);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        MethodAccessor ma = methodAccessor;             <span class="comment">// read volatile</span></span><br><span class="line">        <span class="keyword">if</span> (ma == <span class="keyword">null</span>) &#123;</span><br><span class="line">            ma = acquireMethodAccessor();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ma.invoke(obj, args);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>override参数</strong></p>
+<p>它是父类AccessibleObject的一个属性，AccessibleObject这个类有三个子类：构造函数、属性、方法。</p>
+<img src="../images/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/image-20210512223546220.png" alt="image-20210512223546220" style="zoom:80%;">
+
+<p>override这个值默认是false，但是我们可以通过method.setAccessible(true)来改掉它的值。</p>
+<p><strong>Reflection.quickCheckMemberAccess(clazz, modifiers)</strong></p>
+<p>如果是override是默认值false，那么继续往下走。</p>
+<p>我们这里假设：<strong>m.invoke(obj,args)</strong></p>
+<p>参数：</p>
+<ul>
+<li><p>clazz：m所属类的Class对象 </p>
+</li>
+<li><p>args：m的所需参数</p>
+</li>
+</ul>
+<p>这里<strong>quickCheckMemberAccess先检查Class对象是不是public的</strong>。</p>
+<ul>
+<li><p>如果是public,那么就跳出本方法；</p>
+</li>
+<li><p>如果不是public,那继续来到Reflection.getCallerClass(1);</p>
+<p>这是一个native方法，返回的是获取调用这个方法的Class对象，赋值给caller</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">native</span> Class&lt;?&gt; getCallerClass();</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p><strong>checkAccess</strong></p>
+<p>然后通过checkAccess(checkAccess(caller, clazz, obj, modifiers)做一次快速的权限校验</p>
+<img src="../images/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/image-20210512225432055.png" alt="image-20210512225432055" style="zoom:80%;">
+
+<p>不难看出，还进行了一个很简单的缓冲机制，只适用于一个类的重复调用。</p>
+<p><strong>MethodAccessor ma = methodAccessor;</strong></p>
+<p>接下来是重头戏：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">MethodAccessor ma = methodAccessor;             <span class="comment">// read volatile</span></span><br><span class="line"><span class="keyword">if</span> (ma == <span class="keyword">null</span>) &#123;</span><br><span class="line">	ma = acquireMethodAccessor();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> ma.invoke(obj, args);</span><br></pre></td></tr></table></figure>
+
+<p>首先要了解Method对象的基本构成，每个Java方法有且只有一个Method对象作为root，它相当于根对象，对用户不可见。当我们创建Method对象时，我们代码中获得的Method对象都相当于它的副本（或引用）。root对象持有一个MethodAccessor对象，所以所有获取到的Method对象都共享这一个MethodAccessor对象，因此必须保证它在内存中的可见性。<br>当第一次调用一个Java方法对应的Method对象的invoke()方法之前，实现调用逻辑的MethodAccessor对象还没有创建(第一次调用，methodAccessor属性为null)，所以通过<code>reflectionFactory</code>创建MethodAccessor并更新给root，然后调用<code>MethodAccessor.invoke()</code>完成反射调用。</p>
+<p>具体细看，可以看到invoke方法实际是委派给了MethodAccessor类型的ma对象来处理。MethodAccessor是一个接口，主要有两个实现类。</p>
+<p><img src="../images/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/image-20210512231233941.png" alt="image-20210512231233941"></p>
+<p>一个委派实现(<code>DelegatingMethodAccessorImpl</code>)，一个本地实现(<code>NativeMethodAccessorImpl</code>)。这里调用的委派实现主要是为了在本地实现和动态实现之间做切换。考虑到许多反射调用仅会执行一次，Java虚拟机设置了一个阈值15(是从0开始计算,&gt;15)：</p>
+<ul>
+<li>当某个反射调用的调用次数&lt;=15 时，采用本地实现；</li>
+<li>当大于15时，便开始动态生成字节码，并将委派实现的委派对象切换至动态实现。这个过程我们称之为Infation。</li>
+</ul>
+<p>这里我们以<code>NativeMethodAccessorImpl</code>本地实现为例：</p>
+<p><img src="../images/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/image-20210512232314719.png" alt="image-20210512232314719"></p>
+<p>每次调用其invoke时会做一个累加，判断是否到达阙值，如果没有则调用native的invoke0方法，当超过时则调用<code>MethodAccessorGenerator.generateMethod()</code>，并将其设置到<code>DelegatingMethodAccessorImpl</code>的delegate，这样下次就会直接调用到动态实现的位置。</p>
+<p>m.invoke(o，args)</p>
+<p>invoke0参数：</p>
+<ul>
+<li>this.method 就是m</li>
+<li>var1就是o，如果m是静态方法的话，这里写null也可以</li>
+<li>var2就是args参数</li>
+</ul>
+<p>我们重点分析一下invoke0这个native方法：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">JNIEXPORT jobject JNICALL Java_sun_reflect_NativeMethodAccessorImpl_invoke0</span><br><span class="line">(JNIEnv *env, jclass unused, jobject m, jobject obj, jobjectArray args)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> JVM_InvokeMethod(env, m, obj, args);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>借用ruilin的图，继续看JVM_InvokeMethod方法：</p>
+<p><img src="../images/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/image-20210512232520503.png" alt="image-20210512232520503"></p>
+<p>发现提到了oop，简单写一下oop-klass理解：</p>
+<p>JVM就是用这种方式，将一个对象的数据和对象模型进行分离。普遍意义上来说，我们说持有一个对象的引用，指的是图中的handle(存放在栈区)，它是oop(存放在堆区)的一个封装。</p>
+<p><img src="../images/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/image-20210512232900943.png" alt="image-20210512232900943"></p>
+<p>关键点是：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">oop result = Reflection::invoke_method(method_handle(), receiver, args, CHECK_NULL);</span><br></pre></td></tr></table></figure>
+
+<p>跟进hotspot/src/share/vm/runtime/reflection.cpp</p>
+<p><img src="../images/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/image-20210512232631973.png" alt="image-20210512232631973"></p>
+<p>Reflection::invoke_method()中接受的method_mirror(oop)就是我们要反射调用的方法。然后代码调用了Reflection::invoke()，跟进之后最终到JavaCalls::call()执行</p>
+<p><img src="../images/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/image-20210512233149513.png" alt="image-20210512233149513"></p>
+<p>最后的<code>os_exception_wrapper</code>其实就是调用了<code>call_help</code>，也就是说本地实现的<strong>反射最终的方法执行是通过<code>JavaCalls::call_helper</code>方法来完成的</strong>。</p>
+<p><img src="../images/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/image-20210512233242268.png" alt="image-20210512233242268"></p>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>反射，永远滴神！</p>
 
     </div>
@@ -640,7 +726,7 @@
       -->
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是Java反射？"><span class="nav-number">2.</span> <span class="nav-text">什么是Java反射？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#如何获取Class类对象？"><span class="nav-number">2.1.</span> <span class="nav-text">如何获取Class类对象？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字节码文件阶段"><span class="nav-number">2.1.1.</span> <span class="nav-text">字节码文件阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存阶段"><span class="nav-number">2.1.2.</span> <span class="nav-text">内存阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行时阶段"><span class="nav-number">2.1.3.</span> <span class="nav-text">运行时阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意⚠️"><span class="nav-number">2.1.4.</span> <span class="nav-text">注意⚠️</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例demo"><span class="nav-number">2.2.</span> <span class="nav-text">实例demo</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字节码阶段"><span class="nav-number">2.2.1.</span> <span class="nav-text">字节码阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存阶段-1"><span class="nav-number">2.2.2.</span> <span class="nav-text">内存阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行时阶段-1"><span class="nav-number">2.2.3.</span> <span class="nav-text">运行时阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小细节"><span class="nav-number">2.2.4.</span> <span class="nav-text">小细节</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实例对照"><span class="nav-number">3.</span> <span class="nav-text">实例对照</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#获取Fields"><span class="nav-number">3.1.</span> <span class="nav-text">获取Fields</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取Constructor"><span class="nav-number">3.2.</span> <span class="nav-text">获取Constructor</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取Methods"><span class="nav-number">3.3.</span> <span class="nav-text">获取Methods</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#灵魂体现"><span class="nav-number">4.</span> <span class="nav-text">灵魂体现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#类的初始化"><span class="nav-number">4.1.</span> <span class="nav-text">类的初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调用内部类"><span class="nav-number">4.2.</span> <span class="nav-text">调用内部类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#getMethod"><span class="nav-number">4.3.</span> <span class="nav-text">getMethod</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#invoke"><span class="nav-number">4.4.</span> <span class="nav-text">invoke</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指定的构造方法生成类的实例"><span class="nav-number">4.5.</span> <span class="nav-text">指定的构造方法生成类的实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#执行私有方法"><span class="nav-number">4.6.</span> <span class="nav-text">执行私有方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#从Commons-collections收获的一点反思"><span class="nav-number">5.</span> <span class="nav-text">从Commons-collections收获的一点反思</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#神奇的invoke参数"><span class="nav-number">5.1.</span> <span class="nav-text">神奇的invoke参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#回来继续构造调用"><span class="nav-number">5.2.</span> <span class="nav-text">回来继续构造调用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是Java反射？"><span class="nav-number">2.</span> <span class="nav-text">什么是Java反射？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#如何获取Class类对象？"><span class="nav-number">2.1.</span> <span class="nav-text">如何获取Class类对象？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字节码文件阶段"><span class="nav-number">2.1.1.</span> <span class="nav-text">字节码文件阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存阶段"><span class="nav-number">2.1.2.</span> <span class="nav-text">内存阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行时阶段"><span class="nav-number">2.1.3.</span> <span class="nav-text">运行时阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意⚠️"><span class="nav-number">2.1.4.</span> <span class="nav-text">注意⚠️</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例demo"><span class="nav-number">2.2.</span> <span class="nav-text">实例demo</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字节码阶段"><span class="nav-number">2.2.1.</span> <span class="nav-text">字节码阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存阶段-1"><span class="nav-number">2.2.2.</span> <span class="nav-text">内存阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行时阶段-1"><span class="nav-number">2.2.3.</span> <span class="nav-text">运行时阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小细节"><span class="nav-number">2.2.4.</span> <span class="nav-text">小细节</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实例对照"><span class="nav-number">3.</span> <span class="nav-text">实例对照</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#获取Fields"><span class="nav-number">3.1.</span> <span class="nav-text">获取Fields</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取Constructor"><span class="nav-number">3.2.</span> <span class="nav-text">获取Constructor</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取Methods"><span class="nav-number">3.3.</span> <span class="nav-text">获取Methods</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#灵魂体现"><span class="nav-number">4.</span> <span class="nav-text">灵魂体现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#类的初始化"><span class="nav-number">4.1.</span> <span class="nav-text">类的初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调用内部类"><span class="nav-number">4.2.</span> <span class="nav-text">调用内部类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#getMethod"><span class="nav-number">4.3.</span> <span class="nav-text">getMethod</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#invoke"><span class="nav-number">4.4.</span> <span class="nav-text">invoke</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指定的构造方法生成类的实例"><span class="nav-number">4.5.</span> <span class="nav-text">指定的构造方法生成类的实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#执行私有方法"><span class="nav-number">4.6.</span> <span class="nav-text">执行私有方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#从Commons-collections收获的一点反思"><span class="nav-number">5.</span> <span class="nav-text">从Commons-collections收获的一点反思</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#神奇的invoke参数"><span class="nav-number">5.1.</span> <span class="nav-text">神奇的invoke参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#回来继续构造调用"><span class="nav-number">5.2.</span> <span class="nav-text">回来继续构造调用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#搞懂invoke函数"><span class="nav-number">6.</span> <span class="nav-text">搞懂invoke函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -649,27 +735,27 @@
     <img class="site-author-image" itemprop="image" alt="0range"
       src="/images/yfy.png">
   <p class="site-author-name" itemprop="name">0range</p>
-  <div class="site-description" itemprop="description">zzz</div>
+  <div class="site-description" itemprop="description">focus</div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-count">42</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -746,12 +832,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">503k</span>
+    <span title="站点总字数">522k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">13:58</span>
+    <span title="站点阅读时长">14:30</span>
   -->
 
 </div>
