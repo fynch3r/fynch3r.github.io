@@ -49,7 +49,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%93%8D%E4%BD%9C%E6%95%B0%E6%A0%88%E4%B8%8E%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E8%A1%A8&#x2F;image-20210317231143953.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%93%8D%E4%BD%9C%E6%95%B0%E6%A0%88%E4%B8%8E%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E8%A1%A8&#x2F;image-20210317232352641.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%93%8D%E4%BD%9C%E6%95%B0%E6%A0%88%E4%B8%8E%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E8%A1%A8&#x2F;image-20210317232507679.png">
-<meta property="og:updated_time" content="2021-03-22T02:03:20.545Z">
+<meta property="og:updated_time" content="2021-05-18T03:52:51.918Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;JVM%E6%93%8D%E4%BD%9C%E6%95%B0%E6%A0%88%E4%B8%8E%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E8%A1%A8&#x2F;image-20210317174904301.png">
 
@@ -237,7 +237,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-22 10:03:20" itemprop="dateModified" datetime="2021-03-22T10:03:20+08:00">2021-03-22</time>
+                <time title="修改时间：2021-05-18 11:52:51" itemprop="dateModified" datetime="2021-05-18T11:52:51+08:00">2021-05-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -277,7 +277,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>3.3k</span>
+              <span>3.4k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -299,7 +299,7 @@
         <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
 <p>知人者智，自知者明。</p>
 </blockquote>
-<p>最近在看Java污点分析，逃不开对象.方法调用形式，做个记录，随时更新。</p>
+<p>最近在看Java污点分析，逃不开<code>对象.方法</code>调用形式，做个记录，随时更新。</p>
 <a id="more"></a>
 
 <h1 id="温故"><a href="#温故" class="headerlink" title="温故"></a>温故</h1><p>动态语言与静态语言</p>
@@ -426,7 +426,8 @@
 
 
 
-<h1 id="备忘"><a href="#备忘" class="headerlink" title="备忘"></a>备忘</h1><p>感觉invokespecial init是消耗一个对象内存 不会返回任何东西（或者说返回void） </p>
+<h1 id="备忘"><a href="#备忘" class="headerlink" title="备忘"></a>备忘</h1><p>java中没有被static native修饰的方法就是是虚方法</p>
+<p>感觉invokespecial init是消耗一个对象内存 不会返回任何东西（或者说返回void） </p>
 <p><img src="../images/JVM%E6%93%8D%E4%BD%9C%E6%95%B0%E6%A0%88%E4%B8%8E%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E8%A1%A8/image-20210317231200462.png" alt="image-20210317231200462"></p>
 <p>注意最后这个pop弹栈操作，很关键。</p>
 <p>首先new-dup出现两个ref在栈中 那么invokespecial会消耗一个对象引用 还会剩一个</p>
