@@ -1024,8 +1024,30 @@
 <p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210517152618059.png" alt="image-20210517152618059"></p>
 <p>当然既然还是扯到LazyMap，当然可以复用之前的InstantiateTransformer，</p>
 <p>具体可以看我的<a href="https://github.com/0range228" target="_blank" rel="noopener">github</a>。</p>
+<h2 id="CC链总结"><a href="#CC链总结" class="headerlink" title="CC链总结"></a>CC链总结</h2><p>五大反序列化利用基类：</p>
+<blockquote>
+<p>1.AnnotationInvocationHandler：反序列化的时候会循环调用成员变量的get方法，用来和lazyMap配合使用。</p>
+<p>2.PriorityQueue：反序列化的时候会调用TransformingComparator中的transformer的transform方法，用来直接和Transformer配合使用。</p>
+<p>3.BadAttributeValueExpException：反序列化的时候会去调用成员变量val的toString函数，用来和TiedMapEntry配合使用。（TiedMapEntry的toString函数会再去调自身的getValue）。</p>
+<p>4.HashSet：反序列化的时候会去循环调用自身map中的put方法，用来和HashMap配合使用。</p>
+<p>5.Hashtable：当里面包含2个及以上的map的时候，回去循环调用map的get方法，用来和LazyMap配合使用。</p>
+</blockquote>
+<p>四大Transformer的transform：</p>
+<blockquote>
+<p>1.ChainedTransformer：循环调用成员变量iTransformers数组中的tranform方法。    </p>
+<p>2.InvokerTransformer： 通过反射的方法调用传入transform方法中的input对象的方法（方法通过成员变量iMethodName设置，参数通过成员变量iParamTypes设置）    </p>
+<p>3.ConstantTransformer：返回成员变量iConstant的值。    </p>
+<p>4.InstantiateTransformer：通过反射的方法返回传入参数input的实例。（构造函数的参数通过成员变量iArgs传入，参数类型通过成员变量iParamTypes传入）    </p>
+</blockquote>
+<p>三大Map：</p>
+<blockquote>
+<p>1.LazyMap：通过调用LazyMap的get方法可以触发它的成员变量factory的tranform方法，用来和上一节中的Tranformer配合使用。</p>
+<p>2.TiedMapEntry：通过调用TiedMapEntry的getValue方法实现对他的成员变量map的get方法的调用，用来和LazyMap配合使用。</p>
+<p>3.HashMap：通过调用HashMap的put方法实现对成员变量hashCode方法的调用，用来和TiedMapEntry配合使用（TiedMapEntry的hashCode函数会再去调自身的getValue）。</p>
+</blockquote>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://www.anquanke.com/post/id/201762" target="_blank" rel="noopener">lalajun</a>/<a href="https://www.anquanke.com/post/id/82934" target="_blank" rel="noopener">高级利用</a>/<a href="https://www.cnblogs.com/litlife/p/12571787.html#transformedmap" target="_blank" rel="noopener">lazymap</a>/<a href="https://xz.aliyun.com/t/3847#toc-8" target="_blank" rel="noopener">浅析Java序列化和反序列化</a>/</p>
-<p><a href="https://www.guildhab.top/2020/08/java-%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96%e6%bc%8f%e6%b4%9e8-%e8%a7%a3%e5%af%86-ysoserial-commonscollections2-pop-chains/" target="_blank" rel="noopener">javassist</a>/<a href="https://www.guildhab.top/2020/08/java-%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96%e6%bc%8f%e6%b4%9e8-%e8%a7%a3%e5%af%86-ysoserial-commonscollections2-pop-chains/" target="_blank" rel="noopener">B4llo0n</a>/<a href="https://www.anquanke.com/post/id/232592" target="_blank" rel="noopener">anquanke</a>/<a href="https://xz.aliyun.com/t/1756#toc-3" target="_blank" rel="noopener">aliyun</a>/</p>
+<p><a href="https://www.guildhab.top/2020/08/java-%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96%e6%bc%8f%e6%b4%9e8-%e8%a7%a3%e5%af%86-ysoserial-commonscollections2-pop-chains/" target="_blank" rel="noopener">javassist</a>/<a href="https://www.guildhab.top/2020/08/java-%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96%e6%bc%8f%e6%b4%9e8-%e8%a7%a3%e5%af%86-ysoserial-commonscollections2-pop-chains/" target="_blank" rel="noopener">B4llo0n</a>/<a href="https://www.anquanke.com/post/id/232592" target="_blank" rel="noopener">anquanke</a>/<a href="https://xz.aliyun.com/t/1756#toc-3" target="_blank" rel="noopener">aliyun</a>/<a href="https://www.freebuf.com/articles/web/214096.html" target="_blank" rel="noopener">平安</a>/<a href="https://paper.seebug.org/1242/#commonscollections-2" target="_blank" rel="noopener">seebug</a></p>
+<p><a href="https://www.anquanke.com/post/id/190468#h3-6" target="_blank" rel="noopener">wh1t3p1g</a>/<a href="https://www.anquanke.com/post/id/240040" target="_blank" rel="noopener">6&amp;7</a>/</p>
 ]]></content>
       <categories>
         <category>Java</category>
