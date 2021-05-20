@@ -1212,7 +1212,7 @@
 </blockquote>
 <h1 id="7u21"><a href="#7u21" class="headerlink" title="7u21"></a>7u21</h1><p>条件：</p>
 <ul>
-<li>jdk&lt;7u21</li>
+<li>jdk&lt;=7u21</li>
 </ul>
 <p>这是一条十分有个性的链，因为它仅依赖jre，不依赖任何第三方库。</p>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://www.anquanke.com/post/id/201762" target="_blank" rel="noopener">lalajun</a>/<a href="https://www.anquanke.com/post/id/82934" target="_blank" rel="noopener">高级利用</a>/<a href="https://www.cnblogs.com/litlife/p/12571787.html#transformedmap" target="_blank" rel="noopener">lazymap</a>/<a href="https://xz.aliyun.com/t/3847#toc-8" target="_blank" rel="noopener">浅析Java序列化和反序列化</a>/</p>
