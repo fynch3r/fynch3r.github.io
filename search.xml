@@ -1367,7 +1367,14 @@
 <p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210521194016263.png" alt="image-20210521194016263"></p>
 <p>进入readChildren方法：</p>
 <p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210521194127997.png" alt="image-20210521194127997"></p>
-<p>发现这里</p>
+<p>发现这里读去了流中的下一个对象，符合构造条件</p>
+<p>在执行<code>ois.readObject()</code>时,这里try-catch了,但是没有把异常抛出来,程序会接着执行。</p>
+<p>如果这里可以把<code>AnnotationInvocationHandler</code>对象在<code>BeanContextSupport</code>类第二次writeObject的时候写入，这样反序列化时，即使<code>AnnotationInvocationHandler</code>对象 this.type的值为<code>Templates</code>类型也不会报错。</p>
+<blockquote>
+<p>反序列化还有两点就是:</p>
+<p>1.反序列化时类中没有这个成员,依然会对这个成员进行反序列化操作,但是之后会抛弃掉这个成员。</p>
+<p>2.每一个新的对象都会分配一个newHandle的值,newHandle生成规则是从0x7e0000开始递增,如果后面出现相同的类型则会使用<code>TC_REFERENCE</code>结构,引用前面handle的值。</p>
+</blockquote>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://www.anquanke.com/post/id/201762" target="_blank" rel="noopener">lalajun</a>/<a href="https://www.anquanke.com/post/id/82934" target="_blank" rel="noopener">高级利用</a>/<a href="https://www.cnblogs.com/litlife/p/12571787.html#transformedmap" target="_blank" rel="noopener">lazymap</a>/<a href="https://xz.aliyun.com/t/3847#toc-8" target="_blank" rel="noopener">浅析Java序列化和反序列化</a>/</p>
 <p><a href="https://www.guildhab.top/2020/08/java-%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96%e6%bc%8f%e6%b4%9e8-%e8%a7%a3%e5%af%86-ysoserial-commonscollections2-pop-chains/" target="_blank" rel="noopener">javassist</a>/<a href="https://www.guildhab.top/2020/08/java-%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96%e6%bc%8f%e6%b4%9e8-%e8%a7%a3%e5%af%86-ysoserial-commonscollections2-pop-chains/" target="_blank" rel="noopener">B4llo0n</a>/<a href="https://www.anquanke.com/post/id/232592" target="_blank" rel="noopener">anquanke</a>/<a href="https://xz.aliyun.com/t/1756#toc-3" target="_blank" rel="noopener">aliyun</a>/<a href="https://www.freebuf.com/articles/web/214096.html" target="_blank" rel="noopener">平安</a>/<a href="https://paper.seebug.org/1242/#commonscollections-2" target="_blank" rel="noopener">seebug</a></p>
 <p><a href="https://www.anquanke.com/post/id/190468#h3-6" target="_blank" rel="noopener">wh1t3p1g</a>/<a href="https://www.anquanke.com/post/id/240040" target="_blank" rel="noopener">6&amp;7</a>/<a href="https://b1ngz.github.io/java-deserialization-jdk7u21-gadget-note/" target="_blank" rel="noopener">b1ngz</a>/</p>
