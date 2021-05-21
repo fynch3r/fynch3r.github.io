@@ -1277,11 +1277,14 @@
 <p>改写一下就是：</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">( <span class="number">127</span> * key.hashCode() ) ^ value.hashCode()</span><br></pre></td></tr></table></figure>
 
-<p>我们希望key就是<code>f5a5a608</code>，这样的话返回值就是value.hashCode()了。</p>
+
+
 <p>两个hash：</p>
 <ul>
 <li>TemplatesImpl实例.hashCode()</li>
+<li>( 127 * key.hashCode() ) ^ TemplatesImpl实例.hashCode()</li>
 </ul>
+<p>我们希望key就是<code>f5a5a608</code>，这样的话返回值就是TemplatesImpl实例.hashCode()了，</p>
 <p>细节：</p>
 <ul>
 <li>可以看到hashCodeImpl()内部是有一个循环的，为了让最后的结果和value.hashCode()相同，我们希望memberValues只有一个entry，再put一个相同的key就行了，为了让tmpl和第一次的一样。</li>

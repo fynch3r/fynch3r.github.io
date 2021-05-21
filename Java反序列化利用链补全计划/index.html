@@ -195,7 +195,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210521112200882.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210521112527126.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210521112817611.png">
-<meta property="og:updated_time" content="2021-05-21T06:14:18.413Z">
+<meta property="og:updated_time" content="2021-05-21T06:15:48.304Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92&#x2F;image-20210511172731640.png">
 
@@ -383,7 +383,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-21 14:14:18" itemprop="dateModified" datetime="2021-05-21T14:14:18+08:00">2021-05-21</time>
+                <time title="修改时间：2021-05-21 14:15:48" itemprop="dateModified" datetime="2021-05-21T14:15:48+08:00">2021-05-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1496,11 +1496,14 @@
 <p>改写一下就是：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">( <span class="number">127</span> * key.hashCode() ) ^ value.hashCode()</span><br></pre></td></tr></table></figure>
 
-<p>我们希望key就是<code>f5a5a608</code>，这样的话返回值就是value.hashCode()了。</p>
+
+
 <p>两个hash：</p>
 <ul>
 <li>TemplatesImpl实例.hashCode()</li>
+<li>( 127 * key.hashCode() ) ^ TemplatesImpl实例.hashCode()</li>
 </ul>
+<p>我们希望key就是<code>f5a5a608</code>，这样的话返回值就是TemplatesImpl实例.hashCode()了，</p>
 <p>细节：</p>
 <ul>
 <li>可以看到hashCodeImpl()内部是有一个循环的，为了让最后的结果和value.hashCode()相同，我们希望memberValues只有一个entry，再put一个相同的key就行了，为了让tmpl和第一次的一样。</li>
@@ -1720,12 +1723,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">571k</span>
+    <span title="站点总字数">572k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">15:52</span>
+    <span title="站点阅读时长">15:53</span>
   -->
 
 </div>
