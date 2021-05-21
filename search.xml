@@ -1301,6 +1301,73 @@
 <p>在说8u20之前，说一下7u21的修复：</p>
 <p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210521143008667.png" alt="image-20210521143008667"></p>
 <p>可以看到，AnnotationInvocationHandler的readObject方法把this.type属性限制了<code>只能是注解</code>，所以我们7u21用的是<code>Templates.class</code>，是为了后续的<code>TemplatesImpl</code>的instanceof的检查可以通过。</p>
+<p>在8u20中使用<code>BeanContextSupport</code>类对这个修补方式进行了绕过。</p>
+<h2 id="基础知识补充-序列化"><a href="#基础知识补充-序列化" class="headerlink" title="基础知识补充-序列化"></a>基础知识补充-序列化</h2><p>整个例子</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210521160220634.png" alt="image-20210521160220634"></p>
+<p>在ObjectOutputStream位置下个断点</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210521155206766.png" alt="image-20210521155206766"></p>
+<p>跟进去看，构造函数就做了很多事情，会来到writeStreamHeader方法：</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210521160415081.png" alt="image-20210521160415081"></p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210521160518217.png" alt="image-20210521160518217"></p>
+<p>写入了<code>aced0005</code></p>
+<p>接下来看下<code>out.writeObject(object)</code>是怎么写入数据的？</p>
+<p>会先解析class结构，判断是否实现了Serializable接口，是的话执行<code>writeOrdinaryObject</code>方法</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210521160831777.png" alt="image-20210521160831777"></p>
+<p>看下图，首先写入<code>TC_OBJECT,</code>常量<code>TC_OBJECT</code>的值是<code>(byte)0x73</code>，之后调用<code>writeClassDesc</code>方法写入类描述符，然后会调用到<code>writeNonProxyDesc</code>方法</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210521164415007.png" alt="image-20210521164415007"></p>
+<p>进入writeNonProxyDesc方法，</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210521164739263.png" alt="image-20210521164739263"></p>
+<p>写入<code>TC_CLASSDESC</code>的值是0x72，然后进入writeNonProxy方法</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210521164704196.png" alt="image-20210521164704196"></p>
+<p>跟进去看看<code>getSerialVersionID</code>是做什么的，看下图可以发现，默认获取对象的<code>serialVersionUID</code>值，如果对象<code>serialVersionUID</code>的值为空则会计算出一个<code>serialVersionUID</code>的值</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210521165047244.png" alt="image-20210521165047244"></p>
+<p>返回writeNonProxy方法看看之后做了什么事情：</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210521170116717.png" alt="image-20210521170116717"></p>
+<p>回到writeNonProxyDesc方法</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210521170318982.png" alt="image-20210521170318982"></p>
+<p>可以看到在对当前对象的序列化之后，进行了对父类对象的序列化，写入父类的class结构信息。</p>
+<p>到这里子类和父类的class都写完了。</p>
+<p>接下来回到代码，接下来会进入writeSerialData写入对象的属性值。</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210521170927503.png" alt="image-20210521170927503"></p>
+<p>进入可以看到slots存放的是对象数组，先是父类，然后才是子类对象：</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210521171332673.png" alt="image-20210521171332673"></p>
+<p>这里梳理一下流程：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">序列化类结构信息： 子类 - &gt; 父类</span><br><span class="line">  </span><br><span class="line">序列化对象信息： 父类 - &gt; 子类</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="利用链构造-2"><a href="#利用链构造-2" class="headerlink" title="利用链构造"></a>利用链构造</h2><p>这里我们先看一下8u20下AnnotationInvocationHandler类的readObject方法</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210521174334090.png" alt="image-20210521174334090"></p>
+<p>两步骤：</p>
+<ul>
+<li>先执行var1.defaultReadObject()来还原对象，从流里还原对象</li>
+<li>检查this.type进行了是否为注解类，如果不是的话就报错</li>
+</ul>
+<p>注意<strong>AnnotationInvocationHandler 这个对象是先被成功还原</strong>，然后再抛出的异常。绕过就是利用了这一点。</p>
+<h3 id="什么是反序列化句柄handle"><a href="#什么是反序列化句柄handle" class="headerlink" title="什么是反序列化句柄handle"></a>什么是反序列化句柄handle</h3><p>handle值是每一个对象自身的一个字段。</p>
+<p>如果你连续两次序列化同一个对象，那么第二次序列化写入的就是第一个对象的handle。</p>
+<p>可以发现，因为我们两次 writeObject 写入的其实是同一个对象，所以 Date 对象的数据只在第一次 writeObject 的时候被真实写入了。而第二次 writeObject 时，写入的是一个 TC_REFERENCE 的结构，随后跟了一个4 字节的 Int 值，值为 0x00 7e 00 01。这是什么意思呢？意思就是第二个对象引用的其实是 handle 为 0x00 7e 00 01 的那个对象。</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210521192832251.png" alt="image-20210521192832251"></p>
+<p>在反序列化进行读取的时候，因为之前进行了两次 writeObject，所以为了读取，也应该进行两次 readObject：</p>
+<ol>
+<li>第一次 readObject 将会读取 TC_OBJECT 表示的第 1 个对象，发现是 Date 类型的对象，然后从流中读取此对象成员的值并还原。并为此 Date 对象分配一个值为 0x00 7e 00 01 的 handle。</li>
+<li>第二个 readObject 会读取到 TC_REFERENCE，说明是一个引用，引用的是刚才还原出来的那个 Date 对象，此时将直接返回之前那个 Date 对象的引用。</li>
+</ol>
+<h3 id="反序列化与异常"><a href="#反序列化与异常" class="headerlink" title="反序列化与异常"></a>反序列化与异常</h3><p>如果一个类实现如下：</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210521191454663.png" alt="image-20210521191454663"></p>
+<p>这个类的反序列化只能反序列化出来一个passcode属性为root的对象</p>
+<p>如果该字段不是root，则会报错</p>
+<p>那么如何来绕过这个字段的判断呢？</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210521191917656.png" alt="image-20210521191917656"></p>
+<p>这个类就可以，可以看到他在readObject函数里面，又一次使用了readObject方法来<strong>读取流中的下一个对象</strong></p>
+<p>下一个对象如果不是root的话，会报异常，但是这个异常被catch住了，所以正常的反序列化流程还是可以执行完毕的。</p>
+<h3 id="绕过"><a href="#绕过" class="headerlink" title="绕过"></a>绕过</h3><p>JRE8u20 中利用到了名为 BeanContextSupport 类。</p>
+<p>这个类就是负责来帮我们绕过的</p>
+<p>看一下BeanContextSupport的readObject源码：</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210521194016263.png" alt="image-20210521194016263"></p>
+<p>进入readChildren方法：</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210521194127997.png" alt="image-20210521194127997"></p>
+<p>发现这里</p>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://www.anquanke.com/post/id/201762" target="_blank" rel="noopener">lalajun</a>/<a href="https://www.anquanke.com/post/id/82934" target="_blank" rel="noopener">高级利用</a>/<a href="https://www.cnblogs.com/litlife/p/12571787.html#transformedmap" target="_blank" rel="noopener">lazymap</a>/<a href="https://xz.aliyun.com/t/3847#toc-8" target="_blank" rel="noopener">浅析Java序列化和反序列化</a>/</p>
 <p><a href="https://www.guildhab.top/2020/08/java-%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96%e6%bc%8f%e6%b4%9e8-%e8%a7%a3%e5%af%86-ysoserial-commonscollections2-pop-chains/" target="_blank" rel="noopener">javassist</a>/<a href="https://www.guildhab.top/2020/08/java-%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96%e6%bc%8f%e6%b4%9e8-%e8%a7%a3%e5%af%86-ysoserial-commonscollections2-pop-chains/" target="_blank" rel="noopener">B4llo0n</a>/<a href="https://www.anquanke.com/post/id/232592" target="_blank" rel="noopener">anquanke</a>/<a href="https://xz.aliyun.com/t/1756#toc-3" target="_blank" rel="noopener">aliyun</a>/<a href="https://www.freebuf.com/articles/web/214096.html" target="_blank" rel="noopener">平安</a>/<a href="https://paper.seebug.org/1242/#commonscollections-2" target="_blank" rel="noopener">seebug</a></p>
 <p><a href="https://www.anquanke.com/post/id/190468#h3-6" target="_blank" rel="noopener">wh1t3p1g</a>/<a href="https://www.anquanke.com/post/id/240040" target="_blank" rel="noopener">6&amp;7</a>/<a href="https://b1ngz.github.io/java-deserialization-jdk7u21-gadget-note/" target="_blank" rel="noopener">b1ngz</a>/</p>
