@@ -1284,7 +1284,7 @@
 <li>TemplatesImpl实例.hashCode()</li>
 <li>( 127 * key.hashCode() ) ^ TemplatesImpl实例.hashCode()</li>
 </ul>
-<p>我们希望key就是<code>f5a5a608</code>，这样的话返回值就是TemplatesImpl实例.hashCode()了，</p>
+<p>我们希望key就是<code>f5a5a608</code>，这样的话返回值就是TemplatesImpl实例.hashCode()了，就可以绕过<code>e.hash == hash</code>的check了。</p>
 <p>细节：</p>
 <ul>
 <li>可以看到hashCodeImpl()内部是有一个循环的，为了让最后的结果和value.hashCode()相同，我们希望memberValues只有一个entry，再put一个相同的key就行了，为了让tmpl和第一次的一样。</li>
@@ -1294,20 +1294,13 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<h1 id="8u20"><a href="#8u20" class="headerlink" title="8u20"></a>8u20</h1><p>环境：</p>
+<ul>
+<li>jdk &lt;= 8u20</li>
+</ul>
+<p>在说8u20之前，说一下7u21的修复：</p>
+<p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210521143008667.png" alt="image-20210521143008667"></p>
+<p>可以看到，AnnotationInvocationHandler的readObject方法把this.type属性限制了<code>只能是注解</code>，所以我们7u21用的是<code>Templates.class</code>，是为了后续的<code>TemplatesImpl</code>的instanceof的检查可以通过。</p>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://www.anquanke.com/post/id/201762" target="_blank" rel="noopener">lalajun</a>/<a href="https://www.anquanke.com/post/id/82934" target="_blank" rel="noopener">高级利用</a>/<a href="https://www.cnblogs.com/litlife/p/12571787.html#transformedmap" target="_blank" rel="noopener">lazymap</a>/<a href="https://xz.aliyun.com/t/3847#toc-8" target="_blank" rel="noopener">浅析Java序列化和反序列化</a>/</p>
 <p><a href="https://www.guildhab.top/2020/08/java-%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96%e6%bc%8f%e6%b4%9e8-%e8%a7%a3%e5%af%86-ysoserial-commonscollections2-pop-chains/" target="_blank" rel="noopener">javassist</a>/<a href="https://www.guildhab.top/2020/08/java-%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96%e6%bc%8f%e6%b4%9e8-%e8%a7%a3%e5%af%86-ysoserial-commonscollections2-pop-chains/" target="_blank" rel="noopener">B4llo0n</a>/<a href="https://www.anquanke.com/post/id/232592" target="_blank" rel="noopener">anquanke</a>/<a href="https://xz.aliyun.com/t/1756#toc-3" target="_blank" rel="noopener">aliyun</a>/<a href="https://www.freebuf.com/articles/web/214096.html" target="_blank" rel="noopener">平安</a>/<a href="https://paper.seebug.org/1242/#commonscollections-2" target="_blank" rel="noopener">seebug</a></p>
 <p><a href="https://www.anquanke.com/post/id/190468#h3-6" target="_blank" rel="noopener">wh1t3p1g</a>/<a href="https://www.anquanke.com/post/id/240040" target="_blank" rel="noopener">6&amp;7</a>/<a href="https://b1ngz.github.io/java-deserialization-jdk7u21-gadget-note/" target="_blank" rel="noopener">b1ngz</a>/</p>
