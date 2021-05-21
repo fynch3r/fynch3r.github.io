@@ -1278,6 +1278,10 @@
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">( <span class="number">127</span> * key.hashCode() ) ^ value.hashCode()</span><br></pre></td></tr></table></figure>
 
 <p>我们希望key就是<code>f5a5a608</code>，这样的话返回值就是value.hashCode()了。</p>
+<p>两个hash：</p>
+<ul>
+<li>TemplatesImpl实例.hashCode()</li>
+</ul>
 <p>细节：</p>
 <ul>
 <li>可以看到hashCodeImpl()内部是有一个循环的，为了让最后的结果和value.hashCode()相同，我们希望memberValues只有一个entry，再put一个相同的key就行了，为了让tmpl和第一次的一样。</li>
@@ -1303,7 +1307,7 @@
 
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://www.anquanke.com/post/id/201762" target="_blank" rel="noopener">lalajun</a>/<a href="https://www.anquanke.com/post/id/82934" target="_blank" rel="noopener">高级利用</a>/<a href="https://www.cnblogs.com/litlife/p/12571787.html#transformedmap" target="_blank" rel="noopener">lazymap</a>/<a href="https://xz.aliyun.com/t/3847#toc-8" target="_blank" rel="noopener">浅析Java序列化和反序列化</a>/</p>
 <p><a href="https://www.guildhab.top/2020/08/java-%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96%e6%bc%8f%e6%b4%9e8-%e8%a7%a3%e5%af%86-ysoserial-commonscollections2-pop-chains/" target="_blank" rel="noopener">javassist</a>/<a href="https://www.guildhab.top/2020/08/java-%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96%e6%bc%8f%e6%b4%9e8-%e8%a7%a3%e5%af%86-ysoserial-commonscollections2-pop-chains/" target="_blank" rel="noopener">B4llo0n</a>/<a href="https://www.anquanke.com/post/id/232592" target="_blank" rel="noopener">anquanke</a>/<a href="https://xz.aliyun.com/t/1756#toc-3" target="_blank" rel="noopener">aliyun</a>/<a href="https://www.freebuf.com/articles/web/214096.html" target="_blank" rel="noopener">平安</a>/<a href="https://paper.seebug.org/1242/#commonscollections-2" target="_blank" rel="noopener">seebug</a></p>
-<p><a href="https://www.anquanke.com/post/id/190468#h3-6" target="_blank" rel="noopener">wh1t3p1g</a>/<a href="https://www.anquanke.com/post/id/240040" target="_blank" rel="noopener">6&amp;7</a>/</p>
+<p><a href="https://www.anquanke.com/post/id/190468#h3-6" target="_blank" rel="noopener">wh1t3p1g</a>/<a href="https://www.anquanke.com/post/id/240040" target="_blank" rel="noopener">6&amp;7</a>/<a href="https://b1ngz.github.io/java-deserialization-jdk7u21-gadget-note/" target="_blank" rel="noopener">b1ngz</a>/</p>
 ]]></content>
       <categories>
         <category>Java</category>
