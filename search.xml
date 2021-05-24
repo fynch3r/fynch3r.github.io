@@ -277,6 +277,7 @@
 <p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210524160113446.png" alt="image-20210524160113446"></p>
 <p>一句话总结，<code>defaultReadObject</code>方法一般用于自己实现的readObject方法中，需要一个流对象作为参数。</p>
 <p>用来执行流中对象默认的readObject方法，将对象反序列化出来。</p>
+<p>如果我们自定义序列化过程仅仅调用了这个方法而没有任何额外的操作，这其实和默认的序列化过程没任何区别。</p>
 <h1 id="URLDNS"><a href="#URLDNS" class="headerlink" title="URLDNS"></a>URLDNS</h1><blockquote>
 <p>readobject反序列化利用点 + DNS查询，主要用来确认反序列化漏洞利用点的存在。</p>
 </blockquote>
