@@ -45,7 +45,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AF%B9%E7%BA%BFrt-jar&#x2F;image-20210513151800556.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AF%B9%E7%BA%BFrt-jar&#x2F;image-20210513152337666.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AF%B9%E7%BA%BFrt-jar&#x2F;image-20210513152445982.png">
-<meta property="og:updated_time" content="2021-05-13T07:35:27.002Z">
+<meta property="og:updated_time" content="2021-05-25T13:15:01.841Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AF%B9%E7%BA%BFrt-jar&#x2F;image-20210513153049164.png">
 
@@ -225,10 +225,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-05-13 14:39:35 / 修改时间：15:35:27" itemprop="dateCreated datePublished" datetime="2021-05-13T14:39:35+08:00">2021-05-13</time>
+              <time title="创建时间：2021-05-13 14:39:35" itemprop="dateCreated datePublished" datetime="2021-05-13T14:39:35+08:00">2021-05-13</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-25 21:15:01" itemprop="dateModified" datetime="2021-05-25T21:15:01+08:00">2021-05-25</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -267,7 +273,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>857</span>
+              <span>858</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -293,7 +299,7 @@
 <a id="more"></a>
 
 <h1 id="过程全记录"><a href="#过程全记录" class="headerlink" title="过程全记录"></a>过程全记录</h1><p>前一阵在复习CC链的时候，想着从PoC来逆向分析ysoserial师傅们的挖掘思路。</p>
-<p>LayMap函数的get函数很有挖掘潜力，所以我需要找哪些类调用了get方法。</p>
+<p>LazyMap函数的get函数很有挖掘潜力，所以我需要找哪些类调用了get方法。</p>
 <p>已知答案是AnnotationInvocationHandler的invoke函数调用了get函数，可以执行下去。</p>
 <p>现在我想用IDEA搜索一下，但是无奈没有找到。</p>
 <p>发现这个类属于sun.reflect.annotation包，位于rt.jar中，主动去搜索这个类你是可以看到的。</p>
