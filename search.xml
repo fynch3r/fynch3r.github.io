@@ -6,7 +6,7 @@
     <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
 <p>欲穷千里目，更上一层楼。</p>
 </blockquote>
-<p>我在调试漏洞的过程中会密切地和Docker打交道，今天来总结一下。   </p>
+<p>我在调试漏洞的过程中会密切地和Docker打交道，今天来总结一下。  </p>
 <a id="more"></a>
 
 <h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><p>Docker包括三个基本概念：</p>
