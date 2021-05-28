@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.0.0">
+<meta name="generator" content="Hexo 4.2.1">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -29,17 +29,19 @@
     var CONFIG = {"hostname":"0range228.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
   <meta name="description" content="序言 明月几时有，把酒问青天。  今天来总结污点分析，写点笔记。">
-<meta name="keywords" content="污点分析基础">
 <meta property="og:type" content="article">
 <meta property="og:title" content="污点分析简单介绍">
-<meta property="og:url" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;%E6%B1%A1%E7%82%B9%E5%88%86%E6%9E%90%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D&#x2F;index.html">
+<meta property="og:url" content="https://0range228.github.io/%E6%B1%A1%E7%82%B9%E5%88%86%E6%9E%90%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/index.html">
 <meta property="og:site_name" content="0range的小窝">
 <meta property="og:description" content="序言 明月几时有，把酒问青天。  今天来总结污点分析，写点笔记。">
-<meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%B1%A1%E7%82%B9%E5%88%86%E6%9E%90%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D&#x2F;image-20200720214151867.png">
-<meta property="og:updated_time" content="2020-07-20T14:20:19.741Z">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0range228.github.io/images/%E6%B1%A1%E7%82%B9%E5%88%86%E6%9E%90%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/image-20200720214151867.png">
+<meta property="article:published_time" content="2020-07-20T13:28:07.000Z">
+<meta property="article:modified_time" content="2020-07-20T14:20:19.741Z">
+<meta property="article:author" content="0range">
+<meta property="article:tag" content="污点分析基础">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https:&#x2F;&#x2F;0range228.github.io&#x2F;images&#x2F;%E6%B1%A1%E7%82%B9%E5%88%86%E6%9E%90%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D&#x2F;image-20200720214151867.png">
+<meta name="twitter:image" content="https://0range228.github.io/images/%E6%B1%A1%E7%82%B9%E5%88%86%E6%9E%90%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/image-20200720214151867.png">
 
 <link rel="canonical" href="https://0range228.github.io/%E6%B1%A1%E7%82%B9%E5%88%86%E6%9E%90%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/">
 
@@ -259,14 +261,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>8.7k</span>
+              <span>8.9k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>14 分钟</span>
+              <span>15 分钟</span>
             </span>
 
         </div>
@@ -299,15 +301,15 @@
 <p><strong>污点分析就是分析程序中由污点源引入的数据是否能够不经无害处理,而直接传播到污点汇聚点。如果不能，说明系统是信息流安全的；否则，说明系统产生了隐私数据泄露或危险数据操作等安全问题。</strong></p>
 <p><img src="../images/%E6%B1%A1%E7%82%B9%E5%88%86%E6%9E%90%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/image-20200720214151867.png" alt="image-20200720214151867"></p>
 <p>举个例子：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[...]</span><br><span class="line">scanf(&quot;%d&quot;, &amp;x);    // Source 点，输入数据被标记为污点信息，并且认为变量 x 是污染的</span><br><span class="line">[...]</span><br><span class="line">y = x + k;          // 如果二元操作的操作数是污染的，那么操作结果也是污染的，所以变量 y 也是污染的</span><br><span class="line">[...]</span><br><span class="line">x = 0;              // 如果一个被污染的变量被赋值为一个常数，那么认为它是未污染的，所以 x 转变成未污染的</span><br><span class="line">[...]</span><br><span class="line">while (i &lt; y)       // Sink 点，如果规定循环的次数不能受程序输入的影响，那么需要检查 y 是否被污染</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[...]</span><br><span class="line">scanf(&quot;%d&quot;, &amp;x);    &#x2F;&#x2F; Source 点，输入数据被标记为污点信息，并且认为变量 x 是污染的</span><br><span class="line">[...]</span><br><span class="line">y &#x3D; x + k;          &#x2F;&#x2F; 如果二元操作的操作数是污染的，那么操作结果也是污染的，所以变量 y 也是污染的</span><br><span class="line">[...]</span><br><span class="line">x &#x3D; 0;              &#x2F;&#x2F; 如果一个被污染的变量被赋值为一个常数，那么认为它是未污染的，所以 x 转变成未污染的</span><br><span class="line">[...]</span><br><span class="line">while (i &lt; y)       &#x2F;&#x2F; Sink 点，如果规定循环的次数不能受程序输入的影响，那么需要检查 y 是否被污染</span><br></pre></td></tr></table></figure>
 
 <p>然而污点信息不仅可以通过数据依赖传播，还可以通过控制依赖传播。我们将通过数据依赖传播的信息流称为显式信息流，将通过控制依赖传播的信息流称为隐式信息流。</p>
 <p>举个例子：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">if (x &gt; 0)</span><br><span class="line">    y = 1;</span><br><span class="line">else</span><br><span class="line">    y = 0;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">if (x &gt; 0)</span><br><span class="line">    y &#x3D; 1;</span><br><span class="line">else</span><br><span class="line">    y &#x3D; 0;</span><br></pre></td></tr></table></figure>
 
 <p>变量 y 的取值依赖于变量 x 的取值，如果变量 x 是污染的，那么变量 y 也应该是污染的。</p>
 <p>通常我们将使用污点分析可以检测的程序漏洞称为污点类型的漏洞，例如 SQL 注入漏洞：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">String user = getUser();</span><br><span class="line">String pass = getPass();</span><br><span class="line">String sqlQuery = &quot;select * from login where user=&apos;&quot; + user + &quot;&apos; and pass=&apos;&quot; + pass + &quot;&apos;&quot;;</span><br><span class="line">Statement stam = con.createStatement();</span><br><span class="line">ResultSetrs = stam.executeQuery(sqlQuery);</span><br><span class="line">if (rs.next())</span><br><span class="line">    success = true;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">String user &#x3D; getUser();</span><br><span class="line">String pass &#x3D; getPass();</span><br><span class="line">String sqlQuery &#x3D; &quot;select * from login where user&#x3D;&#39;&quot; + user + &quot;&#39; and pass&#x3D;&#39;&quot; + pass + &quot;&#39;&quot;;</span><br><span class="line">Statement stam &#x3D; con.createStatement();</span><br><span class="line">ResultSetrs &#x3D; stam.executeQuery(sqlQuery);</span><br><span class="line">if (rs.next())</span><br><span class="line">    success &#x3D; true;</span><br></pre></td></tr></table></figure>
 
 <p>在进行污点分析时，将变量 user 和 pass 标记为污染的，由于变量 sqlQuery 的值受到 user 和 pass 的影响，所以将 sqlQuery 也标记为污染的。程序将变量 sqlQuery 作为参数构造 SQL 操作语句，于是可以判定程序存在 SQL 注入漏洞。</p>
 <p>所以主要分为两种：</p>
@@ -355,10 +357,10 @@
 <p><strong>分析程序依赖关系的过程可以看做是构建程序依赖图的过程</strong>。程序依赖图是一个有向图。它的节点是程序语句，它的有向边表示程序语句之间的依赖关系。程序依赖图的有向边常常包括数据依赖边和控制依赖边。在构建有一定规模的程序的依赖图时，需要按需地构建程序依赖关系，并且优先考虑和污点信息相关的程序代码。</p>
 <h2 id="实例分析"><a href="#实例分析" class="headerlink" title="实例分析"></a>实例分析</h2><p>在使用污点分析方法检测程序漏洞时，污点数据相关的程序漏洞是主要关注对象，如 SQL 注入漏洞、命令注入漏洞和跨站脚本漏洞等。</p>
 <p>下面是一个存在 SQL 注入漏洞 ASP 程序的例子：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;%</span><br><span class="line">    Set pwd = &quot;bar&quot;</span><br><span class="line">    Set sql1 = &quot;SELECT companyname FROM &quot; &amp; Request.Cookies(&quot;hello&quot;)</span><br><span class="line">    Set sql2 = Request.QueryString(&quot;foo&quot;)</span><br><span class="line">    MySqlStuff pwd, sql1, sql2</span><br><span class="line">    Sub MySqlStuff(password, cmd1, cmd2)</span><br><span class="line">    Set conn = Server.CreateObject(&quot;ADODB.Connection&quot;)</span><br><span class="line">    conn.Provider = &quot;Microsoft.Jet.OLEDB.4.0&quot;</span><br><span class="line">    conn.Open &quot;c:/webdata/foo.mdb&quot;, &quot;foo&quot;, password</span><br><span class="line">    Set rs = conn.Execute(cmd2)</span><br><span class="line">    Set rs = Server.CreateObject(&quot;ADODB.recordset&quot;)</span><br><span class="line">    rs.Open cmd1, conn</span><br><span class="line">    End Sub</span><br><span class="line">%&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;%</span><br><span class="line">    Set pwd &#x3D; &quot;bar&quot;</span><br><span class="line">    Set sql1 &#x3D; &quot;SELECT companyname FROM &quot; &amp; Request.Cookies(&quot;hello&quot;)</span><br><span class="line">    Set sql2 &#x3D; Request.QueryString(&quot;foo&quot;)</span><br><span class="line">    MySqlStuff pwd, sql1, sql2</span><br><span class="line">    Sub MySqlStuff(password, cmd1, cmd2)</span><br><span class="line">    Set conn &#x3D; Server.CreateObject(&quot;ADODB.Connection&quot;)</span><br><span class="line">    conn.Provider &#x3D; &quot;Microsoft.Jet.OLEDB.4.0&quot;</span><br><span class="line">    conn.Open &quot;c:&#x2F;webdata&#x2F;foo.mdb&quot;, &quot;foo&quot;, password</span><br><span class="line">    Set rs &#x3D; conn.Execute(cmd2)</span><br><span class="line">    Set rs &#x3D; Server.CreateObject(&quot;ADODB.recordset&quot;)</span><br><span class="line">    rs.Open cmd1, conn</span><br><span class="line">    End Sub</span><br><span class="line">%&gt;</span><br></pre></td></tr></table></figure>
 
 <p>首先对这段代码表示为一种三地址码的形式，例如第 3 行可以表示为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">a = &quot;SELECT companyname FROM &quot;</span><br><span class="line">b = &quot;hello&quot;</span><br><span class="line">param0 Request</span><br><span class="line">param1 b</span><br><span class="line">callCookies</span><br><span class="line">return c</span><br><span class="line">sql1 = a &amp; c</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">a &#x3D; &quot;SELECT companyname FROM &quot;</span><br><span class="line">b &#x3D; &quot;hello&quot;</span><br><span class="line">param0 Request</span><br><span class="line">param1 b</span><br><span class="line">callCookies</span><br><span class="line">return c</span><br><span class="line">sql1 &#x3D; a &amp; c</span><br></pre></td></tr></table></figure>
 
 <p>解析完毕后，需要对程序代码进行控制流分析，这里只包含了一个调用关系（第 5 行）。</p>
 <p>接下来，需要识别程序中的 Source 点和 Sink 点以及初始的被污染的数据。</p>
@@ -470,7 +472,7 @@
 </ul>
 <p>在进行污点误用检查时，通常需要根据一些漏洞模式来进行检查，首先需要明确常见漏洞在二进制代码上的表现形式，然后将其提炼成漏洞模式，以更有效地指导自动化的安全分析。</p>
 <h2 id="动态污点分析的实例分析"><a href="#动态污点分析的实例分析" class="headerlink" title="动态污点分析的实例分析"></a>动态污点分析的实例分析</h2><p>下面我们来看一个使用动态污点分析的方法检测缓冲区溢出漏洞的例子。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">void fun(char *str)</span><br><span class="line">&#123;</span><br><span class="line">    char temp[15];</span><br><span class="line">    printf(&quot;in strncpy, source: %s\n&quot;, str);</span><br><span class="line">    strncpy(temp, str, strlen(str));        // Sink 点</span><br><span class="line">&#125;</span><br><span class="line">int main(int argc, char *argv[])</span><br><span class="line">&#123;</span><br><span class="line">    char source[30];</span><br><span class="line">    gets(source);                           // Source 点</span><br><span class="line">    if (strlen(source) &lt; 30)</span><br><span class="line">        fun(source);</span><br><span class="line">    else</span><br><span class="line">        printf(&quot;too long string, %s\n&quot;, source);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">void fun(char *str)</span><br><span class="line">&#123;</span><br><span class="line">    char temp[15];</span><br><span class="line">    printf(&quot;in strncpy, source: %s\n&quot;, str);</span><br><span class="line">    strncpy(temp, str, strlen(str));        &#x2F;&#x2F; Sink 点</span><br><span class="line">&#125;</span><br><span class="line">int main(int argc, char *argv[])</span><br><span class="line">&#123;</span><br><span class="line">    char source[30];</span><br><span class="line">    gets(source);                           &#x2F;&#x2F; Source 点</span><br><span class="line">    if (strlen(source) &lt; 30)</span><br><span class="line">        fun(source);</span><br><span class="line">    else</span><br><span class="line">        printf(&quot;too long string, %s\n&quot;, source);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>漏洞很明显， 调用 strncpy 函数存在缓冲区溢出。</p>
 <p>程序接受外部输入字符串的二进制代码如下：</p>
@@ -676,12 +678,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">575k</span>
+    <span title="站点总字数">576k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">15:58</span>
+    <span title="站点阅读时长">15:59</span>
   -->
 
 </div>
@@ -799,9 +801,17 @@
   <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
   <script src="/lib/velocity/velocity.min.js"></script>
   <script src="/lib/velocity/velocity.ui.min.js"></script>
-<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
 <script src="/js/schemes/pisces.js"></script>
+
+
 <script src="/js/next-boot.js"></script>
+
 
 
 
@@ -819,7 +829,9 @@
 
 
 
-  <script src="/js/local-search.js"></script>
+  
+<script src="/js/local-search.js"></script>
+
 
 
 
