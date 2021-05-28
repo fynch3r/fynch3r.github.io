@@ -21,7 +21,7 @@
 <p>对于一个<a href="https://hub.docker.com/_/ubuntu" target="_blank" rel="noopener">ubuntu</a>仓库来说：</p>
 <p>ubuntu是仓库的名字，<code>ubuntu：16.04</code>和<code>ubuntu:18.04</code>则是两个不同标签代表不同版本。</p>
 <p>仓库通常是<strong>两段式命名</strong>，例如<code>ownername/nginx</code></p>
-<p>前者是用户名，后者是软件名</p>
+<p>前者是用户名，后者是软件名。</p>
 <h1 id="镜像"><a href="#镜像" class="headerlink" title="镜像"></a>镜像</h1><h2 id="获取镜像"><a href="#获取镜像" class="headerlink" title="获取镜像"></a>获取镜像</h2><figure class="highlight dockerfile"><table><tr><td class="code"><pre><span class="line">docker pull [args] [域名[：端口号] /] 仓库名[:标签]</span><br></pre></td></tr></table></figure>
 
 <p><code>docker pull --help</code>看细节</p>
