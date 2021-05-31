@@ -37,7 +37,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://0range228.github.io/images/Javassist%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20210217231334157.png">
 <meta property="article:published_time" content="2021-02-16T11:13:46.000Z">
-<meta property="article:modified_time" content="2021-05-31T12:05:13.798Z">
+<meta property="article:modified_time" content="2021-05-31T12:07:36.947Z">
 <meta property="article:author" content="0range">
 <meta property="article:tag" content="Javassist">
 <meta name="twitter:card" content="summary">
@@ -227,7 +227,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-31 20:05:13" itemprop="dateModified" datetime="2021-05-31T20:05:13+08:00">2021-05-31</time>
+                <time title="修改时间：2021-05-31 20:07:36" itemprop="dateModified" datetime="2021-05-31T20:07:36+08:00">2021-05-31</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -411,7 +411,7 @@
 <p>为了打破这个约束，可以使用ClassPool的<code>getAndRename()</code>方法：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ClassPool pool30 = ClassPool.getDefault();</span><br><span class="line">CtClass ctClass30 = pool30.get(<span class="string">"org.byron4j.cookbook.javaagent.Point"</span>);</span><br><span class="line">ctClass30.writeFile();<span class="comment">// 被冻结</span></span><br><span class="line"><span class="comment">//ctClass30.setName("Pair");// 冻结后不能使用--错误</span></span><br><span class="line">pool30.getAndRename(<span class="string">"org.byron4j.cookbook.javaagent.Point"</span>, <span class="string">"Pair"</span>);</span><br></pre></td></tr></table></figure>
 
-<p>这是因为，如果调用getAndRename()，ClassPool首先读取Point.class来创建一个新的代表Point类的CtClass对象。然而，它在将该CtClass对象记录在哈希表中之前，会将该CtClass对象从Point重命名为Pair。因此，getAndRename()可以在调用代表Point类的CtClass对象的writeFile()或toBytecode()之后执行。</p>
+<p>这是因为，如果调用getAndRename()，ClassPool首先读取Point.class来创建一个新的代表Point类的CtClass对象。然而，它在将该CtClass对象记录在哈希表中之前，会将该CtClass对象从Point重命名为Pair。因此，getAndRename()可以在调用代表Point类的CtClass对象的writeFile()或toBytecode()之后执行。 </p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> CtClass <span class="title">getAndRename</span><span class="params">(String orgName, String newName)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> NotFoundException</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 获取一个新的CtClass对象</span></span><br><span class="line">    CtClass clazz = get0(orgName, <span class="keyword">false</span>);</span><br><span class="line">    <span class="keyword">if</span> (clazz == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NotFoundException(orgName);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (clazz <span class="keyword">instanceof</span> CtClassType)</span><br><span class="line">        ((CtClassType)clazz).setClassPool(<span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置新的名称</span></span><br><span class="line">    clazz.setName(newName);         <span class="comment">// indirectly calls</span></span><br><span class="line">                                    <span class="comment">// classNameChanged() in this class</span></span><br><span class="line">    <span class="keyword">return</span> clazz;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
