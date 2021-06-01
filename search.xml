@@ -1933,7 +1933,7 @@
 <p>这个程序定义了一个<code>Point</code>类，未包含任何成员，成员方法可以通过使用<code>CtClass</code>的<code>addMethod()</code>方法传入一个<code>CtMethod</code>的factory方法创建的对象作为参数来追加。</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 定义一个新的类</span></span><br><span class="line">ClassPool pool = ClassPool.getDefault();</span><br><span class="line">CtClass cc = pool.makeClass(<span class="string">"hello.make.Point"</span>);</span><br><span class="line"><span class="comment">//System.out.println(cc2.toClass().getMethods().length); // 9</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 追加方法</span></span><br><span class="line">cc.addMethod(CtMethod.make(<span class="string">"public void sayHello()&#123;\n"</span> +</span><br><span class="line">        <span class="string">"        System.out.println(\"Hello!\");\n"</span> +</span><br><span class="line">        <span class="string">"    &#125;"</span>,cc));</span><br><span class="line">System.out.println(cc.toClass().getMethods().length);  <span class="comment">// 10</span></span><br></pre></td></tr></table></figure>
 
-<p><code>makeClass()</code>方法不能创建一个新的接口，需要使用<code>makeInterface()</code>方法才可以创建一个新的接口。 接口中的成员方法可以通过<code>CtMethod</code>的<code>abstractMethod</code>方法创建。  </p>
+<p><code>makeClass()</code>方法不能创建一个新的接口，需要使用<code>makeInterface()</code>方法才可以创建一个新的接口。 接口中的成员方法可以通过<code>CtMethod</code>的<code>abstractMethod</code>方法创建。   </p>
 <p>以上这个例子会报错：<code>com.sec.Point class is frozen</code></p>
 <h3 id="Frozen冻结类"><a href="#Frozen冻结类" class="headerlink" title="Frozen冻结类"></a>Frozen冻结类</h3><blockquote>
 <p> <strong>冻结类的含义</strong></p>
