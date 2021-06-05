@@ -18,7 +18,7 @@
 <p>镜像就像类，容器就像实例。  </p>
 <p>容器的实质是进程，容器进程属于自己独立的命名空间，也就是进程隔离</p>
 <p>仓库是容器的存储分发，默认仓库内的镜像是<code>&lt;仓库名&gt;:&lt;Tag&gt;</code>，默认tag是latest</p>
-<p>对于一个<a href="https://hub.docker.com/_/ubuntu" target="_blank" rel="noopener">ubuntu</a>仓库来说：   </p>
+<p>对于一个<a href="https://hub.docker.com/_/ubuntu" target="_blank" rel="noopener">ubuntu</a>仓库来说：    </p>
 <p>ubuntu是仓库的名字，<code>ubuntu：16.04</code>和<code>ubuntu:18.04</code>则是两个不同标签代表不同版本。</p>
 <p>仓库通常是<strong>两段式命名</strong>，例如<code>ownername/nginx</code></p>
 <p>前者是用户名，后者是软件名。</p>
