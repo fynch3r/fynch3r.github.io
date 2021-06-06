@@ -311,10 +311,10 @@
 <p>从<code>ClassPool</code>中获取到的<code>CtClass</code>对象是可以被修改的。在上述示例中，它被修改了 <code>test.Rectangle</code>的父类变更为<code>test.Point</code>,这个修改将会在最后<code>CtClass.writeFile()</code>方法调用后反映在class文件中。</p>
 <p>javassist提供了写到类文件的方法：</p>
 <p><code>writeFile()</code> 方法将<code>CtClass</code>对象转换到class文件并且将其写入本地磁盘。Javassist也提供了一个方法用于直接获取修改后的字节码：<code>toBytecode()</code>:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">byte[] b &#x3D; cc.toBytecode();</span><br></pre></td></tr></table></figure>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">byte[] </span><span class="keyword">b </span>= cc.toBytecode()<span class="comment">;</span></span><br></pre></td></tr></table></figure>
 
 <p>也可以像这样直接加载<code>CtClass</code>:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class clazz &#x3D; cc.toClass();</span><br></pre></td></tr></table></figure>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Class clazz</span> = cc.toClass();</span><br></pre></td></tr></table></figure>
 
 <p><code>toClass</code> 请求当前线程的上下文类加载器去加载class文件，返回一个<code>java.lang.Class</code>对象。</p>
 <p>例子：</p>
@@ -1159,12 +1159,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">576k</span>
+    <span title="站点总字数">575k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">15:59</span>
+    <span title="站点阅读时长">15:58</span>
   -->
 
 </div>

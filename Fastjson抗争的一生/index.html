@@ -380,7 +380,7 @@
 
 <p>关键PoC为：<code>Lcom.sun.rowset.JdbcRowSetImpl;</code>/<code>Lcom.sun.rowset.RowSetImpl;</code></p>
 <p>注意是要开启AutoTypeSupport的，添加以下代码就ok了：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ParserConfig.getGlobalInstance().setAutoTypeSupport(true);</span><br></pre></td></tr></table></figure>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="module-access"><span class="module"><span class="identifier">ParserConfig</span>.</span></span>get<span class="constructor">GlobalInstance()</span>.set<span class="constructor">AutoTypeSupport(<span class="params">true</span>)</span>;</span><br></pre></td></tr></table></figure>
 
 <p>直接运行即可绕过checkAutoType()黑名单实现弹计算器：</p>
 <p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706121236438.png" alt="image-20200706121236438"></p>
@@ -1049,7 +1049,7 @@
 <li>deserializers.findClass(typeName)</li>
 </ol>
 <h2 id="deserializers-findClass-typeName"><a href="#deserializers-findClass-typeName" class="headerlink" title="deserializers.findClass(typeName)"></a>deserializers.findClass(typeName)</h2><p>先看desesrializers，一个hashmap</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">private final IdentityHashMap&lt;Type, ObjectDeserializer&gt; deserializers         &#x3D; new IdentityHashMap&lt;Type, ObjectDeserializer&gt;();</span><br></pre></td></tr></table></figure>
+<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> IdentityHashMap&lt;<span class="keyword">Type</span>, ObjectDeserializer&gt; deserializers         = <span class="keyword">new</span> IdentityHashMap&lt;<span class="keyword">Type</span>, ObjectDeserializer&gt;();</span><br></pre></td></tr></table></figure>
 
 <p>因为我们是从中取值，关注一下它是在哪里赋值的,发现是在<code>initDeserializers</code>里面赋值的：</p>
 <p><img src="../images/Fastjson%E6%8A%97%E4%BA%89%E7%9A%84%E4%B8%80%E7%94%9F/image-20200706161123129.png" alt="image-20200706161123129"></p>
@@ -1426,12 +1426,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">576k</span>
+    <span title="站点总字数">575k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">15:59</span>
+    <span title="站点阅读时长">15:58</span>
   -->
 
 </div>

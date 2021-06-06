@@ -347,7 +347,7 @@
 <p>对于sout(“Helloworld!”)来说，我们需要有一个字符串变量，最后打印的也是他，不难理解；</p>
 <p>这里局部变量还有一个就是打印对象，在Java里面，所有东西都是对象；</p>
 <p>这里第二个就是java.io.PrintStream对象，打印流对象；</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;加入局部变量，java.io.PrintStream tmpRef</span><br><span class="line">tmpRef &#x3D; Jimple.v().newLocal(&quot;tmpRef&quot;, RefType.v(&quot;java.io.PrintStream&quot;));</span><br><span class="line">body.getLocals().add(tmpRef);</span><br></pre></td></tr></table></figure>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//加入局部变量，java.io.PrintStream tmpRef</span></span><br><span class="line">tmpRef = <span class="module-access"><span class="module"><span class="identifier">Jimple</span>.</span></span>v<span class="literal">()</span>.<span class="keyword">new</span><span class="constructor">Local(<span class="string">"tmpRef"</span>, RefType.<span class="params">v</span>(<span class="string">"java.io.PrintStream"</span>)</span>);</span><br><span class="line">body.get<span class="constructor">Locals()</span>.add(tmpRef);</span><br></pre></td></tr></table></figure>
 
 <h3 id="添加方法代码"><a href="#添加方法代码" class="headerlink" title="添加方法代码"></a>添加方法代码</h3><p>添加方法就需要unit了，直接写：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//组成链，l0 = @parameter0</span></span><br><span class="line">            units.add(Jimple.v().newIdentityStmt(arg,</span><br><span class="line">                    Jimple.v().newParameterRef(ArrayType.v</span><br><span class="line">                            (RefType.v(<span class="string">"java.lang.String"</span>), <span class="number">1</span>), <span class="number">0</span>)));</span><br></pre></td></tr></table></figure>
@@ -570,12 +570,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">576k</span>
+    <span title="站点总字数">575k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">15:59</span>
+    <span title="站点阅读时长">15:58</span>
   -->
 
 </div>

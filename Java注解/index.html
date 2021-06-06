@@ -340,7 +340,7 @@
 <li><code>Constructor.isAnnotationPresent(Class)</code></li>
 </ul>
 <p>例如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 判断@Report是否存在于Person类:</span><br><span class="line">Person.class.isAnnotationPresent(Report.class);</span><br></pre></td></tr></table></figure>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 判断@Report是否存在于Person类:</span></span><br><span class="line"><span class="module-access"><span class="module"><span class="identifier">Person</span>.</span></span><span class="keyword">class</span>.is<span class="constructor">AnnotationPresent(Report.<span class="params">class</span>)</span>;</span><br></pre></td></tr></table></figure>
 
 <p>使用反射API读取Annotation：</p>
 <ul>
@@ -350,7 +350,7 @@
 <li><code>Constructor.getAnnotation(Class)</code></li>
 </ul>
 <p>例如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 获取Person定义的@Report注解:</span><br><span class="line">Report report &#x3D; Person.class.getAnnotation(Report.class);</span><br><span class="line">int type &#x3D; report.type();</span><br><span class="line">String level &#x3D; report.level();</span><br></pre></td></tr></table></figure>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取Person定义的@Report注解:</span></span><br><span class="line"><span class="keyword">Report</span> <span class="keyword">report</span> = Person.<span class="keyword">class</span>.getAnnotation(<span class="keyword">Report</span>.<span class="keyword">class</span>);</span><br><span class="line">int <span class="keyword">type</span> = <span class="keyword">report</span>.<span class="keyword">type</span>();</span><br><span class="line">String level = <span class="keyword">report</span>.level();</span><br></pre></td></tr></table></figure>
 
 
 
@@ -561,12 +561,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">576k</span>
+    <span title="站点总字数">575k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">15:59</span>
+    <span title="站点阅读时长">15:58</span>
   -->
 
 </div>

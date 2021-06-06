@@ -306,7 +306,7 @@
 <p>在Java RMI中，远程服务器实现具体的Java方法并提供接口，客户端本地仅需根据接口类的定义，提供相应的参数即可调用远程方法，其中对象是通过序列化方式进行编码传输的。所以平时说的反序列化漏洞的利用经常是涉及到RMI，就是这个意思。</p>
 <p>RMI依赖的通信协议为JRMP（Java Remote Message Protocol，Java远程消息交换协议），该协议是为Java定制的，要求服务端与客户端都必须是Java编写的。</p>
 <p>以下是wiki的描述：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Java远程方法调用，即Java RMI（Java Remote Method Invocation）是Java编程语言里，一种用于实现远程过程调用的应用程序编程接口。它使客户机上运行的程序可以调用远程服务器上的对象。远程方法调用特性使Java编程人员能够在网络环境中分布操作。RMI全部的宗旨就是尽可能简化远程接口对象的使用。</span><br><span class="line"></span><br><span class="line">Java RMI极大地依赖于接口。在需要创建一个远程对象的时候，程序员通过传递一个接口来隐藏底层的实现细节。客户端得到的远程对象句柄正好与本地的根代码连接，由后者负责透过网络通信。这样一来，程序员只需关心如何通过自己的接口句柄发送消息。</span><br></pre></td></tr></table></figure>
+<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Java远程方法调用，即Java RMI（Java Remote <span class="function"><span class="keyword">Method</span> <span class="title">Invocation</span>）是<span class="title">Java</span>编程语言里，一种用于实现远程过程调用的应用程序编程接口。它使客户机上运行的程序可以调用远程服务器上的对象。远程方法调用特性使<span class="title">Java</span>编程人员能够在网络环境中分布操作。<span class="title">RMI</span>全部的宗旨就是尽可能简化远程接口对象的使用。</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="title">Java</span> <span class="title">RMI</span>极大地依赖于接口。在需要创建一个远程对象的时候，程序员通过传递一个接口来隐藏底层的实现细节。客户端得到的远程对象句柄正好与本地的根代码连接，由后者负责透过网络通信。这样一来，程序员只需关心如何通过自己的接口句柄发送消息。</span></span><br></pre></td></tr></table></figure>
 
 <p>根据wiki所说RMI全称为Remote Method Invocation，也就是远程方法调用，通俗点解释，就是跨越jvm，调用一个远程方法。众所周知，一般情况下java方法调用<br>指的是同一个jvm内方法的调用，而RMI与之恰恰相反。</p>
 <p>例如我们使用浏览器对一个http协议实现的接口进行调用，这个接口调用过程我们可以称之为Interface Invocation，而RMI的概念与之非常相似，只不过RMI调用的是一个Java方法，而浏览器调用的是一个http接口，并且Java中封装了RMI的一系列定义。</p>
@@ -688,12 +688,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">576k</span>
+    <span title="站点总字数">575k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">15:59</span>
+    <span title="站点阅读时长">15:58</span>
   -->
 
 </div>
