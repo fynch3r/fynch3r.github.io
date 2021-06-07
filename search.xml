@@ -98,7 +98,7 @@
 <figure class="highlight dockerfile"><table><tr><td class="code"><pre><span class="line">docker container ls</span><br><span class="line"></span><br><span class="line">docker exec -it [shortid] /bin/bash</span><br></pre></td></tr></table></figure>
 
 <p><img src="../images/Docker%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20210519132015322.png" alt="image-20210519132015322"></p>
-<p>原因：</p>
+<p>原因： </p>
 <ul>
 <li><code>-it</code>一起使用时，可以进入交互模式，并且可以看到熟悉的<code>linux</code>命令提示符</li>
 </ul>
