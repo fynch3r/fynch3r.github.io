@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-pace-theme-flash.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<!--
+
+  <script src="//code.tidio.co/oixl41gwhy8tvqy6jte9uvglyrqcjrvc.js" async></script>
+
+-->
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"0range228.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+  <meta name="description" content="序言 男儿何不带吴钩，收取关山五十州。  从这篇文章开始，我会在我的博客中记录学习程序静态分析的点点滴滴，我也会把在疫情期间，自己在家中学习的成果和收获上传到我的博客，记录自己的点滴进步。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="静态分析入门笔记01">
+<meta property="og:url" content="https://0range228.github.io/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/index.html">
+<meta property="og:site_name" content="0range的小窝">
+<meta property="og:description" content="序言 男儿何不带吴钩，收取关山五十州。  从这篇文章开始，我会在我的博客中记录学习程序静态分析的点点滴滴，我也会把在疫情期间，自己在家中学习的成果和收获上传到我的博客，记录自己的点滴进步。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0range228.github.io/images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%9001_1.jpg">
+<meta property="og:image" content="https://0range228.github.io/images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/image-20200325173724216.png">
+<meta property="og:image" content="https://0range228.github.io/images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/image-20200325173739742.png">
+<meta property="og:image" content="https://0range228.github.io/images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/image-20200325190416693.png">
+<meta property="og:image" content="https://0range228.github.io/images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/image-20200325192746007.png">
+<meta property="og:image" content="https://0range228.github.io/images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/image-20200327194043941.png">
+<meta property="article:published_time" content="2020-03-24T05:43:08.000Z">
+<meta property="article:modified_time" content="2020-04-27T13:35:44.933Z">
+<meta property="article:author" content="0range">
+<meta property="article:tag" content="静态分析基础">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0range228.github.io/images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%9001_1.jpg">
+
+<link rel="canonical" href="https://0range228.github.io/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>静态分析入门笔记01 | 0range的小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="0range的小窝" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+<a href="https://github.com/0range228" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#FFA500; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">0range的小窝</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Trust the process.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">25</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">12</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">43</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://0range228.github.io/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/yfy.png">
+      <meta itemprop="name" content="0range">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="0range的小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          静态分析入门笔记01
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-24 13:43:08" itemprop="dateCreated datePublished" datetime="2020-03-24T13:43:08+08:00">2020-03-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-27 21:35:44" itemprop="dateModified" datetime="2020-04-27T21:35:44+08:00">2020-04-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">静态分析</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/" class="post-meta-item leancloud_visitors" data-flag-title="静态分析入门笔记01" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度：</span>
+              <span class="leancloud-visitors-count"></span>
+              <span>°C</span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>男儿何不带吴钩，收取关山五十州。</p>
+</blockquote>
+<p>从这篇文章开始，我会在我的博客中记录学习<strong>程序静态分析</strong>的点点滴滴，我也会把在疫情期间，自己在家中学习的成果和收获上传到我的博客，记录自己的点滴进步。</p>
+<a id="more"></a>
+
+<h1 id="PL？程序分析？"><a href="#PL？程序分析？" class="headerlink" title="PL？程序分析？"></a>PL？程序分析？</h1><h2 id="PL的三大模块"><a href="#PL的三大模块" class="headerlink" title="PL的三大模块"></a>PL的三大模块</h2><p><img src="../images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%9001_1.jpg" alt="q"></p>
+<h3 id="理论部分"><a href="#理论部分" class="headerlink" title="理论部分"></a>理论部分</h3><ol>
+<li>程序是如何设计的</li>
+<li>语言的类型系统</li>
+<li>语言的形式语义与逻辑系统</li>
+</ol>
+<h3 id="支撑环境"><a href="#支撑环境" class="headerlink" title="支撑环境"></a>支撑环境</h3><ol>
+<li>编译器：对语言语法的解析，字节码转换等</li>
+<li>运行时系统：Java，Python等，JVM虚拟机，内存分配，管理</li>
+</ol>
+<h3 id="语言应用"><a href="#语言应用" class="headerlink" title="语言应用"></a>语言应用</h3><ol>
+<li>程序分析</li>
+<li>程序验证</li>
+<li>程序合成：例如如何自动生成一个程序</li>
+</ol>
+<h2 id="语言核心"><a href="#语言核心" class="headerlink" title="语言核心"></a>语言核心</h2><p>核心无非分为三类：</p>
+<ol>
+<li><p><strong>命令式语言Imperative language</strong>：Java，C/C++等</p>
+<p>把程序逻辑拆解成一条条指令，加载到内存，顺序执行下来。</p>
+</li>
+<li><p><strong>函数式语言Functional language</strong>：Pascal，JS，Python</p>
+<p>命令式与函数式相结合，把逻辑包装起来，形式化。</p>
+</li>
+<li><p><strong>逻辑式语言Prolog</strong>：</p>
+<p>声明，逻辑，与、或、非。</p>
+</li>
+</ol>
+<blockquote>
+<p>语言核心没有变，用语言写的程序变得复杂了。</p>
+</blockquote>
+<p>#静态分析</p>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><blockquote>
+<p>在程序运行前，在编译时刻就完成程序安全性，可靠性的检验。不用运行程序本身，就能检查出程序潜在的问题。</p>
+</blockquote>
+<ol>
+<li>程序运行时会不会有隐私泄露？</li>
+<li>空指针引用异常？</li>
+<li>cast安全吗？</li>
+<li>v1，v2两个变量会不会造成内存竞争？要不要加锁？</li>
+<li>assert运行时会不会fail掉？</li>
+<li>dead code？</li>
+</ol>
+<h2 id="Rice’s-Theorem"><a href="#Rice’s-Theorem" class="headerlink" title="Rice’s Theorem"></a>Rice’s Theorem</h2><blockquote>
+<p>程序分析不存在  <strong><em>exact answer</em></strong></p>
+</blockquote>
+<p>正常的递归可枚举语言，<strong>不存在</strong>某个方法，可以去判断其是否存在问题。</p>
+<h2 id="Sound-amp-Complete"><a href="#Sound-amp-Complete" class="headerlink" title="Sound &amp; Complete"></a>Sound &amp; Complete</h2><blockquote>
+<p>Sound &gt; Truth &gt; Complete</p>
+</blockquote>
+<ul>
+<li><p>Sound：Overapproximate，肯定会包含Truth。</p>
+<p>假如Truth就是代表有10个空指针异常，那么Sound可以有1k，1w个空指针异常，就是<strong><em>包含Truth的关系</em></strong>。</p>
+</li>
+<li><p>Complete：Underapproximate，一定在Truth里面。</p>
+<p>上一个例子，无论Complete里面有几个空指针异常，只要存在的，就一定在Truth里面，<strong><em>是Truth子集的关系</em></strong>。</p>
+</li>
+</ul>
+<h2 id="Useful-static-analysis"><a href="#Useful-static-analysis" class="headerlink" title="Useful static analysis"></a>Useful static analysis</h2><ul>
+<li>妥协Soundness：会产生<strong>【漏报】</strong>，<strong><em>False Negatives</em></strong></li>
+<li>妥协Completeness：会产生<strong>【误报】</strong>，<strong><em>False Positives</em></strong></li>
+</ul>
+<p>但是在绝大部分的静态分析中，绝大部分都<strong><em>【妥协Completeness】</em></strong>。</p>
+<p>宁可误报，也不要漏报！</p>
+<h2 id="准则"><a href="#准则" class="headerlink" title="准则"></a>准则</h2><p>在保证<strong>soundness</strong>的基础上，在<strong>【精度】</strong>和<strong>【速度】</strong>上作出权衡。</p>
+<h1 id="抽象-近似"><a href="#抽象-近似" class="headerlink" title="抽象+近似"></a>抽象+近似</h1><ol>
+<li>抽象：判断变量的+/—/0符号。</li>
+<li>近似：在抽象的基础上进行近似。<ul>
+<li>Transfer function</li>
+<li>Control flows</li>
+</ul>
+</li>
+</ol>
+<p>Concrete Domain ——&gt; Abstract Domain</p>
+<p>不关心是具体数值，关心变量的符号位。</p>
+<p><strong>Transfer function</strong>：</p>
+<p>在静态分析中，transfer fuction主要应用在于如何在程序语句的抽象值上进行运算。</p>
+<p>根据你分析的程序的目标，和程序中每一个语句的语义，综合地设计分析方法。</p>
+<p><img src="../images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/image-20200325173724216.png" alt></p>
+<p><strong>Control flows</strong>：</p>
+<p>控制流，就是程序执行的流。控制流图，程序如何跳转。</p>
+<p><img src="../images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/image-20200325173739742.png" alt></p>
+<h1 id="IR-Intermediate-representation"><a href="#IR-Intermediate-representation" class="headerlink" title="IR (Intermediate representation)"></a>IR (Intermediate representation)</h1><h2 id="Compiler-amp-Analysis"><a href="#Compiler-amp-Analysis" class="headerlink" title="Compiler &amp; Analysis"></a>Compiler &amp; Analysis</h2><ol>
+<li><p>Compiler:</p>
+<p>需要将人写的高级代码，<strong>【编译】</strong>成机器可以看懂的机器码。</p>
+<p>在这个过程中，编译器做的工作不仅有【翻译】，还会有【检查】。</p>
+<p><img src="../images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/image-20200325190416693.png" alt="image-20200325190416693"></p>
+</li>
+<li><p>AST vs. IR:</p>
+<p><img src="../images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/image-20200325192746007.png" alt="image-20200325192746007"></p>
+</li>
+</ol>
+<h1 id="3AC"><a href="#3AC" class="headerlink" title="3AC"></a>3AC</h1><p>3AC：三地址码。<code>a = b + c</code></p>
+<h1 id="Control-Flow-Analysis"><a href="#Control-Flow-Analysis" class="headerlink" title="Control Flow Analysis"></a>Control Flow Analysis</h1><h2 id="Basic-Blocks"><a href="#Basic-Blocks" class="headerlink" title="Basic Blocks"></a>Basic Blocks</h2><p>最大的、连续的、3AC指令块。</p>
+<p>有且只有一个入口，并且是第一行指令是入口。</p>
+<p>出口也是唯一的，是最后一个指令。</p>
+<h3 id="如何划分BB？"><a href="#如何划分BB？" class="headerlink" title="如何划分BB？"></a>如何划分BB？</h3><ol>
+<li>首先决定BB入口在哪：<ol>
+<li>程序中的第一行语句。</li>
+<li>无条件跳转的目标语句也是入口。</li>
+<li>紧接着条件/无条件跳转的语句也是个BB入口。</li>
+</ol>
+</li>
+<li>有了BB入口，接下来：<ol>
+<li>有了入口，那么整个BB包含入口开始的连续语句，直到下一个leader的位置。</li>
+</ol>
+</li>
+</ol>
+<h2 id="CFG"><a href="#CFG" class="headerlink" title="CFG"></a>CFG</h2><p>控制流图。</p>
+<p>控制流图的node其实就是BB代码块。</p>
+<p><img src="../images/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B001/image-20200327194043941.png" alt="image-20200327194043941"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%9F%BA%E7%A1%80/" rel="tag"><i class="fa fa-tag"></i>静态分析基础</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Life/" rel="prev" title="Life">
+      <i class="fa fa-chevron-left"></i> Life
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B002/" rel="next" title="静态分析入门笔记02">
+      静态分析入门笔记02 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+      <!--
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://link.hhtjim.com/163/26348068.mp3"></iframe>
+      -->
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PL？程序分析？"><span class="nav-number">2.</span> <span class="nav-text">PL？程序分析？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#PL的三大模块"><span class="nav-number">2.1.</span> <span class="nav-text">PL的三大模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#理论部分"><span class="nav-number">2.1.1.</span> <span class="nav-text">理论部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#支撑环境"><span class="nav-number">2.1.2.</span> <span class="nav-text">支撑环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#语言应用"><span class="nav-number">2.1.3.</span> <span class="nav-text">语言应用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#语言核心"><span class="nav-number">2.2.</span> <span class="nav-text">语言核心</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定义"><span class="nav-number">2.3.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rice’s-Theorem"><span class="nav-number">2.4.</span> <span class="nav-text">Rice’s Theorem</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sound-amp-Complete"><span class="nav-number">2.5.</span> <span class="nav-text">Sound &amp; Complete</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Useful-static-analysis"><span class="nav-number">2.6.</span> <span class="nav-text">Useful static analysis</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#准则"><span class="nav-number">2.7.</span> <span class="nav-text">准则</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#抽象-近似"><span class="nav-number">3.</span> <span class="nav-text">抽象+近似</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IR-Intermediate-representation"><span class="nav-number">4.</span> <span class="nav-text">IR (Intermediate representation)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Compiler-amp-Analysis"><span class="nav-number">4.1.</span> <span class="nav-text">Compiler &amp; Analysis</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3AC"><span class="nav-number">5.</span> <span class="nav-text">3AC</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Control-Flow-Analysis"><span class="nav-number">6.</span> <span class="nav-text">Control Flow Analysis</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Basic-Blocks"><span class="nav-number">6.1.</span> <span class="nav-text">Basic Blocks</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何划分BB？"><span class="nav-number">6.1.1.</span> <span class="nav-text">如何划分BB？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CFG"><span class="nav-number">6.2.</span> <span class="nav-text">CFG</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="0range"
+      src="/images/yfy.png">
+  <p class="site-author-name" itemprop="name">0range</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/0range228" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;0range228" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      友链
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://m0d9.me/" title="http:&#x2F;&#x2F;m0d9.me&#x2F;" rel="noopener" target="_blank">yangbh</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.0kami.cn/" title="https:&#x2F;&#x2F;blog.0kami.cn&#x2F;" rel="noopener" target="_blank">wh1t3p1g</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.kingkk.com/" title="https:&#x2F;&#x2F;www.kingkk.com&#x2F;" rel="noopener" target="_blank">kingkk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/tr1ple/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;tr1ple&#x2F;" rel="noopener" target="_blank">tr1ple</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.yuque.com/ni4n/blogs" title="https:&#x2F;&#x2F;www.yuque.com&#x2F;ni4n&#x2F;blogs" rel="noopener" target="_blank">Ni4n</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://anemone.top/" title="http:&#x2F;&#x2F;anemone.top" rel="noopener" target="_blank">Anemone</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://summersec.github.io/" title="https:&#x2F;&#x2F;summersec.github.io" rel="noopener" target="_blank">SummerSec</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.zhihu.com/people/chenwengang" title="https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;chenwengang" rel="noopener" target="_blank">ApsarasX</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart" aria-hidden="true"></i>
+  </span>
+   Powered By - 
+  <span class="author" itemprop="copyrightHolder">0range</span>
+
+  <!--
+    <span class="post-meta-divider"> | </span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">575k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">15:58</span>
+  -->
+
+</div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+            'X-LC-Key'    : 'l8KvoMr1i8urA7X7BzPMtQC7',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+      appKey     : 'l8KvoMr1i8urA7X7BzPMtQC7',
+      placeholder: "Say Something~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+
+<!--
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unjkp.com/valine/dist/Valine.min.js"></script>  
+  <script src="/js/Valine.min.js"></script> 
+
+   
+  
+  <script src="/js/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+        appKey: 'l8KvoMr1i8urA7X7BzPMtQC7',
+        placeholder: 'Say Something~',
+        avatar:'mm',
+        guest_info:['nick'] ,  //评论者只需要提供评论的昵称即可
+        pageSize:'10' || 10,
+    });
+  
+    var infoEle = document.querySelector('#comments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0){
+      infoEle.childNodes.forEach(function(item) {
+        item.parentNode.removeChild(item);
+      });
+    }
+  </script>
+
+-->
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/click_love.js"></script>

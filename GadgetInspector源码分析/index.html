@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-pace-theme-flash.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<!--
+
+  <script src="//code.tidio.co/oixl41gwhy8tvqy6jte9uvglyrqcjrvc.js" async></script>
+
+-->
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"0range228.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+  <meta name="description" content="序言 好风凭借力，送我上青云。  今天来分析gadgetinspector源码。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GadgetInspector源码分析">
+<meta property="og:url" content="https://0range228.github.io/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="0range的小窝">
+<meta property="og:description" content="序言 好风凭借力，送我上青云。  今天来分析gadgetinspector源码。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117095645316.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117102333361.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117102613592.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117104353938.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117104440730.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117104455288.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117111114802.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117111206892.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117115215131.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117115411195.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117144908462.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117160457359.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117165701353.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117165758797.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210316110702699.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117170319531.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117204635986.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117204716978.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117205029118.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117205544372.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201119092039034.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201119093509631.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201119093735153.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201119095514058.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201120092931396.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201120100545146.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201120100601500.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201120104511218.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201130145525684.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201130150835717.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201130154509973.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201130154944412.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210316195921976.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201130160432170.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201130160447220.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210318193555532.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210318193611196.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210318195425611.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210318195552582.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210318203426098.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210318210935086.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210318222907723.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201130172722782.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210316211044098.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210316212942997.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201201093433260.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201201094123852.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201201095156174.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210319000648951.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201201101122436.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210319103128715.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201201114033068.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201202104444974.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201202110221901.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201202110252070.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201202110107440.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201202104037072.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210322115045568.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210322115453899.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210322131051058.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210322132035155.png">
+<meta property="og:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210322132556641.png">
+<meta property="article:published_time" content="2020-11-13T09:05:55.000Z">
+<meta property="article:modified_time" content="2021-04-23T05:51:14.101Z">
+<meta property="article:author" content="0range">
+<meta property="article:tag" content="GadgetInspector">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0range228.github.io/images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117095645316.png">
+
+<link rel="canonical" href="https://0range228.github.io/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>GadgetInspector源码分析 | 0range的小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="0range的小窝" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+<a href="https://github.com/0range228" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#FFA500; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">0range的小窝</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Trust the process.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">25</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">12</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">43</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://0range228.github.io/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/yfy.png">
+      <meta itemprop="name" content="0range">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="0range的小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          GadgetInspector源码分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-11-13 17:05:55" itemprop="dateCreated datePublished" datetime="2020-11-13T17:05:55+08:00">2020-11-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-23 13:51:14" itemprop="dateModified" datetime="2021-04-23T13:51:14+08:00">2021-04-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">源码分析</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="post-meta-item leancloud_visitors" data-flag-title="GadgetInspector源码分析" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度：</span>
+              <span class="leancloud-visitors-count"></span>
+              <span>°C</span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>31k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>51 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>好风凭借力，送我上青云。</p>
+</blockquote>
+<p>今天来分析<a href="https://github.com/JackOfMostTrades/gadgetinspector" target="_blank" rel="noopener">gadgetinspector</a>源码。</p>
+<a id="more"></a>
+
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p><a href="https://www.youtube.com/watch?v=wPbW6zQ52w8" target="_blank" rel="noopener">Ian Haken</a>于2018年第26届DEFCON提出来的工具，主要是用来找出jar包内部的调用链。</p>
+<p>这个工具有些地方很值得学习，总结一下。</p>
+<p><a href="https://paper.seebug.org/1034/" target="_blank" rel="noopener">关于这个工具</a>：</p>
+<ul>
+<li>这个工具不是用来寻找漏洞，而是利用已知的source-&gt;…-&gt;sink链或其相似特征发现分支利用链或新的利用链。</li>
+<li>这个工具是在整个应用的classpath中寻找利用链。</li>
+<li>这个工具进行了一些合理的预估风险判断（污点判断、污点传递等）。</li>
+<li>这个工具会产生误报不是漏报（其实这里还是会漏报，这是作者使用的策略决定的，在后面的分析中可以看到）。</li>
+<li>这个工具是基于字节码分析的，对于Java应用来说，很多时候我们并没有源码，而只有War包、Jar包或class文件。</li>
+<li>这个工具不会生成能直接利用的Payload，<strong>具体的利用构造还需要人工参与</strong>。</li>
+</ul>
+<p>在分析gadgetinspector源码的时候，大概会在以下几<a href="https://xz.aliyun.com/t/7058" target="_blank" rel="noopener">方面</a>去讲解，并核心分析ASM部分，详细讲解如何进行污点分析：</p>
+<ol>
+<li>GadgetInspector：main方法，程序的入口，做一些配置以及数据的准备工作</li>
+<li>MethodDiscovery：类、方法数据以及父子类、超类关系数据的搜索</li>
+<li>PassthroughDiscovery：分析参数能影响到返回值的方法，并收集存储</li>
+<li>CallGraphDiscovery：记录调用者caller方法和被调用者target方法的参数关联</li>
+<li>SourceDiscovery：入口方法的搜索，只有具备某种特征的入口才会被标记收集</li>
+<li>GadgetChainDiscovery：整合以上数据，并通过判断调用链的最末端slink特征，从而判断出可利用的gadget chain</li>
+</ol>
+<h1 id="流程介绍"><a href="#流程介绍" class="headerlink" title="流程介绍"></a>流程介绍</h1><p>先写在这里：</p>
+<p>ASM的方法描述符：</p>
+<p>方法描述符使用小括号开始，小括号内部是方法入参的类型描述符按照顺序拼接的字符串，在加上返回值的类型描述符组成，返回值是void的时候，使用<strong>V</strong>。方法的描述符不包含方法名和参数名。</p>
+<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><p><em>加载jar包内部类</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//初始化jar包，获得一个类加载器，该类加载器已经将其加载</span></span><br><span class="line">ClassLoader classLoader = initJar(args);</span><br></pre></td></tr></table></figure>
+
+<p>跟进<em>initJar</em>函数：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117095645316.png" alt="image-20201117095645316"></p>
+<p>可以看到<em>initJar</em>将启动参数参数内的jar都保存到path里面，然后继续调用<em>getJarClassLoader</em>函数：</p>
+<p><em>getJarClassLoader:</em></p>
+<ul>
+<li><p>在项目路径下，创建临时文件夹exploded-jar，在jvm shutdown自动删除；</p>
+</li>
+<li><p>接着将jar包内容提取到临时文件夹内部，这里面会有</p>
+</li>
+</ul>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117102333361.png" alt="image-20201117102333361"></p>
+<ul>
+<li>接着使用URLClassLoader将jarpath加载到类加载器，并返回这个类加载器；</li>
+</ul>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117102613592.png" alt="image-20201117102613592"></p>
+<h2 id="包装类加载器"><a href="#包装类加载器" class="headerlink" title="包装类加载器"></a>包装类加载器</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取类加载器</span></span><br><span class="line"><span class="keyword">final</span> ClassResourceEnumerator classResourceEnumerator = <span class="keyword">new</span> ClassResourceEnumerator(classLoader);</span><br></pre></td></tr></table></figure>
+
+<p>这里就是将上一步加载我们jar的类加载器classLoader传入ClassResourceEnumerator。</p>
+<p>跟进ClassResourceEnumerator：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117104353938.png" alt="image-20201117104353938"></p>
+<p>最关键的是这两个函数，分析一下：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117104440730.png" alt="image-20201117104440730"></p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117104455288.png" alt="image-20201117104455288"></p>
+<p>可以看到<em>getAllClasses()</em>函数首先调用<em>getRuntimeClasses()</em>函数，那么跟进<em>getRuntimeClasses()</em>仔细看：</p>
+<p>目的是将rt.jar加载到这里作者注释也写到他用了一个<strong>比较hacky</strong>的方式：</p>
+<p>他先获取JDK内部的String类的路径，加载String类的同时，类加载器还会将rt.jar的全部类一起加载，那么最后就是将rt.jar的所有类都加入到ClassResource类型的result并且返回。</p>
+<p>其实就是获取rt.jar的所有class。</p>
+<p>回到<em>getAllClasses()</em>函数，其实拿到rt.jar之后，继续将传入的jar包内的类加入到result，并最后返回。</p>
+<p>总结：</p>
+<ul>
+<li><code>getRuntimeClasses</code>获取rt.jar的所有class</li>
+<li><code>getAllClasses</code>获取rt.jar以及classLoader加载的class</li>
+</ul>
+<h2 id="方法探索-MethodDiscovery"><a href="#方法探索-MethodDiscovery" class="headerlink" title="方法探索 MethodDiscovery"></a>方法探索 MethodDiscovery</h2><p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117111114802.png" alt="image-20201117111114802"></p>
+<h3 id="discover"><a href="#discover" class="headerlink" title="discover()"></a>discover()</h3><p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117111206892.png" alt="image-20201117111206892"></p>
+<p>该函数接收一个ClassResourceEnumerator类型的参数，这个参数主要将之前的类加载器(rt全部类+分析类)都包装并且传入。</p>
+<p>获取每一个class类对象之后，进行ASM分析环节。</p>
+<p>首先，看到在<code>discover</code>方法中获取了所有的类，并通过<code>MethodDiscoveryClassVisitor</code>去记录类和类方法信息。</p>
+<p>跟进<code>MethodDiscoveryClassVisitor</code>去看看：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117115215131.png" alt="image-20201117115215131"></p>
+<p>这里其实会将我们所有类内部的元素进行存储，例如类名、父类名、接口、是否为接口、类的全部字段、classHandle把位。</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117115411195.png" alt="image-20201117115411195"></p>
+<p>在ASM里，visit和visitEnd方法是一定会调用的，其他会按顺序来调用，那么这里就是：</p>
+<ol>
+<li>visit                  访问类的头部</li>
+<li>visitField          访问类属性</li>
+<li>visitMethod    访问类方法</li>
+<li>visitEnd</li>
+</ol>
+<h3 id="save"><a href="#save" class="headerlink" title="save()"></a>save()</h3><p>saveData方法中会通过调用factory的serialize对数据进行序列化，然后一行一行的输出</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117144908462.png" alt="image-20201117144908462"></p>
+<p>这里重点看<em>derive</em>函数：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117160457359.png" alt="image-20201117160457359"></p>
+<p>这里说一下最后的翻转，跟进去：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117165701353.png" alt="image-20201117165701353"></p>
+<p>最后的save函数，保存格式为子类：父类：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117165758797.png" alt="image-20201117165758797"></p>
+<p>这里说一下InheritanceMap是一个类，有两个fields：</p>
+<ol>
+<li>inheritanceMap 存放是子-&gt;父集合</li>
+<li>subClassMap存放的是父-&gt;子集合</li>
+</ol>
+<h2 id="流程图探索-PassthroughDiscovery"><a href="#流程图探索-PassthroughDiscovery" class="headerlink" title="流程图探索 PassthroughDiscovery"></a>流程图探索 PassthroughDiscovery</h2><p>在这环节中，需要将上一环节的成果也就是classes.dat，methods.dat和inheritanceMap.dat都利用起来。</p>
+<p>这里的passthrough数据流指的是<strong>每个方法的返回结果</strong>与<strong>方法参数</strong>的关系，这一步生成的数据会在生成passthrough调用图时用到。</p>
+<p>主要用以发现<strong>函数返回值</strong>与<strong>传进来参数之间</strong>的<strong>污点关系</strong>，工作量最大的一个部分。</p>
+<p>参考<a href="https://paper.seebug.org/1034/#step2-passthrough" target="_blank" rel="noopener">seebug</a>，先看作者的一个demo：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210316110702699.png" alt="image-20210316110702699"></p>
+<p>成员/this，都是0；参数为1；</p>
+<p>FnConstant.invoke返回值与参数this(参数0，因为序列化时类的所有成员我们都能控制，<strong>所以所有成员变量都视为0参</strong>)、arg(参数1)的关系：</p>
+<ul>
+<li>与this的关系：返回了this.value，即与0参有关系</li>
+<li>与arg的关系：返回值与arg没有任何关系，即与1参没有关系</li>
+<li>结论就是FnConstant.invoke与参数0有关，表示为FnConstant.invoke()-&gt;0</li>
+</ul>
+<p>Fndefault.invoke返回值与参数this(参数0)、arg(参数1)的关系：</p>
+<ul>
+<li>与this的关系：返回条件的第二个分支与this.f有关系，即与0参有关系</li>
+<li>与arg的关系：返回条件的第一个分支与arg有关系，即与1参有关系</li>
+<li>结论就是FnConstant.invoke与0参，1参都有关系，表示为Fndefault.invoke()-&gt;0、Fndefault.invoke()-&gt;1</li>
+</ul>
+<p>回到gi，gadgetinspector是利用ASM来进行方法字节码的分析，主要逻辑是在类PassthroughDiscovery和TaintTrackingMethodVisitor中。特别是TaintTrackingMethodVisitor，它通过==标记追踪JVM虚拟机在执行方法时的stack和localvar==，并最终得到返回结果是否可以被参数标记污染。</p>
+<p>不仅仅是信息搜集，还要做污点的信息判断，以及方法间的变量关联。</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117170319531.png" alt="image-20201117170319531"></p>
+<h3 id="discover-1"><a href="#discover-1" class="headerlink" title="discover()"></a>discover()</h3><p>这段很复杂 写个调用顺序在这：</p>
+<p>discoverMethodCalls-&gt;MethodCallDiscoveryClassVisitor-&gt;MethodCallDiscoveryMethodVisitor-&gt;更新calledMethods和methodCalls集合;</p>
+<p>topologicallySortMethodCalls-&gt;获得sortedMethods集合，存放着方法调用链逆拓扑结果</p>
+<p>calculatePassthroughDataflow-&gt;PassthroughDataflowClassVisitor-&gt;PassthroughDataflowMethodVisitor</p>
+<p>跟进discover方法，可以看到首先对之前的结果进行了加载：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117204635986.png" alt="image-20201117204635986"></p>
+<p>跟进<em>discoverMethodCalls</em>函数：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117204716978.png" alt="image-20201117204716978"></p>
+<p>可以看到又按照访问者模式，进行了ASM分析，跟进<em>MethodCallDiscoveryClassVisitor</em> :</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117205029118.png" alt="image-20201117205029118"></p>
+<p>可以看到内部重写了下面的方法，并且会按照顺序进行执行：</p>
+<ul>
+<li>visit：把当前观察的类名赋值到了this.name</li>
+<li>visitMethod：继续进一步的对被观察类的每一个方法细节进行观察，传入了当前观察的类名和方法名</li>
+<li>visitEnd：除了super，啥也没干</li>
+</ul>
+<p>看到在visitMethod时候，进行了<em>MethodCallDiscoveryMethodVisitor</em>，跟进看看：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201117205544372.png" alt="image-20201117205544372"></p>
+<p><em>MethodCallDiscoveryMethodVisitor</em>继承了ASM的MethodVisitor的构造函数，</p>
+<p>在MethodCallDiscoveryMethodVisitor构造方法执行的时候，会对this.calledMethods集合进行初始化，该集合的主要作用是在被观察方法对其他方法进行调用时（会执行visitMethodInsn方法），用于缓存记录被调用的方法，因此，我们可以看到visitMethodInsn方法中：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201119092039034.png" alt="image-20201119092039034"></p>
+<p>理解：calledMethods存放的是被调用的方法，ASM对于正在visit的方法，在visit的时候，如果在方法内出现了调用其他方法的行为，那么就会执行visitMethodInsn方法，它会将被调用的方法记录在calledMethods这个hashset集合内。</p>
+<p>并且在构造方法执行的时候，集合calledMethods也会被添加到gadgetinspector.PassthroughDiscovery#methodCalls中，做全局性的收集，因此，最后我们能通过discoverMethodCalls这一个方法，实现对这样一个数据的全量收集：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201119093509631.png" alt="image-20201119093509631"></p>
+<p>接下来调用<em>topologicallySortMethodCalls</em>，</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201119093735153.png" alt="image-20201119093735153"></p>
+<p>跟进去：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201119095514058.png" alt="image-20201119095514058"></p>
+<p>这里就开始了重头戏，DFS+逆拓扑。</p>
+<p>这里重点参考<a href="https://paper.seebug.org/1034/" target="_blank" rel="noopener">404</a>的这篇文章，原理讲得很清楚。</p>
+<p>在开始逆拓扑之前，可以看到作者首先准备了三个数据结构：</p>
+<ul>
+<li>dfsStack：栈，用来分析方法调用顺序，也用于在在逆拓扑时候不会形成环</li>
+<li>visitedNodes：访问过的结点，在一条调用链出现重合的时候，不会造成重复的排序</li>
+<li>sortedMethods：最终逆拓扑排序出来的结果集合</li>
+</ul>
+<p>跟进dfsTsort：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201120092931396.png" alt="image-20201120092931396"></p>
+<p>dfsTsort是一个迭代函数：</p>
+<p>判断条件：</p>
+<ol>
+<li>对于待分析的方法，如果stack里面已经有了，那就不再入栈了</li>
+<li>如果之前已经分析过某方法（visitedNodes已经存在），那么也不会再入栈了</li>
+</ol>
+<p>接下来，将待分析方法所调用的所有方法集合都取出来，这里可以说是子方法集合outgoingReferences。</p>
+<p>之后开始遍历子方法集合，取出每一个子方法作为参数，开始迭代</p>
+<p>这其实就是DFS，当到达一个叶子结点的时候，由于没有子方法，就不会进入到循环，也就不会再次递归。</p>
+<p>这时就会弹出栈顶元素，也就是叶子结点，加入到visitedNodes和sortedMethods里面。</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201120100545146.png" alt="image-20201120100545146"></p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201120100601500.png" alt="image-20201120100601500"></p>
+<h3 id="生成passthrough数据流图"><a href="#生成passthrough数据流图" class="headerlink" title="生成passthrough数据流图"></a>生成passthrough数据流图</h3><p>在calculatePassthroughDataflow中遍历了sortedmethods，并通过字节码分析，生成了方法返回值与参数关系的passthrough数据流。注意到下面的序列化决定器，作者内置了三种：JDK、Jackson、Xstream，会根据具体的序列化决定器判定决策过程中的类是否符合对应库的反序列化要求，不符合的就跳过：</p>
+<ul>
+<li>对于JDK(ObjectInputStream)，类否继承了Serializable接口</li>
+<li>对于Jackson，类是否存在0参构造器</li>
+<li>对于Xstream，类名能否作为有效的XML标签</li>
+</ul>
+<p>生成passthrough数据流代码：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201120104511218.png" alt="image-20201120104511218"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> Map&lt;MethodReference.Handle, Set&lt;Integer&gt;&gt; passthroughDataflow = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br></pre></td></tr></table></figure>
+
+<p>首先passthroughDataflow主要负责的是存储参数污染结果，key对应方法名，value对应的是可以污染下去的参数索引集合。</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201130145525684.png" alt="image-20201130145525684"></p>
+<p>接下来，遍历经历过拓扑排序过的方法；</p>
+<p>首先第一步会跳过静态初始化代码，因为静态代码块基本上是没法被污染的，直接在类加载阶段就会执行。</p>
+<p>第二步在遍历的每个方法过程中，获取它所属的类，对其进行ASM访问者模式的分析：</p>
+<p>跟进PassthroughDataflowClassVisitor中分析，重点还是在visitMethod方法中</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201130150835717.png" alt="image-20201130150835717"></p>
+<p>是这样的，对于每一个类中对的每一个方法都会经历PassthroughDataflowClassVisitor这一步。对于类中的每一个方法都会进行它的方法（例如visit，visitMethod），对于每一个方法都会在visitMethod里面走一遭。</p>
+<p>那么对于ASM在观察到每一个方法都会执行visitMethod方法，通过<strong>此处重新判断所观察的方法是不是我们想找、所关心的方法</strong>，只有我们关心的方法才能继续下去，进入PassthroughDataflowMethodVisitor继续观察。</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201130154509973.png" alt="image-20201130154509973"></p>
+<p>继续跟进PassthroughDataflowMethodVisitor，可以看到，它继承了TaintTrackingMethodVisitor，并有以下几个方法的实现：</p>
+<ol>
+<li>visitCode：在进入方法的第一时间，ASM会先调用这个方法</li>
+<li>visitInsn：在方法体中，每一个字节码操作指令的执行，ASM都会调用这个方法，return</li>
+<li>visitFieldInsn：对于字段的调用，ASM都会调用这个方法</li>
+<li>visitMethodInsn：方法体内，一旦调用了其他方法，都会触发这个方法的调用</li>
+</ol>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201130154944412.png" alt="image-20201130154944412"></p>
+<p>还有一个父类中的方法：</p>
+<p>visitVarInsn：这个方法在方法体内进行字节码操作变量时，会被调用。</p>
+<p>为了实现类似污点分析，去分析参数对方法的污染，其模仿了jvm，实现了两个集合，分别是本地变量表和操作数栈，通过其，实现具体的污点分析，那么具体是怎么进行的呢？</p>
+<p>这里写一下具体细节：</p>
+<p>visitCode-&gt;gadgetinspector.TaintTrackingMethodVisitor#visitVarInsn(在父类里面)-&gt;visitInsn更新污染表-&gt;gadgetinspector.PassthroughDiscovery#calculatePassthroughDataflow</p>
+<p>这里需要跟一下gadgetinspector的逻辑：</p>
+<p>首先：</p>
+<p>本地变量表：List&lt;Set<T>&gt; localVars;</T></p>
+<p>操作数栈：List&lt;Set<T>&gt; stackVars;</T></p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210316195921976.png" alt="image-20210316195921976"></p>
+<p>这里借鉴一下<a href="https://xz.aliyun.com/t/7058" target="_blank" rel="noopener">threedr3am</a>的例子：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201130160432170.png" alt="image-20201130160432170"></p>
+<p>逆拓扑结果：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201130160447220.png" alt="image-20201130160447220"></p>
+<p>按照这个例子来分析：</p>
+<ul>
+<li><p>A.method1:</p>
+<p>第一步，ASM对A.method1进行观察，也就是PassthroughDataflowMethodVisitor进行观察，那么，在其方法被执行开始的时候，会触发PassthroughDataflowMethodVisitor.visitCode方法的调用，在这一步的代码中，会首先对方法是否是static方法等进行判断，接着做了一个操作，就是把入参放到了本地变量表中来，为什么要这样做呢？我们可以想象一下，一个方法内部，能用到的数据要不就是本地变量表的数据，要不就是通过字段调用的数据，那么，在分析调用其他方法，或者对返回值是否会被入参污染时的数据流动，都跟它紧密关联，为什么这样说？根据jvm字节码的操作，<strong>在调用方法前，肯定需要对相关参数进行入栈</strong>，那入栈的数据从哪里来，必然就是本地变量表或者其他字段(这里的其他字段估计是其他方法的返回值)。那么在形成这样的一个本地变量表之后，就能标识一个方法内部的数据流动，并最终确定污染结果。</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210318193555532.png" alt="image-20210318193555532"></p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210318193611196.png" alt="image-20210318193611196"></p>
+</li>
+</ul>
+<p>  上面的这步savedVariableState.localVars.set(index, values);其实就是在局部变量表里面更新索引。</p>
+<p>  第二步，这里三梦师傅写得很乱，仔细查了一下，visitVarInsn是访问局部变量指令。 局部变量指令是加载loads或存储stores局部变量值的指令。也就是说出现这些<em>ILOAD, LLOAD, FLOAD, DLOAD, ALOAD, ISTORE, LSTORE, FSTORE, DSTORE, ASTORE or RET.</em>指令的时候，可以触发这个方法。</p>
+<p>  <img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210318195425611.png" alt="image-20210318195425611"></p>
+<p>  这里继续跟，该到new A().method1(args)调用，JVM会执行指令aload1（将局部变量表1号位置的元素入栈）对其参数args进行入栈，因为args是引用类型，那么操作代码就是Opcodes.ALOAD1，可以看到，代码中，从本地变量表获取了变量索引，并放入到操作数栈中来。</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitVarInsn</span><span class="params">(<span class="keyword">int</span> opcode, <span class="keyword">int</span> <span class="keyword">var</span>)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// Extend local variable state to make sure we include the variable index</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = savedVariableState.localVars.size(); i &lt;= <span class="keyword">var</span>; i++) &#123;</span><br><span class="line">            savedVariableState.localVars.add(<span class="keyword">new</span> HashSet&lt;T&gt;());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Set&lt;T&gt; saved0;</span><br><span class="line">        <span class="keyword">switch</span>(opcode) &#123;</span><br><span class="line">            <span class="keyword">case</span> Opcodes.ILOAD:</span><br><span class="line">            <span class="keyword">case</span> Opcodes.FLOAD:</span><br><span class="line">                push();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> Opcodes.LLOAD:</span><br><span class="line">            <span class="keyword">case</span> Opcodes.DLOAD:</span><br><span class="line">                push();</span><br><span class="line">                push();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> Opcodes.ALOAD:</span><br><span class="line">                push(savedVariableState.localVars.get(<span class="keyword">var</span>));</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> Opcodes.ISTORE:</span><br><span class="line">            <span class="keyword">case</span> Opcodes.FSTORE:</span><br><span class="line">                pop();</span><br><span class="line">                savedVariableState.localVars.set(<span class="keyword">var</span>, <span class="keyword">new</span> HashSet&lt;T&gt;());</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> Opcodes.DSTORE:</span><br><span class="line">            <span class="keyword">case</span> Opcodes.LSTORE:</span><br><span class="line">                pop();</span><br><span class="line">                pop();</span><br><span class="line">                savedVariableState.localVars.set(<span class="keyword">var</span>, <span class="keyword">new</span> HashSet&lt;T&gt;());</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> Opcodes.ASTORE:</span><br><span class="line">                saved0 = pop();</span><br><span class="line">                savedVariableState.localVars.set(<span class="keyword">var</span>, saved0);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> Opcodes.RET:</span><br><span class="line">                <span class="comment">// No effect on stack</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Unsupported opcode: "</span> + opcode);</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<p>  <img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210318195552582.png" alt="image-20210318195552582"></p>
+<p>  第三步，这时则需要areturn，弹出操作数栈。执行了areturn方法，那么就会触发visitInsn这个方法，因为返回的是引用类型，那么相应的指令就是Opcodes.ARETURN，可以看到，在这个case中，会从栈顶，获取刚刚入栈（第二步中visitVarInsn从本地变量表获取的参数索引）的参数索引，并存储到returnTaint中，因此，即<strong>表示A.method1这个方法的调用，参数索引为1的参数param会污染返回值</strong>。</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitInsn</span><span class="params">(<span class="keyword">int</span> opcode)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">switch</span>(opcode) &#123;</span><br><span class="line">        <span class="keyword">case</span> Opcodes.IRETURN:<span class="comment">//从当前方法返回int</span></span><br><span class="line">        <span class="keyword">case</span> Opcodes.FRETURN:<span class="comment">//从当前方法返回float</span></span><br><span class="line">        <span class="keyword">case</span> Opcodes.ARETURN:<span class="comment">//从当前方法返回对象引用</span></span><br><span class="line">            returnTaint.addAll(getStackTaint(<span class="number">0</span>));<span class="comment">//栈空间从内存高位到低位分配空间</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> Opcodes.LRETURN:<span class="comment">//从当前方法返回long</span></span><br><span class="line">        <span class="keyword">case</span> Opcodes.DRETURN:<span class="comment">//从当前方法返回double</span></span><br><span class="line">            returnTaint.addAll(getStackTaint(<span class="number">1</span>));</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> Opcodes.RETURN:<span class="comment">//从当前方法返回void</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">super</span>.visitInsn(opcode);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> Set&lt;T&gt; <span class="title">getStackTaint</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//出栈，index=0为栈顶</span></span><br><span class="line">        <span class="keyword">return</span> savedVariableState.stackVars.get(savedVariableState.stackVars.size()-<span class="number">1</span>-index);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Set&lt;Integer&gt; returnTaint;<span class="comment">//被污染的返回数据</span></span><br></pre></td></tr></table></figure>
+
+<p>  第四步，经过return之后，该方法的观察也就结束了，那么，回到gadgetinspector.PassthroughDiscovery#calculatePassthroughDataflow中，对于刚刚放到returnTaint污点分析结果，也会在其方法中，缓存到passthroughDataflow。</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ClassReader cr = <span class="keyword">new</span> ClassReader(inputStream);</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    PassthroughDataflowClassVisitor cv = <span class="keyword">new</span> PassthroughDataflowClassVisitor(classMap, inheritanceMap,</span><br><span class="line">            passthroughDataflow, serializableDecider, Opcodes.ASM6, method);</span><br><span class="line">    cr.accept(cv, ClassReader.EXPAND_FRAMES);</span><br><span class="line">    passthroughDataflow.put(method, cv.getReturnTaint());<span class="comment">//缓存方法返回值与哪个参数有关系</span></span><br><span class="line">&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    LOGGER.error(<span class="string">"Exception analyzing "</span> + method.getClassReference().getName(), e);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><p>C.method3:</p>
+<p>同method1</p>
+</li>
+<li><p>B.method2:</p>
+<p>先看method2字节码：</p>
+<img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210318203426098.png" alt="image-20210318203426098" style="zoom:80%;">
+
+<p>这个方法和前面连个都不一样，它内部调用了C.method3方法，因此，污点分析时，具体的细节就又不一样了：</p>
+<p>第一步，在其方法被执行开始的时候，同样会触发PassthroughDataflowMethodVisitor.visitCode方法的调用，在其中，也是做了相应的操作，把入参存到了本地变量表中来；</p>
+<p>第二步，因为方法内部即将调用C.method3，那么ASM调用visitVarInsn方法，对其参数param进行入栈，因为param是引用类型，那么操作代码就是Opcodes.ALOAD，因此，从第一步保存的本地变量表中获取变量入栈；</p>
+<p>这里仔细看，method2 准备调用method3时的状态：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210318210935086.png" alt="image-20210318210935086"></p>
+<p>在ALOAD_1这一步之后，localvars=(0.0;1.1);stackVars=(0.0;1.1);</p>
+<p>第三步，方法内部调用了C.method3，那么，ASM就会触发visitMethodInsn方法的执行，在这一步，会先对被调用方法的入参进行处理，<strong>并把被调用方法的实例放到argTypes的第一个索引位置</strong>，后面依次放置其他参数，接着计算返回值大小。然后，因为方法调用，第二步已经把参数入栈stack了，而这些参数都是从本地变量表获取的，那么，可以从栈顶取到相关参数，并认为这些参数是可被控制，也就是被当前调用者caller方法污染的。</p>
+<p>这里进入visitMethodInsn方法具体看一下：</p>
+<img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210318222907723.png" alt="image-20210318222907723" style="zoom:50%;">
+
+<p>执行到这里，argTypes存放的是（Cthis，String）</p>
+</li>
+</ul>
+<p>  最后，也就是最重点的一步，从passthroughDataflow中获取了被调用方法的参数污染结果，也就是上一个方法C.method3方法被分析时候，return存储的数据，所以，这里就印证了前面为什么要使用逆拓扑排序，因为如果不这样做的话，C.method3可能在B.method2后被分析，那么，缓存就不可能存在污点分析的结果，那么就没办法对B.method2进行正确的污点分析。接着就是对从缓存取出的污染结果和入参对比，取出相应索引的污点参数，放入到resultTaint中。</p>
+<p>  gadgetinspector.TaintTrackingMethodVisitor#visitMethodInsn</p>
+<ul>
+<li><p>main:  最后需要分析的是main方法的入参args是否会污染到其返回值</p>
+<p>第一步，执行visitCode存储入参到本地变量表</p>
+<p>第二步，执行visitVarInsn参数入栈</p>
+<p>第三步，执行visitMethodInsn调用A.method1，A.method1被污染的返回结果，也就是参数索引会被放在栈顶</p>
+<p>第四步，执行visitVarInsn把放在栈顶的污染参数索引，放入到本地变量表</p>
+<p>第五步，执行visitVarInsn参数入栈</p>
+<p>第六步，执行visitMethodInsn调用B.method2，被污染的返回结果会被放在栈顶</p>
+<p>第七步，执行visitInsn，返回栈顶数据，缓存到passthroughDataflow，也就是main方法的污点分析结果</p>
+<p>到此，ASM实现方法入参污染返回值的分析就到此为止了。</p>
+<p>接下来，passthroughDiscovery.save方法就被调用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">save</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (passthroughDataflow == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Save called before discover()"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    DataLoader.saveData(Paths.get(<span class="string">"passthrough.dat"</span>), <span class="keyword">new</span> PassThroughFactory(), passthroughDataflow.entrySet());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也是通过DataLoader.saveData把结果一行一行的保存到passthrough.dat文件中，而每行数据的序列化，是通过PassThroughFactory实现</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201130172722782.png" alt="image-20201130172722782"></p>
+<p>最终，这一阶段分析保存下来passthrough.dat文件的数据格式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">类名 方法名 方法描述 能污染返回值的参数索引<span class="number">1</span>,能污染返回值的参数索引<span class="number">2</span>,能污染返回值的参数索引<span class="number">3</span>...</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="方法调用探索-CallGraphDiscovery"><a href="#方法调用探索-CallGraphDiscovery" class="headerlink" title="方法调用探索 CallGraphDiscovery"></a>方法调用探索 CallGraphDiscovery</h2><p>这一步和上一步类似，gadgetinspector 会再次扫描全部的Java方法，但检查的不再是参数与返回结果的关系，而是<strong>方法的参数与其所调用的子方法的关系，即子方法的参数是否可以被父方法的参数所影响</strong>。</p>
+<p>看下面这个<a href="https://paper.seebug.org/1034/#step2-passthrough" target="_blank" rel="noopener">例子</a>：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210316211044098.png" alt="image-20210316211044098"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">调用者类名 调用者方法caller 调用者方法描述 被调用者类名 被调用者方法target 被调用者方法描述 调用者方法参数索引 调用者字段名 被调用者方法参数索引</span><br><span class="line">Main (Ljava/lang/String;)<span class="function">V main A <span class="title">method1</span> <span class="params">(Ljava/lang/String;)</span>Ljava/lang/String</span>; <span class="number">1</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>先看作者给出的例子：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210316212942997.png" alt="image-20210316212942997"></p>
+<p>1/AbstractTableModel$ff19274a.hashcode与子方法IFn.invoke：</p>
+<ul>
+<li>AbstractTableModel$ff19274a.hashcode的this(0参)传递给了IFn.invoke的1参，0-&gt;IFn.invoke()@1</li>
+<li>这里f是通过this._clojureFnMap(0参)获得的，并且f又作为IFn.invoke()的this(也是0参)，换句话说：AbstractTableModel$ff19274a.hashcode的0参传递给了IFn.invoke的零参，表示为0-&gt;IFn.invoke()@0</li>
+</ul>
+<p>2/FnCompose.invoke与子方法IFn.invoke：</p>
+<ul>
+<li>首先先看最里面，f1.invoke(arg)的参数arg为IFn.invoke(Object arg)的参数 都是1参 所以 1-&gt;IFn.invoke()@1 </li>
+<li>第二层，f1.invoke(arg)里面的f1，是FnCompose的类属性 属于0参 在f1.invoke(arg)里面也是this，所以0-&gt;IFn.invoke()@0</li>
+<li>第三层，f2.invoke(f1.invoke(arg))，这里面 f1.invoke(arg)按道理是作为1参，但是对于f1反序列化来说，我们可以控制具体是IFn的哪个实现类，所以这里f1.invoke(arg)也可以看成是0参(一种合理的风险推测)，所以是0-&gt;IFn.invoke()@1</li>
+</ul>
+<p>具体看源码</p>
+<p>discover-&gt;ModelGeneratorClassVisitor</p>
+<p>直接跟gadgetinspector.CallGraphDiscovery#discover：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201201093433260.png" alt="image-20201201093433260"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//加载所有方法信息</span></span><br><span class="line">Map&lt;MethodReference.Handle, MethodReference&gt; methodMap = DataLoader.loadMethods();</span><br><span class="line"><span class="comment">//加载所有类信息</span></span><br><span class="line">Map&lt;ClassReference.Handle, ClassReference&gt; classMap = DataLoader.loadClasses();</span><br><span class="line"><span class="comment">//加载所有父子类、超类、实现类关系</span></span><br><span class="line">InheritanceMap inheritanceMap = InheritanceMap.load();</span><br><span class="line"><span class="comment">//加载所有方法参数和返回值的污染关联</span></span><br><span class="line">Map&lt;MethodReference.Handle, Set&lt;Integer&gt;&gt; passthroughDataflow = PassthroughDiscovery.load();</span><br></pre></td></tr></table></figure>
+
+<p>接着遍历每一个class，并对其使用ASM进行观察：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201201094123852.png" alt="image-20201201094123852"></p>
+<p>ModelGeneratorClassVisitor实现主要就是对每一个方法都进行了ASM的观察：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201201095156174.png" alt="image-20201201095156174"></p>
+<p>ModelGeneratorMethodVisitor的实现，是这一步的重点逻辑所在，因为单单文字描述可能理解不太清楚，这边继续以<a href="https://xz.aliyun.com/t/7058" target="_blank" rel="noopener">一个例子</a>进行讲解：</p>
+<img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210319000648951.png" alt="image-20210319000648951" style="zoom:50%;">
+
+<p>可以看到上述例子中，Main的main方法中，调用了A.method1方法，并且入参是main的参数args以及Main的字段name</p>
+<p>ASM的实现流程：</p>
+<ul>
+<li>在Main.main方法体被观察到的第一时间，ASM会调用ModelGeneratorMethodVisitor.visitCode，在这个方法中，根据参数的数量，一一形成名称arg0、arg1…，然后放入到本地变量表，本地变量表现在是0:arg0，1:args;</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.visitCode();</span><br><span class="line">    <span class="keyword">int</span> localIndex = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> argIndex = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//使用arg前缀来表示方法入参，后续用于判断是否为目标调用方法的入参</span></span><br><span class="line">    <span class="keyword">if</span> ((<span class="keyword">this</span>.access &amp; Opcodes.ACC_STATIC) == <span class="number">0</span>) &#123;</span><br><span class="line">        setLocalTaint(localIndex, <span class="string">"arg"</span> + argIndex);</span><br><span class="line">        localIndex += <span class="number">1</span>;</span><br><span class="line">        argIndex += <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (Type argType : Type.getArgumentTypes(desc)) &#123;</span><br><span class="line">        setLocalTaint(localIndex, <span class="string">"arg"</span> + argIndex);</span><br><span class="line">        localIndex += argType.getSize();</span><br><span class="line">        argIndex += <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>接着，因为即将要调用A.method1，ASM会调用visitVarInsn，先是aload_1将本地变量表中1号索引args入栈，然后aload_0将arg0入栈。</li>
+</ul>
+<img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201201101122436.png" alt="image-20201201101122436" style="zoom:50%;">
+
+<ul>
+<li><p>然后，ASM调用visitVarInsn把当前实例对应的参数入栈，上一步visitCode已经把实例命名为arg0存在本地变量表中，因此入栈的参数名称为arg0，接下来会执行getfield指令，对应调用ASM内部的visitFieldInsn获取字段name，并命名为arg0.name入栈。这里详细说一下，作者这里判断了字段是否是transient的。</p>
+<blockquote>
+<p>transient修饰符通常用于在那些实现了序列化接口的类中，不想被序列化的field。</p>
+<p>一旦被transient修饰过后的变量，该变量内容在序列化后无法获得访问。</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">switch</span> (opcode) &#123;</span><br><span class="line">                <span class="keyword">case</span> Opcodes.GETSTATIC:</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> Opcodes.PUTSTATIC:</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> Opcodes.GETFIELD:</span><br><span class="line">                    Type type = Type.getType(desc);<span class="comment">//获取字段类型</span></span><br><span class="line">                    <span class="keyword">if</span> (type.getSize() == <span class="number">1</span>) &#123;</span><br><span class="line">                        <span class="comment">//size=1可能为引用类型</span></span><br><span class="line">                        Boolean isTransient = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">                        <span class="comment">// If a field type could not possibly be serialized, it's effectively transient</span></span><br><span class="line">                        <span class="comment">//判断调用的字段类型是否可序列化</span></span><br><span class="line">                        <span class="keyword">if</span> (!couldBeSerialized(serializableDecider, inheritanceMap, <span class="keyword">new</span> ClassReference.Handle(type.getInternalName()))) &#123;</span><br><span class="line">                            isTransient = Boolean.TRUE;</span><br><span class="line">                        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                            <span class="comment">//若调用的字段可被序列化，则取当前类实例的所有字段，找出调用的字段，去判断是否被标识了transient</span></span><br><span class="line">                            ClassReference clazz = classMap.get(<span class="keyword">new</span> ClassReference.Handle(owner));</span><br><span class="line">                            <span class="keyword">while</span> (clazz != <span class="keyword">null</span>) &#123;</span><br><span class="line">                                <span class="comment">//遍历字段，判断是否是transient类型，以确定是否可被序列化</span></span><br><span class="line">                                <span class="keyword">for</span> (ClassReference.Member member : clazz.getMembers()) &#123;</span><br><span class="line">                                    <span class="keyword">if</span> (member.getName().equals(name)) &#123;</span><br><span class="line">                                        isTransient = (member.getModifiers() &amp; Opcodes.ACC_TRANSIENT) != <span class="number">0</span>;</span><br><span class="line">                                        <span class="keyword">break</span>;</span><br><span class="line">                                    &#125;</span><br><span class="line">                                &#125;</span><br><span class="line">                                <span class="keyword">if</span> (isTransient != <span class="keyword">null</span>) &#123;</span><br><span class="line">                                    <span class="keyword">break</span>;</span><br><span class="line">                                &#125;</span><br><span class="line">                                <span class="comment">//若找不到字段，则向上父类查找，继续遍历</span></span><br><span class="line">                                clazz = classMap.get(<span class="keyword">new</span> ClassReference.Handle(clazz.getSuperClass()));</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line"></span><br><span class="line">                        Set&lt;Integer&gt; taint;</span><br><span class="line">                        <span class="keyword">if</span> (!Boolean.TRUE.equals(isTransient)) &#123;</span><br><span class="line">                            <span class="comment">//若不是Transient字段，则从栈顶取出它，取出的是this或某实例变量，即字段所属实例</span></span><br><span class="line">                            taint = getStackTaint(<span class="number">0</span>);</span><br><span class="line">                        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                            taint = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">                        &#125;</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">super</span>.visitFieldInsn(opcode, owner, name, desc);</span><br><span class="line">                        <span class="comment">//在调用方法前，都会先入栈，作为参数</span></span><br><span class="line">                        setStackTaint(<span class="number">0</span>, taint);</span><br><span class="line">                        <span class="keyword">return</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br></pre></td></tr></table></figure>
+
+<img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210319103128715.png" alt="image-20210319103128715" style="zoom:80%;">
+
+<ul>
+<li>getfield之后，就是调用method1方法，对应的JVM指令是invokevirtual，所以ASM调用visitMethodInsn，因为Main.main调用了A.method1，在这里个环境，清楚的用代码解释了为什么前面需要把参数命名为arg0、arg1、arg0.name这样，因为需要通过这样的一个字符串名称，和被调用方法的入参进行关联，并最终形成调用者和被调用者直接的参数关联。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">visitMethodInsn</span><span class="params">(<span class="keyword">int</span> opcode, String owner, String name, String desc, <span class="keyword">boolean</span> itf)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//获取被调用method的参数和类型，非静态方法需要把实例类型放在第一个元素</span></span><br><span class="line">    Type[] argTypes = Type.getArgumentTypes(desc);</span><br><span class="line">    <span class="keyword">if</span> (opcode != Opcodes.INVOKESTATIC) &#123;</span><br><span class="line">        Type[] extendedArgTypes = <span class="keyword">new</span> Type[argTypes.length+<span class="number">1</span>];</span><br><span class="line">        System.arraycopy(argTypes, <span class="number">0</span>, extendedArgTypes, <span class="number">1</span>, argTypes.length);</span><br><span class="line">        extendedArgTypes[<span class="number">0</span>] = Type.getObjectType(owner);</span><br><span class="line">        argTypes = extendedArgTypes;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span> (opcode) &#123;</span><br><span class="line">        <span class="keyword">case</span> Opcodes.INVOKESTATIC:</span><br><span class="line">        <span class="keyword">case</span> Opcodes.INVOKEVIRTUAL:</span><br><span class="line">        <span class="keyword">case</span> Opcodes.INVOKESPECIAL:</span><br><span class="line">        <span class="keyword">case</span> Opcodes.INVOKEINTERFACE:</span><br><span class="line">            <span class="keyword">int</span> stackIndex = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; argTypes.length; i++) &#123;</span><br><span class="line">                <span class="comment">//最右边的参数，就是最后入栈，即在栈顶</span></span><br><span class="line">                <span class="keyword">int</span> argIndex = argTypes.length-<span class="number">1</span>-i;</span><br><span class="line">                Type type = argTypes[argIndex];</span><br><span class="line">                <span class="comment">//操作数栈出栈，调用方法前，参数都已入栈</span></span><br><span class="line">                Set&lt;String&gt; taint = getStackTaint(stackIndex);</span><br><span class="line">                <span class="keyword">if</span> (taint.size() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="keyword">for</span> (String argSrc : taint) &#123;</span><br><span class="line">                        <span class="comment">//取出出栈的参数，判断是否为当前方法的入参，arg前缀</span></span><br><span class="line">                        <span class="keyword">if</span> (!argSrc.substring(<span class="number">0</span>, <span class="number">3</span>).equals(<span class="string">"arg"</span>)) &#123;</span><br><span class="line">                            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Invalid taint arg: "</span> + argSrc);</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="keyword">int</span> dotIndex = argSrc.indexOf(<span class="string">'.'</span>);</span><br><span class="line">                        <span class="keyword">int</span> srcArgIndex;</span><br><span class="line">                        String srcArgPath;</span><br><span class="line">                        <span class="keyword">if</span> (dotIndex == -<span class="number">1</span>) &#123;</span><br><span class="line">                            srcArgIndex = Integer.parseInt(argSrc.substring(<span class="number">3</span>));</span><br><span class="line">                            srcArgPath = <span class="keyword">null</span>;</span><br><span class="line">                        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                            srcArgIndex = Integer.parseInt(argSrc.substring(<span class="number">3</span>, dotIndex));</span><br><span class="line">                            srcArgPath = argSrc.substring(dotIndex+<span class="number">1</span>);</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="comment">//记录参数流动关系</span></span><br><span class="line">                        <span class="comment">//argIndex：当前方法参数索引，srcArgIndex：对应上一级方法的参数索引</span></span><br><span class="line">                        discoveredCalls.add(<span class="keyword">new</span> GraphCall(</span><br><span class="line">                                <span class="keyword">new</span> MethodReference.Handle(<span class="keyword">new</span> ClassReference.Handle(<span class="keyword">this</span>.owner), <span class="keyword">this</span>.name, <span class="keyword">this</span>.desc),</span><br><span class="line">                                <span class="keyword">new</span> MethodReference.Handle(<span class="keyword">new</span> ClassReference.Handle(owner), name, desc),</span><br><span class="line">                                srcArgIndex,</span><br><span class="line">                                srcArgPath,</span><br><span class="line">                                argIndex));</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                stackIndex += type.getSize();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Unsupported opcode: "</span> + opcode);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">super</span>.visitMethodInsn(opcode, owner, name, desc, itf);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>到此，gadgetinspector.CallGraphDiscovery#discover方法就结束了，然后执行gadgetinspector.CallGraphDiscovery#save对调用者-被调用者参数关系数据进行保存到callgraph.dat文件，其中数据的序列化输出格式，由GraphCall.Factory实现:</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201201114033068.png" alt="image-20201201114033068"></p>
+<p>数据格式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">调用者类名 调用者方法caller 调用者方法描述 被调用者类名 被调用者方法target 被调用者方法描述 调用者方法参数索引 调用者字段名 被调用者方法参数索引</span><br><span class="line">Main (Ljava/lang/String;)<span class="function">V main A <span class="title">method1</span> <span class="params">(Ljava/lang/String;)</span>Ljava/lang/String</span>; <span class="number">1</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="利用链入口搜索-SourceDiscovery"><a href="#利用链入口搜索-SourceDiscovery" class="headerlink" title="利用链入口搜索 SourceDiscovery"></a>利用链入口搜索 SourceDiscovery</h2><p>在这一个阶段中，会扫描所有的class，把符合，也就是可被反序列化并且可以在反序列化执行的方法，全部查找出来，因为没有这样的入口，就算存在执行链，也没办法通过反序列化的时候进行触发。</p>
+<p>因为入口的触发，不同的反序列化方式会存在不同是实现，因此，在gadgetinspector中，存在着多个SourceDiscovery的实现，有jackson的，java原生序列化的等等，这里主要以jackson的SourceDiscovery实现开始分析。</p>
+<p>这一步会根据已知的反序列化漏洞的入口，检查所有可以被触发的方法。例如，在利用链中使用代理时，任何可序列化并且是<code>java/lang/reflect/InvocationHandler</code>子类的invoke方法都可以视为source。这里还会根据具体的反序列化库决定类是否能被序列化。</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201202104444974.png" alt="image-20201202104444974"></p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201202110221901.png" alt="image-20201202110221901"></p>
+<p>这里就是首先去查看想要找哪一种类型的反序列化漏洞入口点，</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201202110252070.png" alt="image-20201202110252070"></p>
+<p>跟进config.getSourceDiscovery看一眼：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201202110107440.png" alt="image-20201202110107440"></p>
+<p>先看SourceDiscovery抽象类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">SourceDiscovery</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> List&lt;Source&gt; discoveredSources = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">addDiscoveredSource</span><span class="params">(Source source)</span> </span>&#123;</span><br><span class="line">        discoveredSources.add(source);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">discover</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        Map&lt;ClassReference.Handle, ClassReference&gt; classMap = DataLoader.loadClasses();</span><br><span class="line">        Map&lt;MethodReference.Handle, MethodReference&gt; methodMap = DataLoader.loadMethods();</span><br><span class="line">        InheritanceMap inheritanceMap = InheritanceMap.load();</span><br><span class="line"></span><br><span class="line">        discover(classMap, methodMap, inheritanceMap);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">discover</span><span class="params">(Map&lt;ClassReference.Handle, ClassReference&gt; classMap,</span></span></span><br><span class="line"><span class="function"><span class="params">                         Map&lt;MethodReference.Handle, MethodReference&gt; methodMap,</span></span></span><br><span class="line"><span class="function"><span class="params">                         InheritanceMap inheritanceMap)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">save</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        DataLoader.saveData(Paths.get(<span class="string">"sources.dat"</span>), <span class="keyword">new</span> Source.Factory(), discoveredSources);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到它的discover实现中，加载了所有的类、方法、继承实现关系数据，接着调用抽象方法discover，然后，我们跟进jackson的具体实现中：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20201202104037072.png" alt="image-20201202104037072"></p>
+<p>从上述代码可以看出，实现非常之简单，只是判断了方法：</p>
+<ol>
+<li>是否无参构造方法</li>
+<li>是否getter方法</li>
+<li>是否setter方法</li>
+</ol>
+<p>为什么对于source会做这样的判断？因为对于jackson的反序列化，在其反序列化时，必须通过无参构造方法反序列化（没有则会反序列化失败），并且会根据一定情况调用其反序列化对象的getter、setter方法。</p>
+<p>这里SourceDiscovery是一个抽象类，具体情况具体继承分析，看一下它的的一个简单继承SimpleSourceDiscovery：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleSourceDiscovery</span> <span class="keyword">extends</span> <span class="title">SourceDiscovery</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">discover</span><span class="params">(Map&lt;ClassReference.Handle, ClassReference&gt; classMap,</span></span></span><br><span class="line"><span class="function"><span class="params">                         Map&lt;MethodReference.Handle, MethodReference&gt; methodMap,</span></span></span><br><span class="line"><span class="function"><span class="params">                         InheritanceMap inheritanceMap, Map&lt;MethodReference.Handle, Set&lt;GraphCall&gt;&gt; graphCallMap)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> SerializableDecider serializableDecider = <span class="keyword">new</span> SimpleSerializableDecider(inheritanceMap);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (MethodReference.Handle method : methodMap.keySet()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (Boolean.TRUE.equals(serializableDecider.apply(method.getClassReference()))) &#123;</span><br><span class="line">                <span class="keyword">if</span> (method.getName().equals(<span class="string">"finalize"</span>) &amp;&amp; method.getDesc().equals(<span class="string">"()V"</span>)) &#123;</span><br><span class="line">                    addDiscoveredSource(<span class="keyword">new</span> Source(method, <span class="number">0</span>));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// If a class implements readObject, the ObjectInputStream passed in is considered tainted</span></span><br><span class="line">        <span class="comment">// 如果类实现了readObject，则传入的ObjectInputStream被认为是污染的</span></span><br><span class="line">        <span class="keyword">for</span> (MethodReference.Handle method : methodMap.keySet()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (Boolean.TRUE.equals(serializableDecider.apply(method.getClassReference()))) &#123;</span><br><span class="line">                <span class="keyword">if</span> (method.getName().equals(<span class="string">"readObject"</span>) &amp;&amp; method.getDesc().equals(<span class="string">"(Ljava/io/ObjectInputStream;)V"</span>)) &#123;</span><br><span class="line">                    addDiscoveredSource(<span class="keyword">new</span> Source(method, <span class="number">1</span>));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Using the proxy trick, anything extending serializable and invocation handler is tainted.</span></span><br><span class="line">        <span class="comment">// 使用动态代理trick时，任何扩展了serializable and InvocationHandler的类会受到污染。</span></span><br><span class="line">        <span class="keyword">for</span> (ClassReference.Handle clazz : classMap.keySet()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (Boolean.TRUE.equals(serializableDecider.apply(clazz))</span><br><span class="line">                    &amp;&amp; inheritanceMap.isSubclassOf(clazz, <span class="keyword">new</span> ClassReference.Handle(<span class="string">"java/lang/reflect/InvocationHandler"</span>))) &#123;</span><br><span class="line">                MethodReference.Handle method = <span class="keyword">new</span> MethodReference.Handle(</span><br><span class="line">                        clazz, <span class="string">"invoke"</span>, <span class="string">"(Ljava/lang/Object;Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;"</span>);</span><br><span class="line"></span><br><span class="line">                addDiscoveredSource(<span class="keyword">new</span> Source(method, <span class="number">0</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// hashCode() or equals() are accessible entry points using standard tricks of putting those objects into a HashMap.</span></span><br><span class="line">        <span class="comment">// hashCode（）或equals（）是将对象放入HashMap的标准技巧的可访问入口点</span></span><br><span class="line">        <span class="keyword">for</span> (MethodReference.Handle method : methodMap.keySet()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (Boolean.TRUE.equals(serializableDecider.apply(method.getClassReference()))) &#123;</span><br><span class="line">                <span class="keyword">if</span> (method.getName().equals(<span class="string">"hashCode"</span>) &amp;&amp; method.getDesc().equals(<span class="string">"()I"</span>)) &#123;</span><br><span class="line">                    addDiscoveredSource(<span class="keyword">new</span> Source(method, <span class="number">0</span>));</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (method.getName().equals(<span class="string">"equals"</span>) &amp;&amp; method.getDesc().equals(<span class="string">"(Ljava/lang/Object;)Z"</span>)) &#123;</span><br><span class="line">                    addDiscoveredSource(<span class="keyword">new</span> Source(method, <span class="number">0</span>));</span><br><span class="line">                    addDiscoveredSource(<span class="keyword">new</span> Source(method, <span class="number">1</span>));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Using a comparator proxy, we can jump into the call() / doCall() method of any groovy Closure and all the</span></span><br><span class="line">        <span class="comment">// args are tainted.</span></span><br><span class="line">        <span class="comment">// 使用比较器代理，可以跳转到任何groovy Closure的call()/doCall()方法，所有的args都被污染</span></span><br><span class="line">        <span class="comment">// https://github.com/frohoff/ysoserial/blob/master/src/main/java/ysoserial/payloads/Groovy1.java</span></span><br><span class="line">        <span class="keyword">for</span> (MethodReference.Handle method : methodMap.keySet()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (Boolean.TRUE.equals(serializableDecider.apply(method.getClassReference()))</span><br><span class="line">                    &amp;&amp; inheritanceMap.isSubclassOf(method.getClassReference(), <span class="keyword">new</span> ClassReference.Handle(<span class="string">"groovy/lang/Closure"</span>))</span><br><span class="line">                    &amp;&amp; (method.getName().equals(<span class="string">"call"</span>) || method.getName().equals(<span class="string">"doCall"</span>))) &#123;</span><br><span class="line"></span><br><span class="line">                addDiscoveredSource(<span class="keyword">new</span> Source(method, <span class="number">0</span>));</span><br><span class="line">                Type[] methodArgs = Type.getArgumentTypes(method.getDesc());</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; methodArgs.length; i++) &#123;</span><br><span class="line">                    addDiscoveredSource(<span class="keyword">new</span> Source(method, i + <span class="number">1</span>));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>在扫描所有的方法后，具备条件的method都会被添加到gadgetinspector.SourceDiscovery#discoveredSources中，并最后通过gadgetinspector.SourceDiscovery#save保存</p>
+<p>最终输出到sources.dat文件的数据形式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">类名 方法名 方法描述 污染参数索引</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="gadgets挖掘阶段-GadgetChainDiscovery"><a href="#gadgets挖掘阶段-GadgetChainDiscovery" class="headerlink" title="gadgets挖掘阶段-GadgetChainDiscovery"></a>gadgets挖掘阶段-GadgetChainDiscovery</h2><p>这一步会遍历全部的source，并在callgraph.dat中递归查找所有可以继续传递污点参数的子方法调用，直至遇到sink中的方法。</p>
+<p>分析gadgetinspector.GadgetChainDiscovery#discover代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">discover</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Map&lt;MethodReference.Handle, MethodReference&gt; methodMap = DataLoader.loadMethods();</span><br><span class="line">        InheritanceMap inheritanceMap = InheritanceMap.load();</span><br><span class="line">        Map&lt;MethodReference.Handle, Set&lt;MethodReference.Handle&gt;&gt; methodImplMap = InheritanceDeriver.getAllMethodImplementations(</span><br><span class="line">                inheritanceMap, methodMap);<span class="comment">//得到方法的所有子类方法实现（被子类重写的方法）</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> ImplementationFinder implementationFinder = config.getImplementationFinder(</span><br><span class="line">                methodMap, methodImplMap, inheritanceMap);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//将方法的所有子类方法实现保存到methodimpl.dat</span></span><br><span class="line">        <span class="keyword">try</span> (Writer writer = Files.newBufferedWriter(Paths.get(<span class="string">"methodimpl.dat"</span>))) &#123;</span><br><span class="line">            <span class="keyword">for</span> (Map.Entry&lt;MethodReference.Handle, Set&lt;MethodReference.Handle&gt;&gt; entry : methodImplMap.entrySet()) &#123;</span><br><span class="line">                writer.write(entry.getKey().getClassReference().getName());</span><br><span class="line">                writer.write(<span class="string">"\t"</span>);</span><br><span class="line">                writer.write(entry.getKey().getName());</span><br><span class="line">                writer.write(<span class="string">"\t"</span>);</span><br><span class="line">                writer.write(entry.getKey().getDesc());</span><br><span class="line">                writer.write(<span class="string">"\n"</span>);</span><br><span class="line">                <span class="keyword">for</span> (MethodReference.Handle method : entry.getValue()) &#123;</span><br><span class="line">                    writer.write(<span class="string">"\t"</span>);</span><br><span class="line">                    writer.write(method.getClassReference().getName());</span><br><span class="line">                    writer.write(<span class="string">"\t"</span>);</span><br><span class="line">                    writer.write(method.getName());</span><br><span class="line">                    writer.write(<span class="string">"\t"</span>);</span><br><span class="line">                    writer.write(method.getDesc());</span><br><span class="line">                    writer.write(<span class="string">"\n"</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//方法调用map，key为父方法，value为子方法与父方法参数传递关系</span></span><br><span class="line">        Map&lt;MethodReference.Handle, Set&lt;GraphCall&gt;&gt; graphCallMap = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (GraphCall graphCall : DataLoader.loadData(Paths.get(<span class="string">"callgraph.dat"</span>), <span class="keyword">new</span> GraphCall.Factory())) &#123;</span><br><span class="line">            MethodReference.Handle caller = graphCall.getCallerMethod();</span><br><span class="line">            <span class="keyword">if</span> (!graphCallMap.containsKey(caller)) &#123;</span><br><span class="line">                Set&lt;GraphCall&gt; graphCalls = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">                graphCalls.add(graphCall);</span><br><span class="line">                graphCallMap.put(caller, graphCalls);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                graphCallMap.get(caller).add(graphCall);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//exploredMethods保存在调用链从查找过程中已经访问过的方法节点，methodsToExplore保存调用链</span></span><br><span class="line">        Set&lt;GadgetChainLink&gt; exploredMethods = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">        LinkedList&lt;GadgetChain&gt; methodsToExplore = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">        <span class="comment">//加载所有sources，并将每个source作为每条链的第一个节点</span></span><br><span class="line">        <span class="keyword">for</span> (Source source : DataLoader.loadData(Paths.get(<span class="string">"sources.dat"</span>), <span class="keyword">new</span> Source.Factory())) &#123;</span><br><span class="line">            GadgetChainLink srcLink = <span class="keyword">new</span> GadgetChainLink(source.getSourceMethod(), source.getTaintedArgIndex());</span><br><span class="line">            <span class="keyword">if</span> (exploredMethods.contains(srcLink)) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            methodsToExplore.add(<span class="keyword">new</span> GadgetChain(Arrays.asList(srcLink)));</span><br><span class="line">            exploredMethods.add(srcLink);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">long</span> iteration = <span class="number">0</span>;</span><br><span class="line">        Set&lt;GadgetChain&gt; discoveredGadgets = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">        <span class="comment">//使用广度优先搜索所有从source到sink的调用链</span></span><br><span class="line">        <span class="keyword">while</span> (methodsToExplore.size() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> ((iteration % <span class="number">1000</span>) == <span class="number">0</span>) &#123;</span><br><span class="line">                LOGGER.info(<span class="string">"Iteration "</span> + iteration + <span class="string">", Search space: "</span> + methodsToExplore.size());</span><br><span class="line">            &#125;</span><br><span class="line">            iteration += <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">            GadgetChain chain = methodsToExplore.pop();<span class="comment">//从队首弹出一条链</span></span><br><span class="line">            GadgetChainLink lastLink = chain.links.get(chain.links.size()-<span class="number">1</span>);<span class="comment">//取这条链最后一个节点</span></span><br><span class="line"></span><br><span class="line">            Set&lt;GraphCall&gt; methodCalls = graphCallMap.get(lastLink.method);<span class="comment">//获取当前节点方法所有子方法与当前节点方法参数传递关系</span></span><br><span class="line">            <span class="keyword">if</span> (methodCalls != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">for</span> (GraphCall graphCall : methodCalls) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (graphCall.getCallerArgIndex() != lastLink.taintedArgIndex) &#123;</span><br><span class="line">                        <span class="comment">//如果当前节点方法的污染参数与当前子方法受父方法参数影响的Index不一致则跳过</span></span><br><span class="line">                        <span class="keyword">continue</span>;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    Set&lt;MethodReference.Handle&gt; allImpls = implementationFinder.getImplementations(graphCall.getTargetMethod());<span class="comment">//获取子方法所在类的所有子类重写方法</span></span><br><span class="line"></span><br><span class="line">                    <span class="keyword">for</span> (MethodReference.Handle methodImpl : allImpls) &#123;</span><br><span class="line">                        GadgetChainLink newLink = <span class="keyword">new</span> GadgetChainLink(methodImpl, graphCall.getTargetArgIndex());<span class="comment">//新方法节点</span></span><br><span class="line">                        <span class="keyword">if</span> (exploredMethods.contains(newLink)) &#123;</span><br><span class="line">                            <span class="comment">//如果新方法已近被访问过了，则跳过,这里能减少开销。但是这一步跳过会使其他链/分支链经过此节点时，由于已经此节点被访问过了，链会在这里断掉。那么如果这个条件去掉就能实现找到所有链了吗？这里去掉会遇到环状问题，造成路径无限增加...</span></span><br><span class="line">                            <span class="keyword">continue</span>;</span><br><span class="line">                        &#125;</span><br><span class="line"></span><br><span class="line">                        GadgetChain newChain = <span class="keyword">new</span> GadgetChain(chain, newLink);<span class="comment">//新节点与之前的链组成新链</span></span><br><span class="line">                        <span class="keyword">if</span> (isSink(methodImpl, graphCall.getTargetArgIndex(), inheritanceMap)) &#123;<span class="comment">//如果到达了sink，则加入discoveredGadgets</span></span><br><span class="line">                            discoveredGadgets.add(newChain);</span><br><span class="line">                        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                            <span class="comment">//新链加入队列</span></span><br><span class="line">                            methodsToExplore.add(newChain);</span><br><span class="line">                            <span class="comment">//新节点加入已访问集合</span></span><br><span class="line">                            exploredMethods.add(newLink);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//保存搜索到的利用链到gadget-chains.txt</span></span><br><span class="line">        <span class="keyword">try</span> (OutputStream outputStream = Files.newOutputStream(Paths.get(<span class="string">"gadget-chains.txt"</span>));</span><br><span class="line">             Writer writer = <span class="keyword">new</span> OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) &#123;</span><br><span class="line">            <span class="keyword">for</span> (GadgetChain chain : discoveredGadgets) &#123;</span><br><span class="line">                printGadgetChain(writer, chain);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>这里先看一下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;MethodReference.Handle, Set&lt;MethodReference.Handle&gt;&gt; methodImplMap = InheritanceDeriver.getAllMethodImplementations(inheritanceMap, methodMap);</span><br></pre></td></tr></table></figure>
+
+<p>这里是为了得到父类方法的所有子类方法实现（被子类重写的方法）</p>
+<p>因为Java的继承特性，对于一个父类，它的方法实现，可以通过子孙类进行重写覆盖。</p>
+<p>因为多态特性，实现类只有运行时可确定，因此，需要对其所有重写实现都形成分析链，就能确保在非运行时，做到gadget chain的挖掘。</p>
+<p>分析InheritanceDeriver.getAllMethodImplementations代码：</p>
+<p>首先获取类对应的方法集合，就是每个里面有哪些方法。</p>
+<p>methodByClass：类名-类拥有的方法名</p>
+<img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210322115045568.png" alt="image-20210322115045568" style="zoom:80%;">
+
+<p>subClassMap：父类-继承的子孙类</p>
+<img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210322115453899.png" alt="image-20210322115453899" style="zoom:80%;">
+
+
+
+<p>接下来遍历methodMap中的每个方法，并通过查询继承了方法所属类的子孙类的方法实现，确定方法是否被重写，最后整合成 方法-&gt;重写的方法集 的映射集合，静态方法跳过，是不可被重写的。</p>
+<img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210322131051058.png" alt="image-20210322131051058" style="zoom:80%;">
+
+
+
+<p>保存的数据格式：</p>
+<p><img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210322132035155.png" alt="image-20210322132035155"></p>
+<p>接下来整合：</p>
+<img src="../images/GadgetInspector%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210322132556641.png" alt="image-20210322132556641" style="zoom:100%;">
+
+<p>太晕了。。有时间整理。</p>
+<p>作者给出的判断sink方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">isSink</span><span class="params">(MethodReference.Handle method, <span class="keyword">int</span> argIndex, InheritanceMap inheritanceMap)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (method.getClassReference().getName().equals(<span class="string">"java/io/FileInputStream"</span>)</span><br><span class="line">                &amp;&amp; method.getName().equals(<span class="string">"&lt;init&gt;"</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (method.getClassReference().getName().equals(<span class="string">"java/io/FileOutputStream"</span>)</span><br><span class="line">                &amp;&amp; method.getName().equals(<span class="string">"&lt;init&gt;"</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (method.getClassReference().getName().equals(<span class="string">"java/nio/file/Files"</span>)</span><br><span class="line">                &amp;&amp; (method.getName().equals(<span class="string">"newInputStream"</span>)</span><br><span class="line">                || method.getName().equals(<span class="string">"newOutputStream"</span>)</span><br><span class="line">                || method.getName().equals(<span class="string">"newBufferedReader"</span>)</span><br><span class="line">                || method.getName().equals(<span class="string">"newBufferedWriter"</span>))) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (method.getClassReference().getName().equals(<span class="string">"java/lang/Runtime"</span>)</span><br><span class="line">                &amp;&amp; method.getName().equals(<span class="string">"exec"</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">        if (method.getClassReference().getName().equals("java/lang/Class")</span></span><br><span class="line"><span class="comment">                &amp;&amp; method.getName().equals("forName")) &#123;</span></span><br><span class="line"><span class="comment">            return true;</span></span><br><span class="line"><span class="comment">        &#125;</span></span><br><span class="line"><span class="comment">        if (method.getClassReference().getName().equals("java/lang/Class")</span></span><br><span class="line"><span class="comment">                &amp;&amp; method.getName().equals("getMethod")) &#123;</span></span><br><span class="line"><span class="comment">            return true;</span></span><br><span class="line"><span class="comment">        &#125;</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">        <span class="comment">// If we can invoke an arbitrary method, that's probably interesting (though this doesn't assert that we</span></span><br><span class="line">        <span class="comment">// can control its arguments). Conversely, if we can control the arguments to an invocation but not what</span></span><br><span class="line">        <span class="comment">// method is being invoked, we don't mark that as interesting.</span></span><br><span class="line">        <span class="keyword">if</span> (method.getClassReference().getName().equals(<span class="string">"java/lang/reflect/Method"</span>)</span><br><span class="line">                &amp;&amp; method.getName().equals(<span class="string">"invoke"</span>) &amp;&amp; argIndex == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (method.getClassReference().getName().equals(<span class="string">"java/net/URLClassLoader"</span>)</span><br><span class="line">                &amp;&amp; method.getName().equals(<span class="string">"newInstance"</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (method.getClassReference().getName().equals(<span class="string">"java/lang/System"</span>)</span><br><span class="line">                &amp;&amp; method.getName().equals(<span class="string">"exit"</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (method.getClassReference().getName().equals(<span class="string">"java/lang/Shutdown"</span>)</span><br><span class="line">                &amp;&amp; method.getName().equals(<span class="string">"exit"</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (method.getClassReference().getName().equals(<span class="string">"java/lang/Runtime"</span>)</span><br><span class="line">                &amp;&amp; method.getName().equals(<span class="string">"exit"</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (method.getClassReference().getName().equals(<span class="string">"java/nio/file/Files"</span>)</span><br><span class="line">                &amp;&amp; method.getName().equals(<span class="string">"newOutputStream"</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (method.getClassReference().getName().equals(<span class="string">"java/lang/ProcessBuilder"</span>)</span><br><span class="line">                &amp;&amp; method.getName().equals(<span class="string">"&lt;init&gt;"</span>) &amp;&amp; argIndex &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (inheritanceMap.isSubclassOf(method.getClassReference(), <span class="keyword">new</span> ClassReference.Handle(<span class="string">"java/lang/ClassLoader"</span>))</span><br><span class="line">                &amp;&amp; method.getName().equals(<span class="string">"&lt;init&gt;"</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (method.getClassReference().getName().equals(<span class="string">"java/net/URL"</span>) &amp;&amp; method.getName().equals(<span class="string">"openStream"</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// Some groovy-specific sinks</span></span><br><span class="line">        <span class="keyword">if</span> (method.getClassReference().getName().equals(<span class="string">"org/codehaus/groovy/runtime/InvokerHelper"</span>)</span><br><span class="line">                &amp;&amp; method.getName().equals(<span class="string">"invokeMethod"</span>) &amp;&amp; argIndex == <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (inheritanceMap.isSubclassOf(method.getClassReference(), <span class="keyword">new</span> ClassReference.Handle(<span class="string">"groovy/lang/MetaClass"</span>))</span><br><span class="line">                &amp;&amp; Arrays.asList(<span class="string">"invokeMethod"</span>, <span class="string">"invokeConstructor"</span>, <span class="string">"invokeStaticMethod"</span>).contains(method.getName())) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于每个入口节点来说，其全部子方法调用、孙子方法调用等等递归下去，就构成了一棵树。之前的步骤所做的，就相当于生成了这颗树，而这一步所做的，就是从根节点出发，找到一条通往叶子节点的道路，使得这个叶子节点正好是我们所期望的sink方法。gadgetinspector对树的遍历采用的是广度优先(BFS)，而且对于已经检查过的节点会直接跳过，<strong>这样减少了运行开销，避免了环路，但是丢掉了很多其他链。</strong></p>
+<h2 id="GI的缺点"><a href="#GI的缺点" class="headerlink" title="GI的缺点"></a>GI的缺点</h2><ol>
+<li>对于运行时确定的实现，也就是多态性，没办法做到污点分析：</li>
+<li>还是因为多态的原因，还是没法做到完整的调用链搜索</li>
+<li></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/GadgetInspector/" rel="tag"><i class="fa fa-tag"></i>GadgetInspector</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/" rel="prev" title="Java类加载器">
+      <i class="fa fa-chevron-left"></i> Java类加载器
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Neo4j%E7%88%AC%E5%9D%91%E8%AE%B0/" rel="next" title="Neo4j爬坑记">
+      Neo4j爬坑记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+      <!--
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://link.hhtjim.com/163/26348068.mp3"></iframe>
+      -->
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">2.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#流程介绍"><span class="nav-number">3.</span> <span class="nav-text">流程介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化"><span class="nav-number">3.1.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#包装类加载器"><span class="nav-number">3.2.</span> <span class="nav-text">包装类加载器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法探索-MethodDiscovery"><span class="nav-number">3.3.</span> <span class="nav-text">方法探索 MethodDiscovery</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#discover"><span class="nav-number">3.3.1.</span> <span class="nav-text">discover()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#save"><span class="nav-number">3.3.2.</span> <span class="nav-text">save()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流程图探索-PassthroughDiscovery"><span class="nav-number">3.4.</span> <span class="nav-text">流程图探索 PassthroughDiscovery</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#discover-1"><span class="nav-number">3.4.1.</span> <span class="nav-text">discover()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成passthrough数据流图"><span class="nav-number">3.4.2.</span> <span class="nav-text">生成passthrough数据流图</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法调用探索-CallGraphDiscovery"><span class="nav-number">3.5.</span> <span class="nav-text">方法调用探索 CallGraphDiscovery</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用链入口搜索-SourceDiscovery"><span class="nav-number">3.6.</span> <span class="nav-text">利用链入口搜索 SourceDiscovery</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gadgets挖掘阶段-GadgetChainDiscovery"><span class="nav-number">3.7.</span> <span class="nav-text">gadgets挖掘阶段-GadgetChainDiscovery</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GI的缺点"><span class="nav-number">3.8.</span> <span class="nav-text">GI的缺点</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="0range"
+      src="/images/yfy.png">
+  <p class="site-author-name" itemprop="name">0range</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/0range228" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;0range228" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      友链
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://m0d9.me/" title="http:&#x2F;&#x2F;m0d9.me&#x2F;" rel="noopener" target="_blank">yangbh</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.0kami.cn/" title="https:&#x2F;&#x2F;blog.0kami.cn&#x2F;" rel="noopener" target="_blank">wh1t3p1g</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.kingkk.com/" title="https:&#x2F;&#x2F;www.kingkk.com&#x2F;" rel="noopener" target="_blank">kingkk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/tr1ple/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;tr1ple&#x2F;" rel="noopener" target="_blank">tr1ple</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.yuque.com/ni4n/blogs" title="https:&#x2F;&#x2F;www.yuque.com&#x2F;ni4n&#x2F;blogs" rel="noopener" target="_blank">Ni4n</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://anemone.top/" title="http:&#x2F;&#x2F;anemone.top" rel="noopener" target="_blank">Anemone</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://summersec.github.io/" title="https:&#x2F;&#x2F;summersec.github.io" rel="noopener" target="_blank">SummerSec</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.zhihu.com/people/chenwengang" title="https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;chenwengang" rel="noopener" target="_blank">ApsarasX</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart" aria-hidden="true"></i>
+  </span>
+   Powered By - 
+  <span class="author" itemprop="copyrightHolder">0range</span>
+
+  <!--
+    <span class="post-meta-divider"> | </span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">575k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">15:58</span>
+  -->
+
+</div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+            'X-LC-Key'    : 'l8KvoMr1i8urA7X7BzPMtQC7',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+      appKey     : 'l8KvoMr1i8urA7X7BzPMtQC7',
+      placeholder: "Say Something~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+
+<!--
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unjkp.com/valine/dist/Valine.min.js"></script>  
+  <script src="/js/Valine.min.js"></script> 
+
+   
+  
+  <script src="/js/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+        appKey: 'l8KvoMr1i8urA7X7BzPMtQC7',
+        placeholder: 'Say Something~',
+        avatar:'mm',
+        guest_info:['nick'] ,  //评论者只需要提供评论的昵称即可
+        pageSize:'10' || 10,
+    });
+  
+    var infoEle = document.querySelector('#comments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0){
+      infoEle.childNodes.forEach(function(item) {
+        item.parentNode.removeChild(item);
+      });
+    }
+  </script>
+
+-->
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/click_love.js"></script>

@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-pace-theme-flash.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<!--
+
+  <script src="//code.tidio.co/oixl41gwhy8tvqy6jte9uvglyrqcjrvc.js" async></script>
+
+-->
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"0range228.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+  <meta name="description" content="序言 跬步而不休，跛鳖千里。  今天来学习Soot，主要来膜拜这篇神文。 http:&#x2F;&#x2F;sable.github.io&#x2F;soot&#x2F;resources&#x2F;lblh11soot.pdf">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Soot">
+<meta property="og:url" content="https://0range228.github.io/Soot/index.html">
+<meta property="og:site_name" content="0range的小窝">
+<meta property="og:description" content="序言 跬步而不休，跛鳖千里。  今天来学习Soot，主要来膜拜这篇神文。 http:&#x2F;&#x2F;sable.github.io&#x2F;soot&#x2F;resources&#x2F;lblh11soot.pdf">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0range228.github.io/images/Soot/image-20200424175153089.png">
+<meta property="article:published_time" content="2020-04-24T08:49:59.000Z">
+<meta property="article:modified_time" content="2020-04-27T13:37:32.683Z">
+<meta property="article:author" content="0range">
+<meta property="article:tag" content="Soot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0range228.github.io/images/Soot/image-20200424175153089.png">
+
+<link rel="canonical" href="https://0range228.github.io/Soot/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>Soot | 0range的小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="0range的小窝" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+<a href="https://github.com/0range228" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#FFA500; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">0range的小窝</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Trust the process.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">25</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">12</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">43</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://0range228.github.io/Soot/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/yfy.png">
+      <meta itemprop="name" content="0range">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="0range的小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Soot
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-24 16:49:59" itemprop="dateCreated datePublished" datetime="2020-04-24T16:49:59+08:00">2020-04-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-27 21:37:32" itemprop="dateModified" datetime="2020-04-27T21:37:32+08:00">2020-04-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Papers/" itemprop="url" rel="index"><span itemprop="name">Papers</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/Soot/" class="post-meta-item leancloud_visitors" data-flag-title="Soot" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度：</span>
+              <span class="leancloud-visitors-count"></span>
+              <span>°C</span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/Soot/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Soot/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>12 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>跬步而不休，跛鳖千里。</p>
+</blockquote>
+<p>今天来学习Soot，主要来膜拜这篇神文。</p>
+<p><a href="http://sable.github.io/soot/resources/lblh11soot.pdf" target="_blank" rel="noopener">http://sable.github.io/soot/resources/lblh11soot.pdf</a></p>
+<a id="more"></a>
+
+<h1 id="I-INTRODUCTION"><a href="#I-INTRODUCTION" class="headerlink" title="I. INTRODUCTION"></a>I. INTRODUCTION</h1><p><a href="https://github.com/Sable/soot" target="_blank" rel="noopener">Soot</a>是一款针对Java语言进行静态分析的框架，诞生于2000年。</p>
+<p>它允许研究人员在它的基础上开发静态分析工具。</p>
+<p>针对它的核心来说，它是一款编译器。</p>
+<p>它接收JVM字节码文件或者Java源码，并且主要返回Java字节码。</p>
+<p>Soot的主要特点：</p>
+<ol>
+<li>简化JVM的字节码文件，转换为三地址码的中间表示形式；</li>
+<li>大量的指针分析；</li>
+<li>调用图构造算法API；</li>
+<li>可以生成可执行的JVM字节码文件；</li>
+</ol>
+<h1 id="Ⅱ-FEATURES"><a href="#Ⅱ-FEATURES" class="headerlink" title="Ⅱ. FEATURES"></a>Ⅱ. FEATURES</h1><p>##程序内特征 intraprocedual</p>
+<p>Soot的基本中间代码表示形式是Jimple，Jimple就是一种三地址代码。</p>
+<p>Jimple诞生的初衷是由于：</p>
+<p>直接分析字节码是很困难的。</p>
+<p>尽管可以为Java字节码构造控制流图，但是往往隐式的堆栈活动会掩盖住数据流。</p>
+<p>并且对于一个给定的字节码指令s来说，基于堆栈的s的输入往往并不是在变址处产生的。</p>
+<p>所以soot的作者发现，<strong>将数据存储在指定的局部变量中，而不是隐式堆栈中，可以使得数据的局部流(沿着Jimple的控制流图)更加明显。</strong></p>
+<p>Jimple内的本地变量会根据（定义-使用链）(<em>define-use chains</em>)进行分类。</p>
+<p>Soot内部还有其他中间表示形式：</p>
+<ul>
+<li><p><strong>Shimple</strong>是基于SSA版本的Jimple；</p>
+</li>
+<li><p><strong>Baf</strong>和<strong>Grimple</strong>是用来生成字节码的；</p>
+</li>
+<li><p><strong>Dava</strong>是一个抽象的基于语法树的中间表示，它是由jimple IR反编译生成的。</p>
+</li>
+</ul>
+<p>Java字节码包含了原始源代码的类和方法结构等许多信息，所以在Soot的分析过程中，Soot可以自由地利用类和方法名信息。</p>
+<p>Soot还可以为它所分析的方法提供行号和变量名信息。</p>
+<p><img src="../images/Soot/image-20200424175153089.png" alt="image-20200424175153089"></p>
+<p>Soot最强大的一点是用户可以通过指定抽象类和实现该抽象的函数来创建数据流分析。</p>
+<p>Soot还为常见的抽象类提供了适配的数据结构实现。</p>
+<h2 id="过程间分析-interprocedural"><a href="#过程间分析-interprocedural" class="headerlink" title="过程间分析 interprocedural"></a>过程间分析 interprocedural</h2><p>复杂的静态分析需要调用图和指针信息，这从根本上讲是一个过程间的问题。 </p>
+<p>Soot包括Spark指针分析工具包，并且还支持基于BDD的PADDLE指针分析框架，该框架增加了上下文相关性。</p>
+<h3 id="调用图-Call-Graph"><a href="#调用图-Call-Graph" class="headerlink" title="调用图 Call Graph"></a>调用图 Call Graph</h3><p>Soot框架提供了调用图信息。对于每个调用点（call site），静态分析（尤其是过程间分析）需要知道该调用点的所有可能调用目标。</p>
+<p> Java的面向对象性质使此问题复杂化，因为被调用者（或目标）的身份取决于虚拟调用的接收者对象的<strong>运行时类型</strong>，而Java程序中的大多数调用都是虚拟调用。</p>
+<p>Spark的调用图构造算法会计算出运行时可能发生的一组调用的近似值。调用图边连接源（表示为（方法，语句）对）和目标（始终是方法中的第一个语句）。</p>
+<p><em>Over-approximation</em>意味着在程序的任何执行中可能发生的任何调用都必须出现在调用图中。</p>
+<p>Spark实现了许多不同的调用图构造方法，包括类层次分析和快速类型分析。</p>
+<p>但是，我们发现最有效的调用图构造方法是按需进行的，并在计算点对集的同时构建调用图，从CHA调用图作为可到达组的初始近似值的开始方法。</p>
+<p>可以通过查询call site生成调用图； 通过调用方法； 或“向后”（按目标方法）。</p>
+<p>出于效率考虑，Spark返回迭代器作为调用图查询的结果。 Spark还为客户提供了任何方法或语句的可传递目标集。 最后，Spark还公开了程序的可访问方法集-从程序的入口点可传递地访问的方法集（除程序的main（）方法外，还包括类初始化等）。</p>
+<h3 id="指针分析-Pointer-Analyses"><a href="#指针分析-Pointer-Analyses" class="headerlink" title="指针分析 Pointer Analyses"></a>指针分析 Pointer Analyses</h3><p>许多静态分析需要指针信息：</p>
+<p>它们需要知道两个变量p和q在运行时是否可以引用同一堆对象。 </p>
+<p>Spark实现了上下文无关的基于子集的指向分析（Andersenstyle）。</p>
+<p>分析可以查询要点分析，并获得由PointToSet表示的局部变量或对象字段所指向的对象的抽象。 </p>
+<p>PointsToSet支持两个查询：</p>
+<ol>
+<li>集合中对象的可能类型集合；</li>
+<li>两个PointsToSet对象是否具有非空交集。 可能的类型将有关方法调用的可能接收者的信息提供给变量，该变量的值指向设置的模型。 如果变量p和q具有非空交点的指向集，则它们可能指向同一对象。</li>
+</ol>
+<h3 id="副作用分析-Side-Effects"><a href="#副作用分析-Side-Effects" class="headerlink" title="副作用分析 Side Effects"></a>副作用分析 Side Effects</h3><p>副作用分析建立在（任何基于Soot的）指向和调用图分析之上。</p>
+<p>副作用分析可以确定语句s是否可能依赖于语句s’。 它通过为每个语句定义读写集，然后比较它们的交集来工作。 </p>
+<p>两个具有不相交的读写集的语句是独立的，而先写一个值的语句后跟另一个读相同值的语句遵循一个依赖关系。</p>
+<h3 id="Spark的替代和扩展"><a href="#Spark的替代和扩展" class="headerlink" title="Spark的替代和扩展"></a>Spark的替代和扩展</h3><p>尽管Spark是Soot的基本调用图和指针分析生成器，但它不是唯一的选择。 </p>
+<p> PADDLE 提供了基于BDD的上下文敏感指针分析； 但是，它在构建时和在运行时都需要额外的依赖关系。</p>
+<p>到目前为止，虽然我们已经描述了指针分析都是可能别名分析<em>may-alias</em>，但Soot还包含了过程内必需别名分析must-alias。 </p>
+<p>对象代表将此必须别名分析与过程内和整个程序的可能别名分析相集成； Spark是整个程序可能别名分析的来源之一。</p>
+<h3 id="反射"><a href="#反射" class="headerlink" title="反射"></a>反射</h3><p>许多Java程序都使用反射来按名称访问类或其成员。 </p>
+<p>这种反映性访问很难静态分析：</p>
+<p>类和方法名称可以在运行时计算，也可以从静态分析无法访问的文件中加载。</p>
+<p> 一种解决方法是在运行时记录有关反射用法的信息（需要训练），并在执行调用图和指向分析时使用此信息。</p>
+<h2 id="Soot输出"><a href="#Soot输出" class="headerlink" title="Soot输出"></a>Soot输出</h2><p>Soot支持使分析结果可用的多种机制。</p>
+<p>开发人员的选择包括：</p>
+<p>1）输出转换后的类文件； </p>
+<p>2）输出错误信息；</p>
+<p> 3）生成包含分析结果的HTML或图形；</p>
+<p>4）创建（潜在转换的）类文件，并从程序分析中获得结果。</p>
+<p>一个使用Soot变换类文件的工具示例是DUSC工具。</p>
+<p>该工具通过首先对应用程序执行保留语义的转换以实现动态更新，然后为应用程序的新版本创建Java类，从而可以在运行时进行交换，从而实现Java程序的动态软件更新。</p>
+<p>Soot还可以实现不保留语义的转换。</p>
+<p> Tkachuk和Dwyer使用Soot生成了系统环境行为的不可执行的摘要，从而简化了系统的后续模型检查。生成的环境摘要包括实际环境的所有可能影响，并使用Java字节码表示，并用特殊的建模原语（使用方法调用编写）扩充了这些摘要。</p>
+<h1 id="III-WORKING-WITH-AND-EXTENDING-SOOT"><a href="#III-WORKING-WITH-AND-EXTENDING-SOOT" class="headerlink" title="III. WORKING WITH AND EXTENDING SOOT"></a>III. WORKING WITH AND EXTENDING SOOT</h1><h2 id="运行Soot"><a href="#运行Soot" class="headerlink" title="运行Soot"></a>运行Soot</h2><p>在命令行上运行Soot是与Soot交互的最简单方法。 </p>
+<p>Jimple代码作为Java字节码的清理版本对人类很有用。实际上，我们专门为此目的创建了Jimple的Jimp方言。它牺牲了可读性的完整性，例如通过省略字段的全名。完整的Jimple可以重新编译为Java字节码，而Jimp对于手动检查最有用。</p>
+<p>Soot也可以优化字节码。但是，现代Java虚拟机和实时编译器在优化代码方面做得非常出色（使用仅在运行时可用的信息），因此Soot的优化不会提高常规字节码的性能。该优化对于非标准字节码（例如abc AspectJ编译器生成的字节码）很有用。</p>
+<p>运行Soot的另一种方法是通过其Eclipse插件。 Eclipse插件允许用户调用Soot（或其增强版本）。但是，更重要的是，它还允许用户查看Jimple CFG和静态分析结果。特别是，Soot Eclipse插件使开发人员可以在计算时查看流量分析结果。另外，该插件可以显示汇总分析结果的属性。</p>
+<h2 id="Building-on-soot"><a href="#Building-on-soot" class="headerlink" title="Building on soot"></a>Building on soot</h2><p>要使用Soot进行程序分析研究，用户必须编写扩展Soot功能的编译器遍历。</p>
+<p>Soot提供两种基本的通行证类型：BodyTransformers和SceneTransformers。 </p>
+<p><strong>BodyTransformer</strong>最适合进行过程内分析，并在程序中的每种方法上执行。 </p>
+<p><strong>SceneTransformer</strong>仅执行一次，并且可能会分析并处理整个程序。</p>
+<p>这些Transformer属于Packs，它们对应于编译器遍历的集合。我们已经记录了Soot开箱即用的套件包，研究人员可以自由地将其添加到所提供的套件（如果它在适当的阶段运行），或者创建自己的套件。</p>
+<p>不同的Transformer可以通过共享包含分析结果的Map或使用属性进行通信。</p>
+<p>我们明确选择禁止在IR语句上存储信息（例如，通过对Jimple Stmts进行子类化）来进行分析，因为这很难进行不同的分析。</p>
+<p>我们建议用户通过创建自己的自定义主类来向Soot添加通行证，该类通过添加适当的Transformer来操纵Soot的Pack，然后调用Soot main（）方法。</p>
+<p> Soot的Eclipse插件可用于生成此用例的模板（文件→新建→示例）。也可以手动调用Soot的main（）方法在自己的代码中调用的不同方法。尽管这是使用Soot的更灵活的方法，但我们不建议大多数用户使用它。</p>
+<h1 id="IV-SOOT-DEVELOPMENT-PROCESS-AND-COMMUNITY"><a href="#IV-SOOT-DEVELOPMENT-PROCESS-AND-COMMUNITY" class="headerlink" title="IV. SOOT DEVELOPMENT PROCESS AND COMMUNITY"></a>IV. SOOT DEVELOPMENT PROCESS AND COMMUNITY</h1><p>Soot最初是由Raja Vall´ee-Rai提出的理学硕士论文。</p>
+<p>最初的开发发生在对Java进行分析的最初兴趣激增期间。</p>
+<p>这种情况发生在1999–2000年，并最终发布了可行的过程内Java分析框架Soot 1.0。 </p>
+<p>Soot确实可以从这些程序的字节码（而不是源代码）开始对Java程序进行复杂的分析。自最初发布以来，Soot已添加了许多功能。</p>
+<p>Soot的核心开发围绕麦吉尔大学的Sable实验室进行。</p>
+<p>Soot的主要维护者的角色已经在麦吉尔的许多学生和校友中轮换。</p>
+<h2 id="A-Support-and-Community"><a href="#A-Support-and-Community" class="headerlink" title="A. Support and Community"></a>A. Support and Community</h2><p>有问题写邮件！</p>
+<h2 id="B-Documentation"><a href="#B-Documentation" class="headerlink" title="B. Documentation"></a>B. Documentation</h2><p>文档的最基本形式是API设计。</p>
+<p>第一作者回顾了与Raja进行的有关Soot API设计的广泛讨论。</p>
+<p>我们认为核心内部Soot API具有合理的自我文档编制和易用性。 Soot还提供了一些Javadoc文档注释来阐明API，但是提供完整的Javadoc覆盖范围非常繁琐。除非以某种方式众包此类文档，否则期望研究编译器框架附带完整的Javadoc文档注释是不合理的。</p>
+<p>我们相信，我们已经为研究编译器提供了人们所希望的最好的东西：良好的API设计以及偶尔的Javadoc注释。</p>
+<p>Soot团队还创建了一组文档，解释了如何使用Soot执行各种任务。这些文档将引导读者完成诸如执行数据流分析和向Java类文件添加属性的任务。</p>
+<p><a href="https://www.brics.dk/SootGuide/sootsurvivorsguide.pdf" target="_blank" rel="noopener">soot-survivor-guide</a></p>
+<p><a href="https://github.com/Sable/soot/wiki/Tutorials" target="_blank" rel="noopener">soot-wiki</a></p>
+<p>我们要指出的一种Soot帮助形式是错误消息。</p>
+<p>两个常见的触发点是OutOfMemoryError和incomplete-classpath错误。</p>
+<p>发生内存不足错误是因为Java虚拟机的默认内存分配不足以运行整个程序指针分析。因此，Soot会捕获此错误并显示一条错误消息，告诉用户如何增加内存分配。由于Soot需要程序的所有库来进行指针分析，因此会出现不完整类路径错误。当无法找到所需的类时，建议用户包括jce.jar和jsse.jar文件，它们很可能会丢失。</p>
+<h1 id="V-SOOT-’-S-PAST-EVOLUTION-FUTURE-WORK-ON-SOOT"><a href="#V-SOOT-’-S-PAST-EVOLUTION-FUTURE-WORK-ON-SOOT" class="headerlink" title="V. SOOT ’ S PAST EVOLUTION + FUTURE WORK ON SOOT"></a>V. SOOT ’ S PAST EVOLUTION + FUTURE WORK ON SOOT</h1><h2 id="Singletons-and-multiple-Soot-runs"><a href="#Singletons-and-multiple-Soot-runs" class="headerlink" title="Singletons and multiple Soot runs"></a>Singletons and multiple Soot runs</h2><p>Soot的最初设计在许多地方都使用了Singleton单例设计模式。 对于希望从自己的客户端代码多次调用Soot的用户而言，这是非常不便的。 我们重构了Soot以消除大多数单例和全局变量，将剩余的全局变量合并为G单例，并实施了静态分析以检测不在G中的单例和全局变量。我们还添加了G.reset（）方法，重置Soot的状态。</p>
+<h2 id="Partial-programs"><a href="#Partial-programs" class="headerlink" title="Partial programs"></a>Partial programs</h2><p>Soot要求为整个程序分析（例如指针分析）计算sound结果。 但是，许多应用程序（尤其是基于Eclipse的软件工程应用程序）没有或不需要整个程序。</p>
+<p>最近，我们还修复了Soot在不使用所有引用库的情况下对Java字节码进行分析的支持。</p>
+<h2 id="Java-front-end-parsers"><a href="#Java-front-end-parsers" class="headerlink" title="Java front-end parsers"></a>Java front-end parsers</h2><p>Soot最初不包括Java前端解析器。 幸运的是，这个问题引起了很多关注，并且Soot获得了基于Polyglot的Java前端，以及后来的Java 1.5兼容JastAddbased前端。</p>
+<h2 id="Increased-efﬁciency"><a href="#Increased-efﬁciency" class="headerlink" title="Increased efﬁciency"></a>Increased efﬁciency</h2><p>在需求驱动的基础上，我们提高了Soot选定零件的性能。 我们注意到，不可能从一开始就预测应该对哪些零件进行优化。 改进了类层次结构，紧密连接的组件，局部类型推断和局部def / uses计算器的应用，从而使Soot受益匪浅。</p>
+<h2 id="A-Future-Directions-for-Soot"><a href="#A-Future-Directions-for-Soot" class="headerlink" title="A. Future Directions for Soot"></a>A. Future Directions for Soot</h2><p>我们确定了Soot未来改进的三个方向：更快的启动和计算时间；过程间分析支持；并支持Java语言扩展。</p>
+<p>任何使用整个程序分析结果的分析都必须等待Soot解析成千上万的类文件。问题在于，即使最小的Java程序也包含对Java类库的依赖关系，该依赖关系在库类之间具有广泛的交叉引用。结果是，一旦分析需要指针分析结果，Soot的运行时间就会从不到10秒增加到超过一分钟。我们认为，也许可以使用Gligoric等人的技术一劳永逸地序列化Java类库生成的Jimple代码。这将为Soot分析提供更快的启动时间。从改写Jimple创建代码和使用多个线程创建Jimple代码（还自2000年起就是一个不错的项目）开始，也可以提高性能。</p>
+<p>尽管Soot对过程内分析提供了出色的支持，但过程间分析的开发人员却更多地留给了他们自己的设备。如上所述，Soot为新颖的过程间分析的作者提供了SceneTransformer。不幸的是，对于这样的作者，SceneTransformer在构造分析时没有提供任何帮助。特别是，一个Soot用户需要弄清楚如何遍历被分析程序的类，以及如何组合来自不同方法的分析结果。定义常见情况并使其易于编程的一些设计工作可能会帮助很多分析作者。</p>
+<p>最后，从历史上看，使用Soot评估语言扩展（例如类型系统扩展）是困难的。尽管Soot对字节码进行了广泛的类型推断，但要在Soot的IR中获取源代码注释（例如类型注释）并不容易。现在，使用JastAdd前端可以更轻松地进行此类研究。但是，我们不知道有任何项目研究Java语言扩展，因此Soot会分析以扩展Java源语言给出的程序。</p>
+<h1 id="VI-REFLECTIONS-ON-SOOT"><a href="#VI-REFLECTIONS-ON-SOOT" class="headerlink" title="VI. REFLECTIONS ON SOOT"></a>VI. REFLECTIONS ON SOOT</h1><p>在本节中，我们将介绍在开发Soot方面遇到的困难，为将来的编译器框架提出所需的功能，并以对Soot成功的原因的一些结论作为结论。</p>
+<p>我们的经验是，从总体上讲，Soot现在可以完成我们认为会做的事情。 Soot的一个意外应用是用于不完整和不完整的程序分析。 当我们最初设计Soot时，这种分析在研究界是未知的。 然而，在随后的12年中，它们已经变得非常流行。Soot可以毫无问题地进行这种分析。</p>
+<h2 id="Difﬁculties"><a href="#Difﬁculties" class="headerlink" title="Difﬁculties"></a>Difﬁculties</h2><p>我们想强调两个困难：在外部更改存在的情况下保持Soot的最新状态，并鼓励Soot用户做出自己的更改。</p>
+<p>自Soot最初发布以来，Java语言已经发生了重大变化。 Java 1.3是2000年Soot 1.0发行时的Java的最新版本，它不包括泛型，invokedynamic，注释或foreach循环以及其他更改。幸运的是，对虚拟机的更改受到了更大的限制。但是，对于Soot团队来说，要跟上Java虚拟机（用于字节码输入）的变化，尤其是Java语言（对于Java前端）的变化，是很难的。对于Soot Eclipse插件，对Eclipse的更改也已成为（更为严重的）问题。</p>
+<p>尽管我们在本文中着重介绍了许多贡献性的变化，但我们希望合并来自非McGill用户的更多Soot贡献。鉴于其他人已经开发出了普遍关注的Soot扩展，这一点尤其正确。</p>
+<h2 id="Ways-to-Improve"><a href="#Ways-to-Improve" class="headerlink" title="Ways to Improve"></a>Ways to Improve</h2><p>我们已经在第五节中讨论了特定于Soot的潜在改进。在本节中，我们讨论了改进编译器框架的想法，我们认为这对更广泛的社区感兴趣。</p>
+<p>我们认为，有许多原因导致Soot扩展无法重新合并到主要的Soot代码中。首先，应该设计编译器框架，以使其更容易独立发布框架扩展。尽管Eclipse插件系统对于研究编译器可能不必要地复杂，但是拥有一个简单的扩展系统可能仍然有用。由于我们当时还没有想到这个问题，因此在该领域Soot可能会得到很大改善。其次，发布软件既费时又无益。在评估论文时，会议应更加重视软件和数据发布；它们是科学过程中不可或缺的一部分。一些会议，例如ESEC / FSE，开始鼓励与论文一起发布更完整的信息，我们对此趋势表示赞赏。</p>
+<p>我们还注意到很难发布框架文件。没有真正的参考文献将Soot描述为系统。我们鼓励会议接受更多的框架文件。</p>
+<p>从更高的技术水平来看，Soot在两次通过之间重新计算了很多数据。它必须重新计算数据，因为它不知道有多少数据因中间计算而无效。增量或反应式计算将有助于提高编译器框架的性能。</p>
+<h2 id="Reasons-for-Success"><a href="#Reasons-for-Success" class="headerlink" title="Reasons for Success"></a>Reasons for Success</h2><p>我们相信Soot之所以成功，是因为它在正确的时间提供了正确的功能并且易于使用。 我们在第二节中讨论了Soot的功能。 最重要的功能包括：1）Soot对Java的支持； 2）方便的Jimple中间表示； 和3）Spark指针分析工具包。 指针分析特别重要，因为对Java代码的大多数非平凡的分析必须合理地说明指针的行为。 任何编译器框架都将很难使用，但在有足够的决心的情况下，似乎Soot足够可用。 易用性还包括Soot的软件许可，每晚构建和准备偶尔发布的Soot版本（包含来自社区的补丁程序）以及Soot邮件列表中的响应能力。</p>
+<h2 id="Acknowledgment"><a href="#Acknowledgment" class="headerlink" title="Acknowledgment"></a>Acknowledgment</h2><p>致谢。<br>Soot的开发得到了加拿大自然科学与工程研究委员会，魁北克自然与技术基金会，IBM高级研究中心以及Eclipse创新资助的部分支持。 Eric Bodden得到CASED（<a href="http://www.cased.de）的支持。" target="_blank" rel="noopener">www.cased.de）的支持。</a></p>
+<p>我们要感谢为Soot的开发提供帮助的所有贡献者，并特别感谢Raja Vall´ee-Rai在Soot方面的开拓性工作。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Soot/" rel="tag"><i class="fa fa-tag"></i>Soot</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/JVM%E6%A2%B3%E7%90%86/" rel="prev" title="JVM梳理">
+      <i class="fa fa-chevron-left"></i> JVM梳理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E4%B8%80%E4%B8%AAJava%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%86%85%E5%AD%98%E5%9B%BE/" rel="next" title="一个Java对象的内存图">
+      一个Java对象的内存图 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+      <!--
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://link.hhtjim.com/163/26348068.mp3"></iframe>
+      -->
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#I-INTRODUCTION"><span class="nav-number">2.</span> <span class="nav-text">I. INTRODUCTION</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ⅱ-FEATURES"><span class="nav-number">3.</span> <span class="nav-text">Ⅱ. FEATURES</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#过程间分析-interprocedural"><span class="nav-number">3.1.</span> <span class="nav-text">过程间分析 interprocedural</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#调用图-Call-Graph"><span class="nav-number">3.1.1.</span> <span class="nav-text">调用图 Call Graph</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指针分析-Pointer-Analyses"><span class="nav-number">3.1.2.</span> <span class="nav-text">指针分析 Pointer Analyses</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#副作用分析-Side-Effects"><span class="nav-number">3.1.3.</span> <span class="nav-text">副作用分析 Side Effects</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark的替代和扩展"><span class="nav-number">3.1.4.</span> <span class="nav-text">Spark的替代和扩展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反射"><span class="nav-number">3.1.5.</span> <span class="nav-text">反射</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Soot输出"><span class="nav-number">3.2.</span> <span class="nav-text">Soot输出</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#III-WORKING-WITH-AND-EXTENDING-SOOT"><span class="nav-number">4.</span> <span class="nav-text">III. WORKING WITH AND EXTENDING SOOT</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#运行Soot"><span class="nav-number">4.1.</span> <span class="nav-text">运行Soot</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Building-on-soot"><span class="nav-number">4.2.</span> <span class="nav-text">Building on soot</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IV-SOOT-DEVELOPMENT-PROCESS-AND-COMMUNITY"><span class="nav-number">5.</span> <span class="nav-text">IV. SOOT DEVELOPMENT PROCESS AND COMMUNITY</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#A-Support-and-Community"><span class="nav-number">5.1.</span> <span class="nav-text">A. Support and Community</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-Documentation"><span class="nav-number">5.2.</span> <span class="nav-text">B. Documentation</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#V-SOOT-’-S-PAST-EVOLUTION-FUTURE-WORK-ON-SOOT"><span class="nav-number">6.</span> <span class="nav-text">V. SOOT ’ S PAST EVOLUTION + FUTURE WORK ON SOOT</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Singletons-and-multiple-Soot-runs"><span class="nav-number">6.1.</span> <span class="nav-text">Singletons and multiple Soot runs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Partial-programs"><span class="nav-number">6.2.</span> <span class="nav-text">Partial programs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-front-end-parsers"><span class="nav-number">6.3.</span> <span class="nav-text">Java front-end parsers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Increased-efﬁciency"><span class="nav-number">6.4.</span> <span class="nav-text">Increased efﬁciency</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#A-Future-Directions-for-Soot"><span class="nav-number">6.5.</span> <span class="nav-text">A. Future Directions for Soot</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#VI-REFLECTIONS-ON-SOOT"><span class="nav-number">7.</span> <span class="nav-text">VI. REFLECTIONS ON SOOT</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Difﬁculties"><span class="nav-number">7.1.</span> <span class="nav-text">Difﬁculties</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ways-to-Improve"><span class="nav-number">7.2.</span> <span class="nav-text">Ways to Improve</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reasons-for-Success"><span class="nav-number">7.3.</span> <span class="nav-text">Reasons for Success</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Acknowledgment"><span class="nav-number">7.4.</span> <span class="nav-text">Acknowledgment</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="0range"
+      src="/images/yfy.png">
+  <p class="site-author-name" itemprop="name">0range</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/0range228" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;0range228" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      友链
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://m0d9.me/" title="http:&#x2F;&#x2F;m0d9.me&#x2F;" rel="noopener" target="_blank">yangbh</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.0kami.cn/" title="https:&#x2F;&#x2F;blog.0kami.cn&#x2F;" rel="noopener" target="_blank">wh1t3p1g</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.kingkk.com/" title="https:&#x2F;&#x2F;www.kingkk.com&#x2F;" rel="noopener" target="_blank">kingkk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/tr1ple/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;tr1ple&#x2F;" rel="noopener" target="_blank">tr1ple</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.yuque.com/ni4n/blogs" title="https:&#x2F;&#x2F;www.yuque.com&#x2F;ni4n&#x2F;blogs" rel="noopener" target="_blank">Ni4n</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://anemone.top/" title="http:&#x2F;&#x2F;anemone.top" rel="noopener" target="_blank">Anemone</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://summersec.github.io/" title="https:&#x2F;&#x2F;summersec.github.io" rel="noopener" target="_blank">SummerSec</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.zhihu.com/people/chenwengang" title="https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;chenwengang" rel="noopener" target="_blank">ApsarasX</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart" aria-hidden="true"></i>
+  </span>
+   Powered By - 
+  <span class="author" itemprop="copyrightHolder">0range</span>
+
+  <!--
+    <span class="post-meta-divider"> | </span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">575k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">15:58</span>
+  -->
+
+</div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+            'X-LC-Key'    : 'l8KvoMr1i8urA7X7BzPMtQC7',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+      appKey     : 'l8KvoMr1i8urA7X7BzPMtQC7',
+      placeholder: "Say Something~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+
+<!--
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unjkp.com/valine/dist/Valine.min.js"></script>  
+  <script src="/js/Valine.min.js"></script> 
+
+   
+  
+  <script src="/js/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+        appKey: 'l8KvoMr1i8urA7X7BzPMtQC7',
+        placeholder: 'Say Something~',
+        avatar:'mm',
+        guest_info:['nick'] ,  //评论者只需要提供评论的昵称即可
+        pageSize:'10' || 10,
+    });
+  
+    var infoEle = document.querySelector('#comments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0){
+      infoEle.childNodes.forEach(function(item) {
+        item.parentNode.removeChild(item);
+      });
+    }
+  </script>
+
+-->
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/click_love.js"></script>

@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-pace-theme-flash.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<!--
+
+  <script src="//code.tidio.co/oixl41gwhy8tvqy6jte9uvglyrqcjrvc.js" async></script>
+
+-->
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"0range228.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+  <meta name="description" content="序言 锲而不舍，金石可镂。  今天来梳理Java数据类型转换，这部分很杂乱，顺便总结总结API，做个笔记。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java数据类型转换">
+<meta property="og:url" content="https://0range228.github.io/Java%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/index.html">
+<meta property="og:site_name" content="0range的小窝">
+<meta property="og:description" content="序言 锲而不舍，金石可镂。  今天来梳理Java数据类型转换，这部分很杂乱，顺便总结总结API，做个笔记。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-09-24T08:15:13.000Z">
+<meta property="article:modified_time" content="2020-10-06T02:34:17.908Z">
+<meta property="article:author" content="0range">
+<meta property="article:tag" content="Java基础">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://0range228.github.io/Java%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>Java数据类型转换 | 0range的小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="0range的小窝" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+<a href="https://github.com/0range228" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#FFA500; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">0range的小窝</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Trust the process.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">25</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">12</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">43</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://0range228.github.io/Java%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/yfy.png">
+      <meta itemprop="name" content="0range">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="0range的小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java数据类型转换
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-09-24 16:15:13" itemprop="dateCreated datePublished" datetime="2020-09-24T16:15:13+08:00">2020-09-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-10-06 10:34:17" itemprop="dateModified" datetime="2020-10-06T10:34:17+08:00">2020-10-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/Java%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" class="post-meta-item leancloud_visitors" data-flag-title="Java数据类型转换" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度：</span>
+              <span class="leancloud-visitors-count"></span>
+              <span>°C</span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/Java%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Java%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>锲而不舍，金石可镂。</p>
+</blockquote>
+<p>今天来梳理Java数据类型转换，这部分很杂乱，顺便总结总结API，做个笔记。</p>
+<a id="more"></a>
+
+<h1 id="类型种类"><a href="#类型种类" class="headerlink" title="类型种类"></a>类型种类</h1><p>Java提供了两个类型系统，<strong>基本类型</strong>与<strong>引用类型</strong>，使用基本类型在于效率，然而很多情况，会创建对象使用，因为对象可以做更多的功能。</p>
+<p>如果想要我们的基本类型像对象一样操作，就可以使用基本类型对应的包装类，如下：</p>
+<table>
+<thead>
+<tr>
+<th>基本类型</th>
+<th>对应的包装类（位于java.lang包中）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>byte</td>
+<td>Byte</td>
+</tr>
+<tr>
+<td>short</td>
+<td>Short</td>
+</tr>
+<tr>
+<td>int</td>
+<td><strong>Integer</strong></td>
+</tr>
+<tr>
+<td>long</td>
+<td>Long</td>
+</tr>
+<tr>
+<td>float</td>
+<td>Float</td>
+</tr>
+<tr>
+<td>double</td>
+<td>Double</td>
+</tr>
+<tr>
+<td>char</td>
+<td><strong>Character</strong></td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>Boolean</td>
+</tr>
+</tbody></table>
+<p>经常使用的有4种基本类型：</p>
+<ol>
+<li>char</li>
+<li>byte</li>
+<li>String</li>
+<li>int(Integer)</li>
+</ol>
+<p>一下主要讨论这四个类型的转换，会用到包装类。</p>
+<h1 id="char-lt-gt-int"><a href="#char-lt-gt-int" class="headerlink" title="char &lt;-&gt; int"></a>char &lt;-&gt; int</h1><p>先看代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">65</span>;</span><br><span class="line">        System.out.println((<span class="keyword">char</span>)i);<span class="comment">//result:A</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">char</span> c = <span class="string">'A'</span>;</span><br><span class="line">        System.out.println((<span class="keyword">int</span>)c);<span class="comment">//result:65</span></span><br><span class="line">        </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>可以看到，如果进行强制类型转换，char会和ASCII码进行互相转换。</p>
+<h2 id="char-gt-int"><a href="#char-gt-int" class="headerlink" title="char -&gt; int"></a>char -&gt; int</h2><p>现在想要的是 char:’9’ -&gt; int:9</p>
+<p><strong>转换代码</strong>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> b = <span class="string">'4'</span>;</span><br><span class="line"><span class="keyword">int</span> numericValue = Character.getNumericValue(b);</span><br><span class="line">System.out.println(numericValue);<span class="comment">// 4 type:int</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="int-gt-char"><a href="#int-gt-char" class="headerlink" title="int -&gt; char"></a>int -&gt; char</h2><p>现在想要的是 int:9 -&gt; char:’9’</p>
+<p><strong>转换代码</strong>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a =<span class="number">4</span>;</span><br><span class="line"><span class="keyword">char</span> intValue = Character.forDigit(a,<span class="number">10</span>);</span><br><span class="line">System.out.println(intValue);<span class="comment">// 4 type:char</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="其他方法"><a href="#其他方法" class="headerlink" title="其他方法"></a>其他方法</h2><p>直接将’0‘的ASCII码值加上一起转换</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> c = (<span class="keyword">char</span>)(<span class="string">'0'</span> + i);</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="int-lt-gt-byte"><a href="#int-lt-gt-byte" class="headerlink" title="int &lt;-&gt; byte"></a>int &lt;-&gt; byte</h1><h2 id="int-gt-byte"><a href="#int-gt-byte" class="headerlink" title="int -&gt; byte"></a>int -&gt; byte</h2><p>会发生高位截断：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">234</span>;</span><br><span class="line"><span class="keyword">byte</span> b = (<span class="keyword">byte</span>)a;</span><br><span class="line">System.out.println(b);<span class="comment">//-22</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="byte-gt-int"><a href="#byte-gt-int" class="headerlink" title="byte -&gt; int"></a>byte -&gt; int</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">byteToInt</span><span class="params">(<span class="keyword">byte</span> b)</span> </span>&#123;</span><br><span class="line">		<span class="comment">//Java 总是把 byte 当做有符处理；我们可以通过将其和 0xFF 进行二进制与得到它的无符值</span></span><br><span class="line">		<span class="keyword">return</span> b &amp; <span class="number">0xFF</span>;</span><br><span class="line">	&#125;</span><br><span class="line">....</span><br><span class="line"></span><br><span class="line"><span class="keyword">byte</span> b = -<span class="number">22</span>;</span><br><span class="line">System.out.println(byteToInt(b));<span class="comment">//234</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="char-lt-gt-String"><a href="#char-lt-gt-String" class="headerlink" title="char &lt;-&gt; String"></a>char &lt;-&gt; String</h1><p>这类就很常见了。</p>
+<h2 id="char-gt-String"><a href="#char-gt-String" class="headerlink" title="char -&gt; String"></a>char -&gt; String</h2><p>直接上API，万物<code>.valueOf()</code>转一切。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> a = <span class="string">'A'</span>;</span><br><span class="line">String s = String.valueOf(a);</span><br><span class="line">System.out.println(s);<span class="comment">//A type:String</span></span><br></pre></td></tr></table></figure>
+
+<p>字符数组：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span>[] c = <span class="keyword">new</span> <span class="keyword">char</span>[]&#123;<span class="string">'A'</span>,<span class="string">'B'</span>,<span class="string">'C'</span>,<span class="string">'D'</span>,<span class="string">'E'</span>,<span class="string">'F'</span>,<span class="string">'G'</span>&#125;;</span><br><span class="line">String n = String.valueOf(c);</span><br><span class="line">System.out.println(n);<span class="comment">//ABCDEFG</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="String-gt-char"><a href="#String-gt-char" class="headerlink" title="String -&gt; char"></a>String -&gt; char</h2><p>老熟面孔了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//n = "ABCDEFG"</span></span><br><span class="line"><span class="keyword">char</span>[] chars = n.toCharArray();</span><br><span class="line">System.out.println(Arrays.toString(chars));<span class="comment">//[A, B, C, D, E, F, G]</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="String-lt-gt-byte"><a href="#String-lt-gt-byte" class="headerlink" title="String &lt;-&gt;byte"></a>String &lt;-&gt;byte</h1><p>这里默认就是byte[]字节数组。</p>
+<h2 id="String-gt-byte"><a href="#String-gt-byte" class="headerlink" title="String -&gt; byte[]"></a>String -&gt; byte[]</h2><p>直接上代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">String str = <span class="string">"ABCDEFG"</span>;</span><br><span class="line"><span class="keyword">byte</span>[] strbyte = str.getBytes();</span><br><span class="line">System.out.println(Arrays.toString(strbyte));<span class="comment">//[65, 66, 67, 68, 69, 70, 71]</span></span><br></pre></td></tr></table></figure>
+
+<p>可以发现直接内容其实就是ASCII码。</p>
+<h2 id="byte-gt-String"><a href="#byte-gt-String" class="headerlink" title="byte[] -&gt; String"></a>byte[] -&gt; String</h2><p>直接用String的构造方法就行，直接上：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">byte</span>[] b= &#123;-<span class="number">60</span>,-<span class="number">29</span>,-<span class="number">70</span>,-<span class="number">61</span>,-<span class="number">93</span>,-<span class="number">84</span>,-<span class="number">42</span>,-<span class="number">48</span>,-<span class="number">71</span>,-<span class="number">6</span>,<span class="number">13</span>,<span class="number">10</span>,-<span class="number">42</span>,-<span class="number">48</span>,-<span class="number">71</span>,-<span class="number">6</span>,-<span class="number">93</span>,-<span class="number">84</span>,-<span class="number">60</span>,-<span class="number">29</span>,-<span class="number">70</span>,-<span class="number">61</span>&#125;;</span><br><span class="line">String s = <span class="keyword">new</span> String(b);</span><br><span class="line">System.out.println(s);<span class="comment">//你好，中国，中国，你好</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="int-lt-gt-String"><a href="#int-lt-gt-String" class="headerlink" title="int &lt;-&gt; String"></a>int &lt;-&gt; String</h1><h2 id="int-gt-String"><a href="#int-gt-String" class="headerlink" title="int[] -&gt; String"></a>int[] -&gt; String</h2><p>可以用StringBuilder，直接上：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line"><span class="keyword">int</span>[] test = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">23</span>,<span class="number">4</span>,<span class="number">5</span>&#125;;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; test.length; i++) &#123;</span><br><span class="line">    sb.append(test[i]);</span><br><span class="line">&#125;</span><br><span class="line">System.out.println(sb.toString());<span class="comment">//122345</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>要是想转换为ASCII码对应的字符串，可以这么写：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line"><span class="keyword">int</span>[] test = &#123;<span class="number">65</span>,<span class="number">66</span>,<span class="number">67</span>&#125;;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; test.length; i++) &#123;</span><br><span class="line">    sb.append((<span class="keyword">char</span>)test[i]);</span><br><span class="line">&#125;</span><br><span class="line">System.out.println(sb.toString());<span class="comment">//ABC</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="String-gt-int"><a href="#String-gt-int" class="headerlink" title="String -&gt; int[]"></a>String -&gt; int[]</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">String ss = <span class="string">"12345678"</span>;</span><br><span class="line"><span class="keyword">char</span>[] cc = ss.toCharArray();</span><br><span class="line"><span class="keyword">int</span>[] tar = <span class="keyword">new</span> <span class="keyword">int</span>[ss.length()];</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; cc.length; i++) &#123;</span><br><span class="line">    tar[i] = Integer.parseInt(String.valueOf(cc[i]))；</span><br><span class="line">    <span class="comment">//Interger.valueOf(cc[i].toString(),2)也可以。</span></span><br><span class="line">&#125;</span><br><span class="line">System.out.println(Arrays.toString(tar));<span class="comment">//[1, 2, 3, 4, 5, 6, 7, 8]</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="byte-lt-gt-char"><a href="#byte-lt-gt-char" class="headerlink" title="byte&lt;-&gt;char"></a>byte&lt;-&gt;char</h1><h2 id="char-gt-byte"><a href="#char-gt-byte" class="headerlink" title="char[] -&gt; byte[]"></a>char[] -&gt; byte[]</h2><p>方法1:用String作为跳板</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span>[] cs = <span class="keyword">new</span> <span class="keyword">char</span>[] &#123; <span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>, <span class="string">'d'</span>, <span class="string">'e'</span>, <span class="string">'f'</span>, <span class="string">'g'</span> &#125;;</span><br><span class="line">String scs = <span class="keyword">new</span> String(cs);</span><br><span class="line"><span class="keyword">byte</span>[] bb= scs.getBytes();</span><br><span class="line">System.out.println(Arrays.toString(bb));<span class="comment">//[97, 98, 99, 100, 101, 102, 103]</span></span><br></pre></td></tr></table></figure>
+
+<p>方法2:循环+强制转型</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span>[] cs = <span class="keyword">new</span> <span class="keyword">char</span>[] &#123; <span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>, <span class="string">'d'</span>, <span class="string">'e'</span>, <span class="string">'f'</span>, <span class="string">'g'</span> &#125;;</span><br><span class="line"><span class="keyword">byte</span>[] bs2 = <span class="keyword">new</span> <span class="keyword">byte</span>[cs.length];</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; cs.length; i++) &#123;<span class="comment">//循环将char数组的每一个元素转换为byte并存在上面定义的byte数组中</span></span><br><span class="line">		bs2[i] = (<span class="keyword">byte</span>) cs[i];<span class="comment">//将每一个char转换成byte</span></span><br><span class="line">&#125;</span><br><span class="line">System.out.println(Arrays.toString(bs2));<span class="comment">//[97, 98, 99, 100, 101, 102, 103]</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="byte-gt-char"><a href="#byte-gt-char" class="headerlink" title="byte[] -&gt; char[]"></a>byte[] -&gt; char[]</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">char</span>[] getChars (<span class="keyword">byte</span>[] bytes) &#123;</span><br><span class="line">	Charset cs = Charset.forName (<span class="string">"UTF-8"</span>);</span><br><span class="line">	ByteBuffer bb = ByteBuffer.allocate (bytes.length);</span><br><span class="line">  bb.put (bytes);</span><br><span class="line">  bb.flip ();</span><br><span class="line">  CharBuffer cb = cs.decode (bb);</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> cb.array();</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="keyword">byte</span>[] bb = &#123;<span class="number">97</span>, <span class="number">98</span>, <span class="number">99</span>, <span class="number">100</span>, <span class="number">101</span>, <span class="number">102</span>, <span class="number">103</span>&#125;;</span><br><span class="line"><span class="keyword">char</span>[] result = getChars(bb);</span><br><span class="line">System.out.println(Arrays.toString(result));<span class="comment">//[a, b, c, d, e, f, g]</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag"><i class="fa fa-tag"></i>Java基础</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E3%80%90%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E3%80%91Jackson/" rel="prev" title="【反序列化漏洞】Jackson">
+      <i class="fa fa-chevron-left"></i> 【反序列化漏洞】Jackson
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/" rel="next" title="Java类加载器">
+      Java类加载器 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+      <!--
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://link.hhtjim.com/163/26348068.mp3"></iframe>
+      -->
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#类型种类"><span class="nav-number">2.</span> <span class="nav-text">类型种类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#char-lt-gt-int"><span class="nav-number">3.</span> <span class="nav-text">char &lt;-&gt; int</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#char-gt-int"><span class="nav-number">3.1.</span> <span class="nav-text">char -&gt; int</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#int-gt-char"><span class="nav-number">3.2.</span> <span class="nav-text">int -&gt; char</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他方法"><span class="nav-number">3.3.</span> <span class="nav-text">其他方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#int-lt-gt-byte"><span class="nav-number">4.</span> <span class="nav-text">int &lt;-&gt; byte</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#int-gt-byte"><span class="nav-number">4.1.</span> <span class="nav-text">int -&gt; byte</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#byte-gt-int"><span class="nav-number">4.2.</span> <span class="nav-text">byte -&gt; int</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#char-lt-gt-String"><span class="nav-number">5.</span> <span class="nav-text">char &lt;-&gt; String</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#char-gt-String"><span class="nav-number">5.1.</span> <span class="nav-text">char -&gt; String</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#String-gt-char"><span class="nav-number">5.2.</span> <span class="nav-text">String -&gt; char</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#String-lt-gt-byte"><span class="nav-number">6.</span> <span class="nav-text">String &lt;-&gt;byte</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#String-gt-byte"><span class="nav-number">6.1.</span> <span class="nav-text">String -&gt; byte[]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#byte-gt-String"><span class="nav-number">6.2.</span> <span class="nav-text">byte[] -&gt; String</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#int-lt-gt-String"><span class="nav-number">7.</span> <span class="nav-text">int &lt;-&gt; String</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#int-gt-String"><span class="nav-number">7.1.</span> <span class="nav-text">int[] -&gt; String</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#String-gt-int"><span class="nav-number">7.2.</span> <span class="nav-text">String -&gt; int[]</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#byte-lt-gt-char"><span class="nav-number">8.</span> <span class="nav-text">byte&lt;-&gt;char</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#char-gt-byte"><span class="nav-number">8.1.</span> <span class="nav-text">char[] -&gt; byte[]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#byte-gt-char"><span class="nav-number">8.2.</span> <span class="nav-text">byte[] -&gt; char[]</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="0range"
+      src="/images/yfy.png">
+  <p class="site-author-name" itemprop="name">0range</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/0range228" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;0range228" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      友链
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://m0d9.me/" title="http:&#x2F;&#x2F;m0d9.me&#x2F;" rel="noopener" target="_blank">yangbh</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.0kami.cn/" title="https:&#x2F;&#x2F;blog.0kami.cn&#x2F;" rel="noopener" target="_blank">wh1t3p1g</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.kingkk.com/" title="https:&#x2F;&#x2F;www.kingkk.com&#x2F;" rel="noopener" target="_blank">kingkk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/tr1ple/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;tr1ple&#x2F;" rel="noopener" target="_blank">tr1ple</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.yuque.com/ni4n/blogs" title="https:&#x2F;&#x2F;www.yuque.com&#x2F;ni4n&#x2F;blogs" rel="noopener" target="_blank">Ni4n</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://anemone.top/" title="http:&#x2F;&#x2F;anemone.top" rel="noopener" target="_blank">Anemone</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://summersec.github.io/" title="https:&#x2F;&#x2F;summersec.github.io" rel="noopener" target="_blank">SummerSec</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.zhihu.com/people/chenwengang" title="https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;chenwengang" rel="noopener" target="_blank">ApsarasX</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart" aria-hidden="true"></i>
+  </span>
+   Powered By - 
+  <span class="author" itemprop="copyrightHolder">0range</span>
+
+  <!--
+    <span class="post-meta-divider"> | </span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">575k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">15:58</span>
+  -->
+
+</div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+            'X-LC-Key'    : 'l8KvoMr1i8urA7X7BzPMtQC7',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+      appKey     : 'l8KvoMr1i8urA7X7BzPMtQC7',
+      placeholder: "Say Something~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+
+<!--
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unjkp.com/valine/dist/Valine.min.js"></script>  
+  <script src="/js/Valine.min.js"></script> 
+
+   
+  
+  <script src="/js/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+        appKey: 'l8KvoMr1i8urA7X7BzPMtQC7',
+        placeholder: 'Say Something~',
+        avatar:'mm',
+        guest_info:['nick'] ,  //评论者只需要提供评论的昵称即可
+        pageSize:'10' || 10,
+    });
+  
+    var infoEle = document.querySelector('#comments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0){
+      infoEle.childNodes.forEach(function(item) {
+        item.parentNode.removeChild(item);
+      });
+    }
+  </script>
+
+-->
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/click_love.js"></script>
