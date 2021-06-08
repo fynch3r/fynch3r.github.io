@@ -4361,7 +4361,7 @@
 <p><img src="../images/%E3%80%90%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E3%80%91Jackson/image-20200921103927724.png" alt="image-20200921103927724"></p>
 <p>而我们的利用类其继承关系是这样的：</p>
 <p>…-&gt;AbstractApplicationContext-&gt;AbstractRefreshableApplicationContext-&gt;AbstractRefreshableConfigApplicationContext-&gt;AbstractXmlApplicationContext-&gt;ClassPathXmlApplicationContext</p>
-<p>可以看到，ClassPathXmlApplicationContext类是继承自AbstractApplicationContext类的，而该类会被过滤掉，从而没办法成功绕过利用。 </p>
+<p>可以看到，ClassPathXmlApplicationContext类是继承自AbstractApplicationContext类的，而该类会被过滤掉，从而没办法成功绕过利用。  </p>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://www.lmxspace.com/2019/07/30/Jackson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%B1%87%E6%80%BB" target="_blank" rel="noopener">1</a></p>
 <p><a href="https://www.mi1k7ea.com/" target="_blank" rel="noopener">2</a></p>
 ]]></content>
