@@ -46,7 +46,7 @@
 <meta property="og:image" content="https://0range228.github.io/images/Java-RMI%E5%8E%9F%E7%90%86%E5%8F%8A%E5%AE%9E%E6%88%98/image-20200627121658858.png">
 <meta property="og:image" content="https://0range228.github.io/images/Java-RMI%E5%8E%9F%E7%90%86%E5%8F%8A%E5%AE%9E%E6%88%98/image-20200627122739474.png">
 <meta property="article:published_time" content="2020-06-25T05:52:31.000Z">
-<meta property="article:modified_time" content="2021-06-08T09:09:59.179Z">
+<meta property="article:modified_time" content="2021-06-08T11:25:53.977Z">
 <meta property="article:author" content="0range">
 <meta property="article:tag" content="RMI">
 <meta name="twitter:card" content="summary">
@@ -236,7 +236,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-06-08 17:09:59" itemprop="dateModified" datetime="2021-06-08T17:09:59+08:00">2021-06-08</time>
+                <time title="修改时间：2021-06-08 19:25:53" itemprop="dateModified" datetime="2021-06-08T19:25:53+08:00">2021-06-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -283,7 +283,7 @@
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>29 分钟</span>
+              <span>28 分钟</span>
             </span>
 
         </div>
@@ -345,28 +345,27 @@
 <li>客户端对RMI Registry发起请求，根据提供的<code>Name</code>从RMI Registry得到<code>Stub</code>。<code>Stub</code>中包含与<code>Skeleton</code>通信的信息（地址，端口等），两者建立通信，<strong><code>Stub</code>作为客户端代理请求服务端代理<code>Skeleton</code>并进行远程方法调用</strong>。</li>
 <li>客户端<code>Stub</code>调用远程方法，调用结果先返回给<code>Skeleton</code>，<code>Skeleton</code>再返回给客户端<code>Stub</code>，<code>Stub</code>再返回给客户端本身。</li>
 </ol>
-<p>多说一句，一般我们知道RMI Registry的端口(1099)就可以了，服务端口会在我们</p>
+<p>多说一句，一般我们知道RMI Registry的端口(1099)就可以了。</p>
+<p>通信端口会包含在Stub中，Stub是RMI Registry给Client分发的。</p>
 <p>此外，我们可以看到，从逻辑上来看数据是在Client和Server之间横向流动的，但是实际上是从Client到Stub，然后从Skeleton到Server这样纵向流动的。</p>
 <h2 id="通信过程"><a href="#通信过程" class="headerlink" title="通信过程"></a>通信过程</h2><p><img src="../images/Java-RMI%E5%8E%9F%E7%90%86%E5%8F%8A%E5%AE%9E%E6%88%98/image-20200625141235915.png" alt="image-20200625141235915"></p>
 <p><img src="../images/Java-RMI%E5%8E%9F%E7%90%86%E5%8F%8A%E5%AE%9E%E6%88%98/image-20200625144347103.png" alt="image-20200625144347103"></p>
-<p>方法调用从客户端经存根（stub）、远程引用层（Remote Reference Layer）和传输层（Transport Layer）向下，传递给主机，然后再次经传输层，向上穿过远程调用层和骨干网（Skeleton），到达服务器对象。</p>
-<p>存根stub位于客户端，扮演着远程服务器对象的代理，使该对象可被客户激活。远程引用层处理语义、管理单一或多重对象的通信，决定调用是应发往一个服务器还是多个。</p>
-<p>传输层管理实际的连接，并且追踪可以接受方法调用的远程对象。骨干网完成对服务器对象实际的方法调用，并获取返回值。返回值向下经远程引用层、服务器端的传输层传递回客户端，再向上经传输层和远程调用层返回。最后，存根stub获得返回值。</p>
+<p>方法调用从客户端经存根（Stub）、远程引用层（Remote Reference Layer）和传输层（Transport Layer）向下，传递给主机，然后再次经传输层，向上穿过远程调用层和骨干网（Skeleton），到达服务器对象。</p>
+<p>存根Stub位于客户端，扮演着远程服务器对象的代理，使该对象可被客户激活。远程引用层处理语义、管理单一或多重对象的通信，决定调用是应发往一个服务器还是多个。</p>
+<p>传输层管理实际的连接，并且追踪可以接受方法调用的远程对象。Skeleton完成对服务器对象实际的方法调用，并获取返回值。返回值向下经远程引用层、服务器端的传输层传递回客户端，再向上经传输层和远程调用层返回。最后，存根Stub获得返回值。</p>
 <p>总结：</p>
-<p>Stub存根：扮演着远程服务器对象的代理的角色，使该对象可被客户激活。</p>
+<p>Stub：扮演着远程服务器对象的代理的角色，使该对象可被客户激活。</p>
 <p>远程引用层：处理语义、管理单一或多重对象的通信，决定调用是应发往一个服务器还是多个。</p>
 <p>传输层：管理实际的连接，并且追踪可以接受方法调用的远程对象。</p>
-<p>Skeleton骨干网：完成对服务器对象实际的方法调用，并获取返回值。</p>
+<p>Skeleton：完成对服务器对象实际的方法调用，并获取返回值。</p>
 <p>返回值向下经远程引用层、服务器端的传输层传递回客户端，再向上经传输层和远程调用层返回。最后，存根获得返回值。</p>
 <h2 id="Stub和Skeleton"><a href="#Stub和Skeleton" class="headerlink" title="Stub和Skeleton"></a>Stub和Skeleton</h2><p>RMI的客户端和服务器并不直接通信，客户与远程对象之间采用的代理方式进行<code>Socket</code>通信。为远程对象分别生成了客户端代理和服务端代理，其中位于客户端的代理类称为Stub即存根（包含服务器<code>Skeleton</code>信息），位于服务端的代理类称为<code>Skeleton</code>即骨干网。</p>
 <h2 id="RMI-Registry"><a href="#RMI-Registry" class="headerlink" title="RMI Registry"></a>RMI Registry</h2><p><code>RMI注册表</code>，默认监听在<code>1099</code>端口上，<code>Client</code>通过<code>Name</code>向<code>RMI Registry</code>查询，得到这个绑定关系和对应的<code>Stub</code>。</p>
-<blockquote>
-<p>Stub的获取方式有很多，常见的方法就是调用某个远程服务上的方法，向远程服务获取存根。</p>
-<p>但是调用远程方法必须需要先有远程对象的Stub，所以这里面就有一个逻辑死锁。所以JDK提供了一个RMI注册表也就是<code>RMI Registry</code>来解决这个问题。</p>
-</blockquote>
 <h2 id="远程对象"><a href="#远程对象" class="headerlink" title="远程对象"></a>远程对象</h2><p>在RMI中的核心就是远程对象，一切都是围绕这个东西来进行的。</p>
-<p><strong>顾名思义，远程对象是存在于服务端以供客户端调用的对象。</strong>任何可以被远程调用的对象都必须实现 java.rmi.Remote 接口，远程对象的实现类必须继承UnicastRemoteObject类。如果不继承UnicastRemoteObject类，则需要手工初始化远程对象，在远程对象的构造方法中调用UnicastRemoteObject.exportObject()静态方法。这个远程对象中可能有很多个函数，但是只有在远程接口中声明的函数才能被远程调用，其他的公共函数只能在本地的JVM中使用。</p>
-<p>使用远程方法调用，必然会涉及参数的传递和执行结果的返回。参数或者返回值可以是基本数据类型，当然也有可能是对象的引用。所以这些需要被传输的对象必须可以被序列化，这要求相应的类必须实现 java.io.Serializable 接口，并且客户端的serialVersionUID字段要与服务器端保持一致。</p>
+<p><strong>顾名思义，远程对象存在于服务端，以供客户端调用。</strong></p>
+<p>任何可以被远程调用的对象都必须实现 java.rmi.Remote 接口，远程对象的实现类必须继承UnicastRemoteObject类。</p>
+<p>如果不继承UnicastRemoteObject类，则需要手工初始化远程对象，并且在远程对象的构造方法中调用UnicastRemoteObject.exportObject()静态方法。</p>
+<p>这个远程对象中可能有很多个函数，但是只有在远程接口中声明的函数才能被远程调用，其他的公共函数只能在本地的JVM中使用。</p>
 <h2 id="序列化传输数据"><a href="#序列化传输数据" class="headerlink" title="序列化传输数据"></a>序列化传输数据</h2><p>客户端远程调用时传递给服务器的参数，服务器执行后传递给客户端的返回值。参数或者返回值，在传输时候会被序列化，在被接受时会被反序列化。</p>
 <p>因此这些传输的对象必须可以被序列化，相应的类必须实现<code>java.io.Serializable</code>接口，并且客户端的<code>serialVersionUID</code>字段要与服务器端保持一致。</p>
 <h1 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h1><p><img src="../images/Java-RMI%E5%8E%9F%E7%90%86%E5%8F%8A%E5%AE%9E%E6%88%98/image-20200625144743014.png" alt="image-20200625144743014"></p>
@@ -397,7 +396,7 @@
 <h2 id="UnicastRemoteObject"><a href="#UnicastRemoteObject" class="headerlink" title="UnicastRemoteObject"></a>UnicastRemoteObject</h2><p>用于获得一个stub。这个stub封装了底层细节，用于和远程对象进行通信。</p>
 <h2 id="Unreferenced"><a href="#Unreferenced" class="headerlink" title="Unreferenced"></a>Unreferenced</h2><p>一个interface, 声明了方法：void unreferenced()。如果一个远程对象实现了此接口，则这个远程对象在没有任何客户端引用的时候，这个方法会被调用。</p>
 <h1 id="RMI动态类加载"><a href="#RMI动态类加载" class="headerlink" title="RMI动态类加载"></a>RMI动态类加载</h1><p>RMI核心特点之一就是动态类加载，如果当前JVM中没有某个类的定义，它可以从远程URL去下载这个类的class，动态加载的对象class文件可以使用Web服务的方式进行托管。这可以动态的扩展远程应用的功能，RMI注册表上可以动态的加载绑定多个RMI应用。<strong>对于客户端而言，服务端返回值也可能是一些子类的对象实例，而客户端并没有这些子类的class文件。</strong>如果需要客户端正确调用这些子类中被重写的方法，则同样需要有运行时动态加载额外类的能力。客户端使用了与RMI注册表相同的机制。RMI服务端将URL传递给客户端，客户端通过HTTP请求下载这些类。</p>
-<p>在之后的JNDI注入和反序列化漏洞的利用中，正是涉及到了动态类加载。</p>
+<p>在之后的JNDI注入和反序列化漏洞的利用中，正是涉及到了RMI动态类加载。</p>
 <h1 id="编写RMI的步骤"><a href="#编写RMI的步骤" class="headerlink" title="编写RMI的步骤"></a>编写RMI的步骤</h1><h2 id="定义服务端供远程调用的类"><a href="#定义服务端供远程调用的类" class="headerlink" title="定义服务端供远程调用的类"></a>定义服务端供远程调用的类</h2><p>在此之前先定义一个可序列化的Model层的用户类，其实例可放置于服务端进行远程调用：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PersonEntity</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> id;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setId</span><span class="params">(<span class="keyword">int</span> id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAge</span><span class="params">(<span class="keyword">int</span> age)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getAge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> age;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -439,7 +438,7 @@
 <p>注意：</p>
 <ul>
 <li>这个类其实就是接口实现类<ul>
-<li>实现接口的全部方法，这个不必多说@overide</li>
+<li>实现接口的全部方法，这个不必多说@override</li>
 <li>必须继承UnicastRemoteObject</li>
 </ul>
 </li>
@@ -700,12 +699,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">575k</span>
+    <span title="站点总字数">574k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">15:58</span>
+    <span title="站点阅读时长">15:57</span>
   -->
 
 </div>
