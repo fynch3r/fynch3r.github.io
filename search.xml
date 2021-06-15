@@ -6,7 +6,7 @@
     <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
 <p>曲径通幽处，禅房花木深。</p>
 </blockquote>
-<p> 抽空总结一下nc经典用法以及反弹shell的多种姿势。  </p>
+<p> 抽空总结一下nc经典用法以及反弹shell的多种姿势。   </p>
 <a id="more"></a>
 
 <h1 id="linux文件描述符和重定向"><a href="#linux文件描述符和重定向" class="headerlink" title="linux文件描述符和重定向"></a>linux文件描述符和重定向</h1><p>在反弹shell的时候疑惑，神奇的<code>&amp;、&lt;、&gt;</code>都是用来做什么的？</p>
