@@ -6640,13 +6640,14 @@
 <p>Interprocedural，Finite，Distributive，Subset   - Problem</p>
 <p>Interprocedural—全程序分析</p>
 <p>Finite—域有限（如live variables、definitions）</p>
-<p><strong>Distributive</strong>—<code>Transfer Function</code>满足f(aub)=f(a)uf(b)</p>
-<p>Subset—子集问题</p>
-<p><strong>利用图可达性的程序分析框架</strong>：采用的操作——Meet-Over-All-Realizable-Paths（MRP），MRPn比MOPn更加精确，范围更小。</p>
+<p><strong>Distributive</strong>—<code>Transfer Function</code>满足f(aub)=f(a)uf(b)，gen&amp;kill一类的都满足</p>
+<p>Subset—子集问题，面向主流程序问题</p>
+<p><strong>图可达性</strong></p>
+<p><strong>利用图可达性的程序分析框架</strong>：采用的操作——Meet-Over-All-Realizable-Paths（MRP），MRP比MOP更加精确，范围更小。</p>
 <p>MOP对所有路径进行meet操作，MRP只对<code>realizable path</code>进行meet操作，更准确。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200828163341454.png" alt="image-20200828163341454"></p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200828163422557.png" alt="image-20200828163422557"></p>
-<h2 id="Supergraph（之前叫iCFG）-amp-Flow-Functions"><a href="#Supergraph（之前叫iCFG）-amp-Flow-Functions" class="headerlink" title="Supergraph（之前叫iCFG）&amp; Flow Functions"></a>Supergraph（之前叫iCFG）&amp; Flow Functions</h2><h3 id="IFDS步骤一：构造Supergraph"><a href="#IFDS步骤一：构造Supergraph" class="headerlink" title="IFDS步骤一：构造Supergraph"></a>IFDS步骤一：构造Supergraph</h3><p><strong>说明</strong>：之前叫iCFG，给每个<strong>node</strong>定义<code>transfer function</code>；现在叫做Supergraph，给每个<strong>edge</strong>定义<code>transfer function</code>。</p>
+<h2 id="Supergraph（之前叫iCFG）-amp-Flow-Functions"><a href="#Supergraph（之前叫iCFG）-amp-Flow-Functions" class="headerlink" title="Supergraph（之前叫iCFG）&amp; Flow Functions"></a>Supergraph（之前叫iCFG）&amp; Flow Functions</h2><h3 id="IFDS步骤一：构造Supergraph"><a href="#IFDS步骤一：构造Supergraph" class="headerlink" title="IFDS步骤一：构造Supergraph"></a>IFDS步骤一：构造Supergraph</h3><p><strong>说明</strong>：之前叫iCFG，给每个<strong>node</strong>定义<code>transfer function</code>；现在叫做upergraph，给每个<strong>edge</strong>定义<code>transfer function</code>。</p>
 <p><strong>Supergraph</strong>：G<em>=(N</em>, E*)。</p>
 <ul>
 <li>G*包含所有的流图G1, G2, … （每个函数对应一个流图，本例对应Gmain和Gp）；</li>
