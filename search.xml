@@ -35,7 +35,7 @@
 <p>输入：输入流默认是0，修改了0的指向，让它指向file.txt，cat自然就会去读标准输入流</p>
 <figure class="highlight stata"><table><tr><td class="code"><pre><span class="line"># 打印文件内容</span><br><span class="line"><span class="keyword">cat</span> 0&lt; <span class="keyword">file</span>.txt</span><br><span class="line"><span class="keyword">cat</span> &lt; <span class="keyword">file</span>.txt</span><br><span class="line">0&lt; <span class="keyword">file</span>.txt <span class="keyword">cat</span></span><br><span class="line">&lt; <span class="keyword">file</span>.txt <span class="keyword">cat</span></span><br></pre></td></tr></table></figure>
 
-<p>输出：输出流默认是1，修改了1的指向，将输出内容输出到文件file.txt中</p>
+<p>输出：输出流默认是1，修改了1的指向，将输出内容输出到文件file.txt中。</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">（覆盖）</span></span><br><span class="line">echo hello &gt; file.txt</span><br><span class="line">echo hello 1&gt; file.txt</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> file.txt <span class="built_in">echo</span> hello</span></span><br><span class="line"><span class="meta">1&gt;</span><span class="bash"> file.txt <span class="built_in">echo</span> hello</span></span><br></pre></td></tr></table></figure>
 
 <p>将命令结果输出到文件：</p>
