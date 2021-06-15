@@ -252,7 +252,7 @@
 <meta property="og:image" content="https://0range228.github.io/images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200830211838150.png">
 <meta property="og:image" content="https://0range228.github.io/images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200830214334563.png">
 <meta property="article:published_time" content="2020-08-16T08:13:59.000Z">
-<meta property="article:modified_time" content="2021-06-15T06:54:32.539Z">
+<meta property="article:modified_time" content="2021-06-15T06:54:50.497Z">
 <meta property="article:author" content="0range">
 <meta property="article:tag" content="静态分析基础">
 <meta name="twitter:card" content="summary">
@@ -442,7 +442,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-06-15 14:54:32" itemprop="dateModified" datetime="2021-06-15T14:54:32+08:00">2021-06-15</time>
+                <time title="修改时间：2021-06-15 14:54:50" itemprop="dateModified" datetime="2021-06-15T14:54:50+08:00">2021-06-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1948,7 +1948,7 @@
 <h1 id="15"><a href="#15" class="headerlink" title="15"></a>15</h1><p><strong>目标</strong>：以<strong>图可达性分析</strong>来进行程序分析，没有了数据流传播的过程。</p>
 <h2 id="Infeasible-and-Realizable-Paths——基本概念"><a href="#Infeasible-and-Realizable-Paths——基本概念" class="headerlink" title="Infeasible and Realizable Paths——基本概念"></a>Infeasible and Realizable Paths——基本概念</h2><p><strong>Infeasible Paths</strong>：<strong>CFG中存在，但是实际动态运行中不会执行到的路径</strong>，如不匹配的调用返回边。这种路径可能会影响到程序分析的结果，但静态分析不能<strong>完全</strong>判定路径是否可达，会造成误报。</p>
 <p>也就是说，如果CG上存在假边，那么静态分析时，dataflow会绕着假边来流动，造成误报。我们希望<strong>假边尽可能少</strong>，误报也就尽可能少。</p>
-<p><strong>Realizable Paths</strong>：跨函数调用产生的return边和对应的call-site的call边<strong>匹配</strong>，这样的path。它可能不会被执行</p>
+<p><strong>Realizable Paths</strong>：<strong>跨函数调用</strong>产生的return边和对应的call-site的call边<strong>匹配</strong>，这样的path。它可能不会被执行</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200827213547440.png" alt="image-20200827213547440"></p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200828104139957.png" alt="image-20200828104139957"></p>
 <p><strong>目标</strong>：识别<code>Realizable path</code>，避免沿着<code>Unrealizable path</code>来传播数据分析。沿着对儿来匹配，从1来回到1，从2来回到2。</p>
