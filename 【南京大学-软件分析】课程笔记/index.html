@@ -252,7 +252,7 @@
 <meta property="og:image" content="https://0range228.github.io/images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200830211838150.png">
 <meta property="og:image" content="https://0range228.github.io/images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200830214334563.png">
 <meta property="article:published_time" content="2020-08-16T08:13:59.000Z">
-<meta property="article:modified_time" content="2021-06-15T08:04:03.753Z">
+<meta property="article:modified_time" content="2021-06-15T12:17:43.206Z">
 <meta property="article:author" content="0range">
 <meta property="article:tag" content="静态分析基础">
 <meta name="twitter:card" content="summary">
@@ -442,7 +442,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-06-15 16:04:03" itemprop="dateModified" datetime="2021-06-15T16:04:03+08:00">2021-06-15</time>
+                <time title="修改时间：2021-06-15 20:17:43" itemprop="dateModified" datetime="2021-06-15T20:17:43+08:00">2021-06-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1982,13 +1982,13 @@
 <p>MOP对所有路径进行meet操作，MRP只对<code>realizable path</code>进行meet操作，更准确。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200828163341454.png" alt="image-20200828163341454"></p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200828163422557.png" alt="image-20200828163422557"></p>
-<h2 id="Supergraph（之前叫iCFG）-amp-Flow-Functions"><a href="#Supergraph（之前叫iCFG）-amp-Flow-Functions" class="headerlink" title="Supergraph（之前叫iCFG）&amp; Flow Functions"></a>Supergraph（之前叫iCFG）&amp; Flow Functions</h2><h3 id="IFDS步骤一：构造Supergraph"><a href="#IFDS步骤一：构造Supergraph" class="headerlink" title="IFDS步骤一：构造Supergraph"></a>IFDS步骤一：构造Supergraph</h3><p><strong>说明</strong>：之前叫iCFG，给每个<strong>node</strong>定义<code>transfer function</code>；现在叫做upergraph，给每个<strong>edge</strong>定义<code>transfer function</code>。</p>
+<h2 id="Supergraph（之前叫iCFG）-amp-Flow-Functions"><a href="#Supergraph（之前叫iCFG）-amp-Flow-Functions" class="headerlink" title="Supergraph（之前叫iCFG）&amp; Flow Functions"></a>Supergraph（之前叫iCFG）&amp; Flow Functions</h2><h3 id="IFDS步骤一：构造Supergraph"><a href="#IFDS步骤一：构造Supergraph" class="headerlink" title="IFDS步骤一：构造Supergraph"></a>IFDS步骤一：构造Supergraph</h3><p><strong>说明</strong>：之前叫iCFG，给每个<strong>node</strong>定义<code>transfer function</code>；现在叫做supergraph，给每个<strong>edge</strong>定义<code>transfer function</code>。</p>
 <p><strong>Supergraph</strong>：G<em>=(N</em>, E*)。</p>
 <ul>
 <li>G*包含所有的流图G1, G2, … （每个函数对应一个流图，本例对应Gmain和Gp）；</li>
 <li>每个流图Gp都有个开始节点sp和退出节点ep；</li>
 <li>每个<strong>函数调用</strong>包含调用节点Callp 和 返回节点Retp。</li>
-<li>函数调用有3类边：<ul>
+<li>函数调用有<strong>3类边</strong>：<ul>
 <li>过程内<code>call-to-return-site</code>边，从Callp→Retp；</li>
 <li>过程间<code>call-to-start</code>边，从Callp→sp（sp是被调用函数的开头）；</li>
 <li>过程间<code>exit-to-return-site</code>边，从ep→Retp（ep是被调用函数的结尾）。</li>
@@ -2022,13 +2022,17 @@
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200829121859408.png" alt="image-20200829121859408"></p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200829122128987.png" alt="image-20200829122128987"></p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200829122249017.png" alt="image-20200829122249017"></p>
-<p>不可达原因：括号没匹配上</p>
+<p>不可达原因：括号没匹配上，return-site没有匹配</p>
 <h3 id="IFDS步骤三：Tabulation算法——判断是否可达"><a href="#IFDS步骤三：Tabulation算法——判断是否可达" class="headerlink" title="IFDS步骤三：Tabulation算法——判断是否可达"></a>IFDS步骤三：Tabulation算法——判断是否可达</h3><p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200829122648056.png" alt="image-20200829122648056"></p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/6349402-5043f4907cd15c10-20200829215452471.png" alt="img"></p>
-<p><strong>Tabulation算法工作原理</strong>：假设只关注1个data fact，p’被p和p’’同时调用。</p>
+<p><strong>Tabulation算法工作原理</strong>：假设只关注1个data fact，p’ 被 p 和 p’’ 同时调用。</p>
 <ul>
-<li>处理括号匹配：每次处理到返回点ep’时，开始括号匹配（<code>call-to-return</code>匹配），找到调用点(Callp， Callp’’)和相应的返回点(Retp，Retp’’)。</li>
-<li>处理总结边——SummaryEdge：总结边—&lt;Call,dm&gt;→&lt;Ret,dn&gt;，表示dm通过调用p’能到达pn，要避免重复处理p和p’’中调用同一函数p’（优化）。</li>
+<li><p>p’的入口点一定是自己连自己，一定可达</p>
+</li>
+<li><p>处理括号匹配：每次处理到返回点ep’时，开始括号匹配（<code>call-to-return</code>匹配），找到调用点(Callp， Callp’’)和相应的返回点(Retp，Retp’’)。</p>
+</li>
+<li><p>处理总结边——SummaryEdge：总结边—&lt;Call,dm&gt;→&lt;Ret,dn&gt;，表示dm通过调用p’能到达pn，要避免重复处理p和p’’中调用同一函数p’（优化）。</p>
+</li>
 </ul>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/6349402-1f2401da0b53aa3a.png" alt="img"></p>
 <p><strong>Tabulation算法优点</strong>：传统的worklist算法是利用了queue的特性，每次循环只考虑与被改变值结点的相关结点。论文中用于解决图可达问题的Tabulation 算法是基于worklist的动态规划算法，比传统worklist算法考虑interprocedure问题更精确也更省时。</p>
