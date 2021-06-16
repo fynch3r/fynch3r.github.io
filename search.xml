@@ -7217,7 +7217,7 @@
 <li>对于一条Unit来说，他的ValueBox存储的是在这条语句内部所<strong>用到</strong>的和<strong>所定义</strong>的语句。</li>
 </ul>
 </li>
-<li>UnitBox，指向Units<ul>
+<li>UnitBox，指向Units <ul>
 <li>以goto语句为例，UnitBox其实存的就是goto所指的下一跳节点。</li>
 <li>switch语句，则会包含很多boxes</li>
 </ul>
