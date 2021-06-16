@@ -7736,8 +7736,8 @@
 <p>更详细的两个图类：</p>
 <p><code>ReachableMethods</code>  and <code>TransitiveTargets</code></p>
 <p><code>ReachableMethods</code></p>
-<p>表示能从entrypoints开始 能reach到的方法集合</p>
-<p>方法<code>contains(method)</code>表示去测试method方法能不能到达 能不能reachable</p>
+<p>表示能从entrypoints开始，能reach到的方法集合</p>
+<p>方法<code>contains(method)</code>表示去测试method方法能不能到达，能不能reachable</p>
 <p>方法<code>listener()</code>返回的是一个迭代器遍历所有可达方法。</p>
 <p><code>TransitiveTargets</code></p>
 <p>表示从一个特定的方法能指向的所有方法，<strong>这个方法可以用来分析调用链</strong>。</p>
