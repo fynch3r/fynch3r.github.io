@@ -89,7 +89,7 @@
 <meta property="og:image" content="https://0range228.github.io/images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210504160140618.png">
 <meta property="og:image" content="https://0range228.github.io/images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210504161739103.png">
 <meta property="article:published_time" content="2020-07-18T11:14:40.000Z">
-<meta property="article:modified_time" content="2021-06-16T15:10:58.262Z">
+<meta property="article:modified_time" content="2021-06-17T06:51:37.482Z">
 <meta property="article:author" content="0range">
 <meta property="article:tag" content="Soot">
 <meta name="twitter:card" content="summary">
@@ -279,7 +279,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-06-16 23:10:58" itemprop="dateModified" datetime="2021-06-16T23:10:58+08:00">2021-06-16</time>
+                <time title="修改时间：2021-06-17 14:51:37" itemprop="dateModified" datetime="2021-06-17T14:51:37+08:00">2021-06-17</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -423,7 +423,7 @@
 <ul>
 <li>Locals</li>
 <li>Constants</li>
-<li>Expression（Expr）</li>
+<li>Expr</li>
 <li>parameterRef，CaughtExceptionRef，ThisRef</li>
 </ul>
 <p>这里讲一下Expr接口，他又有一系列的实现，例如NewExpr和AddExpr。</p>
@@ -476,10 +476,11 @@
 <p>对于Unit语句类型来说，必须包含的方法有：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List <span class="title">getUseBoxes</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> List <span class="title">getDefBoxes</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> List <span class="title">getUseAndDefBoxes</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
 
-<p>这些方法会返回在这条Unit语句内部Use的，Define的，或者两者都看。会以List of ValueBox的形式返回。对于getUseBoxes()方法，将返回所有使用的值；这包括表达式及其组成部分。</p>
+<p>这些方法会返回在这条Unit语句内部Use的，Define的，或者两者都看。会以List of ValueBox的形式返回。</p>
+<p>对于getUseBoxes()方法，将返回所有使用的值；当然包括各种Expr表达式及其组成部分。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List <span class="title">getUnitBoxes</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
 
-<p>上面这个方法会返回一个List （UnitBox），包含所有被这个方法所指向的Unit。</p>
+<p>上面这个方法会返回一个List （UnitBox），包含所有被这个Unit所指向的其他Unit。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List <span class="title">getBoxesPointingToThis</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
 
 <p>上面这个方法会返回一个List（UnitBox），包含那些指向这个Unit的Unit语句。</p>
