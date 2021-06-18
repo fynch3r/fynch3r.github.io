@@ -42,6 +42,9 @@
 <meta property="og:image" content="https://0range228.github.io/images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210325213104028.png">
 <meta property="og:image" content="https://0range228.github.io/images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210429202819731.png">
 <meta property="og:image" content="https://0range228.github.io/images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210323212112768.png">
+<meta property="og:image" content="https://0range228.github.io/images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210618145538494.png">
+<meta property="og:image" content="https://0range228.github.io/images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210618151630333.png">
+<meta property="og:image" content="https://0range228.github.io/images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210618152726361.png">
 <meta property="og:image" content="https://0range228.github.io/images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210325112408646.png">
 <meta property="og:image" content="https://0range228.github.io/images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210325112426889.png">
 <meta property="og:image" content="https://0range228.github.io/images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210325144633222.png">
@@ -89,7 +92,7 @@
 <meta property="og:image" content="https://0range228.github.io/images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210504160140618.png">
 <meta property="og:image" content="https://0range228.github.io/images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210504161739103.png">
 <meta property="article:published_time" content="2020-07-18T11:14:40.000Z">
-<meta property="article:modified_time" content="2021-06-18T06:29:52.807Z">
+<meta property="article:modified_time" content="2021-06-18T11:39:41.576Z">
 <meta property="article:author" content="0range">
 <meta property="article:tag" content="Soot">
 <meta name="twitter:card" content="summary">
@@ -279,7 +282,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-06-18 14:29:52" itemprop="dateModified" datetime="2021-06-18T14:29:52+08:00">2021-06-18</time>
+                <time title="修改时间：2021-06-18 19:39:41" itemprop="dateModified" datetime="2021-06-18T19:39:41+08:00">2021-06-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -319,14 +322,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>27k</span>
+              <span>28k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>46 分钟</span>
+              <span>47 分钟</span>
             </span>
 
         </div>
@@ -498,6 +501,133 @@
 
 
 
+<h2 id="Stmt和Expr的区别"><a href="#Stmt和Expr的区别" class="headerlink" title="Stmt和Expr的区别"></a>Stmt和Expr的区别</h2><p>Stmt的基本实现都在<code>soot.jimple.internal</code>中，我们把目光聚集到Jimple这种IR。关系图如下：</p>
+<p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210618145538494.png" alt="image-20210618145538494"></p>
+<p>正如上图所示，<code>soot.jimple</code>包里面，<code>internal</code>包内部存放的是实现了<code>Stmt</code>的抽象类，没有在<code>internal</code>包内存放的是继承了<code>Stmt</code>接口的其余接口。</p>
+<h3 id="AbstractStmt"><a href="#AbstractStmt" class="headerlink" title="AbstractStmt"></a>AbstractStmt</h3><p>在<code>internal</code>包内，最先实现<code>Stmt</code>接口的是<code>AbstractStmt</code>接口：</p>
+<p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210618151630333.png" alt="image-20210618151630333"></p>
+<p>读到这里，我相信你应该有点感觉了，soot架构里面的抽象类应该都有对应的实现。</p>
+<p>这也就是为什么，剩下的三个抽象类肯定还有具体的实现。</p>
+<h4 id="AbstractDefinitionStmt"><a href="#AbstractDefinitionStmt" class="headerlink" title="AbstractDefinitionStmt"></a>AbstractDefinitionStmt</h4><p>表示一个赋值语句</p>
+<p>我们先看AbstractDefinitionStmt抽象类的实现</p>
+<p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210618152726361.png" alt="image-20210618152726361"></p>
+<p><strong>JAssignStmt</strong></p>
+<p>一个正常的复制语句</p>
+<p>比如说可以给一个堆栈变量<code>$5</code>赋值</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$r5 = newarray (java.lang.Object)[<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+
+<p><strong>JIdentityStmt</strong></p>
+<p>通常指的是对变量赋值，这个变量既可以是显示的也可以是隐式的</p>
+<p>函数传参，程序会帮你把从参数传入的变量，赋值给一个临时变量，给函数内部调用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r1 := <span class="meta">@parameter</span>0: java.lang.String</span><br></pre></td></tr></table></figure>
+
+<p>this变量</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r0 := <span class="meta">@this</span>: com.spring.Controller</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="AbstractSwitchStmt"><a href="#AbstractSwitchStmt" class="headerlink" title="AbstractSwitchStmt"></a>AbstractSwitchStmt</h4><p>switch语句主要由于JVM对于不同的Switch语句，会生成不同的操作指令，从而也就有了两种Switch语句</p>
+<p><strong>JLookupSwitchStmt</strong> lookup类型的switch</p>
+<p><strong>JTableSwitchStmt</strong> table类型的switch</p>
+<h4 id="AbstractOpStmt"><a href="#AbstractOpStmt" class="headerlink" title="AbstractOpStmt"></a>AbstractOpStmt</h4><p>四个实现类</p>
+<table>
+<thead>
+<tr>
+<th>类</th>
+<th>表示</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>JEnterMonitorStmt</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>JExitMonitorStmt</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>JReturnStmt</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>JThrowStmt</strong></td>
+<td>代表throw语句</td>
+</tr>
+</tbody></table>
+<h3 id="其他Stmt-直接写上"><a href="#其他Stmt-直接写上" class="headerlink" title="其他Stmt 直接写上"></a>其他Stmt 直接写上</h3><table>
+<thead>
+<tr>
+<th>类</th>
+<th>表示</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>JInvokeStmt</strong></td>
+<td>调用方法的语句</td>
+</tr>
+<tr>
+<td><strong>JBreakpointStmt</strong></td>
+<td>break语句</td>
+</tr>
+<tr>
+<td><strong>JGotoStmt</strong></td>
+<td>go to语句</td>
+</tr>
+<tr>
+<td><strong>JIfStmt</strong></td>
+<td>if 语句</td>
+</tr>
+<tr>
+<td><strong>JNopStmt</strong></td>
+<td>nop跳转</td>
+</tr>
+<tr>
+<td><strong>JRetStmt</strong></td>
+<td>return语句</td>
+</tr>
+<tr>
+<td><strong>JReturnStmt</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>JReturnVoidStmt</strong></td>
+<td>return void 语句</td>
+</tr>
+<tr>
+<td><strong>PlaceholderStmt</strong></td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="AbstractInvokeExpr"><a href="#AbstractInvokeExpr" class="headerlink" title="AbstractInvokeExpr"></a>AbstractInvokeExpr</h3><p>表示调用的表达式</p>
+<p>之前也提到过，invoke一共有五种：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>具体用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
 <h1 id="处理阶段Pack-Transformer"><a href="#处理阶段Pack-Transformer" class="headerlink" title="处理阶段Pack/Transformer"></a>处理阶段Pack/Transformer</h1><p><strong>程序内分析</strong>：</p>
 <p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210325112408646.png" alt="image-20210325112408646"></p>
 <p>上面这张图是<strong>程序内分析</strong>大致框架图，入口点是Jimple，用户可以在转化阶段加入一些分析相关的信息。这个可以在<strong>jtp（Jimple Transformation pack）</strong>阶段来实现。</p>
@@ -925,7 +1055,7 @@
 
 <h4 id="step3-1"><a href="#step3-1" class="headerlink" title="step3"></a>step3</h4><p>设计 flow function</p>
 <p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210504161739103.png" alt="image-20210504161739103"></p>
-<h1 id="零散知识点"><a href="#零散知识点" class="headerlink" title="零散知识点"></a>零散知识点</h1><p>以$开头的都是临时变量，表示相对堆栈位置，并不是源程序中的局部变量，。</p>
+<h1 id="零散知识点"><a href="#零散知识点" class="headerlink" title="零散知识点"></a>零散知识点</h1><p>以$开头的都是临时变量，表示相对堆栈位置，并不是源程序中的局部变量。</p>
 <p>没有$的局部变量则代表真正的局部变量。</p>
 <p>jtp是允许用户自定义的，wjtp全程序转换包</p>
 <p><strong>clinit</strong>方法<strong>clinit是</strong>类构造器方法，也就是在jvm在进行类加载-验证-解析-初始化中的<strong>初始化</strong>阶段，jvm会调用<strong>clinit</strong>. <strong>clinit</strong>方法<strong>是</strong>在类加载过程中执行的，而init方法<strong>是</strong>在对象实例化执行的。</p>
@@ -1120,7 +1250,7 @@
       -->
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SSA"><span class="nav-number">2.</span> <span class="nav-text">SSA</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#soot配置选项"><span class="nav-number">3.</span> <span class="nav-text">soot配置选项</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#soot的基本数据结构"><span class="nav-number">4.</span> <span class="nav-text">soot的基本数据结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#主流IR-Jimple"><span class="nav-number">5.</span> <span class="nav-text">主流IR Jimple</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Value-amp-Box"><span class="nav-number">5.1.</span> <span class="nav-text">Value&amp;Box</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#处理阶段Pack-Transformer"><span class="nav-number">6.</span> <span class="nav-text">处理阶段Pack&#x2F;Transformer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#核心阶段与小阶段"><span class="nav-number">6.1.</span> <span class="nav-text">核心阶段与小阶段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#body-packs"><span class="nav-number">6.2.</span> <span class="nav-text">body packs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Transformer"><span class="nav-number">6.3.</span> <span class="nav-text">Transformer</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#控制流图-CFG"><span class="nav-number">7.</span> <span class="nav-text">控制流图 CFG</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#语句图UnitGraph"><span class="nav-number">7.1.</span> <span class="nav-text">语句图UnitGraph</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#UnitGraph的四个子类"><span class="nav-number">7.1.1.</span> <span class="nav-text">UnitGraph的四个子类</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Host-amp-Tag"><span class="nav-number">8.</span> <span class="nav-text">Host &amp; Tag</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CG-amp-CFG-amp-ICFG"><span class="nav-number">8.1.</span> <span class="nav-text">CG &amp; CFG &amp; ICFG</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CG-Call-Graph"><span class="nav-number">8.2.</span> <span class="nav-text">CG Call Graph</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Querying-Call-Graph"><span class="nav-number">8.2.0.1.</span> <span class="nav-text">Querying Call Graph</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Reachable-Methods"><span class="nav-number">8.2.0.2.</span> <span class="nav-text">Reachable Methods</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Transitive-Targets"><span class="nav-number">8.2.0.3.</span> <span class="nav-text">Transitive Targets</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Spark"><span class="nav-number">8.3.</span> <span class="nav-text">Spark</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Point-to"><span class="nav-number">8.4.</span> <span class="nav-text">Point-to</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#例子a"><span class="nav-number">8.4.0.1.</span> <span class="nav-text">例子a</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#例子b"><span class="nav-number">8.4.0.2.</span> <span class="nav-text">例子b</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据流分析"><span class="nav-number">9.</span> <span class="nav-text">数据流分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#近似分析"><span class="nav-number">9.1.</span> <span class="nav-text">近似分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#近似的两种级别"><span class="nav-number">9.1.1.</span> <span class="nav-text">近似的两种级别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#敏感性"><span class="nav-number">9.2.</span> <span class="nav-text">敏感性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#按照上下文区分：context-sentitive"><span class="nav-number">9.2.1.</span> <span class="nav-text">按照上下文区分：context-sentitive</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#按照位置区分：flow-sentitive"><span class="nav-number">9.2.2.</span> <span class="nav-text">按照位置区分：flow-sentitive</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#按照路径区分：path-sentitive"><span class="nav-number">9.2.3.</span> <span class="nav-text">按照路径区分：path-sentitive</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#soot实现数据流分析"><span class="nav-number">9.3.</span> <span class="nav-text">soot实现数据流分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#四步走"><span class="nav-number">9.3.1.</span> <span class="nav-text">四步走</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#义务，必须要做的事情，关键方法"><span class="nav-number">9.3.2.</span> <span class="nav-text">义务，必须要做的事情，关键方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ForwardFlowAnalysis"><span class="nav-number">9.3.3.</span> <span class="nav-text">ForwardFlowAnalysis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关键方法举例"><span class="nav-number">9.3.4.</span> <span class="nav-text">关键方法举例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Flow-sets"><span class="nav-number">9.4.</span> <span class="nav-text">Flow-sets</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#interface-FlowSet-lt-T-gt"><span class="nav-number">9.4.1.</span> <span class="nav-text">interface FlowSet&lt;T&gt;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四种flow-sets的实现"><span class="nav-number">9.4.2.</span> <span class="nav-text">四种flow sets的实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#soot官方例子"><span class="nav-number">9.5.</span> <span class="nav-text">soot官方例子</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Live-Variables-Analysis"><span class="nav-number">9.5.1.</span> <span class="nav-text">Live Variables Analysis</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#step1"><span class="nav-number">9.5.1.1.</span> <span class="nav-text">step1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step2"><span class="nav-number">9.5.1.2.</span> <span class="nav-text">step2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step3"><span class="nav-number">9.5.1.3.</span> <span class="nav-text">step3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step4"><span class="nav-number">9.5.1.4.</span> <span class="nav-text">step4</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step5"><span class="nav-number">9.5.1.5.</span> <span class="nav-text">step5</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step6"><span class="nav-number">9.5.1.6.</span> <span class="nav-text">step6</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Branched-Nullness-Analysis"><span class="nav-number">9.5.2.</span> <span class="nav-text">Branched Nullness Analysis</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#step1-1"><span class="nav-number">9.5.2.1.</span> <span class="nav-text">step1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step2-1"><span class="nav-number">9.5.2.2.</span> <span class="nav-text">step2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step3-1"><span class="nav-number">9.5.2.3.</span> <span class="nav-text">step3</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#零散知识点"><span class="nav-number">10.</span> <span class="nav-text">零散知识点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#过程内分析"><span class="nav-number">11.</span> <span class="nav-text">过程内分析</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SSA"><span class="nav-number">2.</span> <span class="nav-text">SSA</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#soot配置选项"><span class="nav-number">3.</span> <span class="nav-text">soot配置选项</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#soot的基本数据结构"><span class="nav-number">4.</span> <span class="nav-text">soot的基本数据结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#主流IR-Jimple"><span class="nav-number">5.</span> <span class="nav-text">主流IR Jimple</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Value-amp-Box"><span class="nav-number">5.1.</span> <span class="nav-text">Value&amp;Box</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Stmt和Expr的区别"><span class="nav-number">5.2.</span> <span class="nav-text">Stmt和Expr的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AbstractStmt"><span class="nav-number">5.2.1.</span> <span class="nav-text">AbstractStmt</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#AbstractDefinitionStmt"><span class="nav-number">5.2.1.1.</span> <span class="nav-text">AbstractDefinitionStmt</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AbstractSwitchStmt"><span class="nav-number">5.2.1.2.</span> <span class="nav-text">AbstractSwitchStmt</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AbstractOpStmt"><span class="nav-number">5.2.1.3.</span> <span class="nav-text">AbstractOpStmt</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他Stmt-直接写上"><span class="nav-number">5.2.2.</span> <span class="nav-text">其他Stmt 直接写上</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AbstractInvokeExpr"><span class="nav-number">5.2.3.</span> <span class="nav-text">AbstractInvokeExpr</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#处理阶段Pack-Transformer"><span class="nav-number">6.</span> <span class="nav-text">处理阶段Pack&#x2F;Transformer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#核心阶段与小阶段"><span class="nav-number">6.1.</span> <span class="nav-text">核心阶段与小阶段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#body-packs"><span class="nav-number">6.2.</span> <span class="nav-text">body packs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Transformer"><span class="nav-number">6.3.</span> <span class="nav-text">Transformer</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#控制流图-CFG"><span class="nav-number">7.</span> <span class="nav-text">控制流图 CFG</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#语句图UnitGraph"><span class="nav-number">7.1.</span> <span class="nav-text">语句图UnitGraph</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#UnitGraph的四个子类"><span class="nav-number">7.1.1.</span> <span class="nav-text">UnitGraph的四个子类</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Host-amp-Tag"><span class="nav-number">8.</span> <span class="nav-text">Host &amp; Tag</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CG-amp-CFG-amp-ICFG"><span class="nav-number">8.1.</span> <span class="nav-text">CG &amp; CFG &amp; ICFG</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CG-Call-Graph"><span class="nav-number">8.2.</span> <span class="nav-text">CG Call Graph</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Querying-Call-Graph"><span class="nav-number">8.2.0.1.</span> <span class="nav-text">Querying Call Graph</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Reachable-Methods"><span class="nav-number">8.2.0.2.</span> <span class="nav-text">Reachable Methods</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Transitive-Targets"><span class="nav-number">8.2.0.3.</span> <span class="nav-text">Transitive Targets</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Spark"><span class="nav-number">8.3.</span> <span class="nav-text">Spark</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Point-to"><span class="nav-number">8.4.</span> <span class="nav-text">Point-to</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#例子a"><span class="nav-number">8.4.0.1.</span> <span class="nav-text">例子a</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#例子b"><span class="nav-number">8.4.0.2.</span> <span class="nav-text">例子b</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据流分析"><span class="nav-number">9.</span> <span class="nav-text">数据流分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#近似分析"><span class="nav-number">9.1.</span> <span class="nav-text">近似分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#近似的两种级别"><span class="nav-number">9.1.1.</span> <span class="nav-text">近似的两种级别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#敏感性"><span class="nav-number">9.2.</span> <span class="nav-text">敏感性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#按照上下文区分：context-sentitive"><span class="nav-number">9.2.1.</span> <span class="nav-text">按照上下文区分：context-sentitive</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#按照位置区分：flow-sentitive"><span class="nav-number">9.2.2.</span> <span class="nav-text">按照位置区分：flow-sentitive</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#按照路径区分：path-sentitive"><span class="nav-number">9.2.3.</span> <span class="nav-text">按照路径区分：path-sentitive</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#soot实现数据流分析"><span class="nav-number">9.3.</span> <span class="nav-text">soot实现数据流分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#四步走"><span class="nav-number">9.3.1.</span> <span class="nav-text">四步走</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#义务，必须要做的事情，关键方法"><span class="nav-number">9.3.2.</span> <span class="nav-text">义务，必须要做的事情，关键方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ForwardFlowAnalysis"><span class="nav-number">9.3.3.</span> <span class="nav-text">ForwardFlowAnalysis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关键方法举例"><span class="nav-number">9.3.4.</span> <span class="nav-text">关键方法举例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Flow-sets"><span class="nav-number">9.4.</span> <span class="nav-text">Flow-sets</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#interface-FlowSet-lt-T-gt"><span class="nav-number">9.4.1.</span> <span class="nav-text">interface FlowSet&lt;T&gt;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四种flow-sets的实现"><span class="nav-number">9.4.2.</span> <span class="nav-text">四种flow sets的实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#soot官方例子"><span class="nav-number">9.5.</span> <span class="nav-text">soot官方例子</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Live-Variables-Analysis"><span class="nav-number">9.5.1.</span> <span class="nav-text">Live Variables Analysis</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#step1"><span class="nav-number">9.5.1.1.</span> <span class="nav-text">step1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step2"><span class="nav-number">9.5.1.2.</span> <span class="nav-text">step2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step3"><span class="nav-number">9.5.1.3.</span> <span class="nav-text">step3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step4"><span class="nav-number">9.5.1.4.</span> <span class="nav-text">step4</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step5"><span class="nav-number">9.5.1.5.</span> <span class="nav-text">step5</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step6"><span class="nav-number">9.5.1.6.</span> <span class="nav-text">step6</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Branched-Nullness-Analysis"><span class="nav-number">9.5.2.</span> <span class="nav-text">Branched Nullness Analysis</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#step1-1"><span class="nav-number">9.5.2.1.</span> <span class="nav-text">step1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step2-1"><span class="nav-number">9.5.2.2.</span> <span class="nav-text">step2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step3-1"><span class="nav-number">9.5.2.3.</span> <span class="nav-text">step3</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#零散知识点"><span class="nav-number">10.</span> <span class="nav-text">零散知识点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#过程内分析"><span class="nav-number">11.</span> <span class="nav-text">过程内分析</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -1226,12 +1356,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">584k</span>
+    <span title="站点总字数">585k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">16:13</span>
+    <span title="站点阅读时长">16:15</span>
   -->
 
 </div>
