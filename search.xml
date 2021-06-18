@@ -7172,7 +7172,7 @@
 <p>Unit语句在Jimple中就是Stmt。</p>
 <p>例如赋值语句：</p>
 <p>AssignStmt：x=y+z</p>
-<p>##Jimple 语句类型</p>
+<p>##Jimple Stmt类型</p>
 <p>核心语句：NopStmt，IdentityStmt，AssignStmt</p>
 <p>负责过程内控制流</p>
 <p>IfStmt , GotoStmt , SwitchStmt</p>
@@ -7187,7 +7187,7 @@
 <p><code>AbstractStmtSwitch</code></p>
 <p><code>soot.jimple.AbstractJimpleValueSwitch</code></p>
 <p>等等还有很多switch，他们都是针对不同的语句进行了很多情况的分析。</p>
-<p><strong>AssignStmt表示赋值语句；而IdentityStmt表示将参数赋值给Local这样的语句。</strong> </p>
+<p><strong>AssignStmt表示赋值语句；而IdentityStmt表示将参数赋值给Local这样的语句。</strong></p>
 <h2 id="Value-amp-Box"><a href="#Value-amp-Box" class="headerlink" title="Value&amp;Box"></a>Value&amp;Box</h2><p>Value：</p>
 <ul>
 <li>Locals</li>
