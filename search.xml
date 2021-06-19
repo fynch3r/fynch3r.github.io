@@ -7323,8 +7323,8 @@
 <h3 id="其他Stmt-直接写上"><a href="#其他Stmt-直接写上" class="headerlink" title="其他Stmt 直接写上"></a>其他Stmt 直接写上</h3><table>
 <thead>
 <tr>
-<th>类</th>
-<th>表示</th>
+<th>Stmt</th>
+<th>含义</th>
 </tr>
 </thead>
 <tbody><tr>
@@ -7416,6 +7416,46 @@
 </ul>
 <h3 id="AbstractBinopExpr"><a href="#AbstractBinopExpr" class="headerlink" title="AbstractBinopExpr"></a>AbstractBinopExpr</h3><p>一堆数学操作，加减乘除、逻辑与或非、比较、位运算</p>
 <p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210618195553353.png" alt="image-20210618195553353"></p>
+<h4 id="其他Expr-直接写上"><a href="#其他Expr-直接写上" class="headerlink" title="其他Expr 直接写上"></a>其他Expr 直接写上</h4><table>
+<thead>
+<tr>
+<th>Expr</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>JCastExpr</strong></td>
+<td>cast 强制类型转换</td>
+</tr>
+<tr>
+<td><strong>JInstanceOfExpr</strong></td>
+<td>instanceof</td>
+</tr>
+<tr>
+<td><strong>JNewMultiArrayExpr</strong></td>
+<td>多维数组</td>
+</tr>
+<tr>
+<td><strong>JNewExpr</strong></td>
+<td>new</td>
+</tr>
+<tr>
+<td><strong>JNewArrayExpr</strong></td>
+<td>创建new array</td>
+</tr>
+<tr>
+<td><strong>JLengthExpr</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>JNegExpr</strong></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
 <h1 id="处理阶段Pack-Transformer"><a href="#处理阶段Pack-Transformer" class="headerlink" title="处理阶段Pack/Transformer"></a>处理阶段Pack/Transformer</h1><p><strong>程序内分析</strong>：</p>
 <p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210325112408646.png" alt="image-20210325112408646"></p>
 <p>上面这张图是<strong>程序内分析</strong>大致框架图，入口点是Jimple，用户可以在转化阶段加入一些分析相关的信息。这个可以在<strong>jtp（Jimple Transformation pack）</strong>阶段来实现。</p>
