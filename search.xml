@@ -7299,7 +7299,7 @@
 <p>读到这里，我相信你应该有点感觉了，soot架构里面的抽象类应该都有对应的实现。</p>
 <p>这也就是为什么，剩下的三个抽象类肯定还有具体的实现。</p>
 <h4 id="AbstractDefinitionStmt"><a href="#AbstractDefinitionStmt" class="headerlink" title="AbstractDefinitionStmt"></a>AbstractDefinitionStmt</h4><p>表示一个赋值语句</p>
-<p>我们先看AbstractDefinitionStmt抽象类的实现 </p>
+<p>我们先看AbstractDefinitionStmt抽象类的实现  </p>
 <p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210618152726361.png" alt="image-20210618152726361"></p>
 <p><strong>JAssignStmt</strong></p>
 <p>一个正常的复制语句</p>
