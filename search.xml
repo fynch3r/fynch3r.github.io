@@ -7303,7 +7303,7 @@
 <p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210618152726361.png" alt="image-20210618152726361"></p>
 <p><strong>JAssignStmt</strong></p>
 <p>一个正常的复制语句</p>
-<p>比如说可以给一个堆栈变量<code>$5</code>赋值</p>
+<p>比如说可以给一个堆栈变量<code>$5</code>赋值 </p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">$r5 = newarray (java.lang.Object)[<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
 
 <p><strong>JIdentityStmt</strong></p>
