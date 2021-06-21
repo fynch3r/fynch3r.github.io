@@ -5666,11 +5666,11 @@
 <td>• <strong>Whole-program</strong>    • Demand-driven</td>
 </tr>
 </tbody></table>
-<h3 id="堆抽象-Allocation-Site（内存建模）"><a href="#堆抽象-Allocation-Site（内存建模）" class="headerlink" title="堆抽象 Allocation Site（内存建模）"></a>堆抽象 Allocation Site（内存建模）</h3><p><strong>问题</strong>：程序动态执行时，堆对象个数理论上是无穷无尽的，但静态分析无法处理这个问题。所以为<strong>保证指针分析可以终止</strong>，我们采用堆抽象技术，将无穷的具体对象抽象成有限的抽象对象。也即，将有共性的对象抽象成1个静态对象，从而限制静态分析对象的个数。</p>
+<h3 id="堆抽象-Allocation-Site（内存建模）"><a href="#堆抽象-Allocation-Site（内存建模）" class="headerlink" title="堆抽象 Allocation Site（内存建模）"></a>堆抽象 Allocation Site（内存建模）</h3><p><strong>问题</strong>：程序动态执行时，堆对象个数理论上是无穷无尽的，但静态分析无法处理这个问题。所以为<strong>保证指针分析可以终止</strong>，我们采用堆抽象技术，<strong>将无穷的具体对象抽象成有限的抽象对象</strong>。也就是，将有共性的对象抽象成1个静态对象，从而限制静态分析对象的个数。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200823160046190.png" alt="image-20200823160046190"></p>
 <p>我们只学习<code>Allocation-Site</code>技术，最常见也最常被使用。</p>
 <p><strong><code>Allocation-Site</code>原理</strong>：将动态对象抽象成它们的创建点（<code>Allocation-Site</code>），来表示在该点创建的所有动态对象。<code>Allocation-Site</code>个数是有限的。</p>
-<p><strong>示例</strong>：循环创建了3个对象，我们用O2来抽象表示这3个动态对象。几个new就会合并处理几个。</p>
+<p><strong>示例</strong>：循环创建了3个对象，我们用O2来抽象表示这3个动态对象。<strong>几个new就会合并处理几个</strong>。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200823160313045.png" alt="image-20200823160313045"></p>
 <h3 id="上下文敏感Context-Sensitivity"><a href="#上下文敏感Context-Sensitivity" class="headerlink" title="上下文敏感Context Sensitivity"></a>上下文敏感Context Sensitivity</h3><p><strong>问题</strong>：考虑是否区分不同call-site对同一函数的调用。</p>
 <ul>
@@ -7322,6 +7322,9 @@
 <p>可以理解为：</p>
 <p>一个IdentityStmt将特殊值，如参数、this或被捕获的异常，分配给一个Local。</p>
 <p>所有 “正常 “的赋值，例如从一个Local到另一个Local，或者从一个Constant到一个Local，都是用AssignStmt表示的。</p>
+<blockquote>
+<p>不同的IdentityStmts的共同点是它们分配的值都是 “神奇地从天而降”。在方法入口处，这些是参数和 “this”，而在异常处理程序中，这些是抛出的异常。换句话说，在处理程序开始的地方，在方法的主体里有一个带有异常引用的IdentityStmt是完全可以的，也是人们所期待的。Soot的唯一假设是，如果一个语句是Trap的目标，即处理程序的开始，那么该处理程序中的第一个语句应该是一个带有适当异常引用的IdentityStmt。</p>
+</blockquote>
 <h4 id="AbstractSwitchStmt"><a href="#AbstractSwitchStmt" class="headerlink" title="AbstractSwitchStmt"></a>AbstractSwitchStmt</h4><p>switch语句主要由于JVM对于不同的Switch语句，会生成不同的操作指令，从而也就有了两种Switch语句</p>
 <p><strong>JLookupSwitchStmt</strong> lookup类型的switch</p>
 <p><strong>JTableSwitchStmt</strong> table类型的switch</p>
