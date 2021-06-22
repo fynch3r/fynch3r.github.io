@@ -5708,8 +5708,8 @@
 <li>Load：   y = x.f</li>
 <li>Call：     r = x.k(a,…)<ul>
 <li>Static call：    C.foo()</li>
-<li>Special call： super.foo() / x.<init>() / this.privateFoo()</init></li>
-<li><strong>Virtual call</strong>：x.foo()</li>
+<li>Special call： super.foo() / x.<code>&lt;init&gt;</code>() / this.privateFoo()</li>
+<li><strong>Virtual call</strong>：x.foo() 重点分析</li>
 </ul>
 </li>
 </ol>
@@ -8045,6 +8045,15 @@
 <li>A的out-set。</li>
 </ol>
 <p>这个方法的内容完全取决于你的分析和抽象。</p>
+<h1 id="soot-tricks"><a href="#soot-tricks" class="headerlink" title="soot tricks"></a>soot tricks</h1><p><strong>print in console</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">soot.SootClass c = <span class="comment">// your SootClass</span></span><br><span class="line">SootMethod c = <span class="comment">// your method Body </span></span><br><span class="line">PrintWriter writer = <span class="keyword">new</span> PrintWriter(System.out); </span><br><span class="line">soot.Printer.v().printTo(c, writer);</span><br><span class="line">writer.flush();</span><br><span class="line">writer.close();</span><br></pre></td></tr></table></figure>
+
+<p><strong>print to a jimple file</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">soot.SootClass c = <span class="comment">// your SootClass</span></span><br><span class="line">File file = <span class="keyword">new</span> File(c.getName() + <span class="string">".jimple"</span>);</span><br><span class="line">PrintWriter writer;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  writer = <span class="keyword">new</span> PrintWriter(file);</span><br><span class="line">  soot.Printer.v().printTo(c, writer);</span><br><span class="line">  writer.flush();</span><br><span class="line">  writer.close();</span><br><span class="line">&#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</span><br><span class="line">  e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><a href="https://gist.github.com/linghuiluo/f937ab3ec656991b4b3ec121d7847b1d" target="_blank" rel="noopener">Jimple Checklist</a></p>
 ]]></content>
       <categories>
         <category>Java</category>
