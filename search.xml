@@ -5700,7 +5700,7 @@
 <li>Array element: array[i]  ——不分析，因为静态分析无法确定下标，所以将array中所有成员映射到一个field中，等价于<strong>Instance field</strong>，所以不重复分析。如下图所示：</li>
 </ol>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200823170722727.png" alt="image-20200823170722727"></p>
-<p><strong>影响指针指向的语句</strong>：</p>
+<p><strong>五个影响指针指向的语句</strong>：</p>
 <ol>
 <li>New:      x = new T()</li>
 <li>Assign：x = y</li>
@@ -10610,8 +10610,18 @@
 <p>本篇将会是一篇长文，会陆续更新。</p>
 <a id="more"></a>
 
-<h1 id="Java应用类型"><a href="#Java应用类型" class="headerlink" title="Java应用类型"></a>Java应用类型</h1><p>一共五种：</p>
-<p>类 / 数组 / 接口 / 枚举 / 注解</p>
+<h1 id="Java数据类型"><a href="#Java数据类型" class="headerlink" title="Java数据类型"></a>Java数据类型</h1><p>基础类型：8种</p>
+<p>​    int、float、double、float、double、char、byte、boolean</p>
+<p>引用类型：5种 </p>
+<p>​    类 / 数组 / 接口 / 枚举 / 注解</p>
+<p>区别：</p>
+<p>基本类型的变量存储原始值(常量)，常量存放在堆上。</p>
+<p>引用类型的变量存储地址，存储的是堆中对象的地址。</p>
+<h1 id="值传递与引用传递"><a href="#值传递与引用传递" class="headerlink" title="值传递与引用传递"></a>值传递与引用传递</h1><p>发生在形参与实参传递的过程中。</p>
+<h2 id="值传递"><a href="#值传递" class="headerlink" title="值传递"></a>值传递</h2><p>基本类型的变量赋值就是值传递，相当于直接将常量值复制一份，函数接收的是原始值的一个copy。</p>
+<p><strong>此时内存中存在两个相等的基本类型</strong>，即实参和形参。</p>
+<p><strong>后面方法中的操作都是对形参这个值的修改，不影响实际参数的值</strong>。</p>
+<h2 id="引用传递"><a href="#引用传递" class="headerlink" title="引用传递"></a>引用传递</h2><p>也称为地址传递。方法调用时，实际参数的引用被传递给方法中相对应的形式参数，函数接收的是原始值的内存地址。<br>在方法执行中，形参和实参内容相同，指向同一块内存地址，<strong>方法执行中对形参的操作将会影响到实际对象</strong>。</p>
 <h1 id="接口与抽象类的区别"><a href="#接口与抽象类的区别" class="headerlink" title="接口与抽象类的区别"></a>接口与抽象类的区别</h1><p>一个类只能继承一个父类，但是可以实现多个接口</p>
 <h2 id="抽象类"><a href="#抽象类" class="headerlink" title="抽象类"></a>抽象类</h2><p>只要类中有抽象方法，那么他就是抽象类</p>
 <p>抽象方法：abstract+只有方法名 默认public abstract修饰</p>
