@@ -7338,19 +7338,19 @@
 </thead>
 <tbody><tr>
 <td><strong>JEnterMonitorStmt</strong></td>
-<td></td>
+<td>线程进入</td>
 </tr>
 <tr>
 <td><strong>JExitMonitorStmt</strong></td>
-<td></td>
+<td>线程退出</td>
 </tr>
 <tr>
 <td><strong>JReturnStmt</strong></td>
-<td></td>
+<td>return语句</td>
 </tr>
 <tr>
 <td><strong>JThrowStmt</strong></td>
-<td>代表throw语句</td>
+<td>throw语句</td>
 </tr>
 </tbody></table>
 <h3 id="其他Stmt-直接写上"><a href="#其他Stmt-直接写上" class="headerlink" title="其他Stmt 直接写上"></a>其他Stmt 直接写上</h3><table>
@@ -7386,15 +7386,11 @@
 </tr>
 <tr>
 <td><strong>JReturnStmt</strong></td>
-<td></td>
+<td>return语句</td>
 </tr>
 <tr>
 <td><strong>JReturnVoidStmt</strong></td>
 <td>return void 语句</td>
-</tr>
-<tr>
-<td><strong>PlaceholderStmt</strong></td>
-<td></td>
 </tr>
 </tbody></table>
 <h3 id="AbstractInvokeExpr"><a href="#AbstractInvokeExpr" class="headerlink" title="AbstractInvokeExpr"></a>AbstractInvokeExpr</h3><p>表示调用的表达式</p>
@@ -7499,7 +7495,7 @@
 </tr>
 <tr>
 <td><strong>JLengthExpr</strong></td>
-<td></td>
+<td>数组长度</td>
 </tr>
 <tr>
 <td><strong>JNegExpr</strong></td>
