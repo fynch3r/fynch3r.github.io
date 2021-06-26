@@ -252,7 +252,7 @@
 <meta property="og:image" content="https://0range228.github.io/images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200830211838150.png">
 <meta property="og:image" content="https://0range228.github.io/images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200830214334563.png">
 <meta property="article:published_time" content="2020-08-16T08:13:59.000Z">
-<meta property="article:modified_time" content="2021-06-26T03:56:24.692Z">
+<meta property="article:modified_time" content="2021-06-26T03:57:04.904Z">
 <meta property="article:author" content="0range">
 <meta property="article:tag" content="静态分析基础">
 <meta name="twitter:card" content="summary">
@@ -442,7 +442,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-06-26 11:56:24" itemprop="dateModified" datetime="2021-06-26T11:56:24+08:00">2021-06-26</time>
+                <time title="修改时间：2021-06-26 11:57:04" itemprop="dateModified" datetime="2021-06-26T11:57:04+08:00">2021-06-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1519,7 +1519,7 @@
 <p><strong>堆抽象上下文示例</strong>：</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200825164309086.png" alt="image-20200825164309086"></p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20210412114030719.png" alt="image-20210412114030719"></p>
-<p><strong>堆抽象上下文不敏感</strong>：如果不区分<code>8 ：X x = new X();</code>调用的堆抽象的上下文，导致只有1个o8.f，把两个上下文调用产生的o8.f指向集合都合并了，得出了o8.f的错误指向的结果。</p>
+<p><strong>堆抽象上下文不敏感</strong>：如果不区分<code>8 ：X x = new X();</code>调用的堆抽象的上下文，导致只有1个o8.f，把两个上下文调用产生的o8.f指向集合都合并了，得出了o8.f的错误指向的结果。 </p>
 <p><strong>堆抽象上下文敏感</strong>：用不同的调用者来区分堆抽象，如<code>3:o8</code>、<code>4:o8</code>是不同上下文创建的堆抽象。所以说，既要根据上下文的不同来区分局部变量，也要区分堆抽象，<strong>例如：<code>3:p</code>是给变量加上下文，<code>3:o8</code>是给堆抽象加上下文</strong>。</p>
 <p><strong>规则</strong>：<strong>变量上下文标号和堆上下文标号都是缺一不可的</strong>。谁敏感谁加行号区分，行号其实就是上下文环境。</p>
 <h2 id="上下文敏感指针分析：规则"><a href="#上下文敏感指针分析：规则" class="headerlink" title="上下文敏感指针分析：规则"></a>上下文敏感指针分析：规则</h2><p>指针两种：变量 &amp; field</p>
