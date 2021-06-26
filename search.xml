@@ -6169,7 +6169,7 @@
 <ul>
 <li>call-site sensitivity (call-string)：根据<strong>调用点位置</strong>的不同来区分上下文，<code>3：id(n1)</code> / <code>4：id(n2)</code>。</li>
 <li>Cloning-Based Context Sensitivity：每种上下文对应一个节点，标记调用者的<strong>行数</strong>。克隆多少数据，后面会讨论。</li>
-<li>Context-Sensitive Heap：面向对象程序（如Java）会频繁修改堆对象，称为heap-insensitive。所以不仅要给变量加上下文，也要给堆抽象加上下文，称为heap context（本课程是基于allocate-site来进行堆抽象的）。</li>
+<li>Context-Sensitive Heap：面向对象程序（如Java）会频繁修改堆对象，称为heap-insensitive。所以不仅要给变量加上下文，也要给堆抽象加上下文，称为heap context（本课程是基于allocate-site来进行堆抽象的）。 </li>
 </ul>
 <p>Context Insensitivity 上下文不敏感的原因：</p>
 <ul>
