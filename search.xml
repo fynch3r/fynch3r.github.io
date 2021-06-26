@@ -7210,7 +7210,7 @@
 <p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210619182313742.png" alt="image-20210619182313742"></p>
 <p>可以说是很完备了</p>
 <p>最常用了也就是<strong>StringConstant</strong>和<strong>NumericConstant</strong>了。</p>
-<h3 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h3><p>引用 相当于指针</p>
+<h3 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h3><p>引用 相当于指针。RefTypes是以类名为参数。</p>
 <p><img src="../images/soot%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86/image-20210619194142262.png" alt="image-20210619194142262"></p>
 <p><strong>ConcreteRef</strong></p>
 <ul>
