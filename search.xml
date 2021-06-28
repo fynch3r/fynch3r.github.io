@@ -41,7 +41,7 @@
 <p>此时H就会对X的蓝图判定，输入是X蓝图的情况下会发生什么？</p>
 <p>如果H给出的是not stuck，那么X最终的输出结果就是stuck，相悖！</p>
 <p>如果H给出的是stuck，那么X最终的结果就是not stuck，相悖！ </p>
-<p>所以X自身就是一个反例，因此逻辑层面就会证明，<strong>世界上根本不存在H</strong>。</p>
+<p>所以X自身就是一个反例，因此逻辑层面就会证明，<strong>世界上根本不存在H</strong>。 </p>
 <h1 id="程序分析技术栈"><a href="#程序分析技术栈" class="headerlink" title="程序分析技术栈"></a>程序分析技术栈</h1><p><a href="https://blog.csdn.net/qq_37206105/article/details/116401043?spm=1001.2014.3001.5501" target="_blank" rel="noopener">canliture师傅</a></p>
 ]]></content>
       <categories>
