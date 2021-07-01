@@ -5736,12 +5736,12 @@
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200823160313045.png" alt="image-20200823160313045"></p>
 <h3 id="上下文敏感Context-Sensitivity"><a href="#上下文敏感Context-Sensitivity" class="headerlink" title="上下文敏感Context Sensitivity"></a>上下文敏感Context Sensitivity</h3><p><strong>问题</strong>：考虑是否区分不同call-site对同一函数的调用。</p>
 <ul>
-<li>Context-sensitive：根据某函数调用上下文的不同，<strong>多次分析同一函数</strong>。</li>
-<li>Context-insensitive：每个函数只分析一次。</li>
+<li>Context-sensitive：根据某函数调用上下文的不同，<strong>多次分析同一函数</strong>，更加准确。</li>
+<li>Context-insensitive：将不同的上下文merge到一起，每个函数只分析一次。</li>
 </ul>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200823161014112.png" alt="image-20200823161014112"></p>
-<h3 id="流敏感-Flow-Sensitivity-控制流建模"><a href="#流敏感-Flow-Sensitivity-控制流建模" class="headerlink" title="流敏感 Flow Sensitivity 控制流建模"></a>流敏感 Flow Sensitivity 控制流建模</h3><p><strong>问题</strong>：考虑语句顺序（控制流）的影响  vs 把程序当做无序语句的集合。</p>
-<p><strong>方法</strong>：流敏感会在<strong>每个程序点</strong>都保存一份<strong>指针指向关系映射表</strong>，而流不敏感则对整个程序保存一份指向关系映射。</p>
+<h3 id="流敏感-Flow-Sensitivity-控制流建模"><a href="#流敏感-Flow-Sensitivity-控制流建模" class="headerlink" title="流敏感 Flow Sensitivity 控制流建模"></a>流敏感 Flow Sensitivity 控制流建模</h3><p><strong>问题</strong>：考虑语句顺序（<strong>控制流</strong>）的影响  vs 把程序当做无序语句的集合。</p>
+<p><strong>方法</strong>：流敏感会在<strong>每个程序点</strong>都保存一份<strong>指针指向关系映射表</strong>，而流不敏感则对整个程序<strong>只保存一份指向关系映射</strong>。</p>
 <p><strong>说明</strong>：目前流敏感对Java提升不大，不过在C中很有效，本课程分析的是Java，所以Java重点讨论流不敏感技术。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200823161210004.png" alt="image-20200823161210004"></p>
 <p><strong>指针分析示例</strong>：</p>
