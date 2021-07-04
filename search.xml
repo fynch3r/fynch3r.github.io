@@ -5819,7 +5819,7 @@
 <p><strong>符号</strong>：</p>
 <ul>
 <li>S：程序语句的集合。</li>
-<li>WL：Work list，待合并的指针信息，二元组的集合，<strong>&lt;指针n，指向的对象集合pts&gt;</strong>。pts将被加入到n的指向集pt(n)中。</li>
+<li>WL：Work list，待合并的指针信息，二元组的集合，<strong>&lt;指针n，指向的对象集合pts&gt;</strong>，代表的是<strong>pts将被加入到n的指向集pt(n)中</strong>。</li>
 <li>PFG：指针流图，边的集合。</li>
 </ul>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200824140118428.png" alt="image-20200824140118428"></p>
