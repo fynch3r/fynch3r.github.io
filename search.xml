@@ -6420,6 +6420,8 @@
 </ul>
 <p><strong>说明</strong>：Select(c,l,c’:o<sub>i</sub>,m)，c—调用者上下文，l—调用者语句，c’:o<sub>i</sub>—接收对象（含堆的上下文信息）,m目标方法。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200825214950322.png" alt="image-20200825214950322"></p>
+<p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20210706164355197.png" alt="image-20210706164355197"></p>
+<p>这里对于函数的上下文，可以想象成一个chain，会有很多前驱的调用方法轨迹，</p>
 <h3 id="Call-site-Sensitivity"><a href="#Call-site-Sensitivity" class="headerlink" title="Call-site Sensitivity"></a>Call-site Sensitivity</h3><p><strong>原理</strong>：又称为k-call-site sensitivity / k-CFA，不断添加调用行号。</p>
 <blockquote>
 <p>Select(<strong>c,l</strong>,c’:oi,m) = (l’,…,l’’, l)</p>
