@@ -6350,7 +6350,7 @@
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200825134216437.png" alt="image-20200825134216437"></p>
 <p><strong>问题</strong>：上下文不敏感时，分析常量传播这个问题，由于没有明确调用id()的上下文，会把不同的调用<strong>混在一起</strong>，对id函数内的变量n只有一种表示（<strong>没有对局部变量进行区分</strong>），导致n指向的对象集合增大，将i识别为非常量NAC。实际上，x.get()的值只来自于One()对象，i应该是常量1。</p>
 <p><strong>解决</strong>：根据调用的上下文（主要有3种：如根据调用点所在的行数——call-site sensitivity）来区分局部变量。 </p>
-<h2 id="上下文敏感分析"><a href="#上下文敏感分析" class="headerlink" title="上下文敏感分析"></a>上下文敏感分析</h2><p><strong>概念</strong>：</p>
+<h2 id="上下文敏感分析-C-S"><a href="#上下文敏感分析-C-S" class="headerlink" title="上下文敏感分析  C.S."></a>上下文敏感分析  C.S.</h2><p><strong>概念</strong>：</p>
 <ul>
 <li>call-site sensitivity (call-string)：根据<strong>调用点位置</strong>的不同来区分上下文，<code>3：id(n1)</code> / <code>4：id(n2)</code>。</li>
 <li>Cloning-Based Context Sensitivity：每种上下文对应一个节点，标记调用者的<strong>行数</strong>。克隆多少数据，后面会讨论。</li>
@@ -6369,13 +6369,13 @@
 <p><strong>堆抽象上下文示例</strong>：</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200825164309086.png" alt="image-20200825164309086"></p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20210412114030719.png" alt="image-20210412114030719"></p>
-<p><strong>堆抽象上下文不敏感</strong>：如果不区分<code>8 ：X x = new X();</code>调用的堆抽象的上下文，导致只有1个o8.f，把两个上下文调用产生的o8.f指向集合都合并了，得出了o8.f的错误指向的结果。 </p>
-<p><strong>堆抽象上下文敏感</strong>：用不同的调用者来区分堆抽象，如<code>3:o8</code>、<code>4:o8</code>是不同上下文创建的堆抽象。所以说，既要根据上下文的不同来区分局部变量，也要区分堆抽象，<strong>例如：<code>3:p</code>是给变量加上下文，<code>3:o8</code>是给堆抽象加上下文</strong>。</p>
+<p><strong>堆抽象+上下文不敏感</strong>：如果不区分<code>8 ：X x = new X();</code>调用的堆抽象的上下文，导致只有1个o8.f，把两个上下文调用产生的o8.f指向集合都合并了，得出了o8.f的错误指向的结果。 </p>
+<p><strong>堆抽象+上下文敏感</strong>：用不同的调用者来区分堆抽象，如<code>3:o8</code>、<code>4:o8</code>是不同上下文创建的堆抽象。所以说，既要根据上下文的不同来区分局部变量，也要区分堆抽象，<strong>例如：<code>3:p</code>是给变量加上下文，<code>3:o8</code>是给堆抽象加上下文</strong>。</p>
 <p><strong>规则</strong>：<strong>变量上下文标号和堆上下文标号都是缺一不可的</strong>。谁敏感谁加行号区分，行号其实就是上下文环境。</p>
 <h2 id="上下文敏感指针分析：规则"><a href="#上下文敏感指针分析：规则" class="headerlink" title="上下文敏感指针分析：规则"></a>上下文敏感指针分析：规则</h2><p>指针两种：变量 &amp; field</p>
 <p><strong>标记</strong>：根据调用者的行数来区分不同上下文，只要区分了函数、变量、堆对象，就能够区分实例域、上下文敏感的指针（变量+对象域）。C—上下文（暂时用调用点的行数表示），O—对象，F—对象中的域。</p>
 <p>方法、变量、对象都需要上下文前缀</p>
-<p>field不存在上下文，但是实例对象的object的fields是有上下文前缀的</p>
+<p><strong>field不存在上下文</strong>，但是实例对象的object的Instance fields是有上下文前缀的</p>
 <p>指针(上下文敏感指针的)指向的对象是有上下文前缀的</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200825165457684.png" alt="image-20200825165457684"></p>
 <p><strong>基本规则</strong>：跟之前区别不大，只是增加了个上下文标记，有细微区别。</p>
@@ -6390,8 +6390,9 @@
 <li>多了一步，<strong>select 选择方法的上下文</strong>，对于目标函数m选择上下文，根据调用点的信息，获得不同上下文条件下的目标方法ct</li>
 <li>传this：传的是ct上下文条件下m方法的this变量</li>
 <li>传参数：也是在特定上下文方法下的参数，会区分开数据流</li>
-<li>传返回值：从哪来，回哪里去。（不敏感就是到处瞎走，敏感就是自己知道该回哪去）</li>
+<li>传返回值：从哪来，回哪里去。（不敏感就是到处瞎走，导致数据流混乱，敏感就是自己知道该回哪去）</li>
 </ol>
+<p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20210706150320744.png" alt="image-20210706150320744"></p>
 <h2 id="Context-Sensitive-Pointer-Analysis：Algorithms"><a href="#Context-Sensitive-Pointer-Analysis：Algorithms" class="headerlink" title="Context Sensitive Pointer Analysis：Algorithms"></a>Context Sensitive Pointer Analysis：Algorithms</h2><p><strong>区别</strong>：和过程间指针分析相比，仍然分为两个过程，分别是构造PFG和根据PFG传递指向信息。主要区别是添加了上下文。</p>
 <img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20210412144246826.png" alt="image-20210412144246826" style="zoom:67%;">
 
