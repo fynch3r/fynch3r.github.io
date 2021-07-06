@@ -6420,16 +6420,16 @@
 </ul>
 <p><strong>说明</strong>：Select(c,l,c’:o<sub>i</sub>,m)，c—调用者上下文，l—调用者语句，c’:o<sub>i</sub>—接收对象（含堆的上下文信息）,m目标方法。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200825214950322.png" alt="image-20200825214950322"></p>
-<p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20210706164355197.png" alt="image-20210706164355197"></p>
-<p>这里对于函数的上下文，可以想象成一个chain，会有很多前驱的调用方法轨迹，</p>
-<h3 id="Call-site-Sensitivity"><a href="#Call-site-Sensitivity" class="headerlink" title="Call-site Sensitivity"></a>Call-site Sensitivity</h3><p><strong>原理</strong>：又称为k-call-site sensitivity / k-CFA，不断添加调用行号。</p>
+<h3 id="Call-site-Sensitivity"><a href="#Call-site-Sensitivity" class="headerlink" title="Call-site Sensitivity"></a>Call-site Sensitivity</h3><p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20210706164355197.png" alt="image-20210706164355197"></p>
+<p>对于一个正常函数的上下文，他会有很多callsite，这些callsite组合成一个chain，会有很多前驱的调用方法轨迹。</p>
+<p><strong>原理</strong>：又称为k-call-site sensitivity / k-CFA(Control-Flow Analysis)，不断添加调用行号。</p>
 <blockquote>
 <p>Select(<strong>c,l</strong>,c’:oi,m) = (l’,…,l’’, l)</p>
 </blockquote>
 <img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20210412163639405.png" alt="image-20210412163639405" style="zoom:50%;">
 
 <p>维护一个抽象调用栈。</p>
-<p><strong>问题</strong>：如果函数调用自身，导致无限递归，如何限制上下文长度？</p>
+<p><strong>问题</strong>：<strong>如果函数调用自身，导致无限递归，如何限制上下文长度？</strong></p>
 <p><strong>解决</strong>：k-limiting Context Abstraction。对上下文加以限制，只取最后k个上下文，通常取k&lt;=3。</p>
 <p>例如，函数方法的上下文通常取2，堆上下文通常取1。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200825220600403.png" alt="image-20200825220600403"></p>
