@@ -12183,7 +12183,13 @@
 <p>用户<code>root</code>的家目录：<code>/root</code></p>
 <p><code>#</code>：root</p>
 <p><code>$</code>：普通用户</p>
-<h1 id="命令行参数前缀格式"><a href="#命令行参数前缀格式" class="headerlink" title="命令行参数前缀格式"></a>命令行参数前缀格式</h1><h1 id="各种命令"><a href="#各种命令" class="headerlink" title="各种命令"></a>各种命令</h1><h2 id="ls"><a href="#ls" class="headerlink" title="ls"></a>ls</h2><blockquote>
+<h1 id="命令行参数前缀格式"><a href="#命令行参数前缀格式" class="headerlink" title="命令行参数前缀格式"></a>命令行参数前缀格式</h1><p>主要有三种：</p>
+<ul>
+<li>Unix风格：-</li>
+<li>GNU风格：–</li>
+<li>BSD风格：不加dash</li>
+</ul>
+<h1 id="各种命令"><a href="#各种命令" class="headerlink" title="各种命令"></a>各种命令</h1><h2 id="ls"><a href="#ls" class="headerlink" title="ls"></a>ls</h2><blockquote>
 <p>ls [选项] [参数] :   ls -l /etc</p>
 </blockquote>
 <p>目录内容查看</p>
