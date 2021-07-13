@@ -6886,7 +6886,7 @@
 </li>
 <li><p>处理括号匹配：每次处理到返回点ep’时，开始括号匹配（<code>call-to-return</code>匹配），找到调用点(Callp， Callp’’)和相应的返回点(Retp，Retp’’)。</p>
 </li>
-<li><p>处理总结边——SummaryEdge：总结边—&lt;Call,dm&gt;→&lt;Ret,dn&gt;，表示dm通过调用p’能到达pn，要避免重复处理p和p’’中调用同一函数p’（优化）。</p>
+<li><p>处理总结边——SummaryEdge：总结边—&lt;Call,dm&gt;→&lt;Ret,dn&gt;，表示dm通过调用p’能到达pn，用来<strong>避免重复处理p和p’’中调用同一函数p’（优化）。</strong></p>
 </li>
 </ul>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/6349402-1f2401da0b53aa3a.png" alt="img"></p>
