@@ -12182,7 +12182,7 @@
 <p>用户<code>tom</code>的家目录：<code>/home/tom</code></p>
 <p>用户<code>root</code>的家目录：<code>/root</code></p>
 <p><code>#</code>：root</p>
-<p><code>$</code>：普通用户</p>
+<p><code>$</code>：普通用户 </p>
 <h1 id="命令行参数前缀格式"><a href="#命令行参数前缀格式" class="headerlink" title="命令行参数前缀格式"></a>命令行参数前缀格式</h1><p>主要有三种：</p>
 <ul>
 <li>Unix风格：-</li>
