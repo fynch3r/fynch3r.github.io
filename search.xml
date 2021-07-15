@@ -5223,6 +5223,25 @@
 <p>越来越发现基础知识的重要，前一阵又跟着老师过了一遍，理解更加深入了，顺便整理笔记。</p>
 <a id="more"></a>
 
+
+
+<h1 id="00-静态分析"><a href="#00-静态分析" class="headerlink" title="00 静态分析"></a>00 静态分析</h1><p>以下参考<a href="https://zhuanlan.zhihu.com/p/4520849" target="_blank" rel="noopener">啥玩应儿</a></p>
+<p>核心问题：Abstraction和Over-approximation</p>
+<ol>
+<li><p><strong>Abstraction</strong></p>
+<p>程序在动态运行时，有很多变量的值是动态变化的。</p>
+<p>比如一个是循环中，有一句new A()，那么每次循环都会在内存中生成一个A类对象，直到占满你的内存。</p>
+<p>这过程中的每一个A都是<strong>Concreate Object</strong> 也就是具体对象，是真真切切在内存中存在的。</p>
+<p>静态分析主要采用的方法就是为同一句<code>new A()</code> 只生成一个抽象的对象，也就是<strong>Abstract Object</strong>。</p>
+<p>这里你的抽象程度、抽象方式、静态分析的精度和速度都是不同的。</p>
+</li>
+<li><p><strong>Over-approximation</strong></p>
+<p>程序在动态执行时，其实根据输入的参数不同，执行的路径也会各不相同。</p>
+<p><strong>随着程序规模和复杂度的增加，路径也就会变得无穷无尽。</strong></p>
+<p>最终导致我们无法在有限的空间内枚举每一种执行路径，就会发生<strong>路径爆炸</strong>！</p>
+<p>为了可以在有限的空间内来枚举无限路径下的各种可能值，需要保守估计，也就是Over-approximation</p>
+</li>
+</ol>
 <h1 id="01"><a href="#01" class="headerlink" title="01"></a>01</h1><h2 id="PL：Programming-Language"><a href="#PL：Programming-Language" class="headerlink" title="PL：Programming Language"></a>PL：Programming Language</h2><p>理论：语言设计，类型系统，语义和逻辑 </p>
 <p>环境：编译器，运行系统</p>
 <p>应用：程序分析，程序验证，程序合成</p>
