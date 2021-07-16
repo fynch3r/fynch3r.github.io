@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-pace-theme-flash.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<!--
+
+  <script src="//code.tidio.co/oixl41gwhy8tvqy6jte9uvglyrqcjrvc.js" async></script>
+
+-->
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"0range228.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+  <meta name="description" content="序言 浮云游子意，落日故人情。  协议原文Object Serialization Stream Protocol">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java对象序列化流协议梳理">
+<meta property="og:url" content="https://0range228.github.io/Java%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%81%E5%8D%8F%E8%AE%AE%E6%A2%B3%E7%90%86/index.html">
+<meta property="og:site_name" content="0range的小窝">
+<meta property="og:description" content="序言 浮云游子意，落日故人情。  协议原文Object Serialization Stream Protocol">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0range228.github.io/images/Java%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%81%E5%8D%8F%E8%AE%AE%E6%A2%B3%E7%90%86/image-20210716200321909.png">
+<meta property="og:image" content="https://0range228.github.io/images/Java%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%81%E5%8D%8F%E8%AE%AE%E6%A2%B3%E7%90%86/image-20210716202716995.png">
+<meta property="og:image" content="https://0range228.github.io/images/Java%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%81%E5%8D%8F%E8%AE%AE%E6%A2%B3%E7%90%86/image-20210716203132016.png">
+<meta property="article:published_time" content="2021-07-16T07:27:51.000Z">
+<meta property="article:modified_time" content="2021-07-16T12:31:36.983Z">
+<meta property="article:author" content="0range">
+<meta property="article:tag" content="Java序列化原理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0range228.github.io/images/Java%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%81%E5%8D%8F%E8%AE%AE%E6%A2%B3%E7%90%86/image-20210716200321909.png">
+
+<link rel="canonical" href="https://0range228.github.io/Java%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%81%E5%8D%8F%E8%AE%AE%E6%A2%B3%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>Java对象序列化流协议梳理 | 0range的小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="0range的小窝" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+<a href="https://github.com/0range228" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#FFA500; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">0range的小窝</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Trust the process.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">28</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">12</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">47</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://0range228.github.io/Java%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%81%E5%8D%8F%E8%AE%AE%E6%A2%B3%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/yfy.png">
+      <meta itemprop="name" content="0range">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="0range的小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java对象序列化流协议梳理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-07-16 15:27:51 / 修改时间：20:31:36" itemprop="dateCreated datePublished" datetime="2021-07-16T15:27:51+08:00">2021-07-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/Java%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%81%E5%8D%8F%E8%AE%AE%E6%A2%B3%E7%90%86/" class="post-meta-item leancloud_visitors" data-flag-title="Java对象序列化流协议梳理" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度：</span>
+              <span class="leancloud-visitors-count"></span>
+              <span>°C</span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/Java%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%81%E5%8D%8F%E8%AE%AE%E6%A2%B3%E7%90%86/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Java%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%81%E5%8D%8F%E8%AE%AE%E6%A2%B3%E7%90%86/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>13k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>22 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>浮云游子意，落日故人情。</p>
+</blockquote>
+<p>协议原文<a href="https://docs.oracle.com/javase/8/docs/platform/serialization/spec/protocol.html" target="_blank" rel="noopener">Object Serialization Stream Protocol</a></p>
+<a id="more"></a>
+
+<h1 id="stream流元素"><a href="#stream流元素" class="headerlink" title="stream流元素"></a>stream流元素</h1><p>stream，流元素，就是用来表示流中的对象。</p>
+<p>现在在我们流中的每一个对象都需要表示，比如对象的类和类中的field字段。</p>
+<p>流中对象的表示可以用语法来描述:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">null</span> objects</span><br><span class="line">new objects</span><br><span class="line">classes</span><br><span class="line"><span class="built_in">array</span>s</span><br><span class="line"><span class="built_in">string</span>s</span><br><span class="line">handles (句柄，流中对象的方向引用)</span><br><span class="line">这个句柄从 <span class="number">0x7E0000</span> 开始按顺序分配句柄。当流重置时，句柄在 <span class="number">0x7E0000</span> 处重新启动。</span><br></pre></td></tr></table></figure>
+
+<p>stream中对象基本结构：</p>
+<p><strong>类对象由的<code>ObjectStreamClass</code>对象表示</strong></p>
+<p>非动态代理类对象的<code>ObjectStreamClass</code>由以下成分组成：</p>
+<ul>
+<li>兼容类的流唯一标识符 (SUID)</li>
+<li>一组指示类的各种属性的标志，例如该类是否定义了<code>writeObject</code>方法，以及该类是否可序列化、可外部化或枚举类型</li>
+<li>可序列化字段的个数</li>
+<li>默认情况下，对于类的字段数组和对象字段来说，字段的类型要作为字符串被包含，字段描述符格式<code>Ljava/lang/Object;</code></li>
+<li>由<code>annotateClass</code>方法写入的可选数据块</li>
+<li>该对象父类的<code>ObjectStreamClass</code> ，如果父类不可序列化，该字段则为null</li>
+</ul>
+<p>动态代理类对象的<code>ObjectStreamClass</code>由以下成分组成：</p>
+<ul>
+<li>动态代理类实现的接口数量</li>
+<li>动态代理类实现的所有接口名称，这些借口通过调用Class的<code>getINterfaces</code>方法的返回结果进行排序列出</li>
+<li>由<code>annotateProxyClass</code> 方法写入的可选块数据记录或对象</li>
+<li>父类对应的<code>ObjectStreamClass</code>和<code>java.lang.reflect.Proxy</code></li>
+</ul>
+<p>数组对象由以下成分组成：</p>
+<ul>
+<li>他们的 <code>ObjectStreamClass</code>对象。</li>
+<li>元素的数量。</li>
+<li>值的序列。值的类型在数组的类型中是隐式的。例如，字节数组的值是byte类型。</li>
+</ul>
+<p>Enum枚举类型:</p>
+<ul>
+<li>常量的基本枚举类型的<code>ObjectStreamClass</code>对象。</li>
+<li>常量的名称字符串。</li>
+</ul>
+<p>流中的新对象<code>new Objects</code>由以下成组成：</p>
+<ul>
+<li><p>所有对象类的派生类信息</p>
+</li>
+<li><p>对象的每一个可序列化类的数据，从最上面的父类开始写入。</p>
+<p>对于每个类，流包含以下内容：</p>
+<ul>
+<li>可序列化字段：</li>
+<li>如果类有<code>writeObject/readObject</code>方法，那么有可能出现通过<code>writeObject</code>方法写入的可选对象或者基础类型的数据块<code>Data-Block</code>，跟着使用<code>endDataBlock方法</code></li>
+</ul>
+</li>
+</ul>
+<p>备注：</p>
+<p>所有由类写入的原始数据都被缓冲并包裹在块数据记录中，无论数据是在writeObject方法中写入流中，还是在writeObject方法之外直接写入流中。<strong>这些数据只能被相应的readObject方法读取或直接从流中读取。</strong>由writeObject方法写入的对象会终止之前的任何块数据记录，并根据情况被写成普通对象或空或反向引用。块数据记录允许错误恢复以丢弃任何可选数据。</p>
+<p>当从一个类中调用时，流可以丢弃任何数据或对象，直到遇到endBlockData。</p>
+<h1 id="序列化流格式"><a href="#序列化流格式" class="headerlink" title="序列化流格式"></a>序列化流格式</h1><p>现在我们可以在对象流中随便抓一个stream。自顶向下解析它。</p>
+<h2 id="stream"><a href="#stream" class="headerlink" title="stream"></a>stream</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">stream:</span><br><span class="line">	magic version contents</span><br></pre></td></tr></table></figure>
+
+<p>每个stream对象都是由三部分组成：</p>
+<ul>
+<li>magic : 魔数 <code>STREAM_MAGIC</code> 常量类型 表示内容类型</li>
+<li>version：jdk版本号 <code>STREAM_VERSION</code> 常量类型</li>
+<li>contents ：流对象内容</li>
+</ul>
+<p><code>STREAM_MAGIC</code>与<code>STREAM_VERSION</code>等常量值都在ObjectStreamConstants接口中定义。</p>
+<h2 id="contents"><a href="#contents" class="headerlink" title="contents"></a>contents</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">contents:</span><br><span class="line">  content</span><br><span class="line">  contents content</span><br></pre></td></tr></table></figure>
+
+<p>类似CFL，流中contents可以由一个content组成，也可以由多个contents组成</p>
+<h2 id="content"><a href="#content" class="headerlink" title="content"></a>content</h2><p>这里以一个content为例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">content:</span><br><span class="line">  object</span><br><span class="line">  blockdata</span><br></pre></td></tr></table></figure>
+
+<p>一个content可以是一个对象(object)，也可以是一个块数据(blockdata)。block在下面会详细说。</p>
+<h2 id="object"><a href="#object" class="headerlink" title="object"></a>object</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">object:</span><br><span class="line">  newObject</span><br><span class="line">  newClass</span><br><span class="line">  newArray</span><br><span class="line">  newString</span><br><span class="line">  newEnum</span><br><span class="line">  newClassDesc</span><br><span class="line">  prevObject</span><br><span class="line">  nullReference</span><br><span class="line">  exception</span><br><span class="line">  TC_RESET</span><br></pre></td></tr></table></figure>
+
+<p>对象序列化流中的”对象”与Java中的对象概念有些不一样。对象序列化流中的”对象”分为上面那些种，最常见的是newObject、newString、newClassDesc。</p>
+<ul>
+<li><p>newClassDesc表示ObjectStreamClass类的对象，可以简单理解为类的描述符。</p>
+</li>
+<li><p>newClass表示Class类对象，如person.class对象，就是Class类的一个实例对象。</p>
+</li>
+<li><p>newObject表示一个普通的对象，如果一个对象不是其他几种类型的对象（如newString、newClassDesc、newClass等），就归到newObject，如person对象。</p>
+</li>
+</ul>
+<p>接下来也是按照这个顺序解析：</p>
+<h3 id="newClassDesc"><a href="#newClassDesc" class="headerlink" title="newClassDesc"></a>newClassDesc</h3><p>表示是一个类描述符</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">newClassDesc:</span><br><span class="line">  TC_CLASSDESC className serialVersionUID newHandle classDescInfo</span><br><span class="line">  TC_PROXYCLASSDESC newHandle proxyClassDescInfo</span><br></pre></td></tr></table></figure>
+
+<p>这里列出来了两种类描述符种类：</p>
+<ul>
+<li><p>一般正常的类描述符（主流）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TC_CLASSDESC className serialVersionUID newHandle classDescInfo</span><br></pre></td></tr></table></figure>
+
+<p>TC_CLASSDESC：类描述符的开始标志</p>
+<p>className：类名</p>
+<p>serialVersionUID：序列化ID</p>
+<p>newHandleL：新的引用</p>
+<p>classDescInfo：类信息</p>
+</li>
+<li><p>动态代理类的类描述符</p>
+</li>
+</ul>
+<h3 id="newObject"><a href="#newObject" class="headerlink" title="newObject"></a>newObject</h3><p>表示该部分是一个新的对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">newObject:</span><br><span class="line">  TC_OBJECT classDesc newHandle classdata[]  <span class="comment">// data for each class</span></span><br></pre></td></tr></table></figure>
+
+<p>TC_OBJECT：常量，表示接下来是一个一个序列化Object的开始标志。</p>
+<p>classDesc：当前这个对象的类描述符，里面存放的是类信息，字段信息。</p>
+<p>newHandle：当前这个对象的引用句柄。</p>
+<p>classData[]：这个对象对应的每一个Class的相关数据信息。这部分在下面会详细说</p>
+<h3 id="newClass"><a href="#newClass" class="headerlink" title="newClass"></a>newClass</h3><p>表示该部分是一个新的Class类型的对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">newClass:</span><br><span class="line">  TC_CLASS classDesc newHandle</span><br></pre></td></tr></table></figure>
+
+<p>TC_CLASS：类型标记，表示接下来是一个序列化Class类型的对象。</p>
+<p>classDesc：表示这个Class对象的类描述符。</p>
+<p>newHandle： 新的引用。</p>
+<h3 id="classDesc"><a href="#classDesc" class="headerlink" title="classDesc"></a>classDesc</h3><p>表示一个对象的类描述符</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">classDesc:</span><br><span class="line">  newClassDesc</span><br><span class="line">  nullReference</span><br><span class="line">  (ClassDesc)prevObject      <span class="comment">// an object required to be of type</span></span><br><span class="line">                             <span class="comment">// ClassDesc</span></span><br></pre></td></tr></table></figure>
+
+<p>newClassDesc：对象的类描述符</p>
+<p>nullReference：空引用</p>
+<p>(ClassDesc)prevObject ：表示前面出现过的对象（<em>要求为ClassDesc类型的对象</em>）</p>
+<h3 id="superClassDesc"><a href="#superClassDesc" class="headerlink" title="superClassDesc"></a>superClassDesc</h3><p>表示父类的描述符</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">superClassDesc:</span><br><span class="line">  classDesc</span><br></pre></td></tr></table></figure>
+
+<p>如果被序列化对象的类，如果其父类没有实现Serializable接口，这个地方就是TC_NULL，表示空对象。</p>
+<p>如果其父类实现了实现了Serializable接口，那此处会写入其父类对应的ObjectStreamClass对象，父类描述符。</p>
+<h3 id="classDescInfo"><a href="#classDescInfo" class="headerlink" title="classDescInfo"></a>classDescInfo</h3><p>表示是详细的类描述信息</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">classDescInfo:</span><br><span class="line">  classDescFlags fields classAnnotation superClassDesc</span><br></pre></td></tr></table></figure>
+
+<p>classDescFlags：类描述信息标记</p>
+<p>fields ：类中所有字段的描述信息</p>
+<p>classAnnotation ：和类相关的Annotation的描述信息</p>
+<p>superClassDesc：该类的父类的描述信息</p>
+<h3 id="proxyInterface"><a href="#proxyInterface" class="headerlink" title="proxyInterface"></a>proxyInterface</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">proxyInterfaceName:</span><br><span class="line">  (utf)</span><br></pre></td></tr></table></figure>
+
+<p>动态代理类的代理接口的名称，一个UTF-8格式的字符串对应的二进制序列；</p>
+<h3 id="proxyClassDescInfo"><a href="#proxyClassDescInfo" class="headerlink" title="proxyClassDescInfo"></a>proxyClassDescInfo</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">proxyClassDescInfo:</span><br><span class="line">  (<span class="keyword">int</span>)&lt;count&gt; proxyInterfaceName[count] classAnnotation</span><br><span class="line">      superClassDesc</span><br></pre></td></tr></table></figure>
+
+<p>动态代理类的相关描述信息</p>
+<p><code>&lt;count&gt;</code>表示该动态代理类实现的接口总数，类型为int类型</p>
+<p>proxyInterfaceName[count]表示所有当前动态代理类实现的接口信息</p>
+<p>classAnnotation表示该动态代理类对应的Annotation的描述信息</p>
+<p>superClassDesc表示当前动态代理类的父类的类描述信息</p>
+<h3 id="fields"><a href="#fields" class="headerlink" title="fields"></a>fields</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fields:</span><br><span class="line">  (<span class="keyword">short</span>)&lt;count&gt;  fieldDesc[count]</span><br></pre></td></tr></table></figure>
+
+<p><code>&lt;count&gt;</code>表示该类中fields总数，数据类型为<code>short</code>类型。</p>
+<p><code>fieldDesc[count]</code>表示一个类中所有字段的详细描述信息，字段的数量和前边的count是一致的；</p>
+<h3 id="fieldDesc"><a href="#fieldDesc" class="headerlink" title="fieldDesc"></a>fieldDesc</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fieldDesc:</span><br><span class="line">  primitiveDesc</span><br><span class="line">  objectDesc</span><br></pre></td></tr></table></figure>
+
+<p>表示fields描述信息</p>
+<p>两部分：</p>
+<ul>
+<li>primitiveDesc ： 基础类型数据的描述符</li>
+<li>objectDesc ：对象数据类型的描述信息</li>
+</ul>
+<h3 id="primitiveDesc"><a href="#primitiveDesc" class="headerlink" title="primitiveDesc"></a>primitiveDesc</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">primitiveDesc:</span><br><span class="line">  prim_typecode fieldName</span><br></pre></td></tr></table></figure>
+
+<p>表示8种基础类型的字段的相关描述信息。</p>
+<p>prim_typecode ：基本类型字段的类型 如下</p>
+<p>fieldName ： 字段名字</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">`B`       <span class="comment">// byte</span></span><br><span class="line">`C`       <span class="comment">// char</span></span><br><span class="line">`D`       <span class="comment">// double</span></span><br><span class="line">`F`       <span class="comment">// float</span></span><br><span class="line">`I`       <span class="comment">// integer</span></span><br><span class="line">`J`       <span class="comment">// long</span></span><br><span class="line">`S`       <span class="comment">// short</span></span><br><span class="line">`Z`       <span class="comment">// boolean</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="objectDesc"><a href="#objectDesc" class="headerlink" title="objectDesc"></a>objectDesc</h3><p> 对象类型的field的描述信息。</p>
+<p>对象类型字段 = 该成员</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">objectDesc:</span><br><span class="line">  obj_typecode fieldName className1</span><br></pre></td></tr></table></figure>
+
+<p>obj_typecode ：该成员的类型 如下</p>
+<p>fieldName：该成员的名字</p>
+<p>className1：该对象的类全名，String，<em>// 包含字段类型的字符串，字段描述符格式</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">`[`       <span class="comment">// array</span></span><br><span class="line">`L`       <span class="comment">// object</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="classAnnotation"><a href="#classAnnotation" class="headerlink" title="classAnnotation"></a>classAnnotation</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">classAnnotation:</span><br><span class="line">  endBlockData</span><br><span class="line">  contents endBlockData      <span class="comment">// contents written by annotateClass</span></span><br></pre></td></tr></table></figure>
+
+<p>该对象所属类中的<code>Annotation</code>的描述信息</p>
+<p>endBlockData : 终止符 意味着存储对象的数据块[Data-Block]的结束</p>
+<p>contents endBlockData：该类中多个content的终止</p>
+<p>这里多说一点：</p>
+<p>classAnotation是由ObjectOutputStream的annotateClass()方法写入的。</p>
+<p>由于annotateClass()方法默认什么都不做。所以classAnnotations一般都是TC_ENDBLOCKDATA。</p>
+<h3 id="newArray"><a href="#newArray" class="headerlink" title="newArray"></a>newArray</h3><p>一个新的数组的描述符</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">newArray:</span><br><span class="line">  <span class="function">TC_ARRAY classDesc <span class="title">newHandle</span> <span class="params">(<span class="keyword">int</span>)</span>&lt;size&gt; values[size]</span></span><br></pre></td></tr></table></figure>
+
+<p>TC_ARRAY ：表示新的数组类型的序列化对象的开始</p>
+<p>classDesc：这个数组的类描述符号</p>
+<p>newHandle：针对当前数组对象的引用</p>
+<p><code>(int)&lt;size&gt;</code>：该数组的长度，长度为int类型</p>
+<p>values[size]：表示当前数组每一个元素值部分的内容</p>
+<h3 id="newString"><a href="#newString" class="headerlink" title="newString"></a>newString</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">newString:</span><br><span class="line">  <span class="function">TC_STRING <span class="title">newHandle</span> <span class="params">(utf)</span></span></span><br><span class="line"><span class="function">  TC_LONGSTRING <span class="title">newHandle</span> <span class="params">(<span class="keyword">long</span>-utf)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>表示一个字符串类型的对象</p>
+<p>两种类型：<code>STRING</code>  <code>LONGSTRING</code></p>
+<h3 id="newEnum"><a href="#newEnum" class="headerlink" title="newEnum"></a>newEnum</h3><p>表示一个枚举类型的对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">newEnum:</span><br><span class="line">  TC_ENUM classDesc newHandle enumConstantName</span><br></pre></td></tr></table></figure>
+
+<p><code>TC_ENUM</code>为枚举类型的标识，表示接下来的序列类型是枚举类型</p>
+<p><code>classDesc</code>为一个枚举类型的类描述符</p>
+<p><code>newHandle</code>为该枚举对象的引用</p>
+<p><code>enumConstantName</code>的值为调用枚举类型中的<code>name()</code>方法返回的枚举类型的值对应的字符串字面量</p>
+<h3 id="enumConstantName"><a href="#enumConstantName" class="headerlink" title="enumConstantName"></a>enumConstantName</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">enumConstantName:</span><br><span class="line">  (String)object</span><br></pre></td></tr></table></figure>
+
+<p> 枚举常量的字符串名称字面量，本身为一个字符串。</p>
+<h3 id="prevObject"><a href="#prevObject" class="headerlink" title="prevObject"></a>prevObject</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">prevObject</span><br><span class="line">  TC_REFERENCE (<span class="keyword">int</span>)handle</span><br></pre></td></tr></table></figure>
+
+<p>表示前一个对象，handle表示是前一个对象的引用。</p>
+<h3 id="nullReference"><a href="#nullReference" class="headerlink" title="nullReference"></a>nullReference</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nullReference</span><br><span class="line">  TC_NULL</span><br></pre></td></tr></table></figure>
+
+<p>表示null，一般这个值表示空引用。</p>
+<h3 id="exception"><a href="#exception" class="headerlink" title="exception"></a>exception</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">exception:</span><br><span class="line">  <span class="function">TC_EXCEPTION <span class="title">reset</span> <span class="params">(Throwable)</span>object         reset</span></span><br></pre></td></tr></table></figure>
+
+<p>表示异常</p>
+<p>TC_EXCEPTION ： 异常信息的标识符</p>
+<h3 id="blockdata"><a href="#blockdata" class="headerlink" title="blockdata"></a>blockdata</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">blockdata:</span><br><span class="line">  blockdatashort</span><br><span class="line">  blockdatalong</span><br></pre></td></tr></table></figure>
+
+<p>在Java序列化中，数据块存储分为<strong>两</strong>种:</p>
+<p>一种是长度为short的默认数据块方式</p>
+<p>另外一种是长度为int的数据块方式，这种方式可存储容量大的数据；</p>
+<h3 id="endBlockData"><a href="#endBlockData" class="headerlink" title="endBlockData"></a>endBlockData</h3><p>Data-Block结束的标记</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">blockdatashort:</span><br><span class="line">  TC_BLOCKDATA (unsigned <span class="keyword">byte</span>)&lt;size&gt; (<span class="keyword">byte</span>)[size]</span><br><span class="line"></span><br><span class="line">blockdatalong:</span><br><span class="line">  TC_BLOCKDATALONG (<span class="keyword">int</span>)&lt;size&gt; (<span class="keyword">byte</span>)[size]</span><br><span class="line"></span><br><span class="line">endBlockData   :</span><br><span class="line">  TC_ENDBLOCKDATA</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="classdata"><a href="#classdata" class="headerlink" title="classdata[]"></a>classdata[]</h3><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">classdata:</span></span><br><span class="line">  nowrclass                 <span class="comment">// SC_SERIALIZABLE &amp; classDescFlag &amp;&amp;</span></span><br><span class="line">                            <span class="comment">// !(SC_WRITE_METHOD &amp; classDescFlags)</span></span><br><span class="line">  wrclass objectAnnotation  <span class="comment">// SC_SERIALIZABLE &amp; classDescFlag &amp;&amp;</span></span><br><span class="line">                            <span class="comment">// SC_WRITE_METHOD &amp; classDescFlags</span></span><br><span class="line">  externalContents          <span class="comment">// SC_EXTERNALIZABLE &amp; classDescFlag &amp;&amp;</span></span><br><span class="line">                            <span class="comment">// !(SC_BLOCKDATA  &amp; classDescFlags</span></span><br><span class="line">  objectAnnotation          <span class="comment">// SC_EXTERNALIZABLE &amp; classDescFlag&amp;&amp; </span></span><br><span class="line">                            <span class="comment">// SC_BLOCKDATA &amp; classDescFlags</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="nowrclass"><a href="#nowrclass" class="headerlink" title="nowrclass"></a>nowrclass</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nowrclass:</span><br><span class="line">  values                    <span class="comment">// 类描述符顺序的字段</span></span><br></pre></td></tr></table></figure>
+
+<p>一个类中可序列化的字段的数据值，这些数据值的顺序遵循类描述符中定义的顺序；</p>
+<h3 id="wrclass"><a href="#wrclass" class="headerlink" title="wrclass"></a>wrclass</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wrclass:</span><br><span class="line">  nowrclass</span><br></pre></td></tr></table></figure>
+
+<p>这部分数据的内容和上述的nowrclass部分的内容是一样的，表一个类中可序列化的字段的数据值；</p>
+<h3 id="externalContents"><a href="#externalContents" class="headerlink" title="externalContents"></a>externalContents</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">externalContents:         <span class="comment">// externalContent written by </span></span><br><span class="line">  externalContent         <span class="comment">// writeExternal in PROTOCOL_VERSION_1.</span></span><br><span class="line">  externalContents externalContent</span><br></pre></td></tr></table></figure>
+
+<p>在<code>PROTOCOL_VERSION_1</code>中由<code>writeExternal</code>编写的外部内容。</p>
+<p>这部分内容是上述的external内容的一个集合，一般这一部分<strong>只包含</strong>了使用<code>writeExternal</code>方法以<code>PROTOCOL_VERSION_1</code>的版本写入字节流的数据；</p>
+<h3 id="externalContent"><a href="#externalContent" class="headerlink" title="externalContent"></a>externalContent</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">externalContent:          <span class="comment">// Only parseable by readExternal</span></span><br><span class="line">  ( bytes)                <span class="comment">// primitive data 基础数据 8种</span></span><br><span class="line">    object</span><br></pre></td></tr></table></figure>
+
+<p>这部分描述的是external的相关内容</p>
+<p><code>(bytes)</code>部分的数据只能被<code>readExternal</code>方法读取，而且里面一般包含的数据类型是基础类型数据，<code>object</code>表示对象数据类型；</p>
+<h3 id="objectAnnotation"><a href="#objectAnnotation" class="headerlink" title="objectAnnotation"></a>objectAnnotation</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">objectAnnotation:</span><br><span class="line">  endBlockData</span><br><span class="line">  contents endBlockData     <span class="comment">// contents written by writeObject</span></span><br><span class="line">                            <span class="comment">// or writeExternal PROTOCOL_VERSION_2.</span></span><br></pre></td></tr></table></figure>
+
+<p>这部分数据的内容和<code>classAnnotation</code>的数据结构是一致的；</p>
+<p>表示该对象所属类中的<code>Annotation</code>的描述信息，<code>endBlockData</code>为存储对象的数据块【<code>Data-Block</code>】的<strong>结束标记</strong>，为终止符，<code>contents</code>表示该类中多个内容的一个集合【contents】；</p>
+<h2 id="values"><a href="#values" class="headerlink" title="values"></a>values</h2><p>针对当前对象的<code>classDesc</code>对应的类描述信息提供描述类型的大小和类型；</p>
+<blockquote>
+<p>The size and types are described by the classDesc for the current object</p>
+</blockquote>
+<h2 id="newHandle"><a href="#newHandle" class="headerlink" title="newHandle"></a>newHandle</h2><p>序列中的下一个数值将赋值给一个可序列化或者可执行反序列化的对象引用；</p>
+<h2 id="reset"><a href="#reset" class="headerlink" title="reset"></a>reset</h2><p>一个已知对象的集合将会<strong>被放弃</strong>，重置该字节流；</p>
+<blockquote>
+<p>// The set of known objects is discarded so the objects of the exception do not overlap with the previously sent objects or with objects that may be sent after the exception</p>
+</blockquote>
+<h1 id="终端常量标识符"><a href="#终端常量标识符" class="headerlink" title="终端常量标识符"></a>终端常量标识符</h1><p>在<code>java.io.ObjectStreamConstants</code>中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">short</span> STREAM_MAGIC = (<span class="keyword">short</span>)<span class="number">0xaced</span>;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">short</span> STREAM_VERSION = <span class="number">5</span>;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">byte</span> TC_NULL = (<span class="keyword">byte</span>)<span class="number">0x70</span>;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">byte</span> TC_REFERENCE = (<span class="keyword">byte</span>)<span class="number">0x71</span>;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">byte</span> TC_CLASSDESC = (<span class="keyword">byte</span>)<span class="number">0x72</span>;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">byte</span> TC_OBJECT = (<span class="keyword">byte</span>)<span class="number">0x73</span>;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">byte</span> TC_STRING = (<span class="keyword">byte</span>)<span class="number">0x74</span>;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">byte</span> TC_ARRAY = (<span class="keyword">byte</span>)<span class="number">0x75</span>;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">byte</span> TC_CLASS = (<span class="keyword">byte</span>)<span class="number">0x76</span>;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">byte</span> TC_BLOCKDATA = (<span class="keyword">byte</span>)<span class="number">0x77</span>;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">byte</span> TC_ENDBLOCKDATA = (<span class="keyword">byte</span>)<span class="number">0x78</span>;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">byte</span> TC_RESET = (<span class="keyword">byte</span>)<span class="number">0x79</span>;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">byte</span> TC_BLOCKDATALONG = (<span class="keyword">byte</span>)<span class="number">0x7A</span>;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">byte</span> TC_EXCEPTION = (<span class="keyword">byte</span>)<span class="number">0x7B</span>;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">byte</span> TC_LONGSTRING = (<span class="keyword">byte</span>) <span class="number">0x7C</span>;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">byte</span> TC_PROXYCLASSDESC = (<span class="keyword">byte</span>) <span class="number">0x7D</span>;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">byte</span> TC_ENUM = (<span class="keyword">byte</span>) <span class="number">0x7E</span>;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span>  <span class="keyword">int</span>   baseWireHandle = <span class="number">0x7E0000</span>;</span><br></pre></td></tr></table></figure>
+
+<p><code>classDescFlags</code>会用到的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">byte</span> SC_WRITE_METHOD = <span class="number">0x01</span>; <span class="comment">//if SC_SERIALIZABLE</span></span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">byte</span> SC_BLOCK_DATA = <span class="number">0x08</span>;    <span class="comment">//if SC_EXTERNALIZABLE</span></span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">byte</span> SC_SERIALIZABLE = <span class="number">0x02</span>;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">byte</span> SC_EXTERNALIZABLE = <span class="number">0x04</span>;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">byte</span> SC_ENUM = <span class="number">0x10</span>;</span><br></pre></td></tr></table></figure>
+
+<p>协议还说的一段话，暂时看不懂，先写上：</p>
+<blockquote>
+<p> The flag <em>SC_WRITE_METHOD</em> is set if the Serializable class writing the stream had a <code>writeObject</code> method that may have written additional data to the stream. In this case a <em>TC_ENDBLOCKDATA</em> marker is always expected to terminate the data for that class.</p>
+</blockquote>
+<blockquote>
+<p> The flag <em>SC_BLOCKDATA</em> is set if the <code>Externalizable</code> class is written into the stream using <code>STREAM_PROTOCOL_2</code>. By default, this is the protocol used to write <code>Externalizable</code> objects into the stream in JDK 1.2. JDK 1.1 writes <em>STREAM_PROTOCOL_1</em>.</p>
+</blockquote>
+<blockquote>
+<p>The flag <em>SC_SERIALIZABLE</em> is set if the class that wrote the stream extended <code>java.io.Serializable</code> but not <code>java.io.Externalizable</code>, the class reading the stream must also extend <code>java.io.Serializable</code> and the default serialization mechanism is to be used.</p>
+</blockquote>
+<blockquote>
+<p> The flag <em>SC_EXTERNALIZABLE</em> is set if the class that wrote the stream extended <code>java.io.Externalizable</code>, the class reading the data must also extend <code>Externalizable</code> and the data will be read using its <code>writeExternal</code> and <code>readExternal</code> methods.</p>
+</blockquote>
+<blockquote>
+<p> The flag <em>SC_ENUM</em> is set if the class that wrote the stream was an enum type. The receiver’s corresponding class must also be an enum type. Data for constants of the enum type will be written and read as described in <a href="https://docs.oracle.com/javase/8/docs/platform/serialization/spec/serial-arch.html#a6469" target="_blank" rel="noopener">Section 1.12, “Serialization of Enum Constants</a>“.</p>
+</blockquote>
+<p>如果写入流的可序列化类具有<code>writeObject</code>方法，并且若该方法已将其他数据写入 stream ，则会设置标志<code>SC_WRITE_METHOD</code>。在这种情况下，<code>TC_ENDBLOCKDATA</code>标记总是希望终止该类的数据。</p>
+<p>如果使用<code>SC_BLOCKDATA</code>将<code>Externalizable</code>类写入 stream，则设置标志<code>SC_BLOCKDATA</code>。默认情况下，在<code>JDK 1.2</code>中将<code>Externalizable</code>对象写入stream的协议。<code>JDK1.1</code>中写入<code>STREAM_PROTOCOL_1</code></p>
+<p>如果编写 stream 的类扩展了<code>java.io.SERIALIZABLE</code>而不是<code>java.io.Externalizable</code>，那么会设置标志 <code>SC_SERIALIZABLE</code>，读取 stream 的类也必须扩展<code>java.io.SERIALIZABLE</code>，并使用默认的序列化机制。</p>
+<p>如果编写 stream 扩展<code>java.io.EXTERNALIZABLE</code>的类，读取数据的类也必须扩展<code>EXTERNALIZABLE</code>，并且如果使用其<code>writeExternal</code>和<code>readExternal</code>方法读取数据，那么会设置标记<code>SC_EXTERNALIZABLE</code>。</p>
+<p>如果写入 stream 的类是枚举类型，则会设置标志<code>SC_ENUM</code>。接收方的对应类也必须是枚举类型。</p>
+<h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><p>这里写一个例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">2L</span>;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">(String name, <span class="keyword">int</span> age)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Person person = <span class="keyword">new</span> Person(<span class="string">"0range"</span>, <span class="number">100</span>);</span><br><span class="line">        ObjectOutputStream oos = <span class="keyword">new</span> ObjectOutputStream(<span class="keyword">new</span> FileOutputStream(<span class="string">"0rangetest.ser"</span>));</span><br><span class="line">        oos.writeObject(person);</span><br><span class="line">        oos.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>直接上<a href="https://github.com/NickstaDB/SerializationDumper" target="_blank" rel="noopener">SerializationDumper</a>看结果</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ java -jar SerializationDumper.jar  -r test.ser</span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/Java%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%81%E5%8D%8F%E8%AE%AE%E6%A2%B3%E7%90%86/image-20210716200321909.png" alt="image-20210716200321909"></p>
+<p>思考一个问题，如果我们Person实现了<code>writeObject</code>方法，会怎么样呢？</p>
+<p>如果Person有<code>writeObject</code>方法，那要怎么设计呢？</p>
+<p>先解释第二个问题，来到<code>java.io.ObjectOutputStream#writeSerialData</code>方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Writes instance data for each serializable class of given object, from</span></span><br><span class="line"><span class="comment"> * superclass to subclass.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">writeSerialData</span><span class="params">(Object obj, ObjectStreamClass desc)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> IOException</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ObjectStreamClass.ClassDataSlot[] slots = desc.getClassDataLayout();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; slots.length; i++) &#123;</span><br><span class="line">        ObjectStreamClass slotDesc = slots[i].desc;</span><br><span class="line">        <span class="keyword">if</span> (slotDesc.hasWriteObjectMethod()) &#123;</span><br><span class="line">            PutFieldImpl oldPut = curPut;</span><br><span class="line">            curPut = <span class="keyword">null</span>;</span><br><span class="line">            SerialCallbackContext oldContext = curContext;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (extendedDebugInfo) &#123;</span><br><span class="line">                debugInfoStack.push(</span><br><span class="line">                    <span class="string">"custom writeObject data (class \""</span> +</span><br><span class="line">                    slotDesc.getName() + <span class="string">"\")"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                curContext = <span class="keyword">new</span> SerialCallbackContext(obj, slotDesc);</span><br><span class="line">                bout.setBlockDataMode(<span class="keyword">true</span>);</span><br><span class="line">                slotDesc.invokeWriteObject(obj, <span class="keyword">this</span>);</span><br><span class="line">                bout.setBlockDataMode(<span class="keyword">false</span>);</span><br><span class="line">                bout.writeByte(TC_ENDBLOCKDATA);</span><br><span class="line">            &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                curContext.setUsed();</span><br><span class="line">                curContext = oldContext;</span><br><span class="line">                <span class="keyword">if</span> (extendedDebugInfo) &#123;</span><br><span class="line">                    debugInfoStack.pop();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            curPut = oldPut;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            defaultWriteFields(obj, slotDesc);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，如果该类有<code>writeObject</code>方法，那么就<code>slotDesc.invokeWriteObject(obj, this);</code></p>
+<p>跟进<code>invokeWriteObject</code>:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Invokes the writeObject method of the represented serializable class.</span></span><br><span class="line"><span class="comment"> * Throws UnsupportedOperationException if this class descriptor is not</span></span><br><span class="line"><span class="comment"> * associated with a class, or if the class is externalizable,</span></span><br><span class="line"><span class="comment"> * non-serializable or does not define writeObject.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">invokeWriteObject</span><span class="params">(Object obj, ObjectOutputStream out)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> IOException, UnsupportedOperationException</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    requireInitialized();</span><br><span class="line">    <span class="keyword">if</span> (writeObjectMethod != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            writeObjectMethod.invoke(obj, <span class="keyword">new</span> Object[]&#123; out &#125;);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InvocationTargetException ex) &#123;</span><br><span class="line">            Throwable th = ex.getTargetException();</span><br><span class="line">            <span class="keyword">if</span> (th <span class="keyword">instanceof</span> IOException) &#123;</span><br><span class="line">                <span class="keyword">throw</span> (IOException) th;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                throwMiscException(th);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IllegalAccessException ex) &#123;</span><br><span class="line">            <span class="comment">// should not occur, as access checks have been suppressed</span></span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> InternalError(ex);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里其实需要考虑<code>writeObjectMethod</code>这个属性</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** class-defined writeObject method, or null if none */</span></span><br><span class="line"><span class="keyword">private</span> Method writeObjectMethod;</span><br></pre></td></tr></table></figure>
+
+<p>这个属性本身类型就是<code>java.lang.reflect.Method</code>，属于反射的作用范围。</p>
+<p>找了一圈发现，在<code>ObjectStreamClass</code>类的构造函数里面就有一句：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">writeObjectMethod = getPrivateMethod(cl, <span class="string">"writeObject"</span>,</span><br><span class="line">                    <span class="keyword">new</span> Class&lt;?&gt;[] &#123; ObjectOutputStream<span class="class">.<span class="keyword">class</span> &#125;,</span></span><br><span class="line"><span class="class">                    <span class="title">Void</span>.<span class="title">TYPE</span>)</span>;</span><br><span class="line">readObjectMethod = getPrivateMethod(cl, <span class="string">"readObject"</span>,</span><br><span class="line">                    <span class="keyword">new</span> Class&lt;?&gt;[] &#123; ObjectInputStream<span class="class">.<span class="keyword">class</span> &#125;,</span></span><br><span class="line"><span class="class">                    <span class="title">Void</span>.<span class="title">TYPE</span>)</span>;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>所以在这里，已经判断了这个类是否存在<code>writeObject</code>方法，同时也寻找了<code>readObject</code>方法。</p>
+<p>如果<code>writeObejct</code>存在的话就封装为<code>Method</code>，赋值给<code>writeObjectMethod</code>属性。</p>
+<p>细心的你应该也能发现，这里对<code>writeObject</code>做了限制：</p>
+<ul>
+<li>参数必须为ObjectOutputStream类型</li>
+<li>返回值必须为void</li>
+<li>必须为 private</li>
+<li>非static</li>
+</ul>
+<p>到这里我们解答了第二个问题，并且知道，如果你要实现writeObject必须要形式如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writeObject</span><span class="params">(ObjectOutputStream oos)</span></span>&#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>那现在就写一个：</p>
+<img src="../images/Java%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%81%E5%8D%8F%E8%AE%AE%E6%A2%B3%E7%90%86/image-20210716202716995.png" alt="image-20210716202716995" style="zoom:50%;">
+
+<p>我们在<code>writeObject</code>方法内部只是调用defaultWriteObject()方法写入对象字段数据。</p>
+<p>再看一遍：</p>
+<p><img src="../images/Java%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%81%E5%8D%8F%E8%AE%AE%E6%A2%B3%E7%90%86/image-20210716203132016.png" alt="image-20210716203132016"></p>
+<p>可以发现在</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java%E5%BA%8F%E5%88%97%E5%8C%96%E5%8E%9F%E7%90%86/" rel="tag"><i class="fa fa-tag"></i>Java序列化原理</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Java%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%81%E7%A8%8B%E6%A2%B3%E7%90%86/" rel="prev" title="Java序列化流程梳理">
+      <i class="fa fa-chevron-left"></i> Java序列化流程梳理
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+      <!--
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://link.hhtjim.com/163/26348068.mp3"></iframe>
+      -->
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#stream流元素"><span class="nav-number">2.</span> <span class="nav-text">stream流元素</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#序列化流格式"><span class="nav-number">3.</span> <span class="nav-text">序列化流格式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#stream"><span class="nav-number">3.1.</span> <span class="nav-text">stream</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#contents"><span class="nav-number">3.2.</span> <span class="nav-text">contents</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#content"><span class="nav-number">3.3.</span> <span class="nav-text">content</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#object"><span class="nav-number">3.4.</span> <span class="nav-text">object</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#newClassDesc"><span class="nav-number">3.4.1.</span> <span class="nav-text">newClassDesc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#newObject"><span class="nav-number">3.4.2.</span> <span class="nav-text">newObject</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#newClass"><span class="nav-number">3.4.3.</span> <span class="nav-text">newClass</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#classDesc"><span class="nav-number">3.4.4.</span> <span class="nav-text">classDesc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#superClassDesc"><span class="nav-number">3.4.5.</span> <span class="nav-text">superClassDesc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#classDescInfo"><span class="nav-number">3.4.6.</span> <span class="nav-text">classDescInfo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#proxyInterface"><span class="nav-number">3.4.7.</span> <span class="nav-text">proxyInterface</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#proxyClassDescInfo"><span class="nav-number">3.4.8.</span> <span class="nav-text">proxyClassDescInfo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fields"><span class="nav-number">3.4.9.</span> <span class="nav-text">fields</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fieldDesc"><span class="nav-number">3.4.10.</span> <span class="nav-text">fieldDesc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#primitiveDesc"><span class="nav-number">3.4.11.</span> <span class="nav-text">primitiveDesc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#objectDesc"><span class="nav-number">3.4.12.</span> <span class="nav-text">objectDesc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#classAnnotation"><span class="nav-number">3.4.13.</span> <span class="nav-text">classAnnotation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#newArray"><span class="nav-number">3.4.14.</span> <span class="nav-text">newArray</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#newString"><span class="nav-number">3.4.15.</span> <span class="nav-text">newString</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#newEnum"><span class="nav-number">3.4.16.</span> <span class="nav-text">newEnum</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#enumConstantName"><span class="nav-number">3.4.17.</span> <span class="nav-text">enumConstantName</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#prevObject"><span class="nav-number">3.4.18.</span> <span class="nav-text">prevObject</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nullReference"><span class="nav-number">3.4.19.</span> <span class="nav-text">nullReference</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#exception"><span class="nav-number">3.4.20.</span> <span class="nav-text">exception</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#blockdata"><span class="nav-number">3.4.21.</span> <span class="nav-text">blockdata</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#endBlockData"><span class="nav-number">3.4.22.</span> <span class="nav-text">endBlockData</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#classdata"><span class="nav-number">3.4.23.</span> <span class="nav-text">classdata[]</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nowrclass"><span class="nav-number">3.4.24.</span> <span class="nav-text">nowrclass</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wrclass"><span class="nav-number">3.4.25.</span> <span class="nav-text">wrclass</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#externalContents"><span class="nav-number">3.4.26.</span> <span class="nav-text">externalContents</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#externalContent"><span class="nav-number">3.4.27.</span> <span class="nav-text">externalContent</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#objectAnnotation"><span class="nav-number">3.4.28.</span> <span class="nav-text">objectAnnotation</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#values"><span class="nav-number">3.5.</span> <span class="nav-text">values</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#newHandle"><span class="nav-number">3.6.</span> <span class="nav-text">newHandle</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reset"><span class="nav-number">3.7.</span> <span class="nav-text">reset</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#终端常量标识符"><span class="nav-number">4.</span> <span class="nav-text">终端常量标识符</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#例子"><span class="nav-number">5.</span> <span class="nav-text">例子</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="0range"
+      src="/images/yfy.png">
+  <p class="site-author-name" itemprop="name">0range</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/0range228" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;0range228" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      友链
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.cnpanda.net/" title="http:&#x2F;&#x2F;www.cnpanda.net&#x2F;" rel="noopener" target="_blank">panda</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://m0d9.me/" title="http:&#x2F;&#x2F;m0d9.me&#x2F;" rel="noopener" target="_blank">yangbh</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.0kami.cn/" title="https:&#x2F;&#x2F;blog.0kami.cn&#x2F;" rel="noopener" target="_blank">wh1t3p1g</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.kingkk.com/" title="https:&#x2F;&#x2F;www.kingkk.com&#x2F;" rel="noopener" target="_blank">kingkk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/tr1ple/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;tr1ple&#x2F;" rel="noopener" target="_blank">tr1ple</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.yuque.com/ni4n/blogs" title="https:&#x2F;&#x2F;www.yuque.com&#x2F;ni4n&#x2F;blogs" rel="noopener" target="_blank">Ni4n</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://anemone.top/" title="http:&#x2F;&#x2F;anemone.top" rel="noopener" target="_blank">Anemone</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://summersec.github.io/" title="https:&#x2F;&#x2F;summersec.github.io" rel="noopener" target="_blank">SummerSec</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.zhihu.com/people/chenwengang" title="https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;chenwengang" rel="noopener" target="_blank">ApsarasX</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart" aria-hidden="true"></i>
+  </span>
+   Powered By - 
+  <span class="author" itemprop="copyrightHolder">0range</span>
+
+  <!--
+    <span class="post-meta-divider"> | </span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">638k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">17:44</span>
+  -->
+
+</div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+            'X-LC-Key'    : 'l8KvoMr1i8urA7X7BzPMtQC7',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+      appKey     : 'l8KvoMr1i8urA7X7BzPMtQC7',
+      placeholder: "Say Something~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+
+<!--
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unjkp.com/valine/dist/Valine.min.js"></script>  
+  <script src="/js/Valine.min.js"></script> 
+
+   
+  
+  <script src="/js/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+        appKey: 'l8KvoMr1i8urA7X7BzPMtQC7',
+        placeholder: 'Say Something~',
+        avatar:'mm',
+        guest_info:['nick'] ,  //评论者只需要提供评论的昵称即可
+        pageSize:'10' || 10,
+    });
+  
+    var infoEle = document.querySelector('#comments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0){
+      infoEle.childNodes.forEach(function(item) {
+        item.parentNode.removeChild(item);
+      });
+    }
+  </script>
+
+-->
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/click_love.js"></script>
