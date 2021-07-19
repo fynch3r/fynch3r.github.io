@@ -6228,7 +6228,7 @@
 <p>must-analysis：会有漏报</p>
 <p>一般来说：</p>
 <p>May都是union，初始化都是空，bottom</p>
-<p>Must都是intersection。初始化是all，top</p>
+<p>Must都是intersection。初始化是all，top（top就是程序分析中最不准的结果，不知道）</p>
 <p>三要素：Nodes (BBs/statements)、Edges (control flows)、CFG (a program)</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200817152835145.png" alt="image-20200817152835145"></p>
 <p>不同的数据流分析 有 不同的数据<strong>抽象表达</strong> 和 不同的<strong>安全近似策略</strong>，如 不同的 <strong>转换规则</strong> 和 <strong>控制流</strong>处理。</p>
@@ -6658,6 +6658,12 @@
 <td>• <strong>Whole-program</strong>    • Demand-driven</td>
 </tr>
 </tbody></table>
+<h3 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h3><p>指针分析中往往会遇到flow-sensitive、path-sensitive、context-sensitive</p>
+<ul>
+<li><strong>flow-sensitive</strong>：<strong>关注语句的顺序</strong>。比如说在流敏感的指针分析中，一个<strong>非流敏感指针别名分析</strong>可能得出“变量x和y可能会指向同一位置”，而<strong>流敏感指针别名分析</strong>得出的结论类似于“在执行第20条指令后，变量x和y可能会指向同一位置” 。所以，一个非流敏感指针别名分析不考虑控制流，并认为所发现的别名在程序所有位置均成立。</li>
+<li><strong>path-sensitive</strong>：<strong>关注程序控制流的分支</strong>。<strong>路径敏感</strong>往往会导致“<strong>路径爆炸</strong>“(path explosion)，“无限搜索空间”(infinite search space)</li>
+<li><strong>context-sensitive</strong>：<strong>关注过程间分析，考虑函数调用的上下文关系。</strong></li>
+</ul>
 <h3 id="堆抽象-Allocation-Site（内存建模）"><a href="#堆抽象-Allocation-Site（内存建模）" class="headerlink" title="堆抽象 Allocation Site（内存建模）"></a>堆抽象 Allocation Site（内存建模）</h3><p><strong>问题</strong>：程序动态执行时，堆对象个数理论上是无穷无尽的，但静态分析无法处理这个问题。所以为<strong>保证指针分析可以终止</strong>，我们采用堆抽象技术，<strong>将无穷的具体对象抽象成有限的抽象对象</strong>。也就是，将有共性的对象抽象成1个静态对象，从而限制静态分析对象的个数。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200823160046190.png" alt="image-20200823160046190"></p>
 <p>我们只学习<code>Allocation-Site</code>技术，最常见也最常被使用。</p>
