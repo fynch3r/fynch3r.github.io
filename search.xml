@@ -6442,7 +6442,7 @@
 <p>战术“多讲几句”：</p>
 <p>tranfer function和control flow  </p>
 <p>前者是写死的，control flow里面有join还是meet决定了很多</p>
-<p>比如说000和001去join，是001，其实join就是获得了最小上界lub而不是一大步直接迈到111(111是上界 但不是lub)，每次也都是迈出了最小的一步，minimal step </p>
+<p>比如说000和001去join，是001，其实join就是获得了最小上界lub而不是一大步直接迈到111(111是上界 但不是lub)，每次也都是迈出了最小的一步，minimal step  </p>
 <h2 id="MOP-amp-Distributivity"><a href="#MOP-amp-Distributivity" class="headerlink" title="MOP &amp; Distributivity"></a>MOP &amp; Distributivity</h2><p>MOP: Meet-over-all-paths solution </p>
 <p>将所有路径都join/meet的方法，通常用来衡量精度。</p>
 <p>这里的meet是统称meet和join两种合并操作。</p>
