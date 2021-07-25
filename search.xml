@@ -6233,8 +6233,8 @@
 <p>数学符号形式化表示；</p>
 <p>数据流分析其实就是在CFG上分析。</p>
 <p>绝大部分静态分析都是牺牲了completeness，去追求soundness。放弃了速度，去追求精度。</p>
-<p>首先对数据进行抽象，形式化表达；</p>
-<p>接下来对程序进行over-approximation，过拟合，也就是说程序在运行中所有可能产生的值，都要在静态分析时候去考虑到。</p>
+<p>首先对数据进行抽象，形式化表达； </p>
+<p>接下来对程序进行over-approximation，==过拟合==，也就是说程序在运行中所有可能产生的值，都要在静态分析时候去考虑到。</p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200817152249362.png" alt="image-20200817152249362"></p>
 <p>May-analysis：输出信息可能是正确的，相当于已经做了over-approximation过拟合；</p>
 <p>Must-analysis：输出信息必须是正确的，准确的，相当于已经做了under-approxiamtion欠拟合；</p>
