@@ -1,6 +1,205 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>serialVersionUID的那些事</title>
+    <url>/serialVersionUID%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B/</url>
+    <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>老至居人下，春归在客先。</p>
+</blockquote>
+<p>serialVersionUID，有点东西。</p>
+<a id="more"></a>
+
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>在前两篇文章的基础上，我们知道了序列化就是把对象转化为字节流，反序列化就是将字节流还原为内存对象。</p>
+<p>在进行反序列化时，JVM会把传来的字节流中的serialVersionUID与本地相应实体类的serialVersionUID进行比较，如果相同就认为是一致的，可以进行反序列化，否则就会出现序列化版本不一致的异常，即是InvalidCastException。</p>
+<p>总体来说：<strong>serialVersionUID的作用就是维护两端类文件的版本一致性。</strong></p>
+<p>serialVersionUID有两种显示的生成方式：   </p>
+<p>一是默认的1L，比如：private static final long serialVersionUID = 1L；</p>
+<p>二是根据类名、接口名、成员方法及属性等来生成一个64位的哈希字段；</p>
+<h1 id="由来"><a href="#由来" class="headerlink" title="由来"></a>由来</h1><p>serialVersionUID如果我们没有显示赋值，那他是如何生成的呢？</p>
+<p>来到序列化流程中writeNonProxy方法中的getSerialVersionUID：</p>
+<img src="../images/serialVersionUID%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B/image-20210728140147771.png" alt="image-20210728140147771" style="zoom:50%;">
+
+
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">getSerialVersionUID</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// REMIND: synchronize instead of relying on volatile?</span></span><br><span class="line">    <span class="keyword">if</span> (suid == <span class="keyword">null</span>) &#123;</span><br><span class="line">      	<span class="comment">// 使用了一个内部类的方式，使用特权计算computeDefaultSUID():</span></span><br><span class="line">        suid = AccessController.doPrivileged(</span><br><span class="line">            <span class="keyword">new</span> PrivilegedAction&lt;Long&gt;() &#123;</span><br><span class="line">                <span class="function"><span class="keyword">public</span> Long <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                    <span class="keyword">return</span> computeDefaultSUID(cl);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> suid.longValue();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们进入computeDefaultSUID方法：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">computeDefaultSUID</span><span class="params">(Class&lt;?&gt; cl)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 代理</span></span><br><span class="line">    <span class="keyword">if</span> (!Serializable<span class="class">.<span class="keyword">class</span>.<span class="title">isAssignableFrom</span>(<span class="title">cl</span>) || <span class="title">Proxy</span>.<span class="title">isProxyClass</span>(<span class="title">cl</span>))</span></span><br><span class="line"><span class="class">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0L</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        ByteArrayOutputStream bout = <span class="keyword">new</span> ByteArrayOutputStream();</span><br><span class="line">        DataOutputStream dout = <span class="keyword">new</span> DataOutputStream(bout);</span><br><span class="line">        <span class="comment">// 类名</span></span><br><span class="line">        dout.writeUTF(cl.getName());</span><br><span class="line">      </span><br><span class="line">        <span class="comment">// 修饰符</span></span><br><span class="line">        <span class="keyword">int</span> classMods = cl.getModifiers() &amp;</span><br><span class="line">            (Modifier.PUBLIC | Modifier.FINAL |</span><br><span class="line">             Modifier.INTERFACE | Modifier.ABSTRACT);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//  方法</span></span><br><span class="line">        Method[] methods = cl.getDeclaredMethods();</span><br><span class="line">        <span class="keyword">if</span> ((classMods &amp; Modifier.INTERFACE) != <span class="number">0</span>) &#123;</span><br><span class="line">            classMods = (methods.length &gt; <span class="number">0</span>) ?</span><br><span class="line">                (classMods | Modifier.ABSTRACT) :</span><br><span class="line">                (classMods &amp; ~Modifier.ABSTRACT);</span><br><span class="line">        &#125;</span><br><span class="line">        dout.writeInt(classMods);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!cl.isArray()) &#123;</span><br><span class="line">            <span class="comment">// 继承的接口</span></span><br><span class="line">            Class&lt;?&gt;[] interfaces = cl.getInterfaces();</span><br><span class="line">            String[] ifaceNames = <span class="keyword">new</span> String[interfaces.length];</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; interfaces.length; i++) &#123;</span><br><span class="line">                ifaceNames[i] = interfaces[i].getName();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 接口名</span></span><br><span class="line">            Arrays.sort(ifaceNames);</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ifaceNames.length; i++) &#123;</span><br><span class="line">                dout.writeUTF(ifaceNames[i]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 全部属性</span></span><br><span class="line">        Field[] fields = cl.getDeclaredFields();</span><br><span class="line">        MemberSignature[] fieldSigs = <span class="keyword">new</span> MemberSignature[fields.length];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; fields.length; i++) &#123;</span><br><span class="line">            fieldSigs[i] = <span class="keyword">new</span> MemberSignature(fields[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        Arrays.sort(fieldSigs, <span class="keyword">new</span> Comparator&lt;MemberSignature&gt;() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(MemberSignature ms1, MemberSignature ms2)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> ms1.name.compareTo(ms2.name);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; fieldSigs.length; i++) &#123;</span><br><span class="line">            <span class="comment">// 成员签名</span></span><br><span class="line">            MemberSignature sig = fieldSigs[i];</span><br><span class="line">            <span class="keyword">int</span> mods = sig.member.getModifiers() &amp;</span><br><span class="line">                (Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED |</span><br><span class="line">                 Modifier.STATIC | Modifier.FINAL | Modifier.VOLATILE |</span><br><span class="line">                 Modifier.TRANSIENT);</span><br><span class="line">            <span class="keyword">if</span> (((mods &amp; Modifier.PRIVATE) == <span class="number">0</span>) ||</span><br><span class="line">                ((mods &amp; (Modifier.STATIC | Modifier.TRANSIENT)) == <span class="number">0</span>))</span><br><span class="line">            &#123;</span><br><span class="line">                dout.writeUTF(sig.name);</span><br><span class="line">                dout.writeInt(mods);</span><br><span class="line">                dout.writeUTF(sig.signature);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 是否有静态初始化</span></span><br><span class="line">        <span class="keyword">if</span> (hasStaticInitializer(cl)) &#123;</span><br><span class="line">            dout.writeUTF(<span class="string">"&lt;clinit&gt;"</span>);</span><br><span class="line">            dout.writeInt(Modifier.STATIC);</span><br><span class="line">            dout.writeUTF(<span class="string">"()V"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 构造器</span></span><br><span class="line">        Constructor&lt;?&gt;[] cons = cl.getDeclaredConstructors();</span><br><span class="line">        MemberSignature[] consSigs = <span class="keyword">new</span> MemberSignature[cons.length];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; cons.length; i++) &#123;</span><br><span class="line">            consSigs[i] = <span class="keyword">new</span> MemberSignature(cons[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        Arrays.sort(consSigs, <span class="keyword">new</span> Comparator&lt;MemberSignature&gt;() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(MemberSignature ms1, MemberSignature ms2)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> ms1.signature.compareTo(ms2.signature);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; consSigs.length; i++) &#123;</span><br><span class="line">            MemberSignature sig = consSigs[i];</span><br><span class="line">            <span class="keyword">int</span> mods = sig.member.getModifiers() &amp;</span><br><span class="line">                (Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED |</span><br><span class="line">                 Modifier.STATIC | Modifier.FINAL |</span><br><span class="line">                 Modifier.SYNCHRONIZED | Modifier.NATIVE |</span><br><span class="line">                 Modifier.ABSTRACT | Modifier.STRICT);</span><br><span class="line">            <span class="keyword">if</span> ((mods &amp; Modifier.PRIVATE) == <span class="number">0</span>) &#123;</span><br><span class="line">                dout.writeUTF(<span class="string">"&lt;init&gt;"</span>);</span><br><span class="line">                dout.writeInt(mods);</span><br><span class="line">                dout.writeUTF(sig.signature.replace(<span class="string">'/'</span>, <span class="string">'.'</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        MemberSignature[] methSigs = <span class="keyword">new</span> MemberSignature[methods.length];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; methods.length; i++) &#123;</span><br><span class="line">            methSigs[i] = <span class="keyword">new</span> MemberSignature(methods[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        Arrays.sort(methSigs, <span class="keyword">new</span> Comparator&lt;MemberSignature&gt;() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(MemberSignature ms1, MemberSignature ms2)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">int</span> comp = ms1.name.compareTo(ms2.name);</span><br><span class="line">                <span class="keyword">if</span> (comp == <span class="number">0</span>) &#123;</span><br><span class="line">                    comp = ms1.signature.compareTo(ms2.signature);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> comp;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; methSigs.length; i++) &#123;</span><br><span class="line">            MemberSignature sig = methSigs[i];</span><br><span class="line">            <span class="keyword">int</span> mods = sig.member.getModifiers() &amp;</span><br><span class="line">                (Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED |</span><br><span class="line">                 Modifier.STATIC | Modifier.FINAL |</span><br><span class="line">                 Modifier.SYNCHRONIZED | Modifier.NATIVE |</span><br><span class="line">                 Modifier.ABSTRACT | Modifier.STRICT);</span><br><span class="line">            <span class="keyword">if</span> ((mods &amp; Modifier.PRIVATE) == <span class="number">0</span>) &#123;</span><br><span class="line">                dout.writeUTF(sig.name);</span><br><span class="line">                dout.writeInt(mods);</span><br><span class="line">                dout.writeUTF(sig.signature.replace(<span class="string">'/'</span>, <span class="string">'.'</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        dout.flush();</span><br><span class="line">				<span class="comment">// 哈希操作，返回结果就是serialVersionUID</span></span><br><span class="line">        MessageDigest md = MessageDigest.getInstance(<span class="string">"SHA"</span>);</span><br><span class="line">        <span class="keyword">byte</span>[] hashBytes = md.digest(bout.toByteArray());</span><br><span class="line">        <span class="keyword">long</span> hash = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = Math.min(hashBytes.length, <span class="number">8</span>) - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">            hash = (hash &lt;&lt; <span class="number">8</span>) | (hashBytes[i] &amp; <span class="number">0xFF</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> hash;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException ex) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> InternalError(ex);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (NoSuchAlgorithmException ex) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> SecurityException(ex.getMessage());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，serialVersionUID是由将类名，属性名，属性修饰符，继承的接口，属性类型，名称，方法，静态代码块等等这些都考虑进去了。</p>
+<h1 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h1><p>假设现在A、B双方准备进行序列化交互，A序列化，B反序列化，双方机器上都有Student类：</p>
+<ul>
+<li><p>情景1：双方都利用系统默认生成的serialVersionUID。</p>
+<p>如果这时候A决定为Student增加/缺少字段，此时B再反序列化会<strong>报错</strong>。</p>
+<p>因为此时A、B两台机器上的Student类已经版本不一致了。</p>
+</li>
+<li><p>情景2：双方协商好使用统一的serialVersionUID。</p>
+<p>这样如果A决定为Student增加/缺少字段，此时B再反序列化<strong>不会报错</strong>。</p>
+<p>对于增加的字段。会根据类型赋给他初始值。</p>
+</li>
+</ul>
+<p>原因：</p>
+<p>自动生成的，由于类文件变化，它也会跟着发生变化，会出现版本不一致的问题，导致反序列化失败。</p>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>Java序列化原理</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>XStream反序列化漏洞梳理</title>
+    <url>/XStream%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%A2%B3%E7%90%86/</url>
+    <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>百川东到海，何时复西归？</p>
+</blockquote>
+<p>这一篇来梳理XStream不同版本的花式RCE，也会是补全计划的一部分。</p>
+<a id="more"></a>
+
+<h1 id="老实本分的XStream"><a href="#老实本分的XStream" class="headerlink" title="老实本分的XStream"></a>老实本分的XStream</h1><p>XStream格局可以的，直接把自己的<a href="https://x-stream.github.io/security.html" target="_blank" rel="noopener">List&lt; CVE &gt;</a>放在了首页</p>
+<img src="../images/XStream%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%A2%B3%E7%90%86/image-20210727162943451.png" alt="image-20210727162943451" style="zoom:50%;">
+
+<p>会按照时间线逐个梳理。</p>
+<p>基本API操作：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">XStream xStream = <span class="keyword">new</span> XStream();</span><br><span class="line">Person person = <span class="keyword">new</span> Person(<span class="string">"peter"</span>,<span class="number">18</span>);</span><br><span class="line"><span class="comment">// object to xml</span></span><br><span class="line">String xml = xStream.toXML(person);</span><br><span class="line"><span class="comment">// xml to object</span></span><br><span class="line">Object o = xStream.fromXML(xml);</span><br></pre></td></tr></table></figure>
+
+<h1 id="重要组件"><a href="#重要组件" class="headerlink" title="重要组件"></a>重要组件</h1><p>XStream类图，参考<a href="https://www.jianshu.com/p/387c568faf62" target="_blank" rel="noopener">XStream 源码解析</a>：</p>
+<img src="http://m0d9.me/images/pasted-136.png" alt="img" style="zoom:150%;">
+
+
+
+<p>主要分为四个部分：</p>
+<h2 id="MarshallingStrategy"><a href="#MarshallingStrategy" class="headerlink" title="MarshallingStrategy"></a>MarshallingStrategy</h2><p>编码策略：</p>
+<ul>
+<li>marshall  : object-&gt;xml         编码</li>
+<li>unmarshall :  xml-&gt; object   解码</li>
+</ul>
+<p>两个重要的类：</p>
+<ul>
+<li><p>TreeMarshaller: 树编组程序  调用Mapper和Converter把 java对象-&gt; XML</p>
+<p>其中的start方法开始编组，convertAnother方法把java对象转化成XML。</p>
+</li>
+</ul>
+<img src="../images/XStream%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%A2%B3%E7%90%86/image-20210727192641609.png" alt="image-20210727192641609" style="zoom:50%;">
+
+<ul>
+<li><p>TreeUnmarshaller ： 树解组程序 调用Mapper和Converter把 XML-&gt;java对象</p>
+<p>里面的start方法开始解组，convertAnother方法把class转化成java对象。</p>
+</li>
+</ul>
+<img src="../images/XStream%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%A2%B3%E7%90%86/image-20210727193134470.png" alt="image-20210727193134470" style="zoom:50%;">
+
+
+
+
+
+
+
+<h2 id="Mapper"><a href="#Mapper" class="headerlink" title="Mapper"></a>Mapper</h2><p>映射器</p>
+<img src="../images/XStream%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%A2%B3%E7%90%86/image-20210727174404413.png" alt="image-20210727174404413" style="zoom:70%;">
+
+<p>通过mapper获取对象对应的类、成员、Field属性的Class对象，赋值给XML的标签字段。</p>
+<h2 id="Converter"><a href="#Converter" class="headerlink" title="Converter"></a>Converter</h2><p>XStream为Java常见的类型提供了Converter转换器。转换器注册中心是XStream组成的核心部分。</p>
+<p>Converter的职责是提供一种策略，用于将对象图中找到的特定类型的对象转换为XML或将XML转换为对象。</p>
+<p><strong>简单地说，Xstream的思路是通过不同的converter来处理序列化数据中不同类型的数据。</strong></p>
+<p>Converter需要实现3个方法：</p>
+<ul>
+<li>canConvert方法：告诉XStream对象，它能够转换的对象；</li>
+<li>marshal方法：能够将对象转换为XML时候的具体操作；</li>
+<li>unmarshal方法：能够将XML转换为对象时的具体操作；</li>
+</ul>
+<img src="../images/XStream%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%A2%B3%E7%90%86/image-20210727203831632.png" alt="image-20210727203831632" style="zoom:50%;">
+
+<img src="../images/XStream%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%A2%B3%E7%90%86/image-20210727203706224.png" alt="image-20210727203706224" style="zoom:50%;">
+
+<p><a href="http://x-stream.github.io/converters.html" target="_blank" rel="noopener">http://x-stream.github.io/converters.html</a></p>
+<p>这里告诉了我们针对各种对象XStream做了哪些支持。</p>
+<h1 id="XStream编组-解组具体过程"><a href="#XStream编组-解组具体过程" class="headerlink" title="XStream编组/解组具体过程"></a>XStream编组/解组具体过程</h1><p>XStream : 1.4.6</p>
+<h2 id="fromXML"><a href="#fromXML" class="headerlink" title="fromXML"></a>fromXML</h2><p>xml-&gt;obj 先看如何反序列化出来的：</p>
+<p>第一步：把String转化成StringReader，HierarchicalStreamDriver通过StringReader创建HierarchicalStreamReader，最后调用MarshallingStrategy的unmarshal方法开始解组</p>
+<img src="../images/XStream%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%A2%B3%E7%90%86/image-20210727193725097.png" alt="image-20210727193725097" style="zoom:50%;">
+
+<img src="../images/XStream%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%A2%B3%E7%90%86/image-20210727193927296.png" alt="image-20210727193927296" style="zoom:50%;">
+
+<img src="../images/XStream%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%A2%B3%E7%90%86/image-20210727194042572.png" alt="image-20210727194042572" style="zoom:50%;">
+
+
+
+<p>第二步：进入start方法，开始解析：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">start</span><span class="params">(DataHolder dataHolder)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.dataHolder = dataHolder;</span><br><span class="line">  	<span class="comment">//通过Mapper获取对应节点的Class对象</span></span><br><span class="line">    Class type = HierarchicalStreams.readClassType(<span class="keyword">this</span>.reader, <span class="keyword">this</span>.mapper);</span><br><span class="line">  	<span class="comment">//Converter根据Class的类型转化成java对象</span></span><br><span class="line">    Object result = <span class="keyword">this</span>.convertAnother((Object)<span class="keyword">null</span>, type);</span><br><span class="line">    Iterator validations = <span class="keyword">this</span>.validationList.iterator();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(validations.hasNext()) &#123;</span><br><span class="line">        Runnable runnable = (Runnable)validations.next();</span><br><span class="line">        runnable.run();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>先看readClassType里面做了什么事情：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Class <span class="title">readClassType</span><span class="params">(HierarchicalStreamReader reader, Mapper mapper)</span> </span>&#123;</span><br><span class="line">    String classAttribute = readClassAttribute(reader, mapper);</span><br><span class="line">    Class type;</span><br><span class="line">    <span class="keyword">if</span> (classAttribute == <span class="keyword">null</span>) &#123;</span><br><span class="line">      	<span class="comment">// 通过节点名获取Mapper中对应的Class对象</span></span><br><span class="line">        type = mapper.realClass(reader.getNodeName());</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        type = mapper.realClass(classAttribute);</span><br><span class="line">    &#125;</span><br><span class="line">		<span class="comment">//返回值type就是obj对应的Class对象</span></span><br><span class="line">    <span class="keyword">return</span> type;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第三步 ： convertAnother 方法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">convertAnother</span><span class="params">(Object parent, Class type, Converter converter)</span> </span>&#123;</span><br><span class="line">  	<span class="comment">//根据mapper获取type类对象的正确类型</span></span><br><span class="line">    type = <span class="keyword">this</span>.mapper.defaultImplementationOf(type);</span><br><span class="line">    <span class="keyword">if</span> (converter == <span class="keyword">null</span>) &#123;</span><br><span class="line">      	<span class="comment">//根据type找到对应的converter</span></span><br><span class="line">        converter = <span class="keyword">this</span>.converterLookup.lookupConverterForType(type);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!converter.canConvert(type)) &#123;</span><br><span class="line">        ConversionException e = <span class="keyword">new</span> ConversionException(<span class="string">"Explicit selected converter cannot handle type"</span>);</span><br><span class="line">        e.add(<span class="string">"item-type"</span>, type.getName());</span><br><span class="line">        e.add(<span class="string">"converter-type"</span>, converter.getClass().getName());</span><br><span class="line">        <span class="keyword">throw</span> e;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.convert(parent, type, converter);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意这里参数parent，converter默认都是null</p>
+<p>如何查找对应的converter？</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Converter <span class="title">lookupConverterForType</span><span class="params">(Class type)</span> </span>&#123;</span><br><span class="line">  	<span class="comment">//先从缓存集合中查找Converter</span></span><br><span class="line">    Converter cachedConverter = (Converter)<span class="keyword">this</span>.typeToConverterMap.get(type);</span><br><span class="line">    <span class="keyword">if</span> (cachedConverter != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> cachedConverter;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;<span class="comment">// 如果缓存中没有，那么就在converter中寻找</span></span><br><span class="line">        Iterator iterator = <span class="keyword">this</span>.converters.iterator();</span><br><span class="line"></span><br><span class="line">        Converter converter;</span><br><span class="line">      	<span class="comment">// 遍历converters找到符合的Converter	</span></span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (!iterator.hasNext()) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> ConversionException(<span class="string">"No converter specified for "</span> + type);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            converter = (Converter)iterator.next();</span><br><span class="line">        &#125; <span class="keyword">while</span>(!converter.canConvert(type));</span><br><span class="line">				<span class="comment">// 把这次找到的放在缓存集合中</span></span><br><span class="line">        <span class="keyword">this</span>.typeToConverterMap.put(type, converter);</span><br><span class="line">        <span class="keyword">return</span> converter;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在来到<code>return this.convert(parent, type, converter);</code>这句</p>
+<p>会到<code>com.thoughtworks.xstream.core.TreeUnmarshaller#convert</code>这里：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> Object <span class="title">convert</span><span class="params">(Object parent, Class type, Converter converter)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.types.push(type);</span><br><span class="line">     		<span class="comment">// 会进入这里</span></span><br><span class="line">        Object result = converter.unmarshal(<span class="keyword">this</span>.reader, <span class="keyword">this</span>);</span><br><span class="line">        <span class="keyword">this</span>.types.popSilently();</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (ConversionException var6) &#123;</span><br><span class="line">        <span class="keyword">this</span>.addInformationTo(var6, type, converter, parent);</span><br><span class="line">        <span class="keyword">throw</span> var6;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (RuntimeException var7) &#123;</span><br><span class="line">        ConversionException conversionException = <span class="keyword">new</span> ConversionException(var7);</span><br><span class="line">        <span class="keyword">this</span>.addInformationTo(conversionException, type, converter, parent);</span><br><span class="line">        <span class="keyword">throw</span> conversionException;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="../images/XStream%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%A2%B3%E7%90%86/image-20210727200451023.png" alt="image-20210727200451023"></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">unmarshal</span><span class="params">(HierarchicalStreamReader reader, UnmarshallingContext context)</span> </span>&#123;</span><br><span class="line">  	<span class="comment">// 构造Class类对象的instance实例，field没有赋值，都是默认值</span></span><br><span class="line">    Object result = <span class="keyword">this</span>.instantiateNewInstance(reader, context);</span><br><span class="line">  	<span class="comment">// 对result的field赋值</span></span><br><span class="line">    result = <span class="keyword">this</span>.doUnmarshal(result, reader, context);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.serializationMethodInvoker.callReadResolve(result);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h1 id="CVE-2013-7285"><a href="#CVE-2013-7285" class="headerlink" title="CVE-2013-7285"></a>CVE-2013-7285</h1><p>影响范围：</p>
+<ul>
+<li>XStream version &lt;= 1.4.6 &amp; XStream version = 1.4.10</li>
+</ul>
+<h2 id="漏洞成因"><a href="#漏洞成因" class="headerlink" title="漏洞成因"></a>漏洞成因</h2><h3 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h3><p>经典老番<a href="https://0range228.github.io/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E9%82%A3%E7%82%B9%E4%BA%8B/">动态代理那些事</a></p>
+<h3 id="EventHandler"><a href="#EventHandler" class="headerlink" title="EventHandler"></a>EventHandler</h3><p>EventHandler也是实现了<code>InvocationHandler</code>接口的类</p>
+<p>EventHandler用来监控接口中的方法被调用后执行EventHandler中成员变量指定的方法。</p>
+<img src="../images/XStream%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%A2%B3%E7%90%86/image-20210727205609443.png" alt="image-20210727205609443" style="zoom:50%;">
+
+<p>target： </p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://www.jianshu.com/p/387c568faf62" target="_blank" rel="noopener">XStream 源码解析</a></p>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>XStream</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Java反序列化流程梳理</title>
     <url>/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%81%E7%A8%8B%E6%A2%B3%E7%90%86/</url>
     <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
