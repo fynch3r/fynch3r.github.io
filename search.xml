@@ -10521,7 +10521,8 @@
 <p>JNDI支持的服务主要有：DNS、LDAP、CORBA、RMI等。</p>
 <p>简单点说，JNDI就是一组API接口。<strong>每一个对象都有一组唯一的键值绑定，将名字和对象绑定</strong>，可以通过名字检索指定的对象，而该对象可能存储在RMI、LDAP、CORBA等等。</p>
 <p>Java Naming and Directory Interface(JNDI)是一种Java API，可以通过名称来发现和查找数据和对象。这些对象可以存储在不同的命名或目录服务中，如远程方法调用(RMI)、公共对象请求代理体系结构(CORBA)、轻量级目录访问协议(LDAP)或域名服务(DNS)。</p>
-<p>换句话说，JNDI就是一个简单的Java API（如“InitialContext.Lookup（String Name）”），它只接受一个字符串参数，如果该参数来自不可信的源的话，则可能因为远程类加载而引发远程代码执行攻击。</p>
+<p>换句话说，JNDI就是一个简单的Java API，如<code>InitialContext.Lookup（String Name）</code>，它只接受一个字符串参数；</p>
+<p><strong>如果该参数来自不可信的源的话，则可能因为远程类加载而引发远程代码执行攻击。</strong></p>
 <p>当被请求对象的名称处于攻击者掌控之下时，他们就能将受害Java应用程序指向恶意的RMI/LDAP/CORBA服务器，并使用任意对象进行响应。如果该对象是“javax.naming.Reference”类的实例，那么，JNDI客户端将尝试解析该对象的“classFactory”和“classFactoryLocation”属性。如果目标Java应用程序不知道“ClassFactory”的值，Java将使用Java的URLClassLoader从“ClassFactoryLocation”处获取该工厂的字节码。</p>
 <p>由于其简单性，即使“InitialContext.lookup”方法没有直接暴露给受污染的数据，它对于利用Java漏洞来说也非常有用。在某些情况下，仍然可以通过反序列化或不安全的反射攻击来访问它。</p>
 <p>如图：</p>
