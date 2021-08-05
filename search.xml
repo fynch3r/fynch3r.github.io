@@ -7139,7 +7139,7 @@
 <li>Demand-driven 需求驱动：只分析影响特定域的指针的指向关系。会很耗费资源。</li>
 </ul>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200823164722791.png" alt="image-20200823164722791"></p>
-<h2 id="分析语句种类"><a href="#分析语句种类" class="headerlink" title="分析语句种类"></a>分析语句种类</h2><p><strong>问题</strong>：哪些语句会影响指针指向，那就只分析这些语句。</p>
+<h2 id="分析语句种类"><a href="#分析语句种类" class="headerlink" title="分析语句种类"></a>分析语句种类</h2><p><strong>问题</strong>：哪些语句会影响指针指向，那就只分析这些语句。 </p>
 <p><img src="../images/%E3%80%90%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BD%AF%E4%BB%B6%E5%88%86%E6%9E%90%E3%80%91%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/image-20200823170535943.png" alt="image-20200823170535943"></p>
 <p><strong>Java指针类型</strong>：</p>
 <ol>
