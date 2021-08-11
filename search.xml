@@ -54,7 +54,7 @@
     <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
 <p>百川东到海，何时复西归？</p>
 </blockquote>
-<p>这一篇来梳理XStream不同版本的花式RCE，也会是补全计划的一部分。</p>
+<p>这一篇来梳理XStream不同版本的花式RCE，也会是补全计划的一部分。 </p>
 <a id="more"></a>
 
 <h1 id="老实本分的XStream"><a href="#老实本分的XStream" class="headerlink" title="老实本分的XStream"></a>老实本分的XStream</h1><p>XStream格局可以的，直接把自己的<a href="https://x-stream.github.io/security.html" target="_blank" rel="noopener">List&lt; CVE &gt;</a>放在了首页</p>
