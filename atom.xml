@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://0range228.github.io/"/>
-  <updated>2021-07-28T06:24:16.977Z</updated>
+  <updated>2021-08-30T03:34:49.379Z</updated>
   <id>https://0range228.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>gadgetFInder(sink，depth)</title>
+    <link href="https://0range228.github.io/gadgetFInder(sink%EF%BC%8Cdepth)/"/>
+    <id>https://0range228.github.io/gadgetFInder(sink%EF%BC%8Cdepth)/</id>
+    <published>2021-08-30T03:34:49.379Z</published>
+    <updated>2021-08-30T03:34:49.379Z</updated>
+    
+    <content type="html"><![CDATA[<p>gadgetFInder(sink，depth)</p><p>​    如果当前方法为source点</p><p>​            调用链存储</p><p>​    如果depth&lt;MAX_DEPTH</p><p>​            获取调用当前函数的Call关系边集合callNodesList</p><p>​            初始化callNodesListAfterTrimmed </p><p>​            for call in callNodesList</p><p>​                result = call边污点推导结果</p><p>​                if 符合可控性要求</p><p>​                    将当前call边加入callNodesListAfterTrimmed集合</p><p>​                else continue;    </p><p>​            IF callNodesListAfterTrimmed.size() ！=0 THEN</p><p>​                for call in callNodesListAfterTrimmed</p><p>​                    caller = call边中的调用函数</p><p>​                    gadgetFInder（caller，depth+1）</p><p>​            else if callNodesList.size() ==0</p><p>​                    alias = sink点的别名函数</p><p>​                    gadgetFInder（alias，depth）</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;gadgetFInder(sink，depth)&lt;/p&gt;
+&lt;p&gt;​    如果当前方法为source点&lt;/p&gt;
+&lt;p&gt;​            调用链存储&lt;/p&gt;
+&lt;p&gt;​    如果depth&amp;lt;MAX_DEPTH&lt;/p&gt;
+&lt;p&gt;​            获取调用当前
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
   
   <entry>
     <title>serialVersionUID的那些事</title>
@@ -510,32 +536,6 @@
     
     
       <category term="iTerm2" scheme="https://0range228.github.io/tags/iTerm2/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>IDEA 快捷键速查手册</title>
-    <link href="https://0range228.github.io/IDEA-%E5%BF%AB%E6%8D%B7%E9%94%AE%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C/"/>
-    <id>https://0range228.github.io/IDEA-%E5%BF%AB%E6%8D%B7%E9%94%AE%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C/</id>
-    <published>2020-12-22T09:39:25.000Z</published>
-    <updated>2021-03-06T06:06:18.939Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote><p>大漠孤烟直，长河落日圆。</p></blockquote><p>整理敲板子过程中的快捷键 。</p><a id="more"></a><h1 id="记录"><a href="#记录" class="headerlink" title="记录"></a>记录</h1><p>try-catch：cmd+option+t</p><p>查看接口实现：option+cmd+b</p><p>搜索查看，类，api：cmd+o</p><p>函数调用：ctrl+option+h</p><p>自动补全变量：option+command+v</p><p>自动包围代码，例如添加try-catch代码块：option+command+t</p><p>生成注释块：ctrl+shift+/</p><p>生成方法注释：/**+tab</p><p>查看所有方法：command+F12</p><p>查看继承关系：Diagram-&gt;showDiagrams</p><p>搜索：shift+command+F</p><p>格式化代码块：command+option+L</p><p>批量重命名：shift+F6</p><p>中文颜文字：shift+6</p><p>批量编写：ctrl+G       先选中某部分，然后多次ctrl+全选，直接批量编写</p><p>批量框选：option+鼠标左键拖拽  这个逆天了 感觉像画画一样</p><p>整行移动： option+shift+上/下  快速调整代码行顺序 交换位置</p><p>快速显示/隐藏当前方法体 : command + . </p><p>快速概览当前类的所有方法：command + shift + +/-</p><p>统一修改方法签名： command+F6 </p><p>查看历史剪切板： command +shift+  v</p><p>代码抽取：</p><ol><li>抽取为局部变量：command+option+v 将字符串常量提取出来 单独声明</li><li>抽取为成类的成员变量：command+option+F  </li><li>抽取为成类的静态常量：command+option+C</li><li>抽取为方法入参：command+option+P</li><li>抽取为方法：command + option + M</li></ol><p>一些for循环快捷键：</p><p>其实所有for循环都在live templates里面，当然可以自定义：</p><ol><li>iter         <code>for (String arg : args)</code></li><li>itar      Iterate elements of array   <code>for (int j = 0; j &lt; args.length; j++)</code></li><li>itco     Iterate elements of java.util.Collection    <code>for (Iterator iterator = collection.iterator(); iterator.hasNext();)</code></li><li>itit      Iterate java.util.Iterator     <code>while (iterator.hasNext())</code></li><li>itli  Iterate elements of java.util.List <code>for (int j = 0; j &lt; list.size(); j++)</code></li><li>fori           <code>for (int j = 0; j &lt; ; j++)</code></li><li>foreach         <code>for(:)</code></li></ol><p>以上快捷键直接敲就行 不用.的方式去触发。</p><p>IDEA快捷键 自带Postfix</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"Jack"</span>.<span class="keyword">var</span> -&gt; String name = <span class="string">"Jack"</span></span><br><span class="line"></span><br><span class="line">name.notnull / name.nn -&gt; <span class="keyword">if</span>(name != <span class="keyword">null</span>)</span><br><span class="line"></span><br><span class="line">inputStream.close();.<span class="keyword">try</span> -&gt; <span class="keyword">try</span>&amp;<span class="keyword">catch</span></span><br><span class="line"></span><br><span class="line">obj.cast -&gt; (TYPE_TO_CAST)obj</span><br><span class="line"></span><br><span class="line">name.<span class="keyword">if</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> RuntimeException().<span class="keyword">throw</span></span><br><span class="line"></span><br><span class="line">list.<span class="keyword">for</span> / list.fori</span><br><span class="line"></span><br><span class="line">name.soutv -&gt; System.out.Println(<span class="string">"name = "</span>+name);</span><br><span class="line"></span><br><span class="line">name.<span class="keyword">return</span> </span><br><span class="line"></span><br><span class="line"><span class="string">"%d = %d + %d"</span>.format</span><br><span class="line"></span><br><span class="line">psfs -&gt; <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String</span><br></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;序言&quot;&gt;&lt;a href=&quot;#序言&quot; class=&quot;headerlink&quot; title=&quot;序言&quot;&gt;&lt;/a&gt;序言&lt;/h1&gt;&lt;blockquote&gt;
-&lt;p&gt;大漠孤烟直，长河落日圆。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;整理敲板子过程中的快捷键 。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="IDE" scheme="https://0range228.github.io/categories/IDE/"/>
-    
-    
-      <category term="IDEA" scheme="https://0range228.github.io/tags/IDEA/"/>
     
   </entry>
   
