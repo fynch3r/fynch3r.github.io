@@ -28,21 +28,23 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"0range228.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
-  <meta name="description" content="序言 梦里玉人方下马，恨他天外一声鸿。  今天来总结类加载机制。">
+  <meta name="description" content="序言 梦里玉人方下马，恨他天外一声鸿。  今天来总结Java类加载机制。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java类加载器">
+<meta property="og:title" content="Java类加载">
 <meta property="og:url" content="https://0range228.github.io/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/index.html">
 <meta property="og:site_name" content="0range的小窝">
-<meta property="og:description" content="序言 梦里玉人方下马，恨他天外一声鸿。  今天来总结类加载机制。">
+<meta property="og:description" content="序言 梦里玉人方下马，恨他天外一声鸿。  今天来总结Java类加载机制。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://0range228.github.io/images/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/image-20210306155604696.png">
 <meta property="og:image" content="https://0range228.github.io/images/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/image-20210225193851385.png">
 <meta property="og:image" content="https://0range228.github.io/images/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/image-20201105161406752.png">
 <meta property="og:image" content="https://0range228.github.io/images/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/image-20201105164854799.png">
+<meta property="og:image" content="https://0range228.github.io/images/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/image-20210901204710336.png">
+<meta property="og:image" content="https://0range228.github.io/images/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/image-20210901205017892.png">
 <meta property="og:image" content="https://0range228.github.io/images/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/image-20201106092414009.png">
 <meta property="og:image" content="https://0range228.github.io/images/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/image-20201106103945821.png">
 <meta property="article:published_time" content="2020-11-05T06:58:05.000Z">
-<meta property="article:modified_time" content="2021-03-15T12:57:46.160Z">
+<meta property="article:modified_time" content="2021-09-01T12:50:42.349Z">
 <meta property="article:author" content="0range">
 <meta property="article:tag" content="ClassLoader">
 <meta name="twitter:card" content="summary">
@@ -60,7 +62,7 @@
   };
 </script>
 
-  <title>Java类加载器 | 0range的小窝</title>
+  <title>Java类加载 | 0range的小窝</title>
   
 
 
@@ -215,7 +217,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Java类加载器
+          Java类加载
         </h1>
 
         <div class="post-meta">
@@ -232,7 +234,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-15 20:57:46" itemprop="dateModified" datetime="2021-03-15T20:57:46+08:00">2021-03-15</time>
+                <time title="修改时间：2021-09-01 20:50:42" itemprop="dateModified" datetime="2021-09-01T20:50:42+08:00">2021-09-01</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -245,7 +247,7 @@
             </span>
 
           
-            <span id="/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/" class="post-meta-item leancloud_visitors" data-flag-title="Java类加载器" title="热度">
+            <span id="/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/" class="post-meta-item leancloud_visitors" data-flag-title="Java类加载" title="热度">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -294,7 +296,7 @@
         <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
 <p>梦里玉人方下马，恨他天外一声鸿。</p>
 </blockquote>
-<p>今天来总结类加载机制。</p>
+<p>今天来总结Java类加载机制。</p>
 <a id="more"></a>
 
 
@@ -318,9 +320,9 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ClassLoader -&gt; Secure ClassLoader -&gt; URL ClassLoader -&gt; ExtClassLoader/AppClassLoader</span><br></pre></td></tr></table></figure>
 
 <p><img src="../images/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/image-20210225193851385.png" alt="image-20210225193851385"></p>
-<h1 id="双亲委派机制"><a href="#双亲委派机制" class="headerlink" title="双亲委派机制"></a>双亲委派机制</h1><p>站在JVM角度来看，只存在两种不同的类加载器：</p>
+<h1 id="类加载层次"><a href="#类加载层次" class="headerlink" title="类加载层次"></a>类加载层次</h1><p>站在JVM角度来看，只存在两种不同的类加载器：</p>
 <ul>
-<li>启动类加载器 BootstrapClassLoader/使用C++实现</li>
+<li>启动类加载器 BootstrapClassLoader 使用C++实现</li>
 <li>其他类加载器/都是由Java实现/全部继承抽象类java.lang.ClassLoader</li>
 </ul>
 <h2 id="Bootstrap-ClassLoader-启动类加载器"><a href="#Bootstrap-ClassLoader-启动类加载器" class="headerlink" title="Bootstrap ClassLoader 启动类加载器"></a>Bootstrap ClassLoader 启动类加载器</h2><p>负责加载存放在<code>JAVA_HOME/lib</code>目录下，或者被-Xbooclasspath参数所指定的路径中存放的，并且可以被JVM识别的类库，加载到虚拟机的内存中。</p>
@@ -328,14 +330,12 @@
 <p>出于安全考虑，BootstrapClassLoader只加载包名为java、javax、sun等开头的类。</p>
 <p>它负责加载 JVM 运行时核心类，这些类位于 JAVA_HOME/lib/rt.jar 文件中，我们常用内置库 java.<em>.</em> 都在里面。这个 ClassLoader 比较特殊，它其实不是一个ClassLoader实例对象，而是由C代码实现。用户在实现自定义类加载器时，如果需要把加载请求委派给启动类加载器，那可以直接传入null作为 BootstrapClassLoader。</p>
 <h2 id="Extension-ClassLoader-扩展类加载器"><a href="#Extension-ClassLoader-扩展类加载器" class="headerlink" title="Extension ClassLoader 扩展类加载器"></a>Extension ClassLoader 扩展类加载器</h2><p>负责加载Java的扩展类库，默认加载<code>JAVA_HOME/jre/lib/ext/</code>目下的所有jar，库名通常以 javax 开头。</p>
-<h2 id="Application-ClassLoader-系统类加载器"><a href="#Application-ClassLoader-系统类加载器" class="headerlink" title="Application ClassLoader 系统类加载器"></a>Application ClassLoader 系统类加载器</h2><p>直接提供给用户使用的ClassLoader，它会加载 ClASSPATH 环境变量或者 java.class.path 属性里定义的路径中的 jar 包和目录，负责加载包括开发者代码中、第三方库中的类。</p>
+<h2 id="Application-ClassLoader-系统类加载器"><a href="#Application-ClassLoader-系统类加载器" class="headerlink" title="Application ClassLoader 系统类加载器"></a>Application ClassLoader 系统类加载器</h2><p>直接提供给用户使用的ClassLoader，它会加载 CLASSPATH 环境变量或者 java.class.path 属性里定义的路径中的 jar 包和目录，负责加载包括开发者编写的代码、以及依赖的第三方库中的类。</p>
 <p>如果应用程序中没有自定义过自己的类加载器，一般情况下这个就是程序中默认的类加载器。</p>
 <p>可以通过 ClassLoader.getSystemClassLoader() 来获取它。</p>
 <h2 id="特殊：URLClassloader"><a href="#特殊：URLClassloader" class="headerlink" title="特殊：URLClassloader"></a>特殊：URLClassloader</h2><p>ClassLoader抽象类的一种实现，它可以根据URL搜索类或资源，并进行远程加载。在JDK实现中，BootstrapClassLoader、ExtClassLoader、AppClassLoader等都是 URLClassLoader 的子类。</p>
 <p>ExtClassLoader 和 AppClassLoader 类的实现代码位于rt.jar 中的 sun.misc.Launcher 类中，Launcher是由BootstrapClassLoader加载的。</p>
-<h2 id="用户自定义类加载器"><a href="#用户自定义类加载器" class="headerlink" title="用户自定义类加载器"></a>用户自定义类加载器</h2><p>开发人员可以通过继承java.lang.ClassLoader 类的方式实现自己的类加载器，重写 findClass()方法，以满足一些特殊的需求。</p>
-<p><strong>我们可以通过继承java.lang.ClassLoader类的方式实现自己的类加载器</strong>。具体实现方法我们等下单独讲解。</p>
-<blockquote>
+<h1 id="双亲委派机制"><a href="#双亲委派机制" class="headerlink" title="双亲委派机制"></a>双亲委派机制</h1><blockquote>
 <p>双亲委派模型工作过程是：如果一个类加载器收到类加载的请求，它首先不会自己去尝试加载这个类，而是把这个请求委派给父类加载器完成。每个类加载器都是如此，只有当父加载器在自己的搜索范围内找不到指定的类时（即ClassNotFoundException），子加载器才会尝试自己去加载。</p>
 </blockquote>
 <p><img src="../images/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/image-20201105161406752.png" alt="image-20201105161406752"></p>
@@ -346,10 +346,10 @@
 
 <p><code>ClassLoader</code>类有如下核心方法：</p>
 <ol>
-<li><code>loadClass</code>(加载指定的Java类) 它接受一个全类名，然后返回一个 Class 类型的实例。</li>
-<li><code>findClass</code>(查找指定的Java类) 查找名称为name都一个类是否存在，返回的结果是java.lang.Class类对象实例。</li>
+<li><code>loadClass</code>(加载指定的Java类) 接收全类名字符串，在内存中加载为Class 对象，返回。</li>
+<li><code>findClass</code>(查找指定的Java类) 查找当前JVM中，名称为name的Class类对象是否存在，找到的话返回Class类对象。</li>
 <li><code>findLoadedClass</code>(查找JVM已经加载过的类)</li>
-<li><code>defineClass</code>(定义一个Java类) 接受一组字节，实例化为一个Class 类型实例。</li>
+<li><code>defineClass</code>(定义一个Java类) 接受字节数组，在内存中加载为Class对象，返回。</li>
 <li><code>resolveClass</code>(链接指定的Java类)</li>
 <li><code>getParent</code>返回其parent ClassLoader</li>
 </ol>
@@ -362,35 +362,47 @@
 <li><p>defineClass()，将字节码转换为 JVM 的 java.lang.Class 对象。</p>
 </li>
 </ul>
+<p><strong>嵌套调用关系：loadClass-&gt;findClass-&gt;defineClass</strong></p>
 <p>整个demo玩玩看；</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClassLoaderTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ClassLoader cl = Hello<span class="class">.<span class="keyword">class</span>.<span class="title">getClassLoader</span>()</span>;</span><br><span class="line">        System.out.println(cl);</span><br><span class="line"></span><br><span class="line">        ClassLoader clParent = cl.getParent();</span><br><span class="line">        System.out.println(clParent);</span><br><span class="line"></span><br><span class="line">        ClassLoader cl2 = clParent.getParent();</span><br><span class="line">        System.out.println(cl2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
 
 <p>输出：</p>
 <p><img src="../images/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/image-20201105164854799.png" alt="image-20201105164854799"></p>
 <h2 id="重点：loadClass"><a href="#重点：loadClass" class="headerlink" title="重点：loadClass()"></a>重点：loadClass()</h2><p>源码：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> Class&lt;?&gt; loadClass(String name, <span class="keyword">boolean</span> resolve)</span><br><span class="line">        <span class="keyword">throws</span> ClassNotFoundException</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (getClassLoadingLock(name)) &#123;</span><br><span class="line">            <span class="comment">// First, check if the class has already been loaded</span></span><br><span class="line">            Class c = findLoadedClass(name);</span><br><span class="line">            <span class="keyword">if</span> (c == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">long</span> t0 = System.nanoTime();</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> (parent != <span class="keyword">null</span>) &#123;</span><br><span class="line">                        c = parent.loadClass(name, <span class="keyword">false</span>);</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        c = findBootstrapClassOrNull(name);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">                    <span class="comment">// ClassNotFoundException thrown if class not found</span></span><br><span class="line">                    <span class="comment">// from the non-null parent class loader</span></span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (c == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    <span class="comment">// If still not found, then invoke findClass in order</span></span><br><span class="line">                    <span class="comment">// to find the class.</span></span><br><span class="line">                    <span class="keyword">long</span> t1 = System.nanoTime();</span><br><span class="line">                    c = findClass(name);</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// this is the defining class loader; record the stats</span></span><br><span class="line">                    sun.misc.PerfCounter.getParentDelegationTime().addTime(t1 - t0);</span><br><span class="line">                    sun.misc.PerfCounter.getFindClassTime().addElapsedTimeFrom(t1);</span><br><span class="line">                    sun.misc.PerfCounter.getFindClasses().increment();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (resolve) &#123;</span><br><span class="line">                resolveClass(c);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> c;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> Class&lt;?&gt; loadClass(String name, <span class="keyword">boolean</span> resolve)</span><br><span class="line">        <span class="keyword">throws</span> ClassNotFoundException</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (getClassLoadingLock(name)) &#123;</span><br><span class="line">            <span class="comment">// First, check if the class has already been loaded 检查这个类是否被加载过</span></span><br><span class="line">            Class c = findLoadedClass(name);</span><br><span class="line">            <span class="keyword">if</span> (c == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">long</span> t0 = System.nanoTime();</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> (parent != <span class="keyword">null</span>) &#123;</span><br><span class="line">                      	<span class="comment">// 如果没有加载过，给父加载器加载</span></span><br><span class="line">                        c = parent.loadClass(name, <span class="keyword">false</span>); </span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                      	<span class="comment">// 交给Bootstrap ClassLoader加载</span></span><br><span class="line">                        c = findBootstrapClassOrNull(name);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">                    <span class="comment">// ClassNotFoundException thrown if class not found</span></span><br><span class="line">                    <span class="comment">// from the non-null parent class loader</span></span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (c == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    <span class="comment">// 如果没找到的话，由本类来findClass</span></span><br><span class="line">                    <span class="keyword">long</span> t1 = System.nanoTime();</span><br><span class="line">                    c = findClass(name);</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// this is the defining class loader; record the stats</span></span><br><span class="line">                    sun.misc.PerfCounter.getParentDelegationTime().addTime(t1 - t0);</span><br><span class="line">                    sun.misc.PerfCounter.getFindClassTime().addElapsedTimeFrom(t1);</span><br><span class="line">                    sun.misc.PerfCounter.getFindClasses().increment();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (resolve) &#123;</span><br><span class="line">                resolveClass(c);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> c;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
 
 <p>它先使用了findLoadedClass(String)方法来检查这个类是否被加载过</p>
 <p>接着使用父加载器调用loadClass(String)方法</p>
-<p>之后就调用findClass(String) 方法装载类。</p>
-<p>最后通过上述步骤找到了对应的类，并且接收到的resolve参数的值为true,那么就会调用resolveClass(Class)方法来处理类。</p>
-<h1 id="类加载方式"><a href="#类加载方式" class="headerlink" title="类加载方式"></a>类加载方式</h1><p>显式加载：通常使用<code>Java反射</code>或者<code>ClassLoader</code>来动态加载一个类对象。也可以理解为类动态加载</p>
-<p>隐式加载：<code>类名.方法名()</code>或<code>new</code>类实例。</p>
+<p>之后就调用自身findClass(String) 方法装载类。</p>
+<p>最后通过上述步骤找到了对应的Class对象，并且接收到的resolve参数的值为true，那么就调用resolveClass(Class)方法来链接(验证，准备，解析)。</p>
+<h2 id="forName方法和loadClass方法的区别"><a href="#forName方法和loadClass方法的区别" class="headerlink" title="forName方法和loadClass方法的区别"></a>forName方法和loadClass方法的区别</h2><p><img src="../images/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/image-20210901204710336.png" alt="image-20210901204710336"></p>
+<p><img src="../images/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/image-20210901205017892.png" alt="image-20210901205017892"></p>
+<h1 id="两种类加载：显式、隐式"><a href="#两种类加载：显式、隐式" class="headerlink" title="两种类加载：显式、隐式"></a>两种类加载：显式、隐式</h1><p>显式加载[动态加载]：</p>
+<ul>
+<li>Java反射<code>CLass.forName(&quot;com.sec.Test&quot;)</code>  加载、链接、初始化</li>
+<li>类加载器<code>ClassLoader.loadClass(&quot;com.sec.Test&quot;)</code>：仅加载</li>
+</ul>
+<p>隐式加载[静态加载]：</p>
+<ul>
+<li>创建类对象 new</li>
+<li>使用类的静态域</li>
+<li>创建子类对象</li>
+<li>使用子类的静态域</li>
+<li>调用类的静态方法 <code>Class.method()</code></li>
+</ul>
 <p>Demo:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 反射加载Test示例</span></span><br><span class="line">Class.forName(<span class="string">"com.sec.Test"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// ClassLoader加载Test示例</span></span><br><span class="line"><span class="keyword">this</span>.getClass.getClassLoader().loadClass(<span class="string">"com.sec.Test"</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 反射加载Test示例 显式加载</span></span><br><span class="line">Class.forName(<span class="string">"com.sec.Test"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// ClassLoader加载Test示例 隐式加载</span></span><br><span class="line"><span class="keyword">this</span>.getClass.getClassLoader().loadClass(<span class="string">"com.sec.Test"</span>);</span><br></pre></td></tr></table></figure>
 
 <p><code>Class.forName(&quot;类名&quot;)</code>默认会初始化被加载类的静态属性和方法</p>
 <p>如果不希望初始化类可以使用<code>Class.forName(&quot;类名&quot;, 是否初始化类, 类加载器)</code></p>
-<p><code>ClassLoader.loadClass</code>默认不会初始化类，只是将类加载进JVM虚拟机。</p>
+<p><code>ClassLoader.loadClass()</code>只是将类加载进JVM虚拟机。</p>
 <p><code>Class.forName()</code>可以加载数组，而<code>ClassLoader.loadClass()</code> 不能。</p>
+<p>子类引用父类的静态字段，不会触发子类的初始化。</p>
 <h1 id="自定义ClassLoader"><a href="#自定义ClassLoader" class="headerlink" title="自定义ClassLoader"></a>自定义ClassLoader</h1><p> Java 中提供的默认 ClassLoader 只加载指定目录下面的 jar 和 class ，我们从上面了解到 ClassLoader是一个抽象类，实现自定义的 ClassLoader 需要继承该类并实现里面的方法。</p>
 <p><strong><code>java.lang.ClassLoader</code>是所有的类加载器的父类。</strong></p>
 <p><strong>一般情况下，我们重写父类的 findClass 方法即可。</strong></p>
-<p><strong>双亲委派机制是loadClass()函数负责的。</strong></p>
+<p><strong>双亲委派机制是loadClass()函数负责的。</strong> <strong>可以打破但是没必要。</strong></p>
 <p>*<em>一个ClassLoader创建时如果没有指定parent，那么它的parent默认就是AppClassLoader。 *</em></p>
-<p>如果自定义一个ClassLoader，默认的parent父加载器是AppClassLoader，因为这样就能够保证它能访问系统内置加载器加载成功的class文件。</p>
 <p>ClassLoader 方法那么多为什么只重写 findClass 方法？ 因为 JDK 已经在 loadClass 方法中帮我们实现了 ClassLoader 搜索类的算法，当在 loadClass 方法中搜索不到类时，loadClass 方法就会调用findClass 方法来搜索类，所以我们只需重写该方法即可。如没有特殊的要求，一般不建议重写 loadClass 搜索类的算法。</p>
 <p>步骤：</p>
 <ol>
@@ -422,7 +434,7 @@
 <h1 id="类加载主要的三个阶段"><a href="#类加载主要的三个阶段" class="headerlink" title="类加载主要的三个阶段"></a>类加载主要的三个阶段</h1><ol>
 <li><p>加载</p>
 </li>
-<li><p>连接</p>
+<li><p>链接</p>
 <ul>
 <li>验证：为了保证加载进来的字节流符合虚拟机规范，不会造成安全错误。</li>
 <li>准备：为类变量分配内存，“预分配内存”，并且赋予初值0。</li>
@@ -436,6 +448,7 @@
 </ol>
 <h1 id="URLClassLoader"><a href="#URLClassLoader" class="headerlink" title="URLClassLoader"></a>URLClassLoader</h1><p>在java.net包中，JDK提供了一个更加易用的类加载器URLClassLoader，它继承了ClassLoader，能够从本地或者网络上指定的位置加载类，我们可以使用该类作为自定义的类加载器使用。</p>
 <p>URLClassLoader是ClassLoader的子类，它用于从指向 JAR 文件和目录的 URL 的搜索路径加载类和资源。也就是说，通过URLClassLoader就可以加载指定jar中的class到内存中。<br>下面来看一个例子，在该例子中，我们要完成的工作是利用URLClassLoader加载jar并运行其中的类的某个方法。</p>
+<p>加载过程中不会执行静态代码块。</p>
 <p>构造方法：</p>
 <p><code>public URLClassLoader(URL[] urls)</code>：指定要加载的类的所在地URL地址，父类加载器默认为App系统类加载器</p>
 <p><code>public URLClassLoader(URL[] urls,ClassLoader parent)</code>：指定要加载的类的所在的URL地址，并指定父类加载器。</p>
@@ -443,7 +456,7 @@
 
 <p><img src="../images/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/image-20201106103945821.png" alt="image-20201106103945821"></p>
 <h1 id="Java-运行时类加载"><a href="#Java-运行时类加载" class="headerlink" title="Java 运行时类加载"></a>Java 运行时类加载</h1><p>ClassLoader.loadClass()与Class.forName()是反射用来构造类，给一个类名即可，返回值是Class。</p>
-<p>注意一点，forName()方法会执行目标class的static代码块方法。</p>
+<p>注意一点，C lass.forName()方法全套服务，会执行目标class的static代码块方法。</p>
 <p>loadClass 应该在URLClassLoader里面用的多，这个涉及到动态加载jar包。</p>
 <p>获取当前ClassLoader的四种方式：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 方式一：获取当前类的 ClassLoader</span></span><br><span class="line">clazz.getClassLoader()</span><br><span class="line"><span class="comment">// 方式二：获取当前线程上下文的 ClassLoader</span></span><br><span class="line">Thread.currentThread().getContextClassLoader()</span><br><span class="line"><span class="comment">// 方式三：获取系统的 ClassLoader</span></span><br><span class="line">ClassLoader.getSystemClassLoader()</span><br><span class="line"><span class="comment">// 方式四：获取调用者的 ClassLoader</span></span><br><span class="line">DriverManager.getCallerClassLoader()</span><br></pre></td></tr></table></figure>
@@ -460,6 +473,10 @@
 
 <h2 id="通过反射结合Thread"><a href="#通过反射结合Thread" class="headerlink" title="通过反射结合Thread"></a>通过反射结合Thread</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>. ...</span><br><span class="line"><span class="number">2</span>. ...</span><br><span class="line"><span class="number">3</span>. Class cc = (Class) defineClassMethod.invoke(Thread.currentThread().getContextClassLoader(), classBytes, <span class="number">0</span>, classBytes.length);</span><br></pre></td></tr></table></figure>
 
+
+
+<h1 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h1><p>类加载完成后，对象实例化是Class.newInstance()方法。该方法会执行无参构造函数，</p>
+<p><strong>凡是能触发构造函数，都能触发静态代码块。</strong></p>
 
     </div>
 
@@ -547,7 +564,7 @@
       -->
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编译器与解释器"><span class="nav-number">2.</span> <span class="nav-text">编译器与解释器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#类和类加载器"><span class="nav-number">3.</span> <span class="nav-text">类和类加载器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#双亲委派机制"><span class="nav-number">4.</span> <span class="nav-text">双亲委派机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Bootstrap-ClassLoader-启动类加载器"><span class="nav-number">4.1.</span> <span class="nav-text">Bootstrap ClassLoader 启动类加载器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Extension-ClassLoader-扩展类加载器"><span class="nav-number">4.2.</span> <span class="nav-text">Extension ClassLoader 扩展类加载器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Application-ClassLoader-系统类加载器"><span class="nav-number">4.3.</span> <span class="nav-text">Application ClassLoader 系统类加载器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特殊：URLClassloader"><span class="nav-number">4.4.</span> <span class="nav-text">特殊：URLClassloader</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户自定义类加载器"><span class="nav-number">4.5.</span> <span class="nav-text">用户自定义类加载器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ClassLoader类-核心方法"><span class="nav-number">5.</span> <span class="nav-text">ClassLoader类 - 核心方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#重点：loadClass"><span class="nav-number">5.1.</span> <span class="nav-text">重点：loadClass()</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#类加载方式"><span class="nav-number">6.</span> <span class="nav-text">类加载方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#自定义ClassLoader"><span class="nav-number">7.</span> <span class="nav-text">自定义ClassLoader</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义-ClassLoader-DEMO"><span class="nav-number">7.0.1.</span> <span class="nav-text">自定义 ClassLoader DEMO</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#重要方法-loadClass"><span class="nav-number">8.</span> <span class="nav-text">重要方法 loadClass</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#类加载主要的三个阶段"><span class="nav-number">9.</span> <span class="nav-text">类加载主要的三个阶段</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#URLClassLoader"><span class="nav-number">10.</span> <span class="nav-text">URLClassLoader</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java-运行时类加载"><span class="nav-number">11.</span> <span class="nav-text">Java 运行时类加载</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#通过反射获取defineClass方法"><span class="nav-number">11.1.</span> <span class="nav-text">通过反射获取defineClass方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过反射结合Thread"><span class="nav-number">11.2.</span> <span class="nav-text">通过反射结合Thread</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编译器与解释器"><span class="nav-number">2.</span> <span class="nav-text">编译器与解释器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#类和类加载器"><span class="nav-number">3.</span> <span class="nav-text">类和类加载器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#类加载层次"><span class="nav-number">4.</span> <span class="nav-text">类加载层次</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Bootstrap-ClassLoader-启动类加载器"><span class="nav-number">4.1.</span> <span class="nav-text">Bootstrap ClassLoader 启动类加载器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Extension-ClassLoader-扩展类加载器"><span class="nav-number">4.2.</span> <span class="nav-text">Extension ClassLoader 扩展类加载器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Application-ClassLoader-系统类加载器"><span class="nav-number">4.3.</span> <span class="nav-text">Application ClassLoader 系统类加载器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特殊：URLClassloader"><span class="nav-number">4.4.</span> <span class="nav-text">特殊：URLClassloader</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#双亲委派机制"><span class="nav-number">5.</span> <span class="nav-text">双亲委派机制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ClassLoader类-核心方法"><span class="nav-number">6.</span> <span class="nav-text">ClassLoader类 - 核心方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#重点：loadClass"><span class="nav-number">6.1.</span> <span class="nav-text">重点：loadClass()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#forName方法和loadClass方法的区别"><span class="nav-number">6.2.</span> <span class="nav-text">forName方法和loadClass方法的区别</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#两种类加载：显式、隐式"><span class="nav-number">7.</span> <span class="nav-text">两种类加载：显式、隐式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#自定义ClassLoader"><span class="nav-number">8.</span> <span class="nav-text">自定义ClassLoader</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义-ClassLoader-DEMO"><span class="nav-number">8.0.1.</span> <span class="nav-text">自定义 ClassLoader DEMO</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#重要方法-loadClass"><span class="nav-number">9.</span> <span class="nav-text">重要方法 loadClass</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#类加载主要的三个阶段"><span class="nav-number">10.</span> <span class="nav-text">类加载主要的三个阶段</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#URLClassLoader"><span class="nav-number">11.</span> <span class="nav-text">URLClassLoader</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java-运行时类加载"><span class="nav-number">12.</span> <span class="nav-text">Java 运行时类加载</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#通过反射获取defineClass方法"><span class="nav-number">12.1.</span> <span class="nav-text">通过反射获取defineClass方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过反射结合Thread"><span class="nav-number">12.2.</span> <span class="nav-text">通过反射结合Thread</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#构造函数"><span class="nav-number">13.</span> <span class="nav-text">构造函数</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -667,7 +684,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">20:28</span>
+    <span title="站点阅读时长">20:29</span>
   -->
 
 </div>
