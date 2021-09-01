@@ -1,29 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>gadgetFInder(sink，depth)</title>
-    <url>/gadgetFInder(sink%EF%BC%8Cdepth)/</url>
-    <content><![CDATA[<p>gadgetFInder(sink，depth)</p>
-<p>​    如果当前方法为source点</p>
-<p>​            调用链存储</p>
-<p>​    如果depth&lt;MAX_DEPTH</p>
-<p>​            获取调用当前函数的Call关系边集合callNodesList</p>
-<p>​            初始化callNodesListAfterTrimmed </p>
-<p>​            for call in callNodesList</p>
-<p>​                result = call边污点推导结果</p>
-<p>​                if 符合可控性要求</p>
-<p>​                    将当前call边加入callNodesListAfterTrimmed集合</p>
-<p>​                else continue;    </p>
-<p>​            IF callNodesListAfterTrimmed.size() ！=0 THEN</p>
-<p>​                for call in callNodesListAfterTrimmed</p>
-<p>​                    caller = call边中的调用函数</p>
-<p>​                    gadgetFInder（caller，depth+1）</p>
-<p>​            else if callNodesList.size() ==0</p>
-<p>​                    alias = sink点的别名函数</p>
-<p>​                    gadgetFInder（alias，depth）</p>
-]]></content>
-  </entry>
-  <entry>
     <title>serialVersionUID的那些事</title>
     <url>/serialVersionUID%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B/</url>
     <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
