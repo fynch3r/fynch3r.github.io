@@ -11566,10 +11566,10 @@
 
 <p>可以看到反序列化失败，并且构造函数，getter函数都被调用了，最后的对象也是JSONObject对象（是一串字符串）。</p>
 <p>接下来改细节，添加一下反序列化制定的类型：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Object obj = JSON.parseObject(jsonstring, Object<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"><span class="comment">//Object obj = JSON.parseObject(jsonstring, Student.class);</span></span><br><span class="line"><span class="comment">//Student obj = JSON.parseObject(jsonstring, Student.class);</span></span><br><span class="line">System.out.println(obj);</span><br><span class="line">System.out.println(obj.getClass().getName());</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Object obj = JSON.parseObject(jsonstring, Object<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"><span class="comment">//Object obj = JSON.parseObject(jsonstring, Student.class);</span></span><br><span class="line"><span class="comment">//Student obj = JSON.parseObject(jsonstring, Student.class);</span></span><br><span class="line">System.out.println(obj);</span><br></pre></td></tr></table></figure>
 
 <p>输出如下：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">构造函数</span><br><span class="line">getProperties</span><br><span class="line">fastjson2change.Student@<span class="number">6659</span>c656</span><br><span class="line">fastjson2change.Student</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">构造函数</span><br><span class="line">getProperties</span><br><span class="line">fastjson2change.Student@<span class="number">6659</span>c656</span><br></pre></td></tr></table></figure>
 
 <p>可以看到，这次就成功了，对象被解析成了Java对象。</p>
 <p>输出看到，调用了Student类的构造函数、properties成员变量的的getter方法，反序列化得到的是Student类对象即反序列化成功，也就是说<strong>只要添加了指定的类这个参数，通过@type的作用parseObject()都会成功将JSON反序列化为@type指定的类。</strong></p>
@@ -11583,7 +11583,7 @@
 <ul>
 <li>当反序列化为<code>JSON.parseObject(*)</code>形式即未指定class时，会调用反序列化得到的类的构造函数、所有属性的getter方法、JSON里面的非私有属性的setter方法，其中properties属性的getter方法调用了两次；</li>
 <li>当反序列化为<code>JSON.parseObject(*,*.class)</code>形式即指定class时，只调用反序列化得到的类的构造函数、JSON里面的非私有属性的setter方法、properties属性的getter方法；</li>
-<li>当反序列化为<code>JSON.parseObject(*)</code>形式即未指定class进行反序列化时得到的都是JSONObject类对象，而只要指定了class即<code>JSON.parseObject(*,*.class)</code>形式得到的都是特定的Student类；</li>
+<li>当反序列化为<code>JSON.parseObject(*)</code>形式即未指定class进行反序列化时得到的都是JSONObject类对象，而只要指定了class即<code>JSON.parseObject(*,*.class)</code>形式得到的都是特定的要求类；</li>
 </ul>
 <p><strong>下面直接引用结论，Fastjson会对满足下列要求的setter/getter方法进行调用：</strong></p>
 <p>满足条件的setter：</p>
