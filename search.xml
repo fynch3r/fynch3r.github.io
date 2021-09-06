@@ -6756,7 +6756,11 @@
 
 
 
-<h1 id="00-静态分析"><a href="#00-静态分析" class="headerlink" title="00 静态分析"></a>00 静态分析</h1><p>以下参考<a href="https://zhuanlan.zhihu.com/p/4520849" target="_blank" rel="noopener">啥玩应儿</a></p>
+<h1 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h1><ul>
+<li>[00静态分析核心问题](#00 静态分析核心问题)</li>
+<li></li>
+</ul>
+<h1 id="00-静态分析核心问题"><a href="#00-静态分析核心问题" class="headerlink" title="00 静态分析核心问题"></a>00 静态分析核心问题</h1><p>以下参考<a href="https://zhuanlan.zhihu.com/p/4520849" target="_blank" rel="noopener">啥玩应儿</a></p>
 <p>核心问题：Abstraction和Over-approximation</p>
 <ol>
 <li><p><strong>Abstraction</strong></p>
