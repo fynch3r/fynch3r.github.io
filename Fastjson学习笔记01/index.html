@@ -59,7 +59,7 @@
 <meta property="og:image" content="https://0range228.github.io/images/Fastjson%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001/image-20200624163813380.png">
 <meta property="og:image" content="https://0range228.github.io/images/Fastjson%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001/image-20200624164056028.png">
 <meta property="article:published_time" content="2020-06-22T08:18:07.000Z">
-<meta property="article:modified_time" content="2021-09-09T06:00:30.887Z">
+<meta property="article:modified_time" content="2021-09-09T06:07:35.480Z">
 <meta property="article:author" content="0range">
 <meta property="article:tag" content="Fastjson">
 <meta name="twitter:card" content="summary">
@@ -249,7 +249,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-09 14:00:30" itemprop="dateModified" datetime="2021-09-09T14:00:30+08:00">2021-09-09</time>
+                <time title="修改时间：2021-09-09 14:07:35" itemprop="dateModified" datetime="2021-09-09T14:07:35+08:00">2021-09-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -387,7 +387,7 @@
 <ul>
 <li><p>当反序列化为<code>JSON.parseObject(*,*.class)</code>形式即指定class时，调用反序列化得到的类的构造函数、JSON里面的指定属性的setter方法、<strong>特殊</strong>的getter()；</p>
 </li>
-<li><p>当反序列化为<code>JSON.parseObject(*)</code>形式即未指定class时，会调用反序列化得到的类的构造函数、JSON里面的指定属性的setter方法，<strong>所有属性</strong>的getter方法，其中properties类型属性的getter方法调用了两次；</p>
+<li><p>当反序列化为<code>JSON.parseObject(*)</code>形式即未指定class时，会调用反序列化得到的类的构造函数、JSON里面的指定属性的setter方法，<strong>所有属性</strong>的getter方法，无视访问修饰符；</p>
 </li>
 <li><p>原因：</p>
 <p><code>JSON.parseObject(*,*.class)</code>形式得到的都是特定的要求类；</p>
@@ -460,16 +460,16 @@
 <blockquote>
 <p>FastJson中的 parse() 和 parseObject()方法都可以用来将JSON字符串反序列化成Java对象，parseObject() 本质上也是调用 parse() 进行反序列化的。但是 parseObject() 会额外的将Java对象转为 JSONObject对象，即 JSON.toJSON()。所以进行反序列化时的细节区别在于，parse() 会识别并调用目标类的 setter 方法及某些特定条件的 getter 方法，而 parseObject() 由于多执行了 JSON.toJSON(obj)，所以在处理过程中会调用反序列化目标类的所有 setter 和 getter 方法。</p>
 </blockquote>
-<p>看一下源码：</p>
+<p>看一下parseObject(String text)源码：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> JSONObject <span class="title">parseObject</span><span class="params">(String text)</span> </span>&#123;</span><br><span class="line">        Object obj = parse(text);</span><br><span class="line">        <span class="keyword">return</span> obj <span class="keyword">instanceof</span> JSONObject ? (JSONObject)obj : (JSONObject)toJSON(obj);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
 <p>parseObject({..})其实就是parse({..})的一个封装，对于parse的结果进行一次结果判定然后转化为JSONObject类型。</p>
 <p>也就是说，我们用parse()反序列化会直接得到特定的类，而无需像parseObject()一样返回的是JSONObject类型的对象、还可能需要去设置第二个参数指定返回特定的类。</p>
 <p>结论：</p>
 <ul>
-<li>parse(“”) 会识别并调用目标类的特定 setter 方法及某些特定条件的 getter 方法</li>
-<li>parseObject(“”) 会调用反序列化目标类的特定 setter 和 getter 方法（此处有的博客说是所有setter，个人测试返回String的setter是不行的，此处打个问号）</li>
-<li>parseObject(“”,class) 会识别并调用目标类的特定 setter 方法及某些特定条件的 getter 方法</li>
+<li>parse(“”) 会调用JSON需要的 setter 方法及某些特定条件的 getter 方法</li>
+<li>parseObject(“”, xxx.class) 会识别并调用目标类的特定 setter 方法及某些特定条件的 getter 方法</li>
+<li>parseObject(“”) 会调用全部setter/getter</li>
 </ul>
 <p>修改上一步中的parseObject()为parse()：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Object obj = JSON.parse(jsonstring);</span><br><span class="line"><span class="comment">//或以下语句，输出结果一致</span></span><br><span class="line"><span class="comment">//Object obj = JSON.parse(jsonstring, Feature.SupportNonPublicField);</span></span><br><span class="line">System.out.println(obj);</span><br><span class="line">System.out.println(obj.getClass().getName());</span><br></pre></td></tr></table></figure>
@@ -501,7 +501,7 @@
 <p><img src="../images/Fastjson%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001/image-20200624121013685.png" alt="image-20200624121013685"></p>
 <p>接下来是一堆判断条件：</p>
 <p><img src="../images/Fastjson%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001/image-20200624121144284.png" alt="image-20200624121144284"></p>
-<p>在进入build函数后会遍历一遍传入class的所有方法，去寻找满足set开头的特定类型方法；再遍历一遍所有方法去寻找get开头的特定类型的方法。</p>
+<p>在进入build函数后会遍历一遍传入class的所有方法，去寻找满足set开头的特定类型方法；<strong>再遍历一遍所有方法去寻找get开头的特定类型的方法</strong>。</p>
 <p><strong>set开头的方法要求如下：</strong></p>
 <ul>
 <li>方法名长度大于4且以set开头，且第四个字母要是大写</li>

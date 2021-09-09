@@ -75,7 +75,7 @@
 <meta property="og:image" content="https://www.mi1k7ea.com/2019/11/07/Fastjson%E7%B3%BB%E5%88%97%E4%BA%8C%E2%80%94%E2%80%941-2-22-1-2-24%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/34.png">
 <meta property="og:image" content="https://0range228.github.io/images/Fastjson%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002/image-20200704233707108.png">
 <meta property="article:published_time" content="2020-06-24T12:34:05.000Z">
-<meta property="article:modified_time" content="2021-09-06T11:42:25.361Z">
+<meta property="article:modified_time" content="2021-09-09T06:54:48.862Z">
 <meta property="article:author" content="0range">
 <meta property="article:tag" content="Fastjson">
 <meta name="twitter:card" content="summary">
@@ -265,7 +265,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-06 19:42:25" itemprop="dateModified" datetime="2021-09-06T19:42:25+08:00">2021-09-06</time>
+                <time title="修改时间：2021-09-09 14:54:48" itemprop="dateModified" datetime="2021-09-09T14:54:48+08:00">2021-09-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -361,7 +361,17 @@
 <li><strong>_tfactory:{}</strong>——在defineTransletClasses()时会调用getExternalExtensionsMap()，当为null时会报错，所以要对_tfactory设置；</li>
 </ul>
 <p>在这个poc中，最核心的部分是<strong>_bytecodes</strong>，它是要执行的代码，@type是指定的解析类，fastjson会根据指定类去反序列化得到该类的实例，在默认情况下，fastjson只会反序列化公开的属性和域，而com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl中<strong>_bytecodes</strong>，<strong>_name</strong>都是是私有属性，所以在parseObject的时候需要设置Feature.SupportNonPublicField，这样<strong>_bytecodes</strong>字段才会被反序列化。</p>
-<p><strong>_tfactory</strong>这个字段在TemplatesImpl既没有get方法也没有set方法，这没关系，我们设置<strong>_tfactory</strong>为<code>{ }</code>,fastjson会调用其无参构造函数得<strong>_tfactory</strong>对象，这样就解决了某些版本中在defineTransletClasses()用到会引用<strong>_tfactory</strong>属性导致异常退出。接下来我们看下TemplatesImpl.java的几个关键函数：</p>
+<p><strong>_tfactory</strong>这个字段在TemplatesImpl既没有get方法也没有set方法，这没关系，我们设置<strong>_tfactory</strong>为<code>{ }</code>,fastjson会调用其无参构造函数得<strong>_tfactory</strong>对象，这样就解决了某些版本中在defineTransletClasses()用到会引用<strong>_tfactory</strong>属性导致异常退出。接下来我们看下TemplatesImpl类的几个关键函数：</p>
+<ul>
+<li><p>getOutputProperties</p>
+</li>
+<li><p>newTransformer</p>
+</li>
+<li><p>getTransletInstance</p>
+</li>
+<li><p>defineTransletClasses</p>
+</li>
+</ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> Properties <span class="title">getOutputProperties</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> newTransformer().getOutputProperties();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (TransformerConfigurationException e) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> Transformer <span class="title">newTransformer</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> TransformerConfigurationException</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    TransformerImpl transformer;</span><br><span class="line"></span><br><span class="line">    transformer = <span class="keyword">new</span> TransformerImpl(getTransletInstance(), _outputProperties,</span><br><span class="line">        _indentNumber, _tfactory);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (_uriResolver != <span class="keyword">null</span>) &#123;</span><br><span class="line">        transformer.setURIResolver(_uriResolver);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (_tfactory.getFeature(XMLConstants.FEATURE_SECURE_PROCESSING)) &#123;</span><br><span class="line">        transformer.setSecureProcessing(<span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> transformer;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
