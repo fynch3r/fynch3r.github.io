@@ -54,6 +54,7 @@
 <meta property="og:image" content="https://0range228.github.io/images/Fastjson%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002/image-20200624225351667.png">
 <meta property="og:image" content="https://0range228.github.io/images/Fastjson%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002/image-20200624230437144.png">
 <meta property="og:image" content="https://0range228.github.io/images/Fastjson%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002/17.png">
+<meta property="og:image" content="https://0range228.github.io/images/Fastjson%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002/image-20210909150225868.png">
 <meta property="og:image" content="https://0range228.github.io/images/Fastjson%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002/18.png">
 <meta property="og:image" content="https://0range228.github.io/images/Fastjson%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002/19.png">
 <meta property="og:image" content="https://0range228.github.io/images/Fastjson%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002/image-20200624231143787.png">
@@ -75,7 +76,7 @@
 <meta property="og:image" content="https://www.mi1k7ea.com/2019/11/07/Fastjson%E7%B3%BB%E5%88%97%E4%BA%8C%E2%80%94%E2%80%941-2-22-1-2-24%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/34.png">
 <meta property="og:image" content="https://0range228.github.io/images/Fastjson%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002/image-20200704233707108.png">
 <meta property="article:published_time" content="2020-06-24T12:34:05.000Z">
-<meta property="article:modified_time" content="2021-09-09T06:54:48.862Z">
+<meta property="article:modified_time" content="2021-09-09T08:36:01.477Z">
 <meta property="article:author" content="0range">
 <meta property="article:tag" content="Fastjson">
 <meta name="twitter:card" content="summary">
@@ -171,7 +172,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">29</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">30</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -181,7 +182,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">50</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">51</span></a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -265,7 +266,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-09 14:54:48" itemprop="dateModified" datetime="2021-09-09T14:54:48+08:00">2021-09-09</time>
+                <time title="修改时间：2021-09-09 16:36:01" itemprop="dateModified" datetime="2021-09-09T16:36:01+08:00">2021-09-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -305,14 +306,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>25k</span>
+              <span>26k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>42 分钟</span>
+              <span>43 分钟</span>
             </span>
 
         </div>
@@ -418,6 +419,8 @@
 <p>跟进TemplatesImpl.newTransformer()方法，看到调用了getTransletInstance()方法：</p>
 <p><img src="../images/Fastjson%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002/17.png" alt="img"></p>
 <p>继续跟进去查看getTransletInstance()方法，可以看到已经解析到Test类并新建一个Test类实例，注意前面会先调用defineTransletClasses()方法来生成一个Java类（Test类）：</p>
+<p><img src="../images/Fastjson%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002/image-20210909150225868.png" alt="image-20210909150225868"></p>
+<p>这个类会被放在_class属性中</p>
 <p><img src="../images/Fastjson%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002/18.png" alt="img"></p>
 <p>再往下就是新建Test类实例的过程，并调用Test类的构造函数：</p>
 <p><img src="../images/Fastjson%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002/19.png" alt="img"></p>
@@ -426,6 +429,9 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&lt;init&gt;:<span class="number">11</span>, Test</span><br><span class="line">newInstance0:-<span class="number">1</span>, NativeConstructorAccessorImpl (sun.reflect)</span><br><span class="line">newInstance:<span class="number">57</span>, NativeConstructorAccessorImpl (sun.reflect)</span><br><span class="line">newInstance:<span class="number">45</span>, DelegatingConstructorAccessorImpl (sun.reflect)</span><br><span class="line">newInstance:<span class="number">526</span>, Constructor (java.lang.reflect)</span><br><span class="line">newInstance:<span class="number">383</span>, Class (java.lang)</span><br><span class="line">getTransletInstance:<span class="number">408</span>, TemplatesImpl (com.sun.org.apache.xalan.internal.xsltc.trax)</span><br><span class="line">newTransformer:<span class="number">439</span>, TemplatesImpl (com.sun.org.apache.xalan.internal.xsltc.trax)</span><br><span class="line">getOutputProperties:<span class="number">460</span>, TemplatesImpl (com.sun.org.apache.xalan.internal.xsltc.trax)</span><br><span class="line">invoke0:-<span class="number">1</span>, NativeMethodAccessorImpl (sun.reflect)</span><br><span class="line">invoke:<span class="number">57</span>, NativeMethodAccessorImpl (sun.reflect)</span><br><span class="line">invoke:<span class="number">43</span>, DelegatingMethodAccessorImpl (sun.reflect)</span><br><span class="line">invoke:<span class="number">606</span>, Method (java.lang.reflect)</span><br><span class="line">setValue:<span class="number">85</span>, FieldDeserializer (com.alibaba.fastjson.parser.deserializer)</span><br><span class="line">parseField:<span class="number">83</span>, DefaultFieldDeserializer (com.alibaba.fastjson.parser.deserializer)</span><br><span class="line">parseField:<span class="number">773</span>, JavaBeanDeserializer (com.alibaba.fastjson.parser.deserializer)</span><br><span class="line">deserialze:<span class="number">600</span>, JavaBeanDeserializer (com.alibaba.fastjson.parser.deserializer)</span><br><span class="line">deserialze:<span class="number">188</span>, JavaBeanDeserializer (com.alibaba.fastjson.parser.deserializer)</span><br><span class="line">deserialze:<span class="number">184</span>, JavaBeanDeserializer (com.alibaba.fastjson.parser.deserializer)</span><br><span class="line">parseObject:<span class="number">368</span>, DefaultJSONParser (com.alibaba.fastjson.parser)</span><br><span class="line">parse:<span class="number">1327</span>, DefaultJSONParser (com.alibaba.fastjson.parser)</span><br><span class="line">deserialze:<span class="number">45</span>, JavaObjectDeserializer (com.alibaba.fastjson.parser.deserializer)</span><br><span class="line">parseObject:<span class="number">639</span>, DefaultJSONParser (com.alibaba.fastjson.parser)</span><br><span class="line">parseObject:<span class="number">339</span>, JSON (com.alibaba.fastjson)</span><br><span class="line">parseObject:<span class="number">302</span>, JSON (com.alibaba.fastjson)</span><br><span class="line">main:<span class="number">35</span>, PoC</span><br></pre></td></tr></table></figure>
 
 <p>最后的调用过滤再具体说下：在getTransletInstance()函数中调用了defineTransletClasses()函数，在defineTransletClasses()函数中会根据_bytecodes来生成一个Java类（这里为恶意类Test），其构造方法中含有命令执行代码，生成的Java类随后会被newInstance()方法调用生成一个实例对象，从而该类的构造函数被自动调用，进而造成任意代码执行。</p>
+<p>调用链：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">getOutputProperties</span><br><span class="line">  newTransformer</span><br><span class="line">  	getTransletInstance</span><br><span class="line">  		defineTransletClasses</span><br><span class="line">  			loader.defineClass(_bytecodes[i]);</span><br><span class="line">  		Class.newInstance</span><br><span class="line">  			Evil.init()</span><br></pre></td></tr></table></figure>
+
 <h3 id="为什么恶意类需要继承AbstractTranslet类"><a href="#为什么恶意类需要继承AbstractTranslet类" class="headerlink" title="为什么恶意类需要继承AbstractTranslet类?"></a>为什么恶意类需要继承AbstractTranslet类?</h3><p>在前面的调试分析中，getTransletInstance()函数会先调用defineTransletClasses()方法来生成一个Java类，我们跟进这个defineTransletClasses()方法查看下：</p>
 <p><img src="../images/Fastjson%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002/image-20200624231143787.png" alt="image-20200624231143787"></p>
 <p>可以看到有个逻辑会判断恶意类的父类类名是否是<code>ABSTRACT_TRANSLET</code>，是的话<code>_transletIndex</code>变量的值被设置为0，到后面的if判断语句中就不会被识别为&lt;0而抛出异常终止程序。</p>
@@ -488,6 +494,7 @@
 <p>由于PoC设置了dataSourceName键值和autoCommit键值，因此在JdbcRowSetImpl中的setDataSourceName()和setAutoCommit()函数都会被调用，因为它们均满足前面说到的Fastjson在反序列化时会自动调用的setter方法的特征。</p>
 <p>先是调试到了setDataSourceName()函数，将dataSourceName值设置为目标RMI服务的地址：</p>
 <p><img src="../images/Fastjson%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002/29.png" alt="img"></p>
+<p>dataSource是RowSet中的属性，RowSet是由JdbcRowSetImpl实现的接口。是因为payload里面设置了dataSourceName属性，fastjson自动去找setdataSourceName方法，才有后续的一串操作。</p>
 <p>接着调用到setAutoCommit()函数，设置autoCommit值，其中调用了connect()函数：</p>
 <p><img src="../images/Fastjson%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002/30.png" alt="img"></p>
 <p>跟进connect()函数，看到了熟悉的JNDI注入的代码即<code>InitialContext.lookup()</code>，并且其参数是调用<code>this.getDataSourceName()</code>获取的、即在前面setDataSourceName()函数中设置的值，因此lookup参数外部可控，导致存在JNDI注入漏洞：</p>
@@ -630,7 +637,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-count">51</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -643,7 +650,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-count">30</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -729,12 +736,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">735k</span>
+    <span title="站点总字数">737k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">20:24</span>
+    <span title="站点阅读时长">20:28</span>
   -->
 
 </div>
