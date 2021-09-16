@@ -60,7 +60,7 @@
 <meta property="og:image" content="https://0range228.github.io/images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20210909230030693.png">
 <meta property="og:image" content="https://0range228.github.io/images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20210909230120134.png">
 <meta property="article:published_time" content="2021-09-09T11:28:28.000Z">
-<meta property="article:modified_time" content="2021-09-10T11:50:47.237Z">
+<meta property="article:modified_time" content="2021-09-16T04:13:35.603Z">
 <meta property="article:author" content="0range">
 <meta property="article:tag" content="shiro">
 <meta name="twitter:card" content="summary">
@@ -250,7 +250,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-10 19:50:47" itemprop="dateModified" datetime="2021-09-10T19:50:47+08:00">2021-09-10</time>
+                <time title="修改时间：2021-09-16 12:13:35" itemprop="dateModified" datetime="2021-09-16T12:13:35+08:00">2021-09-16</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -290,14 +290,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.9k</span>
+              <span>2.5k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
+              <span>4 分钟</span>
             </span>
 
         </div>
@@ -316,7 +316,9 @@
 <a id="more"></a>
 
 <h1 id="Apache-Shiro-简介"><a href="#Apache-Shiro-简介" class="headerlink" title="Apache Shiro 简介"></a>Apache Shiro 简介</h1><p>Apache Shiro是一个强大且易用的Java安全框架，执行身份验证、授权、密码和会话管理。Shiro的优势在于轻量级，使用简单、上手更快、学习成本低。</p>
-<h1 id="Shiro-550"><a href="#Shiro-550" class="headerlink" title="Shiro-550"></a>Shiro-550</h1><h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/apache/shiro.git</span><br><span class="line"><span class="built_in">cd</span> shiro</span><br><span class="line">git checkout shiro-root-1.2.4</span><br></pre></td></tr></table></figure>
+<h1 id="Shiro-550"><a href="#Shiro-550" class="headerlink" title="Shiro-550"></a>Shiro-550</h1><p>特征：返回包中包含rememberMe=deleteMe字段。</p>
+<p>影响版本：shiro&lt;1.2.24</p>
+<h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/apache/shiro.git</span><br><span class="line"><span class="built_in">cd</span> shiro</span><br><span class="line">git checkout shiro-root-1.2.4</span><br></pre></td></tr></table></figure>
 
 <p><img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20210909194021389.png" alt="image-20210909194021389"></p>
 <p>修改一下pom.xml:</p>
@@ -392,7 +394,55 @@
 
 
 
-<h1 id="Shiro-721"><a href="#Shiro-721" class="headerlink" title="Shiro-721"></a>Shiro-721</h1>
+<h1 id="Shiro-721"><a href="#Shiro-721" class="headerlink" title="Shiro-721"></a>Shiro-721</h1><p>用户可通过Padding Oracle 加密生成的攻击代码来构造恶意的rememberMe字段</p>
+<p>影响版本：Apache Shiro &lt; 1.4.2版本</p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><h3 id="AES加密模式"><a href="#AES加密模式" class="headerlink" title="AES加密模式"></a>AES加密模式</h3><ul>
+<li><p>AES是一种对称加密的分组加密算法。</p>
+</li>
+<li><p>每个分组长度固定为128bit</p>
+</li>
+<li><p>密钥长度可变，128bit、192bit、256bit</p>
+</li>
+<li><p>AES应密钥长度可以称为AES-128，AES-192，AES-256</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>AES加密标准</th>
+<th>密钥长度</th>
+<th>分组长度</th>
+<th>加密轮数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AES-128</td>
+<td>128 bits ( 4 Bytes × 32 bits/Bytes )</td>
+<td>128 bits</td>
+<td>10</td>
+</tr>
+<tr>
+<td>AES-192</td>
+<td>192 bits ( 6 Bytes × 32 bits/Bytes )</td>
+<td>128 bits</td>
+<td>12</td>
+</tr>
+<tr>
+<td>AES-256</td>
+<td>256 bits ( 8 Bytes × 32 bits/Bytes )</td>
+<td>128 bits</td>
+<td>14</td>
+</tr>
+</tbody></table>
+<h3 id="分组模式"><a href="#分组模式" class="headerlink" title="分组模式"></a>分组模式</h3><p>分组加密有 5 种可选方式：</p>
+<ul>
+<li><strong><code>ECS</code> ( Electronic Codebook Book , 电话本模式 )</strong></li>
+<li><strong><code>CBC</code> ( Cipher Block Chaining , 密码分组链接模式 )</strong></li>
+<li><strong><code>CTR</code> ( Counter , 计算器模式 )</strong></li>
+<li><strong><code>CFB</code> ( Cipher FeedBack , 密码反馈模式 )</strong></li>
+<li><strong><code>OFB</code> ( Output FeedBack , 输出反馈模式 )</strong></li>
+</ul>
+
     </div>
 
     
@@ -476,7 +526,7 @@
       -->
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Apache-Shiro-简介"><span class="nav-number">2.</span> <span class="nav-text">Apache Shiro 简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Shiro-550"><span class="nav-number">3.</span> <span class="nav-text">Shiro-550</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#环境搭建"><span class="nav-number">3.1.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调试"><span class="nav-number">3.2.</span> <span class="nav-text">调试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#加密"><span class="nav-number">3.2.1.</span> <span class="nav-text">加密</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解密"><span class="nav-number">3.2.2.</span> <span class="nav-text">解密</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#调试小记"><span class="nav-number">3.2.3.</span> <span class="nav-text">调试小记</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用"><span class="nav-number">3.3.</span> <span class="nav-text">利用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Shiro-721"><span class="nav-number">4.</span> <span class="nav-text">Shiro-721</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Apache-Shiro-简介"><span class="nav-number">2.</span> <span class="nav-text">Apache Shiro 简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Shiro-550"><span class="nav-number">3.</span> <span class="nav-text">Shiro-550</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#环境搭建"><span class="nav-number">3.1.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调试"><span class="nav-number">3.2.</span> <span class="nav-text">调试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#加密"><span class="nav-number">3.2.1.</span> <span class="nav-text">加密</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解密"><span class="nav-number">3.2.2.</span> <span class="nav-text">解密</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#调试小记"><span class="nav-number">3.2.3.</span> <span class="nav-text">调试小记</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用"><span class="nav-number">3.3.</span> <span class="nav-text">利用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Shiro-721"><span class="nav-number">4.</span> <span class="nav-text">Shiro-721</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">4.1.</span> <span class="nav-text">背景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AES加密模式"><span class="nav-number">4.1.1.</span> <span class="nav-text">AES加密模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分组模式"><span class="nav-number">4.1.2.</span> <span class="nav-text">分组模式</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -596,7 +646,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">20:28</span>
+    <span title="站点阅读时长">20:29</span>
   -->
 
 </div>
