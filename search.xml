@@ -14116,7 +14116,28 @@
 <p><code>-n</code>：显示行号</p>
 <p><code>-v</code>：反向搜索，排除指定字串</p>
 <p>​        <code>grep -v ^# /etc/inittab</code>：不看行首带#注释的行</p>
-<h2 id="ps"><a href="#ps" class="headerlink" title="ps"></a>ps</h2><p>​    </p>
+<h2 id="ps"><a href="#ps" class="headerlink" title="ps"></a>ps</h2><p>查看进程</p>
+<img src="../images/Linux%E7%AC%94%E8%AE%B0/image-20210919134459275.png" alt="image-20210919134459275" style="zoom:50%;">
+
+<img src="../images/Linux%E7%AC%94%E8%AE%B0/image-20210919134517341.png" alt="image-20210919134517341" style="zoom:50%;">
+
+<p>常用参数：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ps -elf <span class="comment"># 完整查看所有进程</span></span><br></pre></td></tr></table></figure>
+
+<p>列含义：</p>
+<p><code>UID</code>：启动这些进程的用户id</p>
+<p><code>PID</code>：进程id</p>
+<p><code>PPID</code>：父进程id，如果该进程是由另一个进程启动的</p>
+<p><code>F</code>：系统分配给进程的系统标记</p>
+<p>S：进程状态 [O代表正在运行；S代表在休眠；R代表可运行，正等待运行；Z代表僵 化，进程已结束但父进程已不存在；T代表停止]</p>
+<p>C：进程生命周期中的CPU的利用率</p>
+<p>PRI：进程的优先级 [数字越大优先级越低]</p>
+<p>ADDR：进程的内存地址</p>
+<p>SZ：假如进程被换出，所需要的交换空间的大小</p>
+<p>STIME：进程的start time</p>
+<p>TTY：进程由哪个终端设备启动</p>
+<p>TIME：进程的累积运行时间</p>
+<p>CMD：启动的程序名称</p>
 <h2 id="help、who、w"><a href="#help、who、w" class="headerlink" title="help、who、w"></a>help、who、w</h2><p><code>help</code>：查看shell内置命令的帮助手册</p>
 <p><code>who</code>：查看登陆用户信息</p>
 <p><code>w</code>：查看详细登录信息</p>
