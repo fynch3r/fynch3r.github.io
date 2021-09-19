@@ -14124,20 +14124,41 @@
 <p>常用参数：</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ps -elf <span class="comment"># 完整查看所有进程</span></span><br></pre></td></tr></table></figure>
 
+<p><img src="../images/Linux%E7%AC%94%E8%AE%B0/image-20210919135611663.png" alt="image-20210919135611663"></p>
 <p>列含义：</p>
-<p><code>UID</code>：启动这些进程的用户id</p>
-<p><code>PID</code>：进程id</p>
+<p><code>UID</code>：启动这些进程的用户id。</p>
+<p><code>PID</code>：进程id。</p>
 <p><code>PPID</code>：父进程id，如果该进程是由另一个进程启动的</p>
-<p><code>F</code>：系统分配给进程的系统标记</p>
-<p>S：进程状态 [O代表正在运行；S代表在休眠；R代表可运行，正等待运行；Z代表僵 化，进程已结束但父进程已不存在；T代表停止]</p>
-<p>C：进程生命周期中的CPU的利用率</p>
-<p>PRI：进程的优先级 [数字越大优先级越低]</p>
-<p>ADDR：进程的内存地址</p>
-<p>SZ：假如进程被换出，所需要的交换空间的大小</p>
-<p>STIME：进程的start time</p>
-<p>TTY：进程由哪个终端设备启动</p>
-<p>TIME：进程的累积运行时间</p>
-<p>CMD：启动的程序名称</p>
+<p><code>F</code>：系统分配给进程的系统标记。</p>
+<p><code>S</code>：进程状态 [O代表正在运行；S代表在休眠；R代表可运行，正等待运行；Z代表僵 化，进程已结束但父进程已不存在；T代表停止]</p>
+<p><code>C</code>：进程生命周期中的CPU的利用率。</p>
+<p><code>PRI</code>：进程的优先级 [数字越大优先级越低]</p>
+<p><code>ADDR</code>：进程的内存地址。</p>
+<p><code>SZ</code>：假如进程被换出，所需要的交换空间的大小。</p>
+<p><code>STIME</code>：进程的start time。</p>
+<p><code>TTY</code>：进程由哪个终端设备启动。</p>
+<p><code>TIME</code>：进程的累积运行时间。</p>
+<p><code>CMD</code>：启动的程序名称。</p>
+<h2 id="top"><a href="#top" class="headerlink" title="top"></a>top</h2><p>实时显示进程信息</p>
+<p><img src="../images/Linux%E7%AC%94%E8%AE%B0/image-20210919140139396.png" alt="image-20210919140139396"></p>
+<p>列含义：</p>
+<p><code>PID</code>：进程的ID。 </p>
+<p><code>USER</code>：进程属主的名字。 </p>
+<p><code>PR</code>：进程的优先级。 </p>
+<p><code>NI</code>：进程的谦让度值。 </p>
+<p><code>VIRT</code>：进程占用的虚拟内存总量。 </p>
+<p><code>RES</code>：进程占用的物理内存总量。 </p>
+<p><code>SHR</code>：进程和其他进程共享的内存总量。 </p>
+<p><code>S</code>：进程的状态（D代表可中断的休眠状态，R代表在运行状态，S代表休眠状态，T代表 跟踪状态或停止状态，Z代表僵化状态</p>
+<p><code>%CPU</code>：进程使用的CPU时间比例。 </p>
+<p><code>%MEM</code>：进程使用的内存占可用内存的比例。</p>
+<p><code>TIME+</code>：自进程启动到目前为止的CPU时间总量。</p>
+<p><code>COMMAND</code>：进程所对应的命令行名称，也就是启动的程序名。</p>
+<p>默认情况下，top命令在启动时会按照%CPU值对进程排序。可以在top运行时使用多种交互命令重新排序。</p>
+<p>键入f允许你选择对输出进行排序的字段，键入d允许你修改轮询间隔。键入q可以退出top。</p>
+<p>用户在top 命令的输出上有很大的控制权。</p>
+<h2 id="kill"><a href="#kill" class="headerlink" title="kill"></a>kill</h2><p>kill pid</p>
+<p>Killall http* 关闭http的所有服务</p>
 <h2 id="help、who、w"><a href="#help、who、w" class="headerlink" title="help、who、w"></a>help、who、w</h2><p><code>help</code>：查看shell内置命令的帮助手册</p>
 <p><code>who</code>：查看登陆用户信息</p>
 <p><code>w</code>：查看详细登录信息</p>
@@ -14153,7 +14174,7 @@
 <p>压缩目录，先打包，再压缩，格式<code>.tar.gz</code></p>
 <p>选项：</p>
 <p><code>-c</code>：打包</p>
-<p><code>x</code>：解包</p>
+<p><code>-x</code>：解包</p>
 <p><code>-v</code>：显示详细信息</p>
 <p><code>-f</code>：指定文件名</p>
 <p><code>-z</code>：打包同时压缩</p>
