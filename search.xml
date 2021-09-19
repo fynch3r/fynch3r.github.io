@@ -13965,7 +13965,29 @@
 </ul>
 </li>
 </ul>
-<h1 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h1><h2 id="ls"><a href="#ls" class="headerlink" title="ls"></a>ls</h2><blockquote>
+<h1 id="外部命令与内建命令"><a href="#外部命令与内建命令" class="headerlink" title="外部命令与内建命令"></a>外部命令与内建命令</h1><h2 id="外部命令"><a href="#外部命令" class="headerlink" title="外部命令"></a>外部命令</h2><p>外部命令，也被称为文件系统命令，指的是存在于bash shell之外的程序。它们并不是shell 程序的一部分。外部命令程序通常位于/bin、/usr/bin、/sbin或/usr/sbin中。</p>
+<p>ps就是一个外部命令。可以使用which和type命令找到它。</p>
+<figure class="highlight zsh"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">type</span> -a ps</span><br><span class="line">ps is /bin/ps</span><br></pre></td></tr></table></figure>
+
+<p>当外部命令执行时，会创建出一个子进程。这种操作被称为<strong>衍生</strong>（forking）。外部命令ps很方便显示出它的父进程以及自己所对应的衍生子进程。</p>
+<h2 id="内建命令"><a href="#内建命令" class="headerlink" title="内建命令"></a>内建命令</h2><p>作为shell工具的组成部分存在。不需要借助外部程序文件来运行。</p>
+<p>cd和exit命令都内建于bash shell。可以利用type命令来了解某个命令是否是内建的。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">type</span> <span class="built_in">cd</span></span><br><span class="line"><span class="built_in">cd</span> is a shell <span class="built_in">builtin</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="缝合怪命令"><a href="#缝合怪命令" class="headerlink" title="缝合怪命令"></a>缝合怪命令</h2><p>有些命令由多种实现，例如echo和pwd既有内建命令也有外部命令。</p>
+<p>命令type -a显示出了每个命令的两种实现。which命令只显示出了外部命令文件。</p>
+<p>要查看命令的不同实现，使用<code>type -a</code>。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">type</span> -a <span class="built_in">echo</span> </span><br><span class="line"><span class="built_in">echo</span> is a shell <span class="built_in">builtin</span> </span><br><span class="line"><span class="built_in">echo</span> is /bin/<span class="built_in">echo</span> </span><br><span class="line"></span><br><span class="line">$ <span class="built_in">which</span> <span class="built_in">echo</span> </span><br><span class="line">/bin/<span class="built_in">echo</span> </span><br><span class="line"></span><br><span class="line">$ <span class="built_in">type</span> -a <span class="built_in">pwd</span></span><br><span class="line"><span class="built_in">pwd</span> is a shell <span class="built_in">builtin</span> </span><br><span class="line"><span class="built_in">pwd</span> is /bin/<span class="built_in">pwd</span> </span><br><span class="line"></span><br><span class="line">$ <span class="built_in">which</span> <span class="built_in">pwd</span> </span><br><span class="line">/bin/<span class="built_in">pwd</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h1 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h1><p>命令末尾加&amp; 进入后台模式</p>
+<p>查看后台作业 <code>jobs -l</code></p>
+<h2 id="ls"><a href="#ls" class="headerlink" title="ls"></a>ls</h2><blockquote>
 <p>ls [选项] [参数] :   ls -l /etc</p>
 </blockquote>
 <p>目录内容查看</p>
@@ -14180,6 +14202,11 @@
 <p><code>-z</code>：打包同时压缩</p>
 <p><code>zcvf</code>：打包</p>
 <p><code>zxvf</code>：解包</p>
+<p>常用命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tar -zcvf test.tar <span class="built_in">test</span>/ test2/ <span class="comment"># 将test/和test2一起打包为test.tar</span></span><br><span class="line">tar -tf test.tar <span class="comment"># 列出压缩包中的文件</span></span><br><span class="line">tar -xvf test.tar <span class="comment"># 解压</span></span><br></pre></td></tr></table></figure>
+
+
+
 <h2 id="zip"><a href="#zip" class="headerlink" title="zip"></a>zip</h2><blockquote>
 <p>zip [选项] [压缩后文件名] [压缩目录]</p>
 </blockquote>
@@ -14187,6 +14214,10 @@
 <h2 id="shutdown"><a href="#shutdown" class="headerlink" title="shutdown"></a>shutdown</h2><p><code>shutdown -h now/date</code>：关机</p>
 <p><code>shutdown -r</code>：重启</p>
 <p><code>shutdown -c</code>：取消上一条命令</p>
+<h2 id="history"><a href="#history" class="headerlink" title="history"></a>history</h2><p>显示bash历史。通常历史记录中会保存最近的1000条命令。</p>
+<p>命令历史记录被保存在隐藏文件.bash_history中，它位于用户的主目录中。</p>
+<p>这里要注意的是， bash命令的历史记录是先存放在内存中，当shell退出时才被写入到历史文件中。</p>
+<h2 id="！！"><a href="#！！" class="headerlink" title="！！"></a>！！</h2><p>自动唤出刚刚命令</p>
 <h2 id="网络命令"><a href="#网络命令" class="headerlink" title="网络命令"></a>网络命令</h2><p><code>tty</code>：本地终端</p>
 <p><code>pts</code>：远程终端</p>
 <p>###write</p>
@@ -14270,7 +14301,7 @@
 <p>设置命令别名</p>
 <p><code>alias</code>：查询命令别名</p>
 <p><code>unalias</code>：删除别名</p>
-<h2 id="history"><a href="#history" class="headerlink" title="history"></a>history</h2><blockquote>
+<h2 id="history-1"><a href="#history-1" class="headerlink" title="history"></a>history</h2><blockquote>
 <p>history [选项] [历史命令保存文件] </p>
 </blockquote>
 <p>查看历史命令</p>
