@@ -13944,27 +13944,6 @@
 <li>GNU风格：–</li>
 <li>BSD风格：no dash</li>
 </ul>
-<h1 id="访问修饰符"><a href="#访问修饰符" class="headerlink" title="访问修饰符"></a>访问修饰符</h1><p><code>-rw-r--r--</code>: -|user|group|others</p>
-<ul>
-<li>第一个<code>-</code>含义：<ul>
-<li>-：文件</li>
-<li>d：目录</li>
-<li>l：软链接</li>
-</ul>
-</li>
-<li><code>rw-</code>含义：<ul>
-<li>user有read、write权限</li>
-</ul>
-</li>
-<li><code>r--</code>含义：<ul>
-<li>group只有read权限</li>
-</ul>
-</li>
-<li><code>r--</code>含义：<ul>
-<li>其他人只有read权限</li>
-</ul>
-</li>
-</ul>
 <h1 id="外部命令与内建命令"><a href="#外部命令与内建命令" class="headerlink" title="外部命令与内建命令"></a>外部命令与内建命令</h1><h2 id="外部命令"><a href="#外部命令" class="headerlink" title="外部命令"></a>外部命令</h2><p>外部命令，也被称为文件系统命令，指的是存在于bash shell之外的程序。它们并不是shell 程序的一部分。外部命令程序通常位于/bin、/usr/bin、/sbin或/usr/sbin中。</p>
 <p>ps就是一个外部命令。可以使用which和type命令找到它。</p>
 <figure class="highlight zsh"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">type</span> -a ps</span><br><span class="line">ps is /bin/ps</span><br></pre></td></tr></table></figure>
@@ -14117,6 +14096,11 @@
 <p>权限用数字显示</p>
 <p><code>r=4,w=2,x=1</code></p>
 <p><code>rwxrw-r--</code>：764</p>
+<h2 id="chown，chgrp"><a href="#chown，chgrp" class="headerlink" title="chown，chgrp"></a>chown，chgrp</h2><p>更改文件所属者，更改文件所属组</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">chown dan newfile</span><br><span class="line">chgrp shared newfile</span><br></pre></td></tr></table></figure>
+
+
+
 <h2 id="find"><a href="#find" class="headerlink" title="find"></a>find</h2><blockquote>
 <p>find [选项] [搜索范围] [匹配条件]</p>
 </blockquote>
@@ -14127,7 +14111,7 @@
 <p><code>init???</code>：以init开头，后面有三个字符</p>
 <p><code>-type</code>：按类型查找</p>
 <p><code>-type -f/d/l</code>：按照文件/目录/软链接类型查找</p>
-<h2 id="locate、which、whereis"><a href="#locate、which、whereis" class="headerlink" title="locate、which、whereis"></a>locate、which、whereis</h2><p><code>which</code>：找到命令所在的目录</p>
+<h2 id="which、whereis"><a href="#which、whereis" class="headerlink" title="which、whereis"></a>which、whereis</h2><p><code>which</code>：找到命令所在的目录</p>
 <p><code>whereis</code>：会附带帮助文档的位置</p>
 <h2 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h2><blockquote>
 <p>grep [选项] [关键词] [文件名或目录]</p>
@@ -14249,6 +14233,9 @@
 <p><code>-r</code>：路由</p>
 <p><code>-n</code>：显示ip地址和端口号</p>
 <p><code>-a</code>：所有，all</p>
+<h1 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h1><p>全局环境变量 ： <code>env</code>命令查看</p>
+<p>删除环境变量：<code>unset</code></p>
+<h2 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h2><p>放在<code>$HOME/.bashrc</code>中</p>
 <h1 id="软件包类别"><a href="#软件包类别" class="headerlink" title="软件包类别"></a>软件包类别</h1><ol>
 <li>源码包<ol>
 <li>C/C++编写，需手动安装</li>
@@ -14261,8 +14248,7 @@
 </ol>
 </li>
 </ol>
-<p>#SHELL命令</p>
-<p>shell两大家族：</p>
+<h1 id="shell命令"><a href="#shell命令" class="headerlink" title="shell命令"></a>shell命令</h1><p>shell两大家族：</p>
 <table>
 <thead>
 <tr>
@@ -14309,7 +14295,7 @@
 <p><code>-c</code>：清空历史命令</p>
 <p><code>-w</code>：把缓存中的历史命令写入文件</p>
 <p><code>～/.bash_history</code>：历史命令</p>
-<p>##tricky</p>
+<p>##tricky skills</p>
 <p><code>Ctrl+L</code>    清屏</p>
 <p><code>Ctrl+U</code>    清空光标前命令、剪切</p>
 <p><code>Ctrl+K</code>    清空光标后命令</p>
@@ -14366,7 +14352,66 @@
 
 <p><code>$()</code>：用来执行系统命令</p>
 <p><code>abc = $(date)</code>：将date执行，将结果赋值给abc变量的值</p>
-<h1 id="Vim"><a href="#Vim" class="headerlink" title="Vim"></a>Vim</h1><p>永远滴神</p>
+<h1 id="shell启动"><a href="#shell启动" class="headerlink" title="shell启动"></a>shell启动</h1><h2 id="登录shell"><a href="#登录shell" class="headerlink" title="登录shell"></a>登录shell</h2><p>当你登录Linux系统时，bash shell会作为登录shell启动。登录shell会从5个不同的启动文件里 读取命令：</p>
+<p>/etc/profile </p>
+<p>$HOME/.bash_profile </p>
+<p>$HOME/.bashrc </p>
+<p>$HOME/.bash_login </p>
+<p>$HOME/.profile</p>
+<p>默认的bash shell的主启动文件，系统上的每个用户登录时都会执行 这个启动文件。</p>
+<p>另外4个启动文件是针对用户的，可根据个人需求定制。我们来仔细看一下各个文件。</p>
+<h2 id="交互式shell进程"><a href="#交互式shell进程" class="headerlink" title="交互式shell进程"></a>交互式shell进程</h2><p>当你是在命令行提示符下敲入bash时启动，那 么你启动的shell叫作交互式shell。</p>
+<p>交互式shell不会像登录shell一样运行，但它依然提供了命令行提示符来输入命令。</p>
+<p>如果bash是作为交互式shell启动的，它就不会访问/etc/profile文件，只会检查用户HOME目录中的.bashrc文件。</p>
+<h2 id="非交互式shell进程"><a href="#非交互式shell进程" class="headerlink" title="非交互式shell进程"></a>非交互式shell进程</h2><p>系统执行shell脚本时用的就是这种shell。不同的地方在于它没有命令行提示符。</p>
+<p>但是当你在系统上运行脚本时，也许希望能够运行一些特定启动的命令。</p>
+<p>为了处理这种情况，bash shell提供了BASH_ENV环境变量，可以设置</p>
+<h2 id="shell的继承"><a href="#shell的继承" class="headerlink" title="shell的继承"></a>shell的继承</h2><p>如果父shell是登录shell，在/etc/profile、/etc/profile.d/*.sh和$HOME/.bashrc文件中 设置并导出了变量，用于执行脚本的子shell就能够继承这些变量。</p>
+<h1 id="Linux文件权限"><a href="#Linux文件权限" class="headerlink" title="Linux文件权限"></a>Linux文件权限</h1><p>Linux安全系统的核心是用户账户。每个能进入Linux系统的用户都会被分配唯一的用户账户。</p>
+<p>用户权限是通过创建用户时分配的用户ID（User ID，通常缩写为UID）来跟踪的。UID是数值，每个用户都有唯一的UID，但在登录系统时用的不是UID，而是登录名。登录名是用户用来登录系统的最长八字符的字符串（字符可以是数字或字母），同时会关联一个对应的密码。</p>
+<h2 id="etc-passwd"><a href="#etc-passwd" class="headerlink" title="/etc/passwd"></a>/etc/passwd</h2><p>将用户的登录名匹配到对应的UID值。</p>
+<p>root用户账户是Linux系统的管理员，固定分配给它的UID是0</p>
+<img src="../images/Linux%E7%AC%94%E8%AE%B0/image-20210919170651776.png" alt="image-20210919170651776" style="zoom:50%;">
+
+<p>伴随很多系统账户，他们并不是真实存在的。</p>
+<p>用户的密码保存在一个特定的文件<code>/etc/passwd</code></p>
+<h2 id="etc-shadow-文件"><a href="#etc-shadow-文件" class="headerlink" title="/etc/shadow 文件"></a>/etc/shadow 文件</h2><p>/etc/shadow文件为系统上的每个用户账户都保存了一条记录。只有root用户才能访问/etc/shadow 文件。</p>
+<h2 id="用户组"><a href="#用户组" class="headerlink" title="用户组"></a>用户组</h2><p>组权限允许多个用户对系统中的对象（比如文件、目录或设备等）共享一组共用的权限。</p>
+<p>每个组都有唯一的GID——跟UID类似，在系统上这是个唯一的数值。除了GID，每个组还 有唯一的组名。</p>
+<h2 id="etc-group"><a href="#etc-group" class="headerlink" title="/etc/group"></a>/etc/group</h2><p>包含系统上用到的每个组的信息。系统账户用的组通常会分配低于500的GID值，而用户组的GID则会从500开始分配。</p>
+<h2 id="文件修饰符"><a href="#文件修饰符" class="headerlink" title="文件修饰符"></a>文件修饰符</h2><p><code>-rw-r--r--</code>: -|user|group|others</p>
+<ul>
+<li><p>第一个<code>-</code>含义：</p>
+<ul>
+<li>-：文件</li>
+<li>d：目录</li>
+<li>l：软链接</li>
+<li>n:  网络设备</li>
+</ul>
+</li>
+<li><p>r,w,x : 可读、可写、可执行</p>
+</li>
+<li><p><code>rw-</code>含义：</p>
+<ul>
+<li>对象所属的user有read、write权限</li>
+</ul>
+</li>
+<li><p><code>r--</code>含义：</p>
+<ul>
+<li>对象所属的group只有read权限</li>
+</ul>
+</li>
+<li><p><code>r--</code>含义：</p>
+<ul>
+<li>其他用户只有read权限</li>
+</ul>
+<img src="../images/Linux%E7%AC%94%E8%AE%B0/image-20210919171839898.png" alt="image-20210919171839898" style="zoom:50%;">
+
+
+
+</li>
+</ul>
+<h1 id="shell脚本编程"><a href="#shell脚本编程" class="headerlink" title="shell脚本编程"></a>shell脚本编程</h1><h1 id="Vim"><a href="#Vim" class="headerlink" title="Vim"></a>Vim</h1><p>永远滴神</p>
 <p>没有菜单，只有命令</p>
 <h2 id="方向键"><a href="#方向键" class="headerlink" title="方向键"></a>方向键</h2><table>
 <thead>
@@ -14386,8 +14431,6 @@
 </tbody></table>
 <p><code>10j</code>：向下跳十行</p>
 <p><code>10k</code>：向上跳10行</p>
-<h2 id="行号"><a href="#行号" class="headerlink" title="行号"></a>行号</h2><p><code>:set nu</code>：设置行号</p>
-<p><code>:set nonu</code>：取消行号</p>
 <h2 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h2><p><code>a</code>：是从目前光标所在位置的下一个位置插入</p>
 <p><code>A</code>：在光标所在行尾插入</p>
 <p><code>i</code>：在光标所在的当前位置插入</p>
