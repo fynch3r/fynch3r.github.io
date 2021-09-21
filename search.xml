@@ -14279,7 +14279,8 @@
 </tbody></table>
 <p>查看支持shell种类：<code>vim /etc/shells</code></p>
 <h2 id="echo"><a href="#echo" class="headerlink" title="echo"></a>echo</h2><p>输出命令</p>
-<p><code>echo -e</code>：支持<code>\</code>转义         </p>
+<p><code>echo -e</code>：支持<code>\</code>转义     </p>
+<p><code>echo -n</code>：合并为一行输出    </p>
 <p> <code>#! /bin/bash</code></p>
 <h2 id="alias"><a href="#alias" class="headerlink" title="alias"></a>alias</h2><blockquote>
 <p>alias 别名 = ‘原命令’</p>
@@ -14295,6 +14296,16 @@
 <p><code>-c</code>：清空历史命令</p>
 <p><code>-w</code>：把缓存中的历史命令写入文件</p>
 <p><code>～/.bash_history</code>：历史命令</p>
+<h2 id="wc"><a href="#wc" class="headerlink" title="wc"></a>wc</h2><p>对数据中的文本进行计数</p>
+<p>默认会记录：</p>
+<ol>
+<li><p>文本的行数</p>
+</li>
+<li><p>文本的词数</p>
+</li>
+<li><p>文本的字节数</p>
+</li>
+</ol>
 <p>##tricky skills</p>
 <p><code>Ctrl+L</code>    清屏</p>
 <p><code>Ctrl+U</code>    清空光标前命令、剪切</p>
@@ -14411,7 +14422,13 @@
 
 </li>
 </ul>
-<h1 id="shell脚本编程"><a href="#shell脚本编程" class="headerlink" title="shell脚本编程"></a>shell脚本编程</h1><h1 id="Vim"><a href="#Vim" class="headerlink" title="Vim"></a>Vim</h1><p>永远滴神</p>
+<h1 id="shell脚本编程"><a href="#shell脚本编程" class="headerlink" title="shell脚本编程"></a>shell脚本编程</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">days=10 </span><br><span class="line">guest=<span class="string">"Katie"</span> </span><br><span class="line"><span class="built_in">echo</span> <span class="string">"<span class="variable">$guest</span> checked in <span class="variable">$days</span> days ago"</span></span><br><span class="line"></span><br><span class="line">testing=$(date) </span><br><span class="line">testing=`date`</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"The date and time are: "</span> <span class="variable">$testing</span></span><br><span class="line"></span><br><span class="line">date &gt; result.txt</span><br><span class="line">date &gt;&gt; result.txt <span class="comment">#追加</span></span><br><span class="line"></span><br><span class="line">today=$(date +%y%m%d) </span><br><span class="line">ls -al /usr/bin  &gt; <span class="built_in">log</span>.<span class="variable">$today</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">command</span> </span><br><span class="line"><span class="keyword">then</span> </span><br><span class="line">	commands </span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="Vim"><a href="#Vim" class="headerlink" title="Vim"></a>Vim</h1><p>永远滴神</p>
 <p>没有菜单，只有命令</p>
 <h2 id="方向键"><a href="#方向键" class="headerlink" title="方向键"></a>方向键</h2><table>
 <thead>
