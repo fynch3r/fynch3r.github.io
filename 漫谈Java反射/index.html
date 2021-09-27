@@ -50,7 +50,7 @@
 <meta property="og:image" content="https://0range228.github.io/images/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/image-20210512233149513.png">
 <meta property="og:image" content="https://0range228.github.io/images/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/image-20210512233242268.png">
 <meta property="article:published_time" content="2020-04-11T08:18:04.000Z">
-<meta property="article:modified_time" content="2021-05-13T16:20:33.464Z">
+<meta property="article:modified_time" content="2021-09-27T12:55:17.430Z">
 <meta property="article:author" content="0range">
 <meta property="article:tag" content="Java反射">
 <meta name="twitter:card" content="summary">
@@ -240,7 +240,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-14 00:20:33" itemprop="dateModified" datetime="2021-05-14T00:20:33+08:00">2021-05-14</time>
+                <time title="修改时间：2021-09-27 20:55:17" itemprop="dateModified" datetime="2021-09-27T20:55:17+08:00">2021-09-27</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -367,8 +367,8 @@
 <ul>
 <li>Fields[] getFields()：只能获取所有public修饰的成员变量</li>
 <li>Fields    getField(String name)：获取特定成员变量</li>
-<li>Fields[] getDeclaredFields()：获取所有的成员变量，【不考虑】修饰符</li>
-<li>Fields    getDeclaredField(String name)：获取特定的成员变量，【不考虑】修饰符</li>
+<li>Fields[] getDeclaredFields()：获取所有的成员变量，【不考虑】修饰符，不考虑继承</li>
+<li>Fields    getDeclaredField(String name)：获取特定的成员变量，【不考虑】修饰符，不考虑继承</li>
 </ul>
 </blockquote>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Class personClass = Person<span class="class">.<span class="keyword">class</span></span>;</span><br><span class="line"><span class="comment">//Fields[] getFields()：只会获取全部的【public修饰】的成员变量</span></span><br><span class="line">Field[] fields = personClass.getFields();</span><br><span class="line"><span class="keyword">for</span> (Field field : fields) &#123;</span><br><span class="line">    <span class="comment">//由于都是private，什么都不输出</span></span><br><span class="line">    System.out.println(field);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -381,10 +381,10 @@
 
 <h2 id="获取Constructor"><a href="#获取Constructor" class="headerlink" title="获取Constructor"></a>获取Constructor</h2><blockquote>
 <p>获取构造方法们：</p>
-<p>Constructor&lt;?&gt;[] getConstructors()</p>
-<p>Constructor<?> getConstructor(类 <?> … parameterTypes)</p>
-<p>Constructor&lt;?&gt; getDeclaredConstructors()</p>
-<p>Constructor<?> getDeclaredConstructor(类 <?> … parameterTypes)</p>
+<p>Constructor[] getConstructors()</p>
+<p>Constructor getConstructor(类 &lt;?&gt; … parameterTypes)</p>
+<p>Constructor getDeclaredConstructors()</p>
+<p>Constructor getDeclaredConstructor(类 &lt;?&gt; … parameterTypes)</p>
 </blockquote>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Class personClass = Person<span class="class">.<span class="keyword">class</span></span>;</span><br><span class="line">Constructor constructor = personClass.getConstructor(String<span class="class">.<span class="keyword">class</span>,<span class="title">int</span>.<span class="title">class</span>)</span>;<span class="comment">//每一个构造方法的参数种类不一样，这一步是获取构造方法</span></span><br><span class="line">System.out.println(constructor);</span><br><span class="line"><span class="comment">//所以可以执行构造函数，进而创建对象，[构造器.newInstance]</span></span><br><span class="line">Object person = constructor.newInstance(<span class="string">"张三"</span>, <span class="number">23</span>);<span class="comment">//传递对应的参数值</span></span><br><span class="line">System.out.println(person);<span class="comment">//Person&#123;name=‘张三‘，age=’23‘&#125;</span></span><br></pre></td></tr></table></figure>
 
@@ -394,8 +394,8 @@
 <p>获取成员方法们：</p>
 <p>Method[]  getMethods()//获取所有【public】修饰的方法，父类Object的方法也能看到</p>
 <p>Method getMethod(String name，类 &lt;?&gt; … parameterTypes)</p>
-<p>Method[] getDeclaredMethods()//获取所有声明方法 不考虑修饰符</p>
-<p>Method getDeclaredMethod(String name，类 &lt;?&gt; … parameterTypes)</p>
+<p>Method[] getDeclaredMethods()//获取所有声明方法 不考虑修饰符 不考虑继承的方法</p>
+<p>Method getDeclaredMethod(String name，类 &lt;?&gt; … parameterTypes) 不考虑修饰符 不考虑继承的方法</p>
 </blockquote>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Class personClass = Person<span class="class">.<span class="keyword">class</span></span>;</span><br><span class="line"><span class="comment">//获取制定名称的方法</span></span><br><span class="line">Method eat_Method = personClass.getMethod(<span class="string">"eat"</span>);</span><br><span class="line"><span class="comment">//进而执行方法,【invoke】，它需要一个真实的对象，以及方法的实际参数列表</span></span><br><span class="line">Person pp = <span class="keyword">new</span> Person();</span><br><span class="line"><span class="comment">//因为是空参方法，所以直接放进来一个对象就行</span></span><br><span class="line"><span class="comment">//执行方法，eat...</span></span><br><span class="line">eat_Method.invoke(pp);</span><br></pre></td></tr></table></figure>
 
