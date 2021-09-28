@@ -13944,6 +13944,10 @@
 <li>GNU风格：–</li>
 <li>BSD风格：no dash</li>
 </ul>
+<h1 id="常见连接符"><a href="#常见连接符" class="headerlink" title="常见连接符"></a>常见连接符</h1><p>cmd_a | cmd_b ： a结果作为b的输入 管道符 </p>
+<p>cmd_a || cmd_b ：a失败再执行b</p>
+<p>cmd_a &amp;&amp;  cmd_b ：a成功后再执行b</p>
+<p>cmd_a &amp;  cmd_b ：a执行后继续执行指令b</p>
 <h1 id="外部命令与内建命令"><a href="#外部命令与内建命令" class="headerlink" title="外部命令与内建命令"></a>外部命令与内建命令</h1><h2 id="外部命令"><a href="#外部命令" class="headerlink" title="外部命令"></a>外部命令</h2><p>外部命令，也被称为文件系统命令，指的是存在于bash shell之外的程序。它们并不是shell 程序的一部分。外部命令程序通常位于/bin、/usr/bin、/sbin或/usr/sbin中。</p>
 <p>ps就是一个外部命令。可以使用which和type命令找到它。</p>
 <figure class="highlight zsh"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">type</span> -a ps</span><br><span class="line">ps is /bin/ps</span><br></pre></td></tr></table></figure>
