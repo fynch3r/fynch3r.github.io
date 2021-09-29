@@ -44,7 +44,7 @@
 <meta property="og:image" content="https://0range228.github.io/images/Docker%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20210519132015322.png">
 <meta property="og:image" content="https://0range228.github.io/images/Docker%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20210519132819881.png">
 <meta property="article:published_time" content="2021-05-19T03:17:25.000Z">
-<meta property="article:modified_time" content="2021-09-29T04:21:13.751Z">
+<meta property="article:modified_time" content="2021-09-29T04:36:53.398Z">
 <meta property="article:author" content="0range">
 <meta property="article:tag" content="Docker">
 <meta name="twitter:card" content="summary">
@@ -234,7 +234,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-29 12:21:13" itemprop="dateModified" datetime="2021-09-29T12:21:13+08:00">2021-09-29</time>
+                <time title="修改时间：2021-09-29 12:36:53" itemprop="dateModified" datetime="2021-09-29T12:36:53+08:00">2021-09-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -311,7 +311,7 @@
 <p>对于一个<a href="https://hub.docker.com/_/ubuntu" target="_blank" rel="noopener">ubuntu</a>仓库来说：     </p>
 <p>ubuntu是仓库的名字，<code>ubuntu：16.04</code>和<code>ubuntu:18.04</code>则是两个不同标签代表不同版本。</p>
 <p>仓库通常是<strong>两段式命名</strong>，例如<code>ownername/nginx</code></p>
-<p>前者是用户名，后者是软件名。</p>
+<p>前者是用户名，后者是镜像。</p>
 <h1 id="镜像"><a href="#镜像" class="headerlink" title="镜像"></a>镜像</h1><h2 id="获取镜像"><a href="#获取镜像" class="headerlink" title="获取镜像"></a>获取镜像</h2><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull [args] [域名[：端口号] /] 仓库名[:标签]</span><br></pre></td></tr></table></figure>
 
 <p><code>docker pull --help</code>看细节</p>
@@ -319,7 +319,7 @@
 <li>docker仓库地址：<code>&lt;域名/IP&gt;[:端口号]</code> 默认地址是docker.io</li>
 <li>仓库名：<code>&lt;仓库名/软件名&gt;</code> 仓库名不写默认是library，也就是官方镜像</li>
 </ul>
-<p>比如：<code>docker pull ubuntu：18.04</code></p>
+<p>比如：<code>docker pull ubuntu:18.04</code></p>
 <p>完整仓库名就是：<code>docker.io/library/ubuntu:18.04</code></p>
 <h2 id="运行镜像"><a href="#运行镜像" class="headerlink" title="运行镜像"></a>运行镜像</h2><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="keyword">run</span><span class="bash"> -i -t --rm ubuntu:18.04 /bin/bash</span></span><br></pre></td></tr></table></figure>
 
