@@ -12569,12 +12569,12 @@
 <p>抽象类可以有成员变量、构造方法、抽象方法</p>
 <p>只支持单继承</p>
 <p>继承抽象类的子类必须extends，实现抽象类中的<strong>全部抽象方法</strong></p>
-<h2 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h2><p>接口中方法默认 public abstract修饰，不需要特意声明</p>
+<h2 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h2><p>接口中方法默认 public abstract修饰</p>
 <p>一个类如果实现了接口，那么就需要<strong>实现接口的全部方法</strong></p>
 <p>接口中方法默认public abstract </p>
 <p>接口中字段默认public static final</p>
 <p>在JDK8中可以定义static静态方法 &amp; default方法 default修饰方法的有默认方法体，实现类中可以重写也可以不重写</p>
-<p>接口可以支持多继承。</p>
+<p><strong>接口支持多继承</strong></p>
 <h1 id="编译类型与运行类型"><a href="#编译类型与运行类型" class="headerlink" title="编译类型与运行类型"></a>编译类型与运行类型</h1><p>经典例子：</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Father child = <span class="keyword">new</span> son();</span><br><span class="line">编译类型         运行类型</span><br><span class="line">  </span><br><span class="line">child.doWork();</span><br></pre></td></tr></table></figure>
 
