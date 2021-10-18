@@ -43,7 +43,7 @@
 <p>进入<code>rememberSerializedIdentity</code>函数：</p>
 <p><img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20210909200116535.png" alt="image-20210909200116535"></p>
 <p><img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20210909202655028.png" alt="image-20210909202655028"></p>
-<p>总结：</p>
+<p>总结流程：</p>
 <ol>
 <li>用户名序列化</li>
 <li>AES-CBC加密，key已知为<code>kPH+bIxk5D2deZiIxcaaaA==</code></li>
@@ -93,7 +93,7 @@
 <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><h3 id="AES加密模式"><a href="#AES加密模式" class="headerlink" title="AES加密模式"></a>AES加密模式</h3><ul>
 <li><p>AES是一种对称加密的分组加密算法。</p>
 </li>
-<li><p>每个分组长度固定为128bit</p>
+<li><p>分组长度固定为128bit</p>
 </li>
 <li><p>密钥长度可变，128bit、192bit、256bit</p>
 </li>
@@ -136,6 +136,30 @@
 <li><strong><code>CFB</code> ( Cipher FeedBack , 密码反馈模式 )</strong></li>
 <li><strong><code>OFB</code> ( Output FeedBack , 输出反馈模式 )</strong></li>
 </ul>
+<h3 id="CBC-模式"><a href="#CBC-模式" class="headerlink" title="CBC 模式"></a>CBC 模式</h3><p>CBC模式作为分组加密的一种，加解密方法如图：</p>
+<img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018110917843.png" alt="image-20211018110917843" style="zoom:50%;">
+
+<p>加密过程中，</p>
+<p>IV(Initialization Vector)表示起始向量，通常是随机生成的，同明文一起传输。</p>
+<p>padding：表示填充位，凑成长度为分组的整数倍</p>
+<p>第一个明文块首先会和IV进行异或操作，再执行AES加密，得到第一密文块。</p>
+<p>之后，每个明文块会与前一个密文块进行异或，再进行加密。</p>
+<p>最终的密文长度就是图中所有ciphertext块的拼接长度</p>
+<img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018110517102.png" alt="image-20211018110517102" style="zoom:50%;">
+
+<p>解密过程中，</p>
+<p>首先密文按照分组长度进行分组，</p>
+<p>第一个密文块直接进行AES解密，得到middletext，该结果再与IV进行异或，得到第一明文块</p>
+<p>之后每一个AES的解密出来的middletext都会和前一个密文块进行异或，得到对应的明文块。</p>
+<p>明文块再拼接到一起就是解密出来的明文</p>
+<h3 id="Padding-填充模式"><a href="#Padding-填充模式" class="headerlink" title="Padding 填充模式"></a>Padding 填充模式</h3><h3 id="Padding-Oracle-Attack"><a href="#Padding-Oracle-Attack" class="headerlink" title="Padding Oracle Attack"></a>Padding Oracle Attack</h3><p>Padding Oracle Attack 是一种针对CBC模式分组加密算法的攻击。</p>
+<p>相信如果你认真看到这里，肯定疑惑的是如果解密过程中的iv被控制，怎么办？</p>
+<p>是的，<strong>iv被控制，那么攻击者就可以进行Padding Oracle Attack</strong>。</p>
+<p>正确的padding byte值只可能为：</p>
+<p>1个字节的padding为0x01</p>
+<p>2个字节的padding为0x02,0x02</p>
+<p>3个字节的padding为0x03,0x03,0x03</p>
+<p>4个字节的padding为0x04,0x04,0x04,0x04</p>
 ]]></content>
       <categories>
         <category>Java</category>
