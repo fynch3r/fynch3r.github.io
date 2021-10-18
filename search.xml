@@ -14,11 +14,13 @@
 <p>影响版本：shiro&lt;1.2.24</p>
 <h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/apache/shiro.git</span><br><span class="line"><span class="built_in">cd</span> shiro</span><br><span class="line">git checkout shiro-root-1.2.4</span><br></pre></td></tr></table></figure>
 
-<p><img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20210909194021389.png" alt="image-20210909194021389"></p>
+<p>打开samples/web文件，这个是带jsp界面的，待会儿审计的类存放在pom依赖中，maven会帮助我们去找的</p>
+<p><img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018162539922.png" alt="image-20211018162539922"></p>
 <p>修改一下pom.xml:</p>
 <figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>javax.servlet<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jstl<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--  这里需要将jstl设置为1.2 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<p>最后不要忘记配置artifact：</p>
+<p>有时候IDEA会自动识别facets，没有的话自己去找web.xml手动配一下，</p>
+<p>首先为项目生成artifacts，最后不要忘记配置artifact：</p>
 <p><img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20210909194117777.png" alt="image-20210909194117777"></p>
 <p>成功：</p>
 <p><img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20210909194253598.png" alt="image-20210909194253598"></p>
@@ -77,7 +79,7 @@
 <p>第一次登陆注册，钩上rememberMe，之后正常登陆，抓包留存：</p>
 <p><img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20210909230030693.png" alt></p>
 <ol start="2">
-<li>在解密这里下断点，在登录状态下发送第一步保存的数据包</li>
+<li>在解密这里下断点，在登录状态下，删除JSESSIONID字段，发送第一步保存的数据包，</li>
 </ol>
 <p><img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20210909230120134.png" alt="image-20210909230120134"></p>
 <ol start="3">
@@ -140,7 +142,7 @@
 <img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018110917843.png" alt="image-20211018110917843" style="zoom:50%;">
 
 <p>加密过程中，</p>
-<p>IV(Initialization Vector)表示起始向量，通常是随机生成的，同明文一起传输。</p>
+<p>IV(Initialization Vector)表示起始向量，通常是随机生成的，长度同分组大小相同，同明文一起传输。</p>
 <p>padding：表示填充位，凑成长度为分组的整数倍</p>
 <p>第一个明文块首先会和IV进行异或操作，再执行AES加密，得到第一密文块。</p>
 <p>之后，每个明文块会与前一个密文块进行异或，再进行加密。</p>
@@ -152,15 +154,110 @@
 <p>第一个密文块直接进行AES解密，得到middletext，该结果再与IV进行异或，得到第一明文块</p>
 <p>之后每一个AES的解密出来的middletext都会和前一个密文块进行异或，得到对应的明文块。</p>
 <p>明文块再拼接到一起就是解密出来的明文</p>
-<h3 id="Padding-填充模式"><a href="#Padding-填充模式" class="headerlink" title="Padding 填充模式"></a>Padding 填充模式</h3><h3 id="Padding-Oracle-Attack"><a href="#Padding-Oracle-Attack" class="headerlink" title="Padding Oracle Attack"></a>Padding Oracle Attack</h3><p>Padding Oracle Attack 是一种针对CBC模式分组加密算法的攻击。</p>
-<p>相信如果你认真看到这里，肯定疑惑的是如果解密过程中的iv被控制，怎么办？</p>
-<p>是的，<strong>iv被控制，那么攻击者就可以进行Padding Oracle Attack</strong>。</p>
-<p>正确的padding byte值只可能为：</p>
-<p>1个字节的padding为0x01</p>
-<p>2个字节的padding为0x02,0x02</p>
-<p>3个字节的padding为0x03,0x03,0x03</p>
-<p>4个字节的padding为0x04,0x04,0x04,0x04</p>
-]]></content>
+<h3 id="Padding-填充模式"><a href="#Padding-填充模式" class="headerlink" title="Padding 填充模式"></a>Padding 填充模式</h3><p>Padding是在加密过程中，在最后一个分组的结尾进行填充，用于补齐。</p>
+<p>CBC模式下的三种Padding方式：</p>
+<ul>
+<li>NoPadding : 明文长度必须是 8 Bytes 的倍数。</li>
+<li>PKCS5Padding : 以完整字节填充 , 每个填充字节的值是用于填充的字节数 。即要填充 N 个字节 , 每个字节都为 N。</li>
+<li>ISO10126Padding : 以随机字节填充 , 最后一个字节为填充字节的个数 。</li>
+</ul>
+<p>Shiro用的是PKCS5Padding：</p>
+<p>所以正确的padding byte值只可能为：</p>
+<ul>
+<li><p>1个字节的padding为0x01</p>
+</li>
+<li><p>2个字节的padding为0x02,0x02</p>
+</li>
+<li><p>3个字节的padding为0x03,0x03,0x03</p>
+</li>
+<li><p>4个字节的padding为0x04,0x04,0x04,0x04</p>
+</li>
+</ul>
+<p>…</p>
+<h3 id="Padding-Oracle-Attack"><a href="#Padding-Oracle-Attack" class="headerlink" title="Padding Oracle Attack"></a>Padding Oracle Attack</h3><p>Padding Oracle Attack 是一种针对CBC模式分组加密算法的攻击。</p>
+<p>是的，<strong>如果解密时候的iv被控制，那么攻击者就可以进行Padding Oracle Attack</strong>。</p>
+<img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018141105917.png" alt="image-20211018141105917" style="zoom:50%;">
+
+<p>middle指的是最后一个分组的密文结果</p>
+<p>爆破思路：</p>
+<p><strong>大前提：对于ASE解密时padding的正确与否，目标会返回一个明确的信息。</strong></p>
+<p>middle永远是保持不变的，iv是在变的。</p>
+<p>尝试让plain的最后一个字节为0x01，可以得到middle最后一个字节内容0xaa</p>
+<p>之后plain的最后两个字节为0x0202，0x030303，0x040404…</p>
+<p>因此，通过Padding Oracle Attack可以在不知道密钥(key)的情况下，获取全部明文的值。</p>
+<p>并且，在获得middle之后，可以通过改变IV，使<strong>密文解密为任意明文</strong></p>
+<p>参考<a href="https://f1sh.site/2017/08/04/%E5%88%9D%E5%AD%A6padding-oracle-attack/" target="_blank" rel="noopener">f1sh</a></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">原明文^原IV = middle</span><br><span class="line">新明文^新IV = middle</span><br><span class="line">原明文^原IV^新明文 = 新IV</span><br></pre></td></tr></table></figure>
+
+<p>只要将旧IV改成新IV，密文解密为任意明文；</p>
+<h3 id="CBC翻转攻击"><a href="#CBC翻转攻击" class="headerlink" title="CBC翻转攻击"></a>CBC翻转攻击</h3><p>一句话，通过修改密文进而篡改明文</p>
+<p>第N组明文=N组密文的解密结果 XOR  第N-1组密文</p>
+<p>公式表达</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Plaintext[0] = Decrypt(Cipher[0]) XOR IV (N=0)</span><br><span class="line">Plaintext[N] = Decrypt(Cipher[N]) XOR Cipher[N-1] (N&gt;=1)</span><br></pre></td></tr></table></figure>
+
+<p>N&gt;=1下我们假设：</p>
+<p>M = Decrypt(Cipher[N])</p>
+<p>C = Cipher[N-1]</p>
+<p>P = Plaintext[N]</p>
+<p>根据异或特性有，两个数相同为0，不同为1：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">M XOR C = P</span><br><span class="line">M XOR C XOR P = 0</span><br></pre></td></tr></table></figure>
+
+<p>如果我们希望修改明文P[x]为P ，我们可以修改C[x]</p>
+<p>证明：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">p = P[x]</span><br><span class="line">c = C[x]</span><br><span class="line">m = M[x]</span><br><span class="line"></span><br><span class="line">m XOR c = p</span><br><span class="line">p XOR x = P</span><br><span class="line"></span><br><span class="line">令 c' = c XOR p XOR P</span><br><span class="line">m XOR c' = m XOR c XOR p XOR P = p XOR p XOR P = P</span><br><span class="line">成功</span><br></pre></td></tr></table></figure>
+
+<p>举个例子:</p>
+<p>cipher = “0123456789,helloworld,java”</p>
+<p>将通过CBC攻击密文篡改明文为”0123456789,helloworld,javA”</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> AES</span><br><span class="line"><span class="keyword">from</span> binascii <span class="keyword">import</span> b2a_hex,a2b_hex</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">encrypt</span><span class="params">(iv,plaintext)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> len(plaintext)%<span class="number">16</span> != <span class="number">0</span>:</span><br><span class="line">		<span class="keyword">print</span> (<span class="string">"plaintext length is invalid"</span>)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	<span class="keyword">if</span> len(iv) != <span class="number">16</span>:</span><br><span class="line">		<span class="keyword">print</span> (<span class="string">"IV length is invalid"</span>)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	key=<span class="string">"1234abcd1234abcd"</span></span><br><span class="line">	aes_encrypt = AES.new(key,AES.MODE_CBC,IV=iv)</span><br><span class="line">	<span class="keyword">return</span> b2a_hex(aes_encrypt.encrypt(plaintext))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decrypt</span><span class="params">(iv,cipher)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> len(iv) != <span class="number">16</span>:</span><br><span class="line">		<span class="keyword">print</span> (<span class="string">"IV length is invalid"</span>)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	key=<span class="string">"1234abcd1234abcd"</span></span><br><span class="line">	aes_decrypt = AES.new(key,AES.MODE_CBC,IV=iv)</span><br><span class="line">	<span class="keyword">return</span> b2a_hex(aes_decrypt.decrypt(a2b_hex(cipher)))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test</span><span class="params">()</span>:</span></span><br><span class="line">	iv=<span class="string">"ABCDEFGH12345678"</span></span><br><span class="line">	plaintext=<span class="string">"0123456789ABCDEFGHhelloworldjava"</span></span><br><span class="line">	<span class="comment">#plaintext="0123456789ABCDEFhellocbcflipping"</span></span><br><span class="line">	cipher=encrypt(iv, plaintext)</span><br><span class="line">	<span class="keyword">print</span> (cipher)</span><br><span class="line">	de_cipher = decrypt(iv, cipher)</span><br><span class="line">	<span class="keyword">print</span> (de_cipher)</span><br><span class="line">	<span class="keyword">print</span> (a2b_hex(de_cipher))</span><br><span class="line"></span><br><span class="line">	<span class="comment"># 修改java-&gt;javA 但是第一个分组乱码</span></span><br><span class="line">	bin_cipher = bytearray(a2b_hex(cipher))</span><br><span class="line">	bin_cipher[<span class="number">15</span>] = bin_cipher[<span class="number">15</span>] ^ ord(<span class="string">'a'</span>) ^ ord(<span class="string">'A'</span>)</span><br><span class="line">	de_cipher = decrypt(iv,b2a_hex(bin_cipher))</span><br><span class="line">	<span class="keyword">print</span> (de_cipher)</span><br><span class="line">	<span class="keyword">print</span> (a2b_hex(de_cipher))</span><br><span class="line"></span><br><span class="line">	<span class="comment"># 修改IV 不让第一个分组乱码</span></span><br><span class="line">	bin_decipher = bytearray(a2b_hex(de_cipher))</span><br><span class="line">	bin_iv = bytearray(iv.encode())</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,len(iv)):</span><br><span class="line">		bin_iv[i] = bin_iv[i] ^ bin_decipher[i] ^ ord(<span class="string">'X'</span>)</span><br><span class="line">	print(bin_iv)</span><br><span class="line">	de_cipher = decrypt(bytes(bin_iv),b2a_hex(bin_cipher))</span><br><span class="line">	<span class="keyword">print</span> (de_cipher)</span><br><span class="line">	<span class="keyword">print</span> (a2b_hex(de_cipher))</span><br><span class="line"></span><br><span class="line">test()</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="调试-1"><a href="#调试-1" class="headerlink" title="调试"></a>调试</h2><p>和550一样，debug启动起来，把断点下到org.apache.shiro.mgt.AbstractRememberMeManager#getRememberedPrincipals的convertBytesToPrincipals处，持续跟进：</p>
+<p><img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018171112020.png" alt="image-20211018171112020"></p>
+<img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018173132892.png" alt="image-20211018173132892" style="zoom:50%;">
+
+<img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018191828795.png" alt="image-20211018191828795" style="zoom:50%;">
+
+<p>接下来进入</p>
+<img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018191909091.png" alt="image-20211018191909091" style="zoom:50%;">
+
+<p>做了一系列处理</p>
+<p><img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018193429360.png" alt="image-20211018193429360"></p>
+<img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018193508168.png" alt="image-20211018193508168" style="zoom:50%;">
+
+<img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018193555759.png" alt="image-20211018193555759" style="zoom:50%;">
+
+<img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018193614757.png" alt="image-20211018193614757" style="zoom:50%;">
+
+<p>进入doFinal函数</p>
+<img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018193745018.png" alt="image-20211018193745018" style="zoom:50%;">
+
+<img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018193721060.png" alt="image-20211018193721060" style="zoom:50%;">
+
+<img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018193841499.png" alt="image-20211018193841499" style="zoom:50%;">
+
+<p><img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018193918762.png" alt="image-20211018193918762"></p>
+<img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018194008372.png" alt="image-20211018194008372" style="zoom:50%;">
+
+<p>调用链：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">javax.crypto.Cipher#doFinal(byte[])</span><br><span class="line">com.sun.crypto.provider.AESCipher#engineDoFinal(byte[], int, int)</span><br><span class="line">com.sun.crypto.provider.CipherCore#doFinal(byte[], int, int)</span><br><span class="line">com.sun.crypto.provider.CipherCore#fillOutputBuffer</span><br><span class="line">com.sun.crypto.provider.CipherCore#unpad</span><br><span class="line">com.sun.crypto.provider.PKCS5Padding#unpad</span><br></pre></td></tr></table></figure>
+
+<p>可以看到了来到了Shiro选择的PKCS5Padding类unpad函数：</p>
+<img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018194444766.png" alt="image-20211018194444766" style="zoom:50%;">
+
+<p>这里如果unpad报错，会爆异常<code>new CryptoException(msg, e);</code></p>
+<p>回到上层可以看到，由<code>onRememberedPrincipalFailure</code>函数来处理</p>
+<img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018195432687.png" alt="image-20211018195432687" style="zoom:50%;">
+
+<img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018195807299.png" alt="image-20211018195807299" style="zoom:50%;">
+
+<p>只要padding错误，服务端就会返回一个cookie: <strong>rememberMe=deleteMe;</strong></p>
+<h3 id="前提1-攻击者拥有正常用户的rememberMe字段"><a href="#前提1-攻击者拥有正常用户的rememberMe字段" class="headerlink" title="前提1: 攻击者拥有正常用户的rememberMe字段"></a>前提1: 攻击者拥有正常用户的rememberMe字段</h3>]]></content>
       <categories>
         <category>Java</category>
       </categories>
