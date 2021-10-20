@@ -175,45 +175,50 @@
 </ul>
 <p>…</p>
 <h3 id="Padding-Oracle-Attack"><a href="#Padding-Oracle-Attack" class="headerlink" title="Padding Oracle Attack"></a>Padding Oracle Attack</h3><p>Padding Oracle Attack 是一种针对CBC模式分组加密算法的攻击，知道padding model，解密获得明文。</p>
-<p>是的，<strong>如果解密时候的iv被控制，那么攻击者就可以进行Padding Oracle Attack</strong>。</p>
+<p>要成功进行Padding Oracle Attack是需要服务端返回两个不同的响应特征来进行Bool判断的。</p>
+<p>在Apache Shiro的场景中，这个服务端的两个不同的响应特征为：</p>
+<ul>
+<li>Padding Oracle错误时，服务端响应报文的Set-Cookie头字段返回<code>rememberMe=deleteMe</code>；</li>
+<li>Padding Oracle正确时，服务端返回正常的响应报文内容；</li>
+</ul>
 <img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018141105917.png" alt="image-20211018141105917" style="zoom:50%;">
 
-<p><strong>大前提：</strong></p>
-<p><strong>服务器会首先对解密结果进行padding校验，在判断解密结果的正确性。</strong></p>
+<h4 id="解密：破解明文"><a href="#解密：破解明文" class="headerlink" title="解密：破解明文"></a>解密：破解明文</h4><p><strong>大前提：</strong></p>
+<p><strong>1. 服务器会对解密结果进行padding校验，给出响应，再判断解密结果的正确性。</strong></p>
+<p><strong>2. 攻击者知道全部密文以及初始向量IV</strong></p>
 <img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211018110517102.png" alt="image-20211018110517102" style="zoom:50%;">
 
-<p>我们知道，当解密时，<strong>最后一组的middle永远是唯一的，而且是正确的</strong>，因为它只是经过了一次AES解密。</p>
-<p>IV是随机生成的，那么<strong>这组middle和任意IV的异或结果都是符合padding规则的</strong>。</p>
+<p>当解密时，<strong>最后一组的middle是固定的，倒数第二组的密文和最后一组的middle异或的结果一定是满足padding模式的。</strong></p>
+<p>合格的明文padding只有8种case，这是可以穷举的。</p>
+<p>这时我们需要一个二元组，第一组tmp_IV全是0，第二个为当前组的密文C[n]。</p>
 <p>开始爆破：</p>
 <ol>
-<li><p>尝试让这组plain的最后一个字节为0x01，在0x00~0xff 去与middle最后一个字节异或，令异或结果为0x01，碰撞出来的结果就是临时iv的最后一个字节内容。</p>
-<p>我们可以通过它得到真实的middle的最后一个字节的内容。</p>
-<p>之后plain的最后两个字节为0x0202，最后三个字节为0x030303，最后四个字节为0x040404…，最后8个字节为0x0808080808080808。</p>
-<p>这时得到最后一组正确的middle。</p>
+<li><p>尝试让这组plaintext的最后一个字节为0x01，tmp_IV的最后一个字节在0x00~0xff 范围内开始穷举，去与middle整体异或，直到异或结果的最后一位为0x01，假设此时tmp_IV最后一个字节的结果为0x42。</p>
+<p>我们可以通过它得到实际middle的最后一个字节的内容为0x42 XOR 0x01 = 0x43。</p>
+<p>之后让plaintext的最后两个字节为0x0202，最后三个字节为0x030303，最后四个字节为0x040404…，最后8个字节为0x0808080808080808。</p>
+<p>此时就获得了最后一组密文的middle。</p>
 </li>
-<li><p>把这个中间值与倒数第二组的原始密文进行XOR便可得到最后一组的明文</p>
+<li><p>把最后一组密文的middle与倒数第二组密文进行XOR，便可得到最后一组的明文。</p>
 </li>
-<li><p>迭代1、2操作 ，第一组他的iv就是原始IV</p>
+<li><p>舍弃掉最后一组密文，向服务器提交第一组～倒数第二组密文，迭代1、2操作，获得倒数第二组明文。依次规律，直到获得所有分组的明文</p>
 </li>
 <li><p>将明文拼接到一起就是解密结果</p>
 </li>
 </ol>
 <p>因此，通过Padding Oracle Attack可以在不知道key的情况下，获取全部明文的值。</p>
-<p>并且，在获得middle之后，攻击者可以通过控制IV，使<strong>密文解密为任意明文</strong></p>
+<h4 id="加密：篡改明文"><a href="#加密：篡改明文" class="headerlink" title="加密：篡改明文"></a>加密：篡改明文</h4><p>在我们获得每一组的middle之后，攻击者可以通过<strong>控制IV，使密文解密为任意明文</strong>。</p>
 <p>参考<a href="https://f1sh.site/2017/08/04/%E5%88%9D%E5%AD%A6padding-oracle-attack/" target="_blank" rel="noopener">f1sh</a></p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">原明文^原IV = middle</span><br><span class="line">新明文^新IV = middle</span><br><span class="line">原明文^原IV^新明文 = 新IV</span><br></pre></td></tr></table></figure>
 
-<p>只要将旧IV改成新IV，密文解密为任意明文。</p>
-<p>如果我们还可以控制IV，那么将IV与原明文异或后，再与想得到的明文异或得到新的IV，然后将新的IV提交，便可得到想要的明文。</p>
+<p>简单来说，如果我们可以控制IV，将<code>IV = 原明文^原IV^新明文</code>，将新的IV提交，服务器解密就可以得到我们想要的明文。</p>
+<p>做法：</p>
 <p>原明文的AES加密结果为C[0]-C[N]，我们想要的明文为P[0]-P[N]</p>
 <p>我们只需要C[N]即可，只要C[N]不变，M[N]就不变</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">全0+C[N]爆破，得到M[N]</span><br><span class="line">M[N] XOR P[N] = IV[N] # 这里的IV[N]表示的是参与C[N]这轮的iv</span><br><span class="line">IV[N] = C[N-1] # IV就是前一轮的密文</span><br><span class="line">---</span><br><span class="line">全0+C[N-1]爆破，得到M[N-1]</span><br><span class="line">M[N-1] XOR P[N-1] = IV[N-1]</span><br><span class="line">IV[N-1] = C[N-2] </span><br><span class="line">...</span><br><span class="line">---</span><br><span class="line">全0+C[0]爆破，得到M[0]</span><br><span class="line">M[0] XOR P[0] = IV # 起始IV</span><br><span class="line"></span><br><span class="line">IV+C 拼接一下去解密就可以获得我们想要的明文了</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">全0+C[N]爆破，得到M[N]</span><br><span class="line">M[N] XOR P[N] = IV[N] # 这里的IV[N]表示的是参与C[N]这轮的iv</span><br><span class="line">IV[N] = C[N-1] # IV就是前一轮的密文</span><br><span class="line">---</span><br><span class="line">全0+C[N-1]爆破，得到M[N-1]</span><br><span class="line">M[N-1] XOR P[N-1] = IV[N-1]</span><br><span class="line">IV[N-1] = C[N-2] </span><br><span class="line">...</span><br><span class="line">---</span><br><span class="line">全0+C[0]爆破，得到M[0]</span><br><span class="line">M[0] XOR P[0] = IV # 起始IV</span><br><span class="line"></span><br><span class="line">IV+C 拼接一下就可以获得我们定制化的密文了</span><br><span class="line">这串密文发送给服务器，服务器就会帮助我们解密为我们想要的明文了</span><br></pre></td></tr></table></figure>
 
 
 
-
-
-<h3 id="CBC翻转攻击"><a href="#CBC翻转攻击" class="headerlink" title="CBC翻转攻击"></a>CBC翻转攻击</h3><p>一句话，通过修改密文进而篡改明文</p>
+<h3 id="CBC翻转攻击"><a href="#CBC翻转攻击" class="headerlink" title="CBC翻转攻击"></a>CBC翻转攻击</h3><p>一句话，通过修改密文进而篡改明文。</p>
 <p>第N组明文=第N组密文的解密结果 XOR  第N-1组密文</p>
 <p>公式表达</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Plaintext[0] = Decrypt(Cipher[0]) XOR IV (N=0)</span><br><span class="line">Plaintext[N] = Decrypt(Cipher[N]) XOR Cipher[N-1] (N&gt;=1)</span><br></pre></td></tr></table></figure>
@@ -283,6 +288,18 @@
 
 <h3 id="前提2：Java反序列化格式"><a href="#前提2：Java反序列化格式" class="headerlink" title="前提2：Java反序列化格式"></a>前提2：Java反序列化格式</h3><p>Java反序列化是按照字节流的格式进行读取，反序列化数据末尾存在脏数据不会报错。</p>
 <p>这是因为：readobject读取的serialdata长度是在serialdata头部就约定好的。</p>
+<h3 id="攻击利用"><a href="#攻击利用" class="headerlink" title="攻击利用"></a>攻击利用</h3><p>利用原理是攻击者将正常用户的rememberMe拿到，使用Padding Oracle Attack对正常的rememberMe进行加密</p>
+<p>令</p>
+<p>经过调试，我们可以知道：</p>
+<ol>
+<li><p>当用户的cookie认证失败，服务端就会返回一个cookie: <strong>rememberMe=deleteMe;</strong></p>
+</li>
+<li><p>只要padding错误，服务端就会返回一个cookie: <strong>rememberMe=deleteMe;</strong></p>
+</li>
+</ol>
+<p>复习一遍流程：</p>
+<p>token -(序列化)-&gt; token_serilized(aced0005…) -(AES_Enc)-&gt; cipher -(Base64)-&gt; rememberMe</p>
+<p>rememberMe -(Base64)-&gt;cipher-(AES_Dec)-&gt;token_serilized(aced0005…)-(反序列化)-&gt;token</p>
 ]]></content>
       <categories>
         <category>Java</category>
