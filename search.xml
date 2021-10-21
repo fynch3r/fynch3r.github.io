@@ -162,18 +162,17 @@
 <li>ISO10126Padding : 以随机字节填充 , 最后一个字节为填充字节的个数 。</li>
 </ul>
 <p>Shiro用的是PKCS5Padding：</p>
-<p>所以正确的padding byte值只可能为：</p>
+<p>正确的padding byte值只可能为：</p>
 <ul>
-<li><p>1个字节的padding为0x01</p>
-</li>
-<li><p>2个字节的padding为0x02,0x02</p>
-</li>
-<li><p>3个字节的padding为0x03,0x03,0x03</p>
-</li>
-<li><p>4个字节的padding为0x04,0x04,0x04,0x04</p>
-</li>
+<li>1个字节的padding为0x01</li>
+<li>2个字节的padding为0x02,0x02</li>
+<li>3个字节的padding为0x03,0x03,0x03</li>
+<li>4个字节的padding为0x04,0x04,0x04,0x04</li>
+<li>…</li>
 </ul>
-<p>…</p>
+<img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211021095129395.png" alt="image-20211021095129395" style="zoom:50%;">
+
+<p>值得一提的是，当待加密的数据长度刚好满足分组长度的倍数时，仍然需要填充一个分组长度。</p>
 <h3 id="Padding-Oracle-Attack"><a href="#Padding-Oracle-Attack" class="headerlink" title="Padding Oracle Attack"></a>Padding Oracle Attack</h3><p>Padding Oracle Attack 是一种针对CBC模式分组加密算法的攻击，知道padding model，解密获得明文。</p>
 <p>要成功进行Padding Oracle Attack是需要服务端返回两个不同的响应特征来进行Bool判断的。</p>
 <p>在Apache Shiro的场景中，这个服务端的两个不同的响应特征为：</p>
