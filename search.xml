@@ -286,7 +286,7 @@
 
 
 
-<h3 id="前提2：Java反序列化格式"><a href="#前提2：Java反序列化格式" class="headerlink" title="前提2：Java反序列化格式"></a>前提2：Java反序列化格式</h3><p>Java反序列化是按照字节流的格式进行读取，反序列化数据末尾存在脏数据不会报错。</p>
+<h3 id="前提2：Java反序列化格式"><a href="#前提2：Java反序列化格式" class="headerlink" title="前提2：Java反序列化格式"></a>前提2：Java反序列化格式</h3><p>Java反序列化是按照字节流的格式进行读取，反序列化数据末尾的脏数据不会报错。</p>
 <p>这是因为：readobject读取的serialdata长度是在serialdata头部就约定好的。</p>
 <h3 id="payload构造原理"><a href="#payload构造原理" class="headerlink" title="payload构造原理"></a>payload构造原理</h3><p>原理是攻击者将正常用户的rememberMe拿到，使用不断的Padding Oracle Attack对我们的恶意反序列化payload编写密文，进行加密。</p>
 <p>经过调试，我们可以知道：</p>

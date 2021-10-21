@@ -84,7 +84,7 @@
 <meta property="og:image" content="https://0range228.github.io/images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211021004247569.png">
 <meta property="og:image" content="https://0range228.github.io/images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211021094442668.png">
 <meta property="article:published_time" content="2021-09-09T11:28:28.000Z">
-<meta property="article:modified_time" content="2021-10-21T01:51:36.125Z">
+<meta property="article:modified_time" content="2021-10-21T01:54:41.807Z">
 <meta property="article:author" content="0range">
 <meta property="article:tag" content="shiro">
 <meta name="twitter:card" content="summary">
@@ -274,7 +274,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-10-21 09:51:36" itemprop="dateModified" datetime="2021-10-21T09:51:36+08:00">2021-10-21</time>
+                <time title="修改时间：2021-10-21 09:54:41" itemprop="dateModified" datetime="2021-10-21T09:54:41+08:00">2021-10-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -616,7 +616,7 @@
 
 
 
-<h3 id="前提2：Java反序列化格式"><a href="#前提2：Java反序列化格式" class="headerlink" title="前提2：Java反序列化格式"></a>前提2：Java反序列化格式</h3><p>Java反序列化是按照字节流的格式进行读取，反序列化数据末尾存在脏数据不会报错。</p>
+<h3 id="前提2：Java反序列化格式"><a href="#前提2：Java反序列化格式" class="headerlink" title="前提2：Java反序列化格式"></a>前提2：Java反序列化格式</h3><p>Java反序列化是按照字节流的格式进行读取，反序列化数据末尾的脏数据不会报错。</p>
 <p>这是因为：readobject读取的serialdata长度是在serialdata头部就约定好的。</p>
 <h3 id="payload构造原理"><a href="#payload构造原理" class="headerlink" title="payload构造原理"></a>payload构造原理</h3><p>原理是攻击者将正常用户的rememberMe拿到，使用不断的Padding Oracle Attack对我们的恶意反序列化payload编写密文，进行加密。</p>
 <p>经过调试，我们可以知道：</p>
