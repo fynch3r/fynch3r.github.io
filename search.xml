@@ -312,7 +312,7 @@
 <li>正常的rememberMe</li>
 <li>二元组：0x00*16+X</li>
 </ol>
-<img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211021012454772.png" alt="image-20211021012454772" style="zoom:50%;">
+<img src="../images/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20211021094442668.png" alt="image-20211021094442668" style="zoom:50%;">
 
 <p>接下来使用padding oracle attack去加密这些分组，怎么做？爆破！</p>
 <p>rememberMe+0x00*16+X发送给server，padding oracle attack 获得X对应的tempIV。</p>
