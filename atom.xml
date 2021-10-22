@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://0range228.github.io/"/>
-  <updated>2021-10-21T01:54:41.807Z</updated>
+  <updated>2021-10-22T10:44:16.908Z</updated>
   <id>https://0range228.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>CodeQL学习笔记(一)</title>
+    <link href="https://0range228.github.io/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80/"/>
+    <id>https://0range228.github.io/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80/</id>
+    <published>2021-10-21T08:58:57.000Z</published>
+    <updated>2021-10-22T10:44:16.908Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote><p>杨柳散和风，青山澹吾虑。</p></blockquote><p>学习CodeQL。</p><a id="more"></a><h1 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h1><p><a href="https://semmle.com/" target="_blank" rel="noopener">Semmle</a>公司最早独创性的开创了一种QL语言，Semmle QL，并且运行在自家LGTM平台上。</p><p>LGTM平台上存放的就是一些代码库，用户可以选择分析的语言，编写ql语句进行程序安全性查询。</p><p>2019年，GitHub（背后是微软）收购了Semmle公司，后续开源了<a href="https://github.com/github/codeql" target="_blank" rel="noopener">CodeQL</a>分析引擎。</p><h1 id="CodeQL-引擎"><a href="#CodeQL-引擎" class="headerlink" title="CodeQL 引擎"></a>CodeQL 引擎</h1><img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80/image-20211021182151966.png" alt="image-20211021182151966" style="zoom:50%;"><p>CodeQL引擎：</p><ul><li><p>将源码通过Extractor模块进行代码信息分析&amp;提取，构建一套自己的关系型数据库Snapshot Database</p><p>编译型语言：Extractor观察编译器的编译过程，捕获编译器生成的AST，语义信息(名称绑定、类型信息、运算操作等)，控制流，数据流信息，外加一份源码。</p><p>解释型语言：Extractor字节分析源代码。</p></li><li><p>Snapshot Database里面包括：源代码，关系数据，</p></li><li><p>接下来用户输入QL语句，经过CodeQL的工具库转换为Compiled Query，参与查询。</p></li><li><p>最终展示查询结果。</p></li></ul><h1 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h1><p>CodeQL CLI来作为工具库 VSCode作为查询前端</p><h2 id="CodeQL-CLI-binaries"><a href="#CodeQL-CLI-binaries" class="headerlink" title="CodeQL-CLI-binaries"></a>CodeQL-CLI-binaries</h2><p>文本命令行工具</p><p>下载地址：<a href="https://github.com/github/codeql-cli-binaries" target="_blank" rel="noopener">https://github.com/github/codeql-cli-binaries</a> MacOS直接下载osx版本</p><p>配置环境变量</p><img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80/image-20211021210656167.png" alt="image-20211021210656167" style="zoom:50%;"><img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80/image-20211021210555887.png" alt="image-20211021210555887" style="zoom:50%;"><p>把$CODEQL放在插件中：</p><img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80/image-20211022114854132.png" alt="image-20211022114854132" style="zoom:50%;"><h2 id="CodeQL-Library"><a href="#CodeQL-Library" class="headerlink" title="CodeQL Library"></a>CodeQL Library</h2><p>CodeQL Query 查询工具库，负责编译QL语言，必不可少。</p><p>下载地址：<a href="https://github.com/github/codeql" target="_blank" rel="noopener">https://github.com/github/codeql</a> </p><img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80/image-20211021210535079.png" alt="image-20211021210535079" style="zoom:50%;"><h1 id="源码准备"><a href="#源码准备" class="headerlink" title="源码准备"></a>源码准备</h1><p>参考<a href="https://www.yuque.com/docs/share/738555ae-258e-4f27-8818-6024b8225488?#" target="_blank" rel="noopener">楼兰师傅</a>，自己本地follow一遍</p><h2 id="下载待分析的源码"><a href="#下载待分析的源码" class="headerlink" title="下载待分析的源码"></a>下载待分析的源码</h2><p>选择WebGoat，jdk8版本</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone --branch v8.0.0 https://github.com/WebGoat/WebGoat.git</span><br></pre></td></tr></table></figure><h2 id="构建数据库"><a href="#构建数据库" class="headerlink" title="构建数据库"></a>构建数据库</h2><p>到这里，codeql已经是一个命令行工具了，你可以随时在终端里调用它。</p><p>在WebGoat根目录下，创建数据库：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd WebGoat</span><br><span class="line">codeql database create webgoat-qldb -l java</span><br></pre></td></tr></table></figure><img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80/image-20211022113654741.png" alt="image-20211022113654741" style="zoom:50%;"><p>构建之后的数据库：</p><img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80/image-20211022114145300.png" alt="image-20211022114145300" style="zoom:50%;"><h2 id="VSCode"><a href="#VSCode" class="headerlink" title="VSCode"></a>VSCode</h2><h3 id="配置数据库"><a href="#配置数据库" class="headerlink" title="配置数据库"></a>配置数据库</h3><p>将上一步生成的webgoatqldb加载到vscode中，From a folder</p><img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80/image-20211022160542029.png" alt="image-20211022160542029" style="zoom:50%;"><h3 id="配置QL-Pack"><a href="#配置QL-Pack" class="headerlink" title="配置QL Pack"></a>配置QL Pack</h3><blockquote><p>QL packs organize the files used in CodeQL analysis and can store queries, library files, query suites, and important metadata. Their root directory must contain a file named qlpack.yml. Your custom queries should be saved in the QL pack root, or its subdirectories.</p></blockquote><p>按照官方文档来，新建一个文件夹codeql-query（存放配置文件和查询语句），表示一个QL查询包，编写配置文件alpack.yml：</p><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">example-query</span> <span class="comment"># 包名 确保唯一性 必写</span></span><br><span class="line"><span class="attr">version:</span> <span class="number">0.0</span><span class="number">.0</span> <span class="comment"># 版本号 必写</span></span><br><span class="line"><span class="attr">libraryPathDependencies:</span> <span class="string">codeql-java</span> <span class="comment"># 依赖 必写</span></span><br></pre></td></tr></table></figure><h3 id="添加到工作区"><a href="#添加到工作区" class="headerlink" title="添加到工作区"></a>添加到工作区</h3><p>Add folder to workspace，保证codeql-home，codeql-query包添加到工作区：</p><h1 id="QL查询"><a href="#QL查询" class="headerlink" title="QL查询"></a>QL查询</h1><img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80/image-20211022160948714.png" alt="image-20211022160948714" style="zoom:50%;"><p>编写QL脚本之后，直接右键-&gt;Code：Run Query；</p><p>图中为查询所有method，右侧为查询到的结果，点击既可查看对应的src源码</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;序言&quot;&gt;&lt;a href=&quot;#序言&quot; class=&quot;headerlink&quot; title=&quot;序言&quot;&gt;&lt;/a&gt;序言&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;杨柳散和风，青山澹吾虑。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;学习CodeQL。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="静态分析" scheme="https://0range228.github.io/categories/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/"/>
+    
+    
+      <category term="CodeQL" scheme="https://0range228.github.io/tags/CodeQL/"/>
+    
+  </entry>
   
   <entry>
     <title>Shiro反序列化漏洞分析</title>
@@ -510,32 +536,6 @@
     
     
       <category term="JFR" scheme="https://0range228.github.io/tags/JFR/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>iTerm2 快捷键速查手册</title>
-    <link href="https://0range228.github.io/iTerm2-%E5%BF%AB%E6%8D%B7%E9%94%AE%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C/"/>
-    <id>https://0range228.github.io/iTerm2-%E5%BF%AB%E6%8D%B7%E9%94%AE%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C/</id>
-    <published>2020-12-23T02:33:40.000Z</published>
-    <updated>2021-02-09T18:42:26.030Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote><p>终南阴岭秀，积雪浮云端。</p></blockquote><p>整理敲板子过程中的快捷键 。</p><a id="more"></a><h1 id="Tab"><a href="#Tab" class="headerlink" title="Tab"></a>Tab</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">新建标签：command + t</span><br><span class="line"></span><br><span class="line">关闭标签：command + w</span><br><span class="line"></span><br><span class="line">切换标签：command + 数字 / command + 左右方向键</span><br><span class="line"></span><br><span class="line">切换全屏：command + enter</span><br><span class="line"></span><br><span class="line">查找：command + f</span><br></pre></td></tr></table></figure><h1 id="分屏"><a href="#分屏" class="headerlink" title="分屏"></a>分屏</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">垂直分屏：command + d</span><br><span class="line"></span><br><span class="line">水平分屏：command + shift + d</span><br><span class="line"></span><br><span class="line">切换屏幕：command + option + 方向键 / command + [ 或 command + ]</span><br><span class="line"></span><br><span class="line">查看历史命令：command + ;</span><br><span class="line"></span><br><span class="line">查看剪贴板历史：command + shift + h</span><br></pre></td></tr></table></figure><h1 id="文本操作"><a href="#文本操作" class="headerlink" title="文本操作"></a>文本操作</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">清除当前行：ctrl + u</span><br><span class="line"></span><br><span class="line">到行首：ctrl + a</span><br><span class="line"></span><br><span class="line">到行尾：ctrl + e</span><br><span class="line"></span><br><span class="line">按单词移动：option + 左/右 方向键</span><br><span class="line"></span><br><span class="line">上一条命令：ctrl + p</span><br><span class="line"></span><br><span class="line">删除到文本末尾：ctrl + k</span><br><span class="line"></span><br><span class="line">搜索命令历史：ctrl + r</span><br><span class="line"></span><br><span class="line">删除当前光标的字符：ctrl + d</span><br><span class="line"></span><br><span class="line">删除光标之前的字符：ctrl + h</span><br><span class="line"></span><br><span class="line">删除光标之前的单词：ctrl + w</span><br><span class="line"></span><br><span class="line">交换光标处文本：ctrl + t</span><br><span class="line"></span><br><span class="line">清屏1：command + r</span><br><span class="line"></span><br><span class="line">清屏2：ctrl + l</span><br><span class="line"></span><br><span class="line">⌘ + 数字在各 tab 标签直接来回切换</span><br><span class="line"></span><br><span class="line">选择即复制 + 鼠标中键粘贴，这个很实用</span><br></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;序言&quot;&gt;&lt;a href=&quot;#序言&quot; class=&quot;headerlink&quot; title=&quot;序言&quot;&gt;&lt;/a&gt;序言&lt;/h1&gt;&lt;blockquote&gt;
-&lt;p&gt;终南阴岭秀，积雪浮云端。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;整理敲板子过程中的快捷键 。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="Shell" scheme="https://0range228.github.io/categories/Shell/"/>
-    
-    
-      <category term="iTerm2" scheme="https://0range228.github.io/tags/iTerm2/"/>
     
   </entry>
   
