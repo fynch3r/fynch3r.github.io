@@ -68,7 +68,7 @@
 <h1 id="QL查询"><a href="#QL查询" class="headerlink" title="QL查询"></a>QL查询</h1><img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80/image-20211022160948714.png" alt="image-20211022160948714" style="zoom:50%;">
 
 <p>编写QL脚本之后，直接右键-&gt;Code：Run Query；</p>
-<p>图中为查询所有method，右侧为查询到的结果，点击既可查看对应的src源码</p>
+<p>图中为查询所有method，右侧为查询到的结果，点击既可查看对应的src源码。</p>
 ]]></content>
       <categories>
         <category>静态分析</category>
