@@ -28,24 +28,20 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"0range228.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
-  <meta name="description" content="序言 开帘顿觉春风暖，满纸淋漓白云声。  梳理程序分析重要又有趣的理论。">
+  <meta name="description" content="序言 襄阳好风日，留醉与山翁。  学习CodeQL查询语法。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="程序分析理论">
-<meta property="og:url" content="https://0range228.github.io/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90%E7%90%86%E8%AE%BA/index.html">
+<meta property="og:title" content="CodeQL学习笔记(二)">
+<meta property="og:url" content="https://0range228.github.io/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%BA%8C/index.html">
 <meta property="og:site_name" content="0range的小窝">
-<meta property="og:description" content="序言 开帘顿觉春风暖，满纸淋漓白云声。  梳理程序分析重要又有趣的理论。">
+<meta property="og:description" content="序言 襄阳好风日，留醉与山翁。  学习CodeQL查询语法。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://0range228.github.io/images/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90%E7%90%86%E8%AE%BA/image-20210626171558276.png">
-<meta property="og:image" content="https://0range228.github.io/images/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90%E7%90%86%E8%AE%BA/image-20210628093230413.png">
-<meta property="og:image" content="https://0range228.github.io/images/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90%E7%90%86%E8%AE%BA/image-20210628093607208.png">
-<meta property="article:published_time" content="2021-06-26T08:32:31.000Z">
-<meta property="article:modified_time" content="2021-06-28T13:23:50.710Z">
+<meta property="article:published_time" content="2021-10-22T11:59:19.000Z">
+<meta property="article:modified_time" content="2021-10-22T12:26:52.696Z">
 <meta property="article:author" content="0range">
-<meta property="article:tag" content="静态分析理论基础">
+<meta property="article:tag" content="CodeQL">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://0range228.github.io/images/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90%E7%90%86%E8%AE%BA/image-20210626171558276.png">
 
-<link rel="canonical" href="https://0range228.github.io/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90%E7%90%86%E8%AE%BA/">
+<link rel="canonical" href="https://0range228.github.io/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%BA%8C/">
 
 
 <script id="page-configurations">
@@ -57,7 +53,7 @@
   };
 </script>
 
-  <title>程序分析理论 | 0range的小窝</title>
+  <title>CodeQL学习笔记(二) | 0range的小窝</title>
   
 
 
@@ -199,7 +195,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://0range228.github.io/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90%E7%90%86%E8%AE%BA/">
+    <link itemprop="mainEntityOfPage" href="https://0range228.github.io/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%BA%8C/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/yfy.png">
@@ -212,7 +208,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          程序分析理论
+          CodeQL学习笔记(二)
         </h1>
 
         <div class="post-meta">
@@ -221,16 +217,10 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2021-06-26 16:32:31" itemprop="dateCreated datePublished" datetime="2021-06-26T16:32:31+08:00">2021-06-26</time>
+              <time title="创建时间：2021-10-22 19:59:19 / 修改时间：20:26:52" itemprop="dateCreated datePublished" datetime="2021-10-22T19:59:19+08:00">2021-10-22</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-06-28 21:23:50" itemprop="dateModified" datetime="2021-06-28T21:23:50+08:00">2021-06-28</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -242,7 +232,7 @@
             </span>
 
           
-            <span id="/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90%E7%90%86%E8%AE%BA/" class="post-meta-item leancloud_visitors" data-flag-title="程序分析理论" title="热度">
+            <span id="/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%BA%8C/" class="post-meta-item leancloud_visitors" data-flag-title="CodeQL学习笔记(二)" title="热度">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -258,8 +248,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90%E7%90%86%E8%AE%BA/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90%E7%90%86%E8%AE%BA/" itemprop="commentCount"></span>
+    <a title="valine" href="/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%BA%8C/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%BA%8C/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -269,7 +259,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>838</span>
+              <span>567</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -289,45 +279,31 @@
 
       
         <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
-<p>开帘顿觉春风暖，满纸淋漓白云声。</p>
+<p>襄阳好风日，留醉与山翁。</p>
 </blockquote>
-<p>梳理程序分析重要又有趣的理论。</p>
+<p>学习CodeQL查询语法。</p>
 <a id="more"></a>
 
-<h1 id="理发师悖论"><a href="#理发师悖论" class="headerlink" title="理发师悖论"></a>理发师悖论</h1><p>村庄里有一位理发师，他说“我只给那些不给自己理发的人理发”。随着自己的头发越来越长，他陷入了困境。</p>
-<p>如果他不给自己理发，那么他实际上是不给自己理发的人，他需要给自己理发。</p>
-<p>如果他给自己理发，他就不是那些不给自己理发的人了，他不能为自己理发。</p>
-<h1 id="停机问题"><a href="#停机问题" class="headerlink" title="停机问题"></a>停机问题</h1><p>证明：“计算机不是万能的。”</p>
-<p>最准确&amp;最易懂的<a href>版本</a>；</p>
-<p>假设现在有两台机器 A &amp; C：</p>
-<p>A负责计算两个数的和，例如输入3、5，输出就是8；</p>
-<p>C负责计算棋局下一步的最优解；</p>
-<p><img src="../images/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90%E7%90%86%E8%AE%BA/image-20210626171558276.png" alt="image-20210626171558276"></p>
-<p>A &amp; C 都泛指正常的计算机程序：接收输入，输出结果。</p>
-<p>对于只要能正常输出结果(不管结果对错)的程序，都可以称为该程序可以<strong>停机</strong>。</p>
-<p>对于程序陷入了死循环等问题，导致迟迟没有结果的输出的局面，那么该程序无法停机。</p>
-<p>比如说A、C互换输入，那么就会导致出现停机。</p>
-<p>这时候我们想有一台上帝的杰作H，H就是传说中的“上帝之眼”，给它读入<strong>任意</strong>一台机器的蓝图，以及任意一个问题（输入）后，它都能根据蓝图模拟出该机器的运作过程，从而判断出哪些问题（输入）会导致该机器<strong>出错</strong>（即无法停机），哪些问题则<strong>不会出错</strong>（即成功<strong>停机</strong>）：</p>
-<p><img src="../images/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90%E7%90%86%E8%AE%BA/image-20210628093230413.png" alt="image-20210628093230413"></p>
-<p>那么这个H真的存在么？</p>
-<p>接下来逻辑证明<strong>H是不存在</strong>的：</p>
-<p>注意H的大前提是可以为<strong>任意程序蓝图+任意输入判断是否停机</strong>。</p>
-<p>假设现在有一个机器X：</p>
-<p><img src="../images/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90%E7%90%86%E8%AE%BA/image-20210628093607208.png" alt="image-20210628093607208"></p>
-<p>X由3部分组成：P、H、N</p>
-<p>P负责将输入一分为二；</p>
-<p>H是“上帝之眼”</p>
-<p>N是反转器：</p>
+<h1 id="基本查询结构"><a href="#基本查询结构" class="headerlink" title="基本查询结构"></a>基本查询结构</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Query metadata</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line">import <span class="comment">/* ... CodeQL libraries or modules ... */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* ... Optional, define CodeQL classes and predicates ... */</span></span><br><span class="line"></span><br><span class="line">from <span class="comment">/* ... variable declarations ... */</span></span><br><span class="line">where <span class="comment">/* ... logical formula ... */</span></span><br><span class="line"><span class="keyword">select</span> <span class="comment">/* ... expressions ... */</span></span><br></pre></td></tr></table></figure>
+
+<p>用户可以在查询过程中自定义谓词和类来自主分析。</p>
+<p>一些专有名词：</p>
 <ul>
-<li>如果H给出的结果是not stuck，那么N的结果就是stuck；</li>
-<li>如果H给出的结果是stuck，那么N的结果就是not stuck:)</li>
+<li><p>statement 语句 </p>
+</li>
+<li><p>predicate 谓词</p>
+</li>
+<li><p>clause 子句</p>
+</li>
 </ul>
-<p>现在，<strong>如果我们把X自身的蓝图给X</strong>，会发生什么？</p>
-<p>此时H就会对X的蓝图判定，输入是X蓝图的情况下会发生什么？</p>
-<p>如果H给出的是not stuck，那么X最终的输出结果就是stuck，相悖！</p>
-<p>如果H给出的是stuck，那么X最终的结果就是not stuck，相悖！ </p>
-<p>所以X自身就是一个反例，因此逻辑层面就会证明，<strong>世界上根本不存在H</strong>。 </p>
-<h1 id="程序分析技术栈"><a href="#程序分析技术栈" class="headerlink" title="程序分析技术栈"></a>程序分析技术栈</h1><p><a href="https://blog.csdn.net/qq_37206105/article/details/116401043?spm=1001.2014.3001.5501" target="_blank" rel="noopener">canliture师傅</a></p>
+<h2 id="import语句"><a href="#import语句" class="headerlink" title="import语句"></a>import语句</h2><p>定于需要导入到查询中的库和模块，以及源码对应的语言模块：</p>
+<p>cpp,csharp,go,java,javascript,python</p>
+<p>CodeQL为开发者提供了一些库，包含常用的谓词、类型和适用于各种分析的模块，比如控制流、数据流、污点追踪。</p>
+<h1 id="三个clause字句"><a href="#三个clause字句" class="headerlink" title="三个clause字句"></a>三个clause字句</h1><h2 id="from"><a href="#from" class="headerlink" title="from"></a>from</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from &lt;type&gt; &lt;variable name&gt;,...</span><br></pre></td></tr></table></figure>
+
+<p>声明在查询中需要使用的变量</p>
+<h2 id="where"><a href="#where" class="headerlink" title="where"></a>where</h2><p>对from中声明对变量加以限制的逻辑条件。</p>
+<h2 id="select"><a href="#select" class="headerlink" title="select"></a>select</h2><p>寻找那些from声明的、满足where条件的所有查询结果。</p>
 
     </div>
 
@@ -337,7 +313,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/" rel="tag"><i class="fa fa-tag"></i>静态分析理论基础</a>
+              <a href="/tags/CodeQL/" rel="tag"><i class="fa fa-tag"></i>CodeQL</a>
           </div>
 
         
@@ -346,13 +322,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/%E5%8F%8D%E5%BC%B9shell%E5%A7%BF%E5%8A%BF%E6%80%BB%E7%BB%93/" rel="prev" title="反弹shell姿势总结">
-      <i class="fa fa-chevron-left"></i> 反弹shell姿势总结
+    <a href="/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80/" rel="prev" title="CodeQL学习笔记(一)">
+      <i class="fa fa-chevron-left"></i> CodeQL学习笔记(一)
     </a></div>
-      <div class="post-nav-item">
-    <a href="/Java%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%81%E7%A8%8B%E6%A2%B3%E7%90%86/" rel="next" title="Java序列化流程梳理">
-      Java序列化流程梳理 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -415,7 +388,7 @@
       -->
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#理发师悖论"><span class="nav-number">2.</span> <span class="nav-text">理发师悖论</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#停机问题"><span class="nav-number">3.</span> <span class="nav-text">停机问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#程序分析技术栈"><span class="nav-number">4.</span> <span class="nav-text">程序分析技术栈</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本查询结构"><span class="nav-number">2.</span> <span class="nav-text">基本查询结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#import语句"><span class="nav-number">2.1.</span> <span class="nav-text">import语句</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三个clause字句"><span class="nav-number">3.</span> <span class="nav-text">三个clause字句</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#from"><span class="nav-number">3.1.</span> <span class="nav-text">from</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#where"><span class="nav-number">3.2.</span> <span class="nav-text">where</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#select"><span class="nav-number">3.3.</span> <span class="nav-text">select</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
