@@ -47,7 +47,7 @@
 <a id="more"></a>
 
 <h1 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h1><p><a href="https://semmle.com/" target="_blank" rel="noopener">Semmle</a>公司最早独创性的开创了一种QL语言，Semmle QL，并且运行在自家LGTM平台上。</p>
-<p>LGTM平台上存放的就是一些代码库，用户可以选择分析的语言，编写ql语句进行程序安全性查询。</p>
+<p>LGTM平台上存放的就是一些开源项目，用户可以选择分析的语言，编写ql语句进行程序安全性查询。</p>
 <p>2019年，GitHub（背后是微软）收购了Semmle公司，开源了<a href="https://github.com/github/codeql" target="_blank" rel="noopener">CodeQL</a>分析引擎。</p>
 <h1 id="CodeQL-引擎"><a href="#CodeQL-引擎" class="headerlink" title="CodeQL 引擎"></a>CodeQL 引擎</h1><img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80/image-20211021182151966.png" alt="image-20211021182151966" style="zoom:50%;">
 
