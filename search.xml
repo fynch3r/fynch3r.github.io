@@ -29,12 +29,14 @@
 <p>声明在查询中需要使用的变量</p>
 <h2 id="where"><a href="#where" class="headerlink" title="where"></a>where</h2><p>对from中声明对变量加以限制的逻辑条件。</p>
 <h2 id="select"><a href="#select" class="headerlink" title="select"></a>select</h2><p>寻找那些from声明的、满足where条件的所有查询结果。</p>
+<p>模板，包含两列：</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">select element, string</span><br></pre></td></tr></table></figure>
 
-
-
-
-
+<ul>
+<li>element：查询标识的代码元素，定义危险点的位置。</li>
+<li>string：为element显附加的报警消息，描述警报的原因。</li>
+</ul>
+<p>举个例子：</p>
 ]]></content>
       <categories>
         <category>静态分析</category>
