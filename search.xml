@@ -1,6 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>CodeQL学习笔记(三)</title>
+    <url>/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%89-1/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>CodeQL学习笔记(三)</title>
+    <url>/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%89/</url>
+    <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>襄阳好风日，留醉与山翁。</p>
+</blockquote>
+<p>和CodeQL官方示例学习QL写法。</p>
+<a id="more"></a>
+
+<h2 id="QL规范"><a href="#QL规范" class="headerlink" title="QL规范"></a>QL规范</h2><p>总结从例子中学到的语法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F;存在 exists 临时变量</span><br><span class="line">exists(string c | t.getHairColor() &#x3D; c)</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 聚合 count, max, min, avg(average)，sum</span><br><span class="line">&lt;aggregate&gt;(&lt;variable declarations&gt; | &lt;logical formula&gt; | &lt;expression&gt;)</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="谁是小偷？"><a href="#谁是小偷？" class="headerlink" title="谁是小偷？"></a>谁是小偷？</h2><p>地址：<a href="https://codeql.github.com/docs/writing-codeql-queries/find-the-thief/" target="_blank" rel="noopener">find-the-theif</a>，主要考察聚合搜索。</p>
+<p>v1.0版本：</p>
+<img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%89/image-20211026162237269.png" alt="image-20211026162237269" style="zoom:50%;">
+
+<p>高级用法，聚合搜索：</p>
+<p>小偷是村子里年龄最大的人：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">from Person t</span><br><span class="line">where t.getAge() &#x3D; max(int i | exists(Person p | p.getAge()) | i)</span><br><span class="line">select t</span><br></pre></td></tr></table></figure>
+
+<p>有序聚合，有序选出最老的人：</p>
+<figure class="highlight lasso"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">max</span>(Person p || p <span class="keyword">order</span> <span class="keyword">by</span> p.getAge())</span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%89/image-20211026165232185.png" alt="image-20211026165232185"></p>
+<p>最终版，找到小偷是Hester</p>
+<img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%89/image-20211026185415157.png" alt="image-20211026185415157" style="zoom:50%;">
+
+<h2 id="找到纵火犯"><a href="#找到纵火犯" class="headerlink" title="找到纵火犯"></a>找到纵火犯</h2><p>地址：<a href="https://codeql.github.com/docs/writing-codeql-queries/catch-the-fire-starter/" target="_blank" rel="noopener">catch-the-fire-starter</a></p>
+<p>定义新谓词isSouthern：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import tutorial</span><br><span class="line">&#x2F;&#x2F;特征谓词</span><br><span class="line">predicate isSouthern(Person p) &#123;</span><br><span class="line">    p.getLocation() &#x3D; &quot;south&quot;</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F; 找到所有的南方人</span><br><span class="line">from Person p</span><br><span class="line">where isSouthern(p)</span><br><span class="line">select p</span><br></pre></td></tr></table></figure>
+
+<p>或者可以定义一个类：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Southerner extends Person &#123;</span><br><span class="line">    Southerner()&#123;</span><br><span class="line">        isSouthern(this)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F;找到全部</span><br><span class="line">from Southerner sp</span><br><span class="line">select sp</span><br></pre></td></tr></table></figure>
+
+<p>重载谓词：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Child extends Person &#123;</span><br><span class="line">    Child()&#123;</span><br><span class="line">        this.getAge()&lt;10</span><br><span class="line">    &#125;</span><br><span class="line">    override predicate isAllowedIn(string region)&#123;</span><br><span class="line">        this.getLocation() &#x3D; region</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%89/image-20211026193151828.png" alt="image-20211026193151828" style="zoom:50%;">
+
+<p>找到了纵火犯</p>
+<p><img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%89/image-20211026193936560.png" alt="image-20211026193936560"></p>
+<h2 id="加冕合法继承人"><a href="#加冕合法继承人" class="headerlink" title="加冕合法继承人"></a>加冕合法继承人</h2><p>地址：<a href="https://codeql.github.com/docs/writing-codeql-queries/crown-the-rightful-heir/" target="_blank" rel="noopener">crown-the-rightful-heir</a></p>
+]]></content>
+      <categories>
+        <category>静态分析</category>
+      </categories>
+      <tags>
+        <tag>CodeQL</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>CodeQL学习笔记(二)</title>
     <url>/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%BA%8C/</url>
     <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
@@ -29,14 +86,27 @@
 <p>声明在查询中需要使用的变量</p>
 <h2 id="where"><a href="#where" class="headerlink" title="where"></a>where</h2><p>对from中声明对变量加以限制的逻辑条件。</p>
 <h2 id="select"><a href="#select" class="headerlink" title="select"></a>select</h2><p>寻找那些from声明的、满足where条件的所有查询结果。</p>
-<p>模板，包含两列：</p>
+<p>举个例子，到所有勾股值：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from int x, int y, int z, int summary</span><br><span class="line">where</span><br><span class="line">  x in [1 .. 10] and</span><br><span class="line">  y in [1 .. 10] and</span><br><span class="line">  z in [1 .. 10] and</span><br><span class="line">  x * x + y * y &#x3D; z * z and</span><br><span class="line">  summary &#x3D; x + y + z</span><br><span class="line">select x, y, z, summary</span><br></pre></td></tr></table></figure>
+
+<img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%BA%8C/image-20211026152559442.png" alt="image-20211026152559442" style="zoom:50%;">
+
+<p>告警模板，包含两列：</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">select element, string</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>element：查询标识的代码元素，定义危险点的位置。</li>
+<li>element：查询结果，查询标识的代码元素，定义危险点的位置。</li>
 <li>string：为element显附加的报警消息，描述警报的原因。</li>
 </ul>
-<p>举个例子：</p>
+<p>自定义类：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class SmallInt extends int &#123;</span><br><span class="line">    SmallInt()&#123;</span><br><span class="line">        this in [1..10]</span><br><span class="line">    &#125;</span><br><span class="line">    int square()&#123;</span><br><span class="line">        result &#x3D; this * this</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">from SmallInt x, SmallInt y, SmallInt z</span><br><span class="line">where x.square() + y.square() &#x3D; z.square()</span><br><span class="line">select x, y, z</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
 ]]></content>
       <categories>
         <category>静态分析</category>
@@ -72,6 +142,15 @@
 <li><p>最终展示查询结果。</p>
 </li>
 </ul>
+<p>Extractor做了哪些事情？</p>
+<img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80/image-20211026141929462.png" alt="image-20211026141929462" style="zoom:50%;">
+
+<p>如图所示：</p>
+<ol>
+<li>对于待分析的源代码，首先Copy一份，用于后续保留。</li>
+<li>将源码转换为关系型数据，也就是trap文件，放在database里面（比如，每个Java文件可以生成一个trap文件）。</li>
+<li>上面二者(Copy + Database)构建为snapshot快照。</li>
+</ol>
 <h1 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h1><p>CodeQL CLI来作为工具库 VSCode作为查询前端</p>
 <h2 id="CodeQL-CLI-binaries"><a href="#CodeQL-CLI-binaries" class="headerlink" title="CodeQL-CLI-binaries"></a>CodeQL-CLI-binaries</h2><p>文本命令行工具</p>
 <p>下载地址：<a href="https://github.com/github/codeql-cli-binaries" target="_blank" rel="noopener">https://github.com/github/codeql-cli-binaries</a> MacOS直接下载osx版本</p>
