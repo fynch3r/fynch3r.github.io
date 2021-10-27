@@ -40,8 +40,10 @@
 <meta property="og:image" content="https://0range228.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%89/image-20211026185415157.png">
 <meta property="og:image" content="https://0range228.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%89/image-20211026193151828.png">
 <meta property="og:image" content="https://0range228.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%89/image-20211026193936560.png">
+<meta property="og:image" content="https://0range228.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%89/image-20211026204546706.png">
+<meta property="og:image" content="https://0range228.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%89/image-20211026220931326.png">
 <meta property="article:published_time" content="2021-10-26T07:59:06.000Z">
-<meta property="article:modified_time" content="2021-10-26T11:51:05.108Z">
+<meta property="article:modified_time" content="2021-10-27T02:07:14.557Z">
 <meta property="article:author" content="0range">
 <meta property="article:tag" content="CodeQL">
 <meta name="twitter:card" content="summary">
@@ -147,7 +149,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">55</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">54</span></a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -223,10 +225,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-10-26 15:59:06 / 修改时间：19:51:05" itemprop="dateCreated datePublished" datetime="2021-10-26T15:59:06+08:00">2021-10-26</time>
+              <time title="创建时间：2021-10-26 15:59:06" itemprop="dateCreated datePublished" datetime="2021-10-26T15:59:06+08:00">2021-10-26</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-27 10:07:14" itemprop="dateModified" datetime="2021-10-27T10:07:14+08:00">2021-10-27</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -265,14 +273,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1k</span>
+              <span>6.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
+              <span>10 分钟</span>
             </span>
 
         </div>
@@ -325,6 +333,42 @@
 <p>找到了纵火犯</p>
 <p><img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%89/image-20211026193936560.png" alt="image-20211026193936560"></p>
 <h2 id="加冕合法继承人"><a href="#加冕合法继承人" class="headerlink" title="加冕合法继承人"></a>加冕合法继承人</h2><p>地址：<a href="https://codeql.github.com/docs/writing-codeql-queries/crown-the-rightful-heir/" target="_blank" rel="noopener">crown-the-rightful-heir</a></p>
+<p>覆盖成员谓词：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class Child extends Person &#123;</span><br><span class="line"> </span><br><span class="line">    &#x2F;* the characteristic predicate *&#x2F;</span><br><span class="line">    Child() &#123; this.getAge() &lt; 10 &#125;</span><br><span class="line"> </span><br><span class="line">    &#x2F;* a member predicate *&#x2F;</span><br><span class="line">    override predicate isAllowedIn(string region) &#123;</span><br><span class="line">        region &#x3D; this.getLocation()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>谓词isAllowedIn(string region)应用于表示村民的变量p上的时候，如果变量p的类型不是Child，则使用该谓词原来的定义；但是如果变量p的类型为Child，也就是说这个变量表示的村民是一个孩子，那么，该谓词将会使用Child类中的新定义，从而覆盖原来的代码。</p>
+<p>QL的递归用法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&#x2F;&#x2F; 返回p的孩子 result是默认的返回值</span><br><span class="line">Person childOf(Person p) &#123; parentOf(result) &#x3D; p &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;返回p的所有祖先 存在迭代关系</span><br><span class="line">Person ancestorOf(Person p)&#123;</span><br><span class="line">    result &#x3D; parentOf(p) or</span><br><span class="line">    result &#x3D; parentOf(childOf(p))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>transitive closure</strong></p>
+<p>传递闭包 QL里两个特殊的符号 <code>+</code> ,<code>*</code></p>
+<blockquote>
+<ul>
+<li><code>parentOf+(p)</code> applies the <code>parentOf()</code> predicate to <code>p</code> one or more times. This is equivalent to <code>ancestorOf(p)</code>.</li>
+<li><code>parentOf*(p)</code> applies the <code>parentOf()</code> predicate to <code>p</code> zero or more times, so it returns an ancestor of <code>p</code> or <code>p</code> itself.</li>
+</ul>
+</blockquote>
+<p>+递归一次或者更多，和ancestorOf效果一样</p>
+<p>*递归0次或者更多，返回p的一层祖先或者p自身</p>
+<p>返回p的所有亲戚</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Person relativeOf(Person p)&#123;</span><br><span class="line">    parentOf*(result) &#x3D; parentOf*(p)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%89/image-20211026204546706.png" alt="image-20211026204546706" style="zoom:50%;">
+
+<p>QL递归举例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 找到0～100 之间所有的整数</span><br><span class="line">int findNumber()&#123;</span><br><span class="line">    result &#x3D; 0</span><br><span class="line">    or </span><br><span class="line">    result &lt;&#x3D;100 and result &#x3D; findNumber()+1</span><br><span class="line">&#125;</span><br><span class="line">select findNumber()</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 找到0～100之间的所有偶数</span><br><span class="line">int getAnEven() &#123;</span><br><span class="line">  result &#x3D; 0</span><br><span class="line">  or</span><br><span class="line">  result &lt;&#x3D; 100 and result &#x3D; getAnOdd() + 1</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">int getAnOdd() &#123;</span><br><span class="line">  result &#x3D; getAnEven() + 1</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">select getAnEven()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="过河"><a href="#过河" class="headerlink" title="过河"></a>过河</h2><p>地址：<a href="https://codeql.github.com/docs/writing-codeql-queries/cross-the-river/" target="_blank" rel="noopener">cross-the-river</a></p>
+<p>很有趣的一道题，推荐去看原文。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br></pre></td><td class="code"><pre><span class="line">import tutorial</span><br><span class="line"></span><br><span class="line">class Cargo extends string &#123;</span><br><span class="line">    Cargo() &#123;</span><br><span class="line">      this &#x3D; &quot;Nothing&quot; or</span><br><span class="line">      this &#x3D; &quot;Goat&quot; or</span><br><span class="line">      this &#x3D; &quot;Cabbage&quot; or</span><br><span class="line">      this &#x3D; &quot;Wolf&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  &#x2F;** One of two shores. *&#x2F;</span><br><span class="line">  class Shore extends string &#123;</span><br><span class="line">    Shore() &#123;</span><br><span class="line">      this &#x3D; &quot;Left&quot; or</span><br><span class="line">      this &#x3D; &quot;Right&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    &#x2F;** Returns the other shore. *&#x2F;</span><br><span class="line">    Shore other() &#123;</span><br><span class="line">      this &#x3D; &quot;Left&quot; and result &#x3D; &quot;Right&quot;</span><br><span class="line">      or</span><br><span class="line">      this &#x3D; &quot;Right&quot; and result &#x3D; &quot;Left&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  &#x2F;** Renders the state as a string. *&#x2F;</span><br><span class="line">  string renderState(Shore manShore, Shore goatShore, Shore cabbageShore, Shore wolfShore) &#123;</span><br><span class="line">    result &#x3D; manShore + &quot;,&quot; + goatShore + &quot;,&quot; + cabbageShore + &quot;,&quot; + wolfShore</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  &#x2F;** A record of where everything is. *&#x2F;</span><br><span class="line">  class State extends string &#123;</span><br><span class="line">    Shore manShore;</span><br><span class="line">    Shore goatShore;</span><br><span class="line">    Shore cabbageShore;</span><br><span class="line">    Shore wolfShore;</span><br><span class="line">  </span><br><span class="line">    State() &#123; this &#x3D; renderState(manShore, goatShore, cabbageShore, wolfShore) &#125;</span><br><span class="line">  </span><br><span class="line">    &#x2F;** Returns the state that is reached after ferrying a particular cargo item. *&#x2F;</span><br><span class="line">    State ferry(Cargo cargo) &#123;</span><br><span class="line">      cargo &#x3D; &quot;Nothing&quot; and</span><br><span class="line">      result &#x3D; renderState(manShore.other(), goatShore, cabbageShore, wolfShore)</span><br><span class="line">      or</span><br><span class="line">      cargo &#x3D; &quot;Goat&quot; and</span><br><span class="line">      result &#x3D; renderState(manShore.other(), goatShore.other(), cabbageShore, wolfShore)</span><br><span class="line">      or</span><br><span class="line">      cargo &#x3D; &quot;Cabbage&quot; and</span><br><span class="line">      result &#x3D; renderState(manShore.other(), goatShore, cabbageShore.other(), wolfShore)</span><br><span class="line">      or</span><br><span class="line">      cargo &#x3D; &quot;Wolf&quot; and</span><br><span class="line">      result &#x3D; renderState(manShore.other(), goatShore, cabbageShore, wolfShore.other())</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Holds if the state is safe. This occurs when neither the goat nor the cabbage</span><br><span class="line">     * can get eaten.</span><br><span class="line">     *&#x2F;</span><br><span class="line">    predicate isSafe() &#123;</span><br><span class="line">      &#x2F;&#x2F; The goat can&#39;t eat the cabbage.</span><br><span class="line">      (goatShore !&#x3D; cabbageShore or goatShore &#x3D; manShore) and</span><br><span class="line">      &#x2F;&#x2F; The wolf can&#39;t eat the goat.</span><br><span class="line">      (wolfShore !&#x3D; goatShore or wolfShore &#x3D; manShore)</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    &#x2F;** Returns the state that is reached after safely ferrying a cargo item. *&#x2F;</span><br><span class="line">    State safeFerry(Cargo cargo) &#123; result &#x3D; this.ferry(cargo) and result.isSafe() &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;** man&#39;s move *&#x2F;</span><br><span class="line">    string towards() &#123;</span><br><span class="line">      manShore &#x3D; &quot;Left&quot; and result &#x3D; &quot;to the left&quot;</span><br><span class="line">      or</span><br><span class="line">      manShore &#x3D; &quot;Right&quot; and result &#x3D; &quot;to the right&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Returns all states that are reachable via safe ferrying.</span><br><span class="line">     * &#96;path&#96; keeps track of how it is achieved.</span><br><span class="line">     * &#96;visitedStates&#96; keeps track of previously visited states and is used to avoid loops.</span><br><span class="line">     *&#x2F;</span><br><span class="line">    State reachesVia(string path, string visitedStates) &#123;</span><br><span class="line">      &#x2F;&#x2F; Reachable in 1 step by ferrying a specific cargo</span><br><span class="line">      exists(Cargo cargo |</span><br><span class="line">        result &#x3D; this.safeFerry(cargo) and</span><br><span class="line">        visitedStates &#x3D; result and</span><br><span class="line">        path &#x3D; &quot;First &quot; + cargo + &quot; is ferried &quot; + result.towards() + &quot;,&quot;</span><br><span class="line">      )</span><br><span class="line">      or</span><br><span class="line">      &#x2F;&#x2F; Reachable by first following pathSoFar and then ferrying cargo</span><br><span class="line">      exists(string pathSoFar, string visitedStatesSoFar, Cargo cargo |</span><br><span class="line">        result &#x3D; this.reachesVia(pathSoFar, visitedStatesSoFar).safeFerry(cargo) and</span><br><span class="line">        &#x2F;&#x2F; resulting state is not visited yet</span><br><span class="line">        not exists(int i | i &#x3D; visitedStatesSoFar.indexOf(result)) and </span><br><span class="line">        visitedStates &#x3D; visitedStatesSoFar + &quot;_&quot; + result and</span><br><span class="line">        path &#x3D; pathSoFar + &quot;\nthen &quot; + cargo + &quot; is ferried &quot; + result.towards() + &quot;,&quot;</span><br><span class="line">      )</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  &#x2F;** The initial state, where everything is on the left shore. *&#x2F;</span><br><span class="line">  class InitialState extends State &#123;</span><br><span class="line">    InitialState() &#123; this &#x3D; renderState(&quot;Left&quot;, &quot;Left&quot;, &quot;Left&quot;, &quot;Left&quot;) &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  &#x2F;** The goal state, where everything is on the right shore. *&#x2F;</span><br><span class="line">  class GoalState extends State &#123;</span><br><span class="line">    GoalState() &#123; this &#x3D; renderState(&quot;Right&quot;, &quot;Right&quot;, &quot;Right&quot;, &quot;Right&quot;) &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  from string path</span><br><span class="line">  where any(InitialState i).reachesVia(path, _) &#x3D; any(GoalState g)</span><br><span class="line">  select path + &quot;.&quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%89/image-20211026220931326.png" alt="image-20211026220931326"></p>
 
     </div>
 
@@ -346,10 +390,7 @@
     <a href="/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%BA%8C/" rel="prev" title="CodeQL学习笔记(二)">
       <i class="fa fa-chevron-left"></i> CodeQL学习笔记(二)
     </a></div>
-      <div class="post-nav-item">
-    <a href="/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%89-1/" rel="next" title="CodeQL学习笔记(三)">
-      CodeQL学习笔记(三) <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -412,7 +453,7 @@
       -->
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#QL规范"><span class="nav-number">1.1.</span> <span class="nav-text">QL规范</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#谁是小偷？"><span class="nav-number">1.2.</span> <span class="nav-text">谁是小偷？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#找到纵火犯"><span class="nav-number">1.3.</span> <span class="nav-text">找到纵火犯</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加冕合法继承人"><span class="nav-number">1.4.</span> <span class="nav-text">加冕合法继承人</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#QL规范"><span class="nav-number">1.1.</span> <span class="nav-text">QL规范</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#谁是小偷？"><span class="nav-number">1.2.</span> <span class="nav-text">谁是小偷？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#找到纵火犯"><span class="nav-number">1.3.</span> <span class="nav-text">找到纵火犯</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加冕合法继承人"><span class="nav-number">1.4.</span> <span class="nav-text">加冕合法继承人</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过河"><span class="nav-number">1.5.</span> <span class="nav-text">过河</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -428,7 +469,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-count">54</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -527,12 +568,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">752k</span>
+    <span title="站点总字数">757k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">20:53</span>
+    <span title="站点阅读时长">21:02</span>
   -->
 
 </div>
