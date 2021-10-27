@@ -28,16 +28,16 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"0range228.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
-  <meta name="description" content="序言 襄阳好风日，留醉与山翁。  学习CodeQL查询语法。">
+  <meta name="description" content="序言 倚杖柴门外，临门听暮蝉。  学习CodeQL查询语法。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CodeQL学习笔记(二)">
 <meta property="og:url" content="https://0range228.github.io/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%BA%8C/index.html">
 <meta property="og:site_name" content="0range的小窝">
-<meta property="og:description" content="序言 襄阳好风日，留醉与山翁。  学习CodeQL查询语法。">
+<meta property="og:description" content="序言 倚杖柴门外，临门听暮蝉。  学习CodeQL查询语法。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://0range228.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%BA%8C/image-20211026152559442.png">
 <meta property="article:published_time" content="2021-10-22T11:59:19.000Z">
-<meta property="article:modified_time" content="2021-10-26T07:58:36.491Z">
+<meta property="article:modified_time" content="2021-10-27T06:41:07.438Z">
 <meta property="article:author" content="0range">
 <meta property="article:tag" content="CodeQL">
 <meta name="twitter:card" content="summary">
@@ -143,7 +143,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">54</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">55</span></a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -227,7 +227,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-10-26 15:58:36" itemprop="dateModified" datetime="2021-10-26T15:58:36+08:00">2021-10-26</time>
+                <time title="修改时间：2021-10-27 14:41:07" itemprop="dateModified" datetime="2021-10-27T14:41:07+08:00">2021-10-27</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -267,7 +267,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1k</span>
+              <span>1.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -287,7 +287,7 @@
 
       
         <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
-<p>襄阳好风日，留醉与山翁。</p>
+<p>倚杖柴门外，临门听暮蝉。</p>
 </blockquote>
 <p>学习CodeQL查询语法。</p>
 <a id="more"></a>
@@ -327,12 +327,13 @@
 <p>自定义类：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class SmallInt extends int &#123;</span><br><span class="line">    SmallInt()&#123;</span><br><span class="line">        this in [1..10]</span><br><span class="line">    &#125;</span><br><span class="line">    int square()&#123;</span><br><span class="line">        result &#x3D; this * this</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">from SmallInt x, SmallInt y, SmallInt z</span><br><span class="line">where x.square() + y.square() &#x3D; z.square()</span><br><span class="line">select x, y, z</span><br></pre></td></tr></table></figure>
 
-
-
-
-
-
-
+<h1 id="QL语言参考"><a href="#QL语言参考" class="headerlink" title="QL语言参考"></a>QL语言参考</h1><h2 id="About"><a href="#About" class="headerlink" title="About"></a>About</h2><p>QL特点：</p>
+<ul>
+<li>Declarative 命令式 ：描述了结果必须满足的属性，而不是提供计算结果的过程。</li>
+<li>Object-oriented 面向对象</li>
+</ul>
+<p>QL中的class实际上并不是像Java语言一样需要占用一段内存空间，QL中的类是限制已有数据的逻辑属性</p>
+<h2 id="谓词-Predicates"><a href="#谓词-Predicates" class="headerlink" title="谓词 Predicates"></a>谓词 Predicates</h2><p>QL中的函数</p>
 
     </div>
 
@@ -420,7 +421,7 @@
       -->
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本查询结构"><span class="nav-number">2.</span> <span class="nav-text">基本查询结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#import语句"><span class="nav-number">2.1.</span> <span class="nav-text">import语句</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三个clause字句"><span class="nav-number">3.</span> <span class="nav-text">三个clause字句</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#from"><span class="nav-number">3.1.</span> <span class="nav-text">from</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#where"><span class="nav-number">3.2.</span> <span class="nav-text">where</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#select"><span class="nav-number">3.3.</span> <span class="nav-text">select</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本查询结构"><span class="nav-number">2.</span> <span class="nav-text">基本查询结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#import语句"><span class="nav-number">2.1.</span> <span class="nav-text">import语句</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三个clause字句"><span class="nav-number">3.</span> <span class="nav-text">三个clause字句</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#from"><span class="nav-number">3.1.</span> <span class="nav-text">from</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#where"><span class="nav-number">3.2.</span> <span class="nav-text">where</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#select"><span class="nav-number">3.3.</span> <span class="nav-text">select</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#QL语言参考"><span class="nav-number">4.</span> <span class="nav-text">QL语言参考</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#About"><span class="nav-number">4.1.</span> <span class="nav-text">About</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#谓词-Predicates"><span class="nav-number">4.2.</span> <span class="nav-text">谓词 Predicates</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -436,7 +437,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-count">55</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
