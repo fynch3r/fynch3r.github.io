@@ -36,8 +36,10 @@
 <meta property="og:description" content="序言 倚杖柴门外，临门听暮蝉。  学习CodeQL查询语法。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://0range228.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%BA%8C/image-20211026152559442.png">
+<meta property="og:image" content="https://0range228.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%BA%8C/image-20211028120610724.png">
+<meta property="og:image" content="https://0range228.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%BA%8C/image-20211028173634119.png">
 <meta property="article:published_time" content="2021-10-22T11:59:19.000Z">
-<meta property="article:modified_time" content="2021-10-27T13:26:15.246Z">
+<meta property="article:modified_time" content="2021-10-28T12:07:44.928Z">
 <meta property="article:author" content="0range">
 <meta property="article:tag" content="CodeQL">
 <meta name="twitter:card" content="summary">
@@ -227,7 +229,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-10-27 21:26:15" itemprop="dateModified" datetime="2021-10-27T21:26:15+08:00">2021-10-27</time>
+                <time title="修改时间：2021-10-28 20:07:44" itemprop="dateModified" datetime="2021-10-28T20:07:44+08:00">2021-10-28</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -267,14 +269,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>10k</span>
+              <span>14k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>17 分钟</span>
+              <span>24 分钟</span>
             </span>
 
         </div>
@@ -561,7 +563,118 @@
 
 
 
-<h3 id="调用谓词-with-result"><a href="#调用谓词-with-result" class="headerlink" title="调用谓词 with result"></a>调用谓词 with result</h3>
+<h3 id="调用谓词-with-result"><a href="#调用谓词-with-result" class="headerlink" title="调用谓词 with result"></a>调用谓词 with result</h3><p>调用有返回值的谓词本身就是表达式 <code>a.getAChild()</code></p>
+<p>调用没有返回值的谓词是公式formula</p>
+<h3 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h3><p>聚合是一种映射，它根据公式指定的一组输入值计算结果值。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;aggregate&gt;(&lt;variable declarations&gt; | &lt;formula&gt; | &lt;expression&gt;)</span><br></pre></td></tr></table></figure>
+
+<p>fromula加以限制，expression计算结果值，aggregate算出来想要的目标</p>
+<p>关键词：</p>
+<p>排序关键词：<strong>min</strong>，<strong>max</strong>，<strong>rank</strong>，<strong>concat</strong>，<strong>strictconcat</strong></p>
+<p>排序是可以自动选择按照数值排序，还是按照字符排序(unicode value)。</p>
+<p>特殊需求排序：<code>order by &lt;element&gt; [desc/asc]</code> 缺省是asc升序排列</p>
+<p>比如：<code>order by o.getName()</code></p>
+<p>charAt() 返回值是去重的</p>
+<p>一些例子：</p>
+<ol>
+<li><p><strong>count</strong>：确定<code>&lt;expression&gt;</code>不同结果的个数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">count(File f | f.getTotalNumberOfLines() &gt; 500 | f) &#x2F;&#x2F; 寻找文件行数大于500行的文件数</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>min</strong>，<strong>max</strong>：<code>&lt;expression&gt;</code>的最小、最大值 </p>
+<p><code>&lt;expression&gt;</code> 必须是数字类型或者string类型</p>
+<p>聚合返回所有js文件中文件行数最多的文件名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">max(File f | f.getExtension() &#x3D; &quot;js&quot; | f.getBaseName() order by f.getTotalNumberOfLines(), f.getNumberOfLinesOfCode())</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>avg</strong>：  <code>&lt;expression&gt;</code> 的平均值 </p>
+<p><code>&lt;expression&gt;</code>结果必须的是数值。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">avg(int i | i &#x3D;[0..3]|i) &#x2F;&#x2F; 0，1，2，3的平均值</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>sum</strong>：<code>&lt;expression&gt;</code> 的总和</p>
+<p><code>&lt;expression&gt;</code>结果必须的是数值。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sum(int i, int j| i in [0..2] and j in [3..5]| i*j)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>concat</strong>：将<code>&lt;expression&gt;</code>的各种结果都聚合到一起。</p>
+<p><code>&lt;expression&gt;</code>结果必须是string。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select concat(int i| i in [0..3] | i.toString() order by i desc) &#x2F;&#x2F; 3210</span><br><span class="line">select concat(int i| i in [0..3] | i.toString(),&quot;|&quot; order by i desc) &#x2F;&#x2F; 3|2|1|0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>rank</strong></p>
+<p>给<code>&lt;expression&gt;</code>的结果排序。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rank[4](int i | i &#x3D; [1..10] | i) &#x2F;&#x2F; 4</span><br><span class="line">select rank[4](int i | i &#x3D; [1 .. 10] | i order by i desc) &#x2F;&#x2F; 7</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>[index]从1开始，rank[0] has no result</p>
+<p>rank[1] == min(…)</p>
+</blockquote>
+</li>
+<li><p><strong>strictconcat</strong>，<strong>strictcount</strong>，<strong>strictsum</strong></p>
+<p>没有满足formula的，就返回empty set，而不是默认的0或者空字符串</p>
+</li>
+<li><p><strong>unique</strong></p>
+<p>返回<code>&lt;expression&gt;</code>的结果集中满足formula的唯一值。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from int x</span><br><span class="line">where x in [-5 .. 5] and x !&#x3D; 0</span><br><span class="line">select unique(int y | y &#x3D; x or y &#x3D; x.abs() | y)</span><br></pre></td></tr></table></figure>
+
+<p>[1..5]满足的x和x.abs()的结果是唯一的</p>
+</li>
+</ol>
+<h4 id="单调聚合"><a href="#单调聚合" class="headerlink" title="单调聚合"></a>单调聚合</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">string getPerson() &#123; result &#x3D; &quot;Alice&quot; or</span><br><span class="line">                     result &#x3D; &quot;Bob&quot; or</span><br><span class="line">                     result &#x3D; &quot;Charles&quot; or</span><br><span class="line">                     result &#x3D; &quot;Diane&quot;</span><br><span class="line">                   &#125;</span><br><span class="line">string getFruit(string p) &#123; p &#x3D; &quot;Alice&quot;   and result &#x3D; &quot;Orange&quot; or</span><br><span class="line">                            p &#x3D; &quot;Alice&quot;   and result &#x3D; &quot;Apple&quot; or</span><br><span class="line">                            p &#x3D; &quot;Bob&quot;     and result &#x3D; &quot;Apple&quot; or</span><br><span class="line">                            p &#x3D; &quot;Charles&quot; and result &#x3D; &quot;Apple&quot; or</span><br><span class="line">                            p &#x3D; &quot;Charles&quot; and result &#x3D; &quot;Banana&quot;</span><br><span class="line">                          &#125;</span><br><span class="line">int getPrice(string f) &#123; f &#x3D; &quot;Apple&quot;  and result &#x3D; 100 or</span><br><span class="line">                         f &#x3D; &quot;Orange&quot; and result &#x3D; 100 or</span><br><span class="line">                         f &#x3D; &quot;Orange&quot; and result &#x3D;   1</span><br><span class="line">                       &#125;</span><br><span class="line"></span><br><span class="line">predicate nonmono(string p, int cost) &#123;</span><br><span class="line">  p &#x3D; getPerson() and cost &#x3D; sum(string f | f &#x3D; getFruit(p) | getPrice(f))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">language[monotonicAggregates]</span><br><span class="line">predicate mono(string p, int cost) &#123;</span><br><span class="line">  p &#x3D; getPerson() and cost &#x3D; sum(string f | f &#x3D; getFruit(p) | getPrice(f))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">from string variant, string person, int cost</span><br><span class="line">where variant &#x3D; &quot;default&quot;  and nonmono(person, cost) or</span><br><span class="line">      variant &#x3D; &quot;monotonic&quot; and mono(person, cost)</span><br><span class="line">select variant, person, cost</span><br><span class="line">order by variant, person</span><br></pre></td></tr></table></figure>
+
+<img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%BA%8C/image-20211028120610724.png" alt="image-20211028120610724" style="zoom:50%;">
+
+<p>一种苹果，两种橙子</p>
+<p>区别：</p>
+<ol>
+<li>非单调谓词：Alice买了苹果和橙子，sum会把这些一起求和100+100+1=201</li>
+<li>单调谓词：Alice会分别计算100+1=101，100+100=200</li>
+</ol>
+<p>Charies想买苹果+香蕉，但是香蕉根本不卖</p>
+<p>非单调谓词：直接返回苹果+0</p>
+<p>单词谓词：因为香蕉的值没有，所以直接不算</p>
+<p>Diane什么都不买，所以都显示0。但如果用strictsum，两种谓词都不显示</p>
+<p>单调谓词普遍用于递归，因为每一轮结果都是有意义(fix-point)。</p>
+<h4 id="递归单调聚合"><a href="#递归单调聚合" class="headerlink" title="递归单调聚合"></a>递归单调聚合</h4><p>单调聚合函数经常用来<strong>递归</strong>，这种递归通常应用在表达式中。</p>
+<p>举例：计算当前节点到叶子结点的距离：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">int depth(Node n) &#123;</span><br><span class="line">  if not exists(n.getAChild())</span><br><span class="line">  then result &#x3D; 0</span><br><span class="line">  else result &#x3D; 1 + max(Node child | child &#x3D; n.getAChild() | depth(child))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Any"><a href="#Any" class="headerlink" title="Any"></a>Any</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">any(&lt;variable declarations&gt; | &lt;formula&gt; | &lt;expression&gt;)</span><br></pre></td></tr></table></figure>
+
+
+
+<img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%BA%8C/image-20211028173634119.png" alt="image-20211028173634119" style="zoom:50%;">
+
+<h3 id="Cast-类型强转"><a href="#Cast-类型强转" class="headerlink" title="Cast 类型强转"></a>Cast 类型强转</h3><p>两种方式：</p>
+<ul>
+<li>postfix 后缀，<code>x.(Foo)</code> 表示将x限制为Foo类型</li>
+<li>prefix 前缀，<code>(Foo)x</code> 也表示将x限制为Foo类型</li>
+</ul>
+<p>一般用法：x.(Foo) 等同于((Foo)x)</p>
+<p>例子：查找父类是List的类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Type t</span><br><span class="line">where t.(Class).getASupertype().hasName(&quot;List&quot;)</span><br><span class="line">select t</span><br></pre></td></tr></table></figure>
+
+<h3 id="无关表达式-Don’t-care-expression"><a href="#无关表达式-Don’t-care-expression" class="headerlink" title="无关表达式 Don’t-care expression"></a>无关表达式 Don’t-care expression</h3><p>参数单个下划线表示，表示any value，不关心实际是什么</p>
+<p>例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from string s</span><br><span class="line">where s &#x3D; &quot;hello&quot;.charAt(_)</span><br><span class="line">select s</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;l,o,e,h</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="公式-Formula"><a href="#公式-Formula" class="headerlink" title="公式 Formula"></a>公式 Formula</h2><p>Formulas define logical relations between the free variables used in expressions.</p>
+<p>Formula限制了表达式中那些free类型的变量。</p>
+<p>当一个formula为true，习惯说是hold住了</p>
+<p>hold：</p>
+<p>“Ann” &lt; “Anne”</p>
+<p>[1 .. 2] = [2 .. 5]</p>
+<h3 id="Type-check"><a href="#Type-check" class="headerlink" title="Type check"></a>Type check</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;expression&gt; instanceof &lt;type&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="range-check"><a href="#range-check" class="headerlink" title="range check"></a>range check</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;expression&gt; in &lt;type&gt;</span><br><span class="line">&lt;expression&gt; &#x3D; &lt;type&gt;</span><br></pre></td></tr></table></figure>
+
+<p>两种形式表达都可以</p>
+<h3 id="量化公式"><a href="#量化公式" class="headerlink" title="量化公式"></a>量化公式</h3><h4 id="显式量词"><a href="#显式量词" class="headerlink" title="显式量词"></a>显式量词</h4><p><strong>exists</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exists(&lt;variable declarations&gt; | &lt;formula1&gt; and &lt;formula2&gt;)</span><br></pre></td></tr></table></figure>
+
+
     </div>
 
     
@@ -648,7 +761,7 @@
       -->
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本查询结构"><span class="nav-number">2.</span> <span class="nav-text">基本查询结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#import语句"><span class="nav-number">2.1.</span> <span class="nav-text">import语句</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三个clause字句"><span class="nav-number">3.</span> <span class="nav-text">三个clause字句</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#from"><span class="nav-number">3.1.</span> <span class="nav-text">from</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#where"><span class="nav-number">3.2.</span> <span class="nav-text">where</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#select"><span class="nav-number">3.3.</span> <span class="nav-text">select</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#QL语言参考"><span class="nav-number">4.</span> <span class="nav-text">QL语言参考</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#About"><span class="nav-number">4.1.</span> <span class="nav-text">About</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#谓词-Predicate"><span class="nav-number">4.2.</span> <span class="nav-text">谓词 Predicate</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#没有返回值的谓词"><span class="nav-number">4.2.1.</span> <span class="nav-text">没有返回值的谓词</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#有返回值的谓词"><span class="nav-number">4.2.2.</span> <span class="nav-text">有返回值的谓词</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#递归谓词"><span class="nav-number">4.2.3.</span> <span class="nav-text">递归谓词</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#谓词的种类"><span class="nav-number">4.2.4.</span> <span class="nav-text">谓词的种类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#行为绑定"><span class="nav-number">4.2.5.</span> <span class="nav-text">行为绑定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#绑定集合-bindingset"><span class="nav-number">4.2.6.</span> <span class="nav-text">绑定集合 bindingset[]</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库谓词"><span class="nav-number">4.2.7.</span> <span class="nav-text">数据库谓词</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查询-Query"><span class="nav-number">4.3.</span> <span class="nav-text">查询 Query</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#select子句"><span class="nav-number">4.3.1.</span> <span class="nav-text">select子句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查询谓词"><span class="nav-number">4.3.2.</span> <span class="nav-text">查询谓词</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类型-Type"><span class="nav-number">4.4.</span> <span class="nav-text">类型 Type</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原始类型-primitive-types"><span class="nav-number">4.4.1.</span> <span class="nav-text">原始类型 primitive types</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类Classes"><span class="nav-number">4.4.2.</span> <span class="nav-text">类Classes</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#类内成分"><span class="nav-number">4.4.2.1.</span> <span class="nav-text">类内成分</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#特征谓词Characteristic-predicate"><span class="nav-number">4.4.2.1.1.</span> <span class="nav-text">特征谓词Characteristic predicate</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#成员谓词Member-predicate"><span class="nav-number">4.4.2.1.2.</span> <span class="nav-text">成员谓词Member predicate</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#字段Field"><span class="nav-number">4.4.2.1.3.</span> <span class="nav-text">字段Field</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#具体类Concrete-classes"><span class="nav-number">4.4.2.2.</span> <span class="nav-text">具体类Concrete classes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#抽象类Abstract-classes"><span class="nav-number">4.4.2.3.</span> <span class="nav-text">抽象类Abstract classes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Override-成员谓词"><span class="nav-number">4.4.2.4.</span> <span class="nav-text">Override 成员谓词</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多继承"><span class="nav-number">4.4.2.5.</span> <span class="nav-text">多继承</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#非继承子类型Non-extending-subtypes"><span class="nav-number">4.4.2.6.</span> <span class="nav-text">非继承子类型Non-extending subtypes</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模块-Module"><span class="nav-number">4.5.</span> <span class="nav-text">模块 Module</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义一个模块"><span class="nav-number">4.5.1.</span> <span class="nav-text">定义一个模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模块种类"><span class="nav-number">4.5.2.</span> <span class="nav-text">模块种类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#文件模块"><span class="nav-number">4.5.2.1.</span> <span class="nav-text">文件模块</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#库模块"><span class="nav-number">4.5.2.1.1.</span> <span class="nav-text">库模块</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#查询模块"><span class="nav-number">4.5.2.1.2.</span> <span class="nav-text">查询模块</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#显示模块"><span class="nav-number">4.5.2.2.</span> <span class="nav-text">显示模块</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模块体"><span class="nav-number">4.5.3.</span> <span class="nav-text">模块体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导入模块"><span class="nav-number">4.5.4.</span> <span class="nav-text">导入模块</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#别名-Alias"><span class="nav-number">4.6.</span> <span class="nav-text">别名 Alias</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变量-Variable"><span class="nav-number">4.7.</span> <span class="nav-text">变量 Variable</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#声明一个变量"><span class="nav-number">4.7.1.</span> <span class="nav-text">声明一个变量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#表达式-Expression"><span class="nav-number">4.8.</span> <span class="nav-text">表达式 Expression</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#关键字"><span class="nav-number">4.8.1.</span> <span class="nav-text">关键字</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#范围Range"><span class="nav-number">4.8.2.</span> <span class="nav-text">范围Range</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Super"><span class="nav-number">4.8.3.</span> <span class="nav-text">Super</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#调用谓词-with-result"><span class="nav-number">4.8.4.</span> <span class="nav-text">调用谓词 with result</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本查询结构"><span class="nav-number">2.</span> <span class="nav-text">基本查询结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#import语句"><span class="nav-number">2.1.</span> <span class="nav-text">import语句</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三个clause字句"><span class="nav-number">3.</span> <span class="nav-text">三个clause字句</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#from"><span class="nav-number">3.1.</span> <span class="nav-text">from</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#where"><span class="nav-number">3.2.</span> <span class="nav-text">where</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#select"><span class="nav-number">3.3.</span> <span class="nav-text">select</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#QL语言参考"><span class="nav-number">4.</span> <span class="nav-text">QL语言参考</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#About"><span class="nav-number">4.1.</span> <span class="nav-text">About</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#谓词-Predicate"><span class="nav-number">4.2.</span> <span class="nav-text">谓词 Predicate</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#没有返回值的谓词"><span class="nav-number">4.2.1.</span> <span class="nav-text">没有返回值的谓词</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#有返回值的谓词"><span class="nav-number">4.2.2.</span> <span class="nav-text">有返回值的谓词</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#递归谓词"><span class="nav-number">4.2.3.</span> <span class="nav-text">递归谓词</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#谓词的种类"><span class="nav-number">4.2.4.</span> <span class="nav-text">谓词的种类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#行为绑定"><span class="nav-number">4.2.5.</span> <span class="nav-text">行为绑定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#绑定集合-bindingset"><span class="nav-number">4.2.6.</span> <span class="nav-text">绑定集合 bindingset[]</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库谓词"><span class="nav-number">4.2.7.</span> <span class="nav-text">数据库谓词</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查询-Query"><span class="nav-number">4.3.</span> <span class="nav-text">查询 Query</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#select子句"><span class="nav-number">4.3.1.</span> <span class="nav-text">select子句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查询谓词"><span class="nav-number">4.3.2.</span> <span class="nav-text">查询谓词</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类型-Type"><span class="nav-number">4.4.</span> <span class="nav-text">类型 Type</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原始类型-primitive-types"><span class="nav-number">4.4.1.</span> <span class="nav-text">原始类型 primitive types</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类Classes"><span class="nav-number">4.4.2.</span> <span class="nav-text">类Classes</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#类内成分"><span class="nav-number">4.4.2.1.</span> <span class="nav-text">类内成分</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#特征谓词Characteristic-predicate"><span class="nav-number">4.4.2.1.1.</span> <span class="nav-text">特征谓词Characteristic predicate</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#成员谓词Member-predicate"><span class="nav-number">4.4.2.1.2.</span> <span class="nav-text">成员谓词Member predicate</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#字段Field"><span class="nav-number">4.4.2.1.3.</span> <span class="nav-text">字段Field</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#具体类Concrete-classes"><span class="nav-number">4.4.2.2.</span> <span class="nav-text">具体类Concrete classes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#抽象类Abstract-classes"><span class="nav-number">4.4.2.3.</span> <span class="nav-text">抽象类Abstract classes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Override-成员谓词"><span class="nav-number">4.4.2.4.</span> <span class="nav-text">Override 成员谓词</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多继承"><span class="nav-number">4.4.2.5.</span> <span class="nav-text">多继承</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#非继承子类型Non-extending-subtypes"><span class="nav-number">4.4.2.6.</span> <span class="nav-text">非继承子类型Non-extending subtypes</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模块-Module"><span class="nav-number">4.5.</span> <span class="nav-text">模块 Module</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义一个模块"><span class="nav-number">4.5.1.</span> <span class="nav-text">定义一个模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模块种类"><span class="nav-number">4.5.2.</span> <span class="nav-text">模块种类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#文件模块"><span class="nav-number">4.5.2.1.</span> <span class="nav-text">文件模块</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#库模块"><span class="nav-number">4.5.2.1.1.</span> <span class="nav-text">库模块</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#查询模块"><span class="nav-number">4.5.2.1.2.</span> <span class="nav-text">查询模块</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#显示模块"><span class="nav-number">4.5.2.2.</span> <span class="nav-text">显示模块</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模块体"><span class="nav-number">4.5.3.</span> <span class="nav-text">模块体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导入模块"><span class="nav-number">4.5.4.</span> <span class="nav-text">导入模块</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#别名-Alias"><span class="nav-number">4.6.</span> <span class="nav-text">别名 Alias</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变量-Variable"><span class="nav-number">4.7.</span> <span class="nav-text">变量 Variable</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#声明一个变量"><span class="nav-number">4.7.1.</span> <span class="nav-text">声明一个变量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#表达式-Expression"><span class="nav-number">4.8.</span> <span class="nav-text">表达式 Expression</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#关键字"><span class="nav-number">4.8.1.</span> <span class="nav-text">关键字</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#范围Range"><span class="nav-number">4.8.2.</span> <span class="nav-text">范围Range</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Super"><span class="nav-number">4.8.3.</span> <span class="nav-text">Super</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#调用谓词-with-result"><span class="nav-number">4.8.4.</span> <span class="nav-text">调用谓词 with result</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#聚合"><span class="nav-number">4.8.5.</span> <span class="nav-text">聚合</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#单调聚合"><span class="nav-number">4.8.5.1.</span> <span class="nav-text">单调聚合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#递归单调聚合"><span class="nav-number">4.8.5.2.</span> <span class="nav-text">递归单调聚合</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Any"><span class="nav-number">4.8.6.</span> <span class="nav-text">Any</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cast-类型强转"><span class="nav-number">4.8.7.</span> <span class="nav-text">Cast 类型强转</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#无关表达式-Don’t-care-expression"><span class="nav-number">4.8.8.</span> <span class="nav-text">无关表达式 Don’t-care expression</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#公式-Formula"><span class="nav-number">4.9.</span> <span class="nav-text">公式 Formula</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Type-check"><span class="nav-number">4.9.1.</span> <span class="nav-text">Type check</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#range-check"><span class="nav-number">4.9.2.</span> <span class="nav-text">range check</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#量化公式"><span class="nav-number">4.9.3.</span> <span class="nav-text">量化公式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#显式量词"><span class="nav-number">4.9.3.1.</span> <span class="nav-text">显式量词</span></a></li></ol></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -763,12 +876,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">766k</span>
+    <span title="站点总字数">770k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">21:17</span>
+    <span title="站点阅读时长">21:24</span>
   -->
 
 </div>
