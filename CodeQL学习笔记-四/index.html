@@ -35,11 +35,13 @@
 <meta property="og:site_name" content="0range的小窝">
 <meta property="og:description" content="序言 春风不相识，何事入罗帏。  CodeQL for QL。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://0range228.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9B%9B/image-20211029175310396.png">
 <meta property="article:published_time" content="2021-10-29T07:08:17.000Z">
-<meta property="article:modified_time" content="2021-10-29T08:22:28.608Z">
+<meta property="article:modified_time" content="2021-10-29T10:44:24.936Z">
 <meta property="article:author" content="0range">
 <meta property="article:tag" content="CodeQL">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://0range228.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9B%9B/image-20211029175310396.png">
 
 <link rel="canonical" href="https://0range228.github.io/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9B%9B/">
 
@@ -219,7 +221,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2021-10-29 15:08:17 / 修改时间：16:22:28" itemprop="dateCreated datePublished" datetime="2021-10-29T15:08:17+08:00">2021-10-29</time>
+              <time title="创建时间：2021-10-29 15:08:17 / 修改时间：18:44:24" itemprop="dateCreated datePublished" datetime="2021-10-29T15:08:17+08:00">2021-10-29</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -259,14 +261,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>534</span>
+              <span>3.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>5 分钟</span>
             </span>
 
         </div>
@@ -298,15 +300,104 @@
 <p><code>Callable</code>类，它是<code>Method</code>和<code>Constructor</code>类的公共父类。</p>
 <h3 id="Type"><a href="#Type" class="headerlink" title="Type"></a>Type</h3><p>拥有很多子类：</p>
 <ul>
-<li><p>PrimitiveType ：描述Java语言中的8个基础类型 boolean byte char double float int long short 外带一个null</p>
+<li>PrimitiveType ：描述Java语言中的8个基础类型 boolean byte char double float int long short 外带一个null</li>
+<li>RefType：引用类型（也就是非基础类型），拥有如下子类：<ul>
+<li>Class ： 表示Java Class</li>
+<li>Interface：表示Java 接口</li>
+<li>EnumType：表示Java 枚举类型</li>
+<li>Array：表示Java数组</li>
+<li>TopLevelType：表示在编译单元顶层声明的引用类型 </li>
+<li>NestedType：在一个类型内部声明的类型</li>
+<li>TopLevelClass：表示在编译单元顶层声明的类</li>
+<li>NestedType：在另一个type中声明的类<ul>
+<li>LocalClass：在一个method或者constructor中定义的类</li>
+<li>AnonymousClass：匿名类</li>
+</ul>
 </li>
-<li><p>RefType：引用类型（也就是非基础类型），拥有如下子类：</p>
+</ul>
+</li>
+</ul>
+<p>查询程序中的所有int类型的变量：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line">from Variable v, PrimitiveType pt</span><br><span class="line">where pt&#x3D;v.getType() and</span><br><span class="line">	pt.hasName(&quot;int&quot;)</span><br><span class="line">select v</span><br></pre></td></tr></table></figure>
+
+<p>查询所有的声明类型和编译类型不同的类型：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line">from TopLevelType tl</span><br><span class="line">where tl.getName() !&#x3D; tl.getCompilationUnit().getName()</span><br><span class="line">select tl</span><br></pre></td></tr></table></figure>
+
+<p>还有很多其他单例类：</p>
+<p><code>TypeObject</code>, <code>TypeCloneable</code>, <code>TypeRuntime</code>, <code>TypeSerializable</code>, <code>TypeString</code>, <code>TypeSystem</code> and <code>TypeClass</code>.</p>
+<p>查询程序中的所有直接extends了Object类的嵌套类；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from NestedClass nc</span><br><span class="line">where nc.getASupertype() instanceof TypeObject</span><br><span class="line">select nc</span><br></pre></td></tr></table></figure>
+
+<h4 id="泛型Genetics"><a href="#泛型Genetics" class="headerlink" title="泛型Genetics"></a>泛型Genetics</h4><p>CodeQL设计了若干个Type子类负责处理Java中的泛型</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GenericType -- GenericInterface &#x2F;&#x2F; 泛型接口</span><br><span class="line">						-- GenericClass &#x2F;&#x2F; 泛型类</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">package java.util.;</span><br><span class="line"></span><br><span class="line">public interface Map&lt;K, V&gt; &#123;</span><br><span class="line">    int size();</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>TypeVariable</code> 可以表示Map泛型接口中的K,V参数</p>
+<p>如果现在有一个泛型类实现了Map泛型接口，<code>Map&lt;String, File&gt;</code> 的类型是<code>ParameterizedType</code></p>
+<p>寻找那些原形是Map的泛型类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from GenericInterface map, ParameterizedType pt</span><br><span class="line">where map.hasQualifiedName(&quot;java.util&quot;, &quot;Map&quot;) and</span><br><span class="line">    pt.getSourceDeclaration() &#x3D; map</span><br><span class="line">select pt</span><br></pre></td></tr></table></figure>
+
+<p>但是通常泛型参数的类型会限制泛型类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">class StringToNumMap&lt;N extends Number&gt; implements Map&lt;String, N&gt; &#123;</span><br><span class="line">    &#x2F;&#x2F; ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>限制了N的类型一定是Number类自身或者Number的子类，可以说Number类是N的upper bound。</p>
+<p>getATypeBound：返回参数的type bound</p>
+<p>TypeBound：type bound</p>
+<p>举例，查询泛型类中的参数bound是Number的参数变量</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from TypeVariable tv, TypeBound tb</span><br><span class="line">where tb &#x3D; tv.getATypeBound() and</span><br><span class="line">    tb.getType().hasQualifiedName(&quot;java.lang&quot;, &quot;Number&quot;)</span><br><span class="line">select tv</span><br></pre></td></tr></table></figure>
+
+<p>当处理未知泛型类型的遗留代码，每个泛型type都是一个raw version 没有任何类形参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RawType -- RawClass</span><br><span class="line">				-- RawInterface</span><br></pre></td></tr></table></figure>
+
+<p>同样有谓词<code>getSourceDeclaration</code>方法来获得对应的泛型类型。</p>
+<p>例如我们寻找Map的泛型类型</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line">from Variable v, RawType rt</span><br><span class="line">where rt &#x3D; v.getType() and </span><br><span class="line">		rt.getSourceDeclaration().hasQualifiedName(&quot;java.util&quot;, &quot;Map&quot;)</span><br><span class="line">select v</span><br></pre></td></tr></table></figure>
+
+<img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9B%9B/image-20211029175310396.png" alt="image-20211029175310396" style="zoom:50%;">
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Map m1 &#x3D; new HashMap();</span><br><span class="line">Map&lt;String, String&gt; m2 &#x3D; new HashMap&lt;String, String&gt;();</span><br></pre></td></tr></table></figure>
+
+<p>但是只能找到m1，不能找到m2。</p>
+<p>通配符？：wildcard type</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;? extends Number, ? super Float&gt; m;</span><br></pre></td></tr></table></figure>
+
+<p><code>WildcardTypeAccess</code>：表示的是这两个通配符</p>
+<p>Number是上界，Float是下届</p>
+<p><code>getUpperBound</code>：获取上界</p>
+<p><code>getLowerBound</code>：获取下界</p>
+<p>当处理正常method的时候，</p>
+<p><code>GenericMethod</code> ，<code>ParameterizedMethod</code>， <code>RawMethod</code>这三个类都能适用于常规方法。</p>
+<h3 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h3><ul>
+<li>Filed 代表Java类属性</li>
+<li>LocalVariableDecl 代表局部变量</li>
+<li>Parameter 代表方法参数</li>
+</ul>
+<h2 id="AST-：Abstract-syntax-tree"><a href="#AST-：Abstract-syntax-tree" class="headerlink" title="AST ：Abstract syntax tree"></a>AST ：Abstract syntax tree</h2><p>AST中节点的成分，主要两类：</p>
 <ul>
-<li>Class ： 表示一个Java Class</li>
-<li>Interface：表示一个Java 接口</li>
+<li>Stmt：语句</li>
+<li>Expr：表达式</li>
 </ul>
-</li>
+<p>这两个类中也提供了一些成员谓词：</p>
+<ul>
+<li><code>Expr.getAChildExpr</code> 返回一个给定表达式的子表达式</li>
+<li><code>Stmt.getAChild</code> 返回直接嵌套在给定语句中的语句或者表达式</li>
+<li><code>Expr.getParent</code> and <code>Stmt.getParent</code>  返回一个AST节点的父节点</li>
 </ul>
+<p>返回return stmt中的表达式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line">from Expr e</span><br><span class="line">where e.getParent() instanceof ReturnStmt</span><br><span class="line">select e</span><br></pre></td></tr></table></figure>
+
+<p>返回If stmt中的表达式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Stmt s</span><br><span class="line">where s.getParent() instanceof IfStmt</span><br><span class="line">select s</span><br></pre></td></tr></table></figure>
+
+<p>这样会将if语句的then和else都找到。</p>
+<p>返回所有方法体中的语句：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line">from Stmt s</span><br><span class="line">where s.getParent() instanceof Method</span><br><span class="line">select s</span><br></pre></td></tr></table></figure>
+
+<p>Method-Stmt-Expr</p>
+<p>CodeQL提供了两个类：<code>ExprParent</code> 和 <code>StmtExpr</code></p>
+<p>来表示Expr和Stmt的父节点</p>
+<h2 id="元数据-Metadata"><a href="#元数据-Metadata" class="headerlink" title="元数据 Metadata"></a>元数据 Metadata</h2><p>Java语言有7种元数据</p>
 
     </div>
 
@@ -391,7 +482,7 @@
       -->
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CodeQL-Library-for-Java"><span class="nav-number">1.1.</span> <span class="nav-text">CodeQL Library for Java</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#程序元素Program-element"><span class="nav-number">1.2.</span> <span class="nav-text">程序元素Program element</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Type"><span class="nav-number">1.2.1.</span> <span class="nav-text">Type</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CodeQL-Library-for-Java"><span class="nav-number">1.1.</span> <span class="nav-text">CodeQL Library for Java</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#程序元素Program-element"><span class="nav-number">1.2.</span> <span class="nav-text">程序元素Program element</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Type"><span class="nav-number">1.2.1.</span> <span class="nav-text">Type</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#泛型Genetics"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">泛型Genetics</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#变量"><span class="nav-number">1.2.2.</span> <span class="nav-text">变量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AST-：Abstract-syntax-tree"><span class="nav-number">1.3.</span> <span class="nav-text">AST ：Abstract syntax tree</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#元数据-Metadata"><span class="nav-number">1.4.</span> <span class="nav-text">元数据 Metadata</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -506,12 +597,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">776k</span>
+    <span title="站点总字数">779k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">21:33</span>
+    <span title="站点阅读时长">21:38</span>
   -->
 
 </div>
