@@ -120,7 +120,8 @@
 <p>Method-Stmt-Expr</p>
 <p>CodeQL提供了两个类：<code>ExprParent</code> 和 <code>StmtExpr</code></p>
 <p>来表示Expr和Stmt的父节点</p>
-<h2 id="元数据-Metadata"><a href="#元数据-Metadata" class="headerlink" title="元数据 Metadata"></a>元数据 Metadata</h2><p>Java语言有7种元数据 </p>
+<h2 id="元数据-Metadata"><a href="#元数据-Metadata" class="headerlink" title="元数据 Metadata"></a>元数据 Metadata</h2><p>元数据：描述数据的数据</p>
+<p>Java语言有7种元数据 </p>
 ]]></content>
       <categories>
         <category>静态分析</category>
