@@ -296,6 +296,24 @@
 <p>Callable只是Method和Constructor的共同父类，</p>
 <p>Call是MethodAccess、ClassInstanceExpression、ThisConstructorInvocationStmt、SuperConstructorInvocationStmt的共同父类。</p>
 <p><strong>简单的说，Callable是可以被调用的东西，Call是可以调用Callable的东西。</strong></p>
+<p>Call提供了两个谓词：</p>
+<ul>
+<li>getCallee 返回的是静态层面被调用的方法。对于非静态方法，运行时实际会是子类override的方法。</li>
+<li>getCaller 返回的是语法上发起调用的方法</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Super &#123;</span><br><span class="line">    int x;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; callable</span><br><span class="line">    public Super() &#123;</span><br><span class="line">        this(23);       &#x2F;&#x2F; call</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; callable</span><br><span class="line">    public Super(int x) &#123;</span><br><span class="line">        this.x &#x3D; x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; callable</span><br><span class="line">    public int getX() &#123;</span><br><span class="line">        return x;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Sub extends Super &#123;</span><br><span class="line">    &#x2F;&#x2F; callable</span><br><span class="line">    public Sub(int x) &#123;</span><br><span class="line">        super(x+19);    &#x2F;&#x2F; call</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; callable</span><br><span class="line">    public int getX() &#123;</span><br><span class="line">        return x-19;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Client &#123;</span><br><span class="line">    &#x2F;&#x2F; callable</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        Super s &#x3D; new Sub(42);  &#x2F;&#x2F; call</span><br><span class="line">        s.getX();               &#x2F;&#x2F; call </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Client.main的第二行getCallee() 发挥的结果是 Super.getX()，但是实际运行起来调用的是Sub.getX()</p>
+<p>Callable提供了大量的成员谓词，最重要的两个是：</p>
+<ul>
+<li>calls(Callable target)          如果当前调用callee是target的话，返回true</li>
+<li>polyCalls(Callable target)  如果实际运行可能的callee是target的话，返回true。比如说callee是target或者target override的</li>
+</ul>
+<p>在上面这个例子中，<code>Client.main</code>方法调用的是<code>Sub(int)</code>和<code>Super.getX()</code>方法；；另外它<code>polyCalls</code>了方法<code>Sub.getX()</code>。</p>
+<h3 id="举例：寻找未使用的方法"><a href="#举例：寻找未使用的方法" class="headerlink" title="举例：寻找未使用的方法"></a>举例：寻找未使用的方法</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Callable callee</span><br><span class="line">where not exists(Callable caller|caller.polyCalls(callee))</span><br><span class="line">select callee</span><br></pre></td></tr></table></figure>
+
+
+
 ]]></content>
       <categories>
         <category>静态分析</category>
