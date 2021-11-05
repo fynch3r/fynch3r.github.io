@@ -5899,7 +5899,7 @@
 <p>整理Java Agent相关知识 。</p>
 <a id="more"></a>
 
-<h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><h2 id="Java-Agent"><a href="#Java-Agent" class="headerlink" title="Java Agent"></a>Java Agent</h2><p>Java Agent是一个运行在目标JVM的特定程序，它的职责是负责从目标JVM中获取数据，然后将数据传递给外部进程。加载Agent的时机可以是目标JVM启动之时，也可以是在目标JVM运行时进行加载。</p>
+<h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><h2 id="Java-Agent"><a href="#Java-Agent" class="headerlink" title="Java Agent"></a>Java Agent</h2><p>Java Agent是一个运行在目标JVM的特定程序，它的职责是负责从目标JVM中获取数据，然后将数据传递给外部进程。加载Agent的时机可以是目标JVM启动之时，也可以是在目标JVM运行时加载。</p>
 <p><img src="../images/Java-Agent%E8%A7%A3%E8%AF%BB/image-20210207121651182.png" alt="image-20210207121651182"></p>
 <h2 id="JVMTI"><a href="#JVMTI" class="headerlink" title="JVMTI"></a>JVMTI</h2><p><strong>==万物起源==</strong></p>
 <p>JVMTI(JVM Tool Interface)是Java虚拟机对外提供的Native编程接口，通过JVMTI，外部进程可以获取到运行时JVM的诸多信息，比如线程、GC等。</p>
