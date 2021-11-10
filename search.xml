@@ -4575,6 +4575,7 @@
 <p><a href="https://www.cnblogs.com/kendoziyu/p/how-create-java-bean-when-java-serialization.html" target="_blank" rel="noopener">Java反序列化时是否通过默认构造函数创建对象？</a></p>
 <p><a href="https://java-questions.com/Serialization-interview-questions.html" target="_blank" rel="noopener">Java Serialization interview questions</a></p>
 <p><a href="https://www.cnblogs.com/strongmore/p/15470175.html" target="_blank" rel="noopener">java魔法类之ReflectionFactory介绍</a></p>
+<p><a href="https://www.codenong.com/8141440/" target="_blank" rel="noopener">How are constructors called during serialization and deserialization?</a></p>
 <h2 id="利用链构造-2"><a href="#利用链构造-2" class="headerlink" title="利用链构造"></a>利用链构造</h2><p>切回正题</p>
 <p>这里我们先看一下8u20下AnnotationInvocationHandler类的readObject方法</p>
 <p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210521174334090.png" alt="image-20210521174334090"></p>
