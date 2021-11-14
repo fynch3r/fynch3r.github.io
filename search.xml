@@ -5959,7 +5959,7 @@
     <content><![CDATA[<h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
 <p>空山新雨后，天色晚来秋。</p>
 </blockquote>
-<p>整理Java Agent相关知识 。</p>
+<p>整理Java Agent相关知识。</p>
 <a id="more"></a>
 
 <h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><h2 id="Java-Agent"><a href="#Java-Agent" class="headerlink" title="Java Agent"></a>Java Agent</h2><p>Java Agent是一个运行在目标JVM的特定程序，它的职责是负责从目标JVM中获取数据，然后将数据传递给外部进程。加载Agent的时机可以是目标JVM启动之时，也可以是在目标JVM运行时加载。</p>
