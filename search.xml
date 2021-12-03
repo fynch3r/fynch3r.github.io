@@ -1649,7 +1649,7 @@
 <ul>
 <li>XStream version &lt;= 1.4.6 &amp; XStream version = 1.4.10</li>
 </ul>
-<h2 id="漏洞成因"><a href="#漏洞成因" class="headerlink" title="漏洞成因"></a>漏洞成因</h2><h3 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h3><p>经典老番<a href="https://0range228.github.io/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E9%82%A3%E7%82%B9%E4%BA%8B/">动态代理那些事</a></p>
+<h2 id="漏洞成因"><a href="#漏洞成因" class="headerlink" title="漏洞成因"></a>漏洞成因</h2><h3 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h3><p>经典老番<a href="https://0range228.github.io/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E9%82%A3%E7%82%B9%E4%BA%8B/" target="_blank" rel="noopener">动态代理那些事</a></p>
 <h3 id="EventHandler"><a href="#EventHandler" class="headerlink" title="EventHandler"></a>EventHandler</h3><p>EventHandler也是实现了<code>InvocationHandler</code>接口的类</p>
 <p>EventHandler用来监控接口中的方法被调用后执行EventHandler中成员变量指定的方法。</p>
 <img src="../images/XStream%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%A2%B3%E7%90%86/image-20210727205609443.png" alt="image-20210727205609443" style="zoom:50%;">
@@ -2090,7 +2090,7 @@
 <p>参考<a href="https://www.cnpanda.net/" target="_blank" rel="noopener">panda</a>师傅。</p>
 <a id="more"></a>
 
-<h1 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h1><p>有了前两篇<a href="https://0range228.github.io/Java%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%81%E5%8D%8F%E8%AE%AE%E6%A2%B3%E7%90%86/">序列化协议</a>、<a href="https://0range228.github.io/Java%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%81%E7%A8%8B%E6%A2%B3%E7%90%86/">序列化流程梳理</a>作为学习基础，反序列化操作就好理解多了。</p>
+<h1 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h1><p>有了前两篇<a href="https://0range228.github.io/Java%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%81%E5%8D%8F%E8%AE%AE%E6%A2%B3%E7%90%86/" target="_blank" rel="noopener">序列化协议</a>、<a href="https://0range228.github.io/Java%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%81%E7%A8%8B%E6%A2%B3%E7%90%86/" target="_blank" rel="noopener">序列化流程梳理</a>作为学习基础，反序列化操作就好理解多了。</p>
 <p>我们知道序列化的核心原理：</p>
 <blockquote>
 <p>创建一个ObjectOutputStream输出流，调用</p>
@@ -3545,7 +3545,7 @@
 <p>这次put的时候，由于handler是SilentURLStreamHandler类，完全不会出发DNS解析，实在是妙。</p>
 <h1 id="Commons-Collections"><a href="#Commons-Collections" class="headerlink" title="Commons-Collections"></a>Commons-Collections</h1><p>“不是夸你们Oracle呢，CC链确实让我们没饿死”</p>
 <p>这里主要是ysoserial已经有的cc1-7漏洞，以及记录一些其他师傅们发现的。</p>
-<p>cc的背景可以去看之前的<a href="https://0range228.github.io/%E3%80%90%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E3%80%91commons-collections-1%20%E7%BB%84%E4%BB%B6/">文章</a>温习。</p>
+<p>cc的背景可以去看之前的<a href="https://0range228.github.io/%E3%80%90%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E3%80%91commons-collections-1%20%E7%BB%84%E4%BB%B6/" target="_blank" rel="noopener">文章</a>温习。</p>
 <h2 id="cc1"><a href="#cc1" class="headerlink" title="cc1"></a>cc1</h2><p>条件：</p>
 <ul>
 <li><p><strong>cc3.1～3.2.1</strong></p>
@@ -3558,8 +3558,8 @@
 
 <p>预备知识：</p>
 <ul>
-<li><a href="https://0range228.github.io/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E9%82%A3%E7%82%B9%E4%BA%8B/">动态代理</a>，一句话总结就是：<strong>动态代理直接调用接口的方法，无需实现类</strong>。</li>
-<li><a href="https://0range228.github.io/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/">反射</a></li>
+<li><a href="https://0range228.github.io/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E9%82%A3%E7%82%B9%E4%BA%8B/" target="_blank" rel="noopener">动态代理</a>，一句话总结就是：<strong>动态代理直接调用接口的方法，无需实现类</strong>。</li>
+<li><a href="https://0range228.github.io/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/" target="_blank" rel="noopener">反射</a></li>
 </ul>
 <p>主流两个版本：TransformedMap，LazyMap</p>
 <h3 id="TransformedMap版本"><a href="#TransformedMap版本" class="headerlink" title="TransformedMap版本"></a>TransformedMap版本</h3><p>PoC：</p>
@@ -3632,7 +3632,7 @@
 <p>反射写法：</p>
 <figure class="highlight"><table><tr><td class="code"><pre><span class="line">Class clazz = Class.forName(<span class="string">"java.lang.Runtime"</span>); </span><br><span class="line">clazz.getMethod("exec", String.class).invoke(clazz.getMethod("getRuntime").invoke(clazz), "open /Applications/Calculator.app");</span><br></pre></td></tr></table></figure>
 
-<p>不清楚的可以看之前的<a href="https://0range228.github.io/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/">博客</a></p>
+<p>不清楚的可以看之前的<a href="https://0range228.github.io/%E6%BC%AB%E8%B0%88Java%E5%8F%8D%E5%B0%84/" target="_blank" rel="noopener">博客</a></p>
 <p>那现在要如何构造这句话呢？</p>
 <p>首先上一部分我们发现了InvokerTransformer有invoke触发点，用反射来出发。</p>
 <p>重要的是每个参数如何对应赋值，看InvokerTransformer的第二个构造方法：</p>
@@ -3854,13 +3854,13 @@
 
 <p>能发现decorate方法可以new一个LazyMap方法，如果factory可控，就很有搞头了。</p>
 <p>接下来要找找哪些方法会调用LazyMap的get方法(最好是readObject内部会用到，最契合的条件，可惜没有)</p>
-<p>坑点记录：<a href="https://0range228.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AF%B9%E7%BA%BFrt-jar/">记一次对线rt.jar</a></p>
+<p>坑点记录：<a href="https://0range228.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AF%B9%E7%BA%BFrt-jar/" target="_blank" rel="noopener">记一次对线rt.jar</a></p>
 <p>发现AnnotationInvocationHandler内部的invoke调用了get方法：</p>
 <p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210513153931088.png" alt="image-20210513153931088"></p>
 <p>我们可以发现在这个类中，memberValues是Map对象，并且有对map的get操作。</p>
 <p>LazyMap也是Map的子类，重写了get方法，所以这里如果memberValues是LazyMap类对象，会成功调用LazyMap的get方法，就可以触发漏洞。</p>
 <p>所以如何触发这个invoke函数呢？</p>
-<h4 id="PoC构造"><a href="#PoC构造" class="headerlink" title="PoC构造"></a>PoC构造</h4><p>需要依赖动态代理，参考<a href="https://0range228.github.io/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E9%82%A3%E7%82%B9%E4%BA%8B/">之前的博客</a>：</p>
+<h4 id="PoC构造"><a href="#PoC构造" class="headerlink" title="PoC构造"></a>PoC构造</h4><p>需要依赖动态代理，参考<a href="https://0range228.github.io/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E9%82%A3%E7%82%B9%E4%BA%8B/" target="_blank" rel="noopener">之前的博客</a>：</p>
 <p><strong>总结就是被动态代理的对象调用任意方法都会调用对应的InvocationHandler的invoke方法。</strong></p>
 <p>写个小例子好理解：</p>
 <p><img src="../images/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%A9%E7%94%A8%E9%93%BE%E8%A1%A5%E5%85%A8%E8%AE%A1%E5%88%92/image-20210513160306511.png" alt="image-20210513160306511"></p>
@@ -3925,7 +3925,7 @@
 
 <p>预备知识：</p>
 <p><a href="https://www.cnblogs.com/scy251147/p/11100961.html" target="_blank" rel="noopener">javassist</a></p>
-<p><a href="https://0range228.github.io/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/">JVM类加载机制</a></p>
+<p><a href="https://0range228.github.io/Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/" target="_blank" rel="noopener">JVM类加载机制</a></p>
 <h3 id="利用链寻找-2"><a href="#利用链寻找-2" class="headerlink" title="利用链寻找"></a>利用链寻找</h3><p>第一件事依然是寻找readObject复写点，这次盯上的是jdk的<strong>PriorityQueue</strong>：</p>
 <blockquote>
 <p>PriorityQueue 优先级队列是基于优先级堆的一种特殊队列 , 它满足队列 “ 队尾进 , 队头出 “ 的特点 </p>
@@ -4636,7 +4636,7 @@
 <li>第一次 readObject 将会读取 TC_OBJECT 表示的第 1 个对象，发现是 Date 类型的对象，然后从流中读取此对象成员的值并还原。并为此 Date 对象分配一个值为 0x00 7e 00 01 的 handle。</li>
 <li>第二个 readObject 会读取到 TC_REFERENCE，说明是一个引用，引用的是刚才还原出来的那个 Date 对象，此时将直接返回之前那个 Date 对象的引用。</li>
 </ol>
-<p>在<a href="https://0range228.github.io/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%81%E7%A8%8B%E6%A2%B3%E7%90%86/">反序列化流程梳理</a>这篇，在最开始的switch-case时候，如果是一个TC_REFERENCE，调用的是readHandle：</p>
+<p>在<a href="https://0range228.github.io/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%81%E7%A8%8B%E6%A2%B3%E7%90%86/" target="_blank" rel="noopener">反序列化流程梳理</a>这篇，在最开始的switch-case时候，如果是一个TC_REFERENCE，调用的是readHandle：</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">case</span> TC_REFERENCE:</span><br><span class="line">       <span class="keyword">return</span> readHandle(unshared);</span><br></pre></td></tr></table></figure>
 
 <p>跟进去看<code>readHandle</code>:</p>
@@ -4764,7 +4764,7 @@
 <p>1.反序列化时类中没有这个成员，依然会对这个成员进行反序列化操作，但是之后会抛弃掉这个成员。</p>
 <p>2.每一个新的对象都会分配一个newHandle的值，newHandle生成规则是从0x7e0000开始递增,如果后面出现相同的类型则会使用<code>TC_REFERENCE</code>结构，引用前面handle的值。</p>
 </blockquote>
-<p>在之前的<a href="https://0range228.github.io/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%81%E7%A8%8B%E6%A2%B3%E7%90%86/">反序列化流程</a>分析中我们知道：</p>
+<p>在之前的<a href="https://0range228.github.io/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%81%E7%A8%8B%E6%A2%B3%E7%90%86/" target="_blank" rel="noopener">反序列化流程</a>分析中我们知道：</p>
 <blockquote>
 <p>在反序列化中，如果当前这个对象中的某个字段并没有在字节流中出现，则这些字段会使用类中定义的默认值，<strong>如果这个值出现在字节流中，但是并不属于对象，则抛弃该值，但是如果这个值是一个对象的话，那么会为这个值分配一个 Handle。</strong></p>
 </blockquote>

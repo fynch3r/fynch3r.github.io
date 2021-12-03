@@ -26,121 +26,121 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"0range228.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"fynch3r.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
   <meta name="description" content="序言 岁月悠悠，衰微只及肌肤；热忱抛却，颓唐必致灵魂  今天来总结一下JVM。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JVM梳理">
-<meta property="og:url" content="https://0range228.github.io/JVM%E6%A2%B3%E7%90%86/index.html">
-<meta property="og:site_name" content="0range的小窝">
+<meta property="og:url" content="https://fynch3r.github.io/JVM%E6%A2%B3%E7%90%86/index.html">
+<meta property="og:site_name" content="fynch3r的小窝">
 <meta property="og:description" content="序言 岁月悠悠，衰微只及肌肤；热忱抛却，颓唐必致灵魂  今天来总结一下JVM。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418145902839.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418155204290.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418151219263.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418151623527.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418151703860.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418154808045.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418155021200.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418155255836.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418155548287.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418155604895.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418155641028.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418160000057.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418160516538.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418160817268.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418161024792.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419153054534.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419153129167.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418161125751.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418161953621.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418162523130.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418163927620.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418164007063.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418165041003.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418165056893.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418165134118.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418170248971.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418170341262.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418170745232.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418170831894.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418171054380.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418171316057.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418171426186.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418172845950.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418173249965.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418173527886.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418173924676.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418174739320.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418180901719.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418180935740.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418181420103.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418185356560.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418185453190.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418185723067.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418192817976.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418193138847.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418194740732.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418195102631.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418195246131.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418195504014.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418195628415.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418200332016.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418200413151.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418200450509.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418203821322.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418203923749.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418204014794.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418205038016.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418205108066.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418205237524.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418205309508.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418205413293.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418205716022.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418205949373.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418210220163.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418210905110.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418211004395.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418211757994.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418212132545.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418212227111.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418212650692.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418212759619.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418213405170.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418213538778.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418213646147.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418213849929.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418214034973.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418214152093.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419130449081.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419130630076.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419132125397.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419132917680.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419133028099.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419134117873.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419140113762.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419150151752.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419150436945.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419151113451.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419151335851.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419151451292.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419151808852.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419152042892.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419152319866.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419152355798.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419152450717.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419152549409.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419152635383.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419152713001.png">
-<meta property="og:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419152747720.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418145902839.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418155204290.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418151219263.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418151623527.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418151703860.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418154808045.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418155021200.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418155255836.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418155548287.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418155604895.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418155641028.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418160000057.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418160516538.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418160817268.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418161024792.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419153054534.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419153129167.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418161125751.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418161953621.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418162523130.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418163927620.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418164007063.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418165041003.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418165056893.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418165134118.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418170248971.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418170341262.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418170745232.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418170831894.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418171054380.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418171316057.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418171426186.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418172845950.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418173249965.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418173527886.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418173924676.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418174739320.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418180901719.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418180935740.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418181420103.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418185356560.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418185453190.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418185723067.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418192817976.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418193138847.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418194740732.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418195102631.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418195246131.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418195504014.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418195628415.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418200332016.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418200413151.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418200450509.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418203821322.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418203923749.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418204014794.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418205038016.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418205108066.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418205237524.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418205309508.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418205413293.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418205716022.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418205949373.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418210220163.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418210905110.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418211004395.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418211757994.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418212132545.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418212227111.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418212650692.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418212759619.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418213405170.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418213538778.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418213646147.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418213849929.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418214034973.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418214152093.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419130449081.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419130630076.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419132125397.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419132917680.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419133028099.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419134117873.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419140113762.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419150151752.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419150436945.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419151113451.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419151335851.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419151451292.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419151808852.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419152042892.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419152319866.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419152355798.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419152450717.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419152549409.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419152635383.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419152713001.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200419152747720.png">
 <meta property="article:published_time" content="2020-04-18T06:55:19.000Z">
 <meta property="article:modified_time" content="2021-03-17T08:48:59.094Z">
-<meta property="article:author" content="0range">
+<meta property="article:author" content="fynch3r">
 <meta property="article:tag" content="JVM">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://0range228.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418145902839.png">
+<meta name="twitter:image" content="https://fynch3r.github.io/images/JVM%E6%A2%B3%E7%90%86/image-20200418145902839.png">
 
-<link rel="canonical" href="https://0range228.github.io/JVM%E6%A2%B3%E7%90%86/">
+<link rel="canonical" href="https://fynch3r.github.io/JVM%E6%A2%B3%E7%90%86/">
 
 
 <script id="page-configurations">
@@ -152,7 +152,7 @@
   };
 </script>
 
-  <title>JVM梳理 | 0range的小窝</title>
+  <title>JVM梳理 | fynch3r的小窝</title>
   
 
 
@@ -183,7 +183,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/atom.xml" title="0range的小窝" type="application/atom+xml">
+<link rel="alternate" href="/atom.xml" title="fynch3r的小窝" type="application/atom+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -205,7 +205,7 @@
     <div>
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">0range的小窝</span>
+        <span class="site-title">fynch3r的小窝</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -294,16 +294,16 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://0range228.github.io/JVM%E6%A2%B3%E7%90%86/">
+    <link itemprop="mainEntityOfPage" href="https://fynch3r.github.io/JVM%E6%A2%B3%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/yfy.png">
-      <meta itemprop="name" content="0range">
+      <meta itemprop="name" content="fynch3r">
       <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="0range的小窝">
+      <meta itemprop="name" content="fynch3r的小窝">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -654,9 +654,9 @@
 
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="0range"
+    <img class="site-author-image" itemprop="image" alt="fynch3r"
       src="/images/yfy.png">
-  <p class="site-author-name" itemprop="name">0range</p>
+  <p class="site-author-name" itemprop="name">fynch3r</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">

@@ -26,35 +26,35 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"0range228.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"fynch3r.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
   <meta name="description" content="序言 锲而不舍，金石可镂。  今天来总结Java基础，来填本科的坑。 本篇会持续更新。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java基础温习">
-<meta property="og:url" content="https://0range228.github.io/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/index.html">
-<meta property="og:site_name" content="0range的小窝">
+<meta property="og:url" content="https://fynch3r.github.io/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/index.html">
+<meta property="og:site_name" content="fynch3r的小窝">
 <meta property="og:description" content="序言 锲而不舍，金石可镂。  今天来总结Java基础，来填本科的坑。 本篇会持续更新。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://0range228.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20210804142030195.png">
-<meta property="og:image" content="https://0range228.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20210804171444627.png">
-<meta property="og:image" content="https://0range228.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20210630121515640.png">
-<meta property="og:image" content="https://0range228.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20200428120710735.png">
-<meta property="og:image" content="https://0range228.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20200429182137690.png">
-<meta property="og:image" content="https://0range228.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20200429190122568.png">
-<meta property="og:image" content="https://0range228.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20200428180357303.png">
-<meta property="og:image" content="https://0range228.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20200429203709515.png">
-<meta property="og:image" content="https://0range228.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20200429205536626.png">
-<meta property="og:image" content="https://0range228.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20200429205618717.png">
-<meta property="og:image" content="https://0range228.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20200429205702501.png">
-<meta property="og:image" content="https://0range228.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20200429214541228.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20210804142030195.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20210804171444627.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20210630121515640.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20200428120710735.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20200429182137690.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20200429190122568.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20200428180357303.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20200429203709515.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20200429205536626.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20200429205618717.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20200429205702501.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20200429214541228.png">
 <meta property="article:published_time" content="2020-04-27T13:28:34.000Z">
 <meta property="article:modified_time" content="2021-11-26T13:35:27.948Z">
-<meta property="article:author" content="0range">
+<meta property="article:author" content="fynch3r">
 <meta property="article:tag" content="Java基础">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://0range228.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20210804142030195.png">
+<meta name="twitter:image" content="https://fynch3r.github.io/images/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/image-20210804142030195.png">
 
-<link rel="canonical" href="https://0range228.github.io/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/">
+<link rel="canonical" href="https://fynch3r.github.io/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/">
 
 
 <script id="page-configurations">
@@ -66,7 +66,7 @@
   };
 </script>
 
-  <title>Java基础温习 | 0range的小窝</title>
+  <title>Java基础温习 | fynch3r的小窝</title>
   
 
 
@@ -97,7 +97,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/atom.xml" title="0range的小窝" type="application/atom+xml">
+<link rel="alternate" href="/atom.xml" title="fynch3r的小窝" type="application/atom+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -119,7 +119,7 @@
     <div>
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">0range的小窝</span>
+        <span class="site-title">fynch3r的小窝</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -208,16 +208,16 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://0range228.github.io/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/">
+    <link itemprop="mainEntityOfPage" href="https://fynch3r.github.io/Java%E5%9F%BA%E7%A1%80%E6%B8%A9%E4%B9%A0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/yfy.png">
-      <meta itemprop="name" content="0range">
+      <meta itemprop="name" content="fynch3r">
       <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="0range的小窝">
+      <meta itemprop="name" content="fynch3r的小窝">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -908,9 +908,9 @@
 
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="0range"
+    <img class="site-author-image" itemprop="image" alt="fynch3r"
       src="/images/yfy.png">
-  <p class="site-author-name" itemprop="name">0range</p>
+  <p class="site-author-name" itemprop="name">fynch3r</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
