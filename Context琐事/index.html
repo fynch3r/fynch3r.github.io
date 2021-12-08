@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-pace-theme-flash.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<!--
+
+  <script src="//code.tidio.co/oixl41gwhy8tvqy6jte9uvglyrqcjrvc.js" async></script>
+
+-->
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fynch3r.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+  <meta name="description" content="序言 去年花里逢君别，今年花开又一年。  对JavaWeb中Context的学习，设计模式yyds。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Context琐事">
+<meta property="og:url" content="https://fynch3r.github.io/Context%E7%90%90%E4%BA%8B/index.html">
+<meta property="og:site_name" content="fynch3r的小窝">
+<meta property="og:description" content="序言 去年花里逢君别，今年花开又一年。  对JavaWeb中Context的学习，设计模式yyds。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208101735602.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208103824206.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208104906459.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208110604926.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208110745925.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208111356903.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208113227724.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208114414880.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208115857716.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208115335072.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208115446263.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208120244813.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208120622462.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208131115677.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208120622462.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208132051735.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208132431548.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208132634934.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208133818738.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208134602540.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208145335211.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208135135541.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208142522728.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208143331833.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208151715828.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208151913908.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208152332597.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208152422016.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208165433964.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208165719017.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208170748959.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208173014765.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208173238331.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208173554027.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208175553011.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208143204632.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208181647515.png">
+<meta property="article:published_time" content="2021-12-08T02:03:34.000Z">
+<meta property="article:modified_time" content="2021-12-08T10:17:14.091Z">
+<meta property="article:author" content="fynch3r">
+<meta property="article:tag" content="Servlet">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fynch3r.github.io/images/Context%E7%90%90%E4%BA%8B/image-20211208101735602.png">
+
+<link rel="canonical" href="https://fynch3r.github.io/Context%E7%90%90%E4%BA%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>Context琐事 | fynch3r的小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="fynch3r的小窝" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+<a href="https://github.com/0range228" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#FFA500; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fynch3r的小窝</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Trust the process.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">32</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">56</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fynch3r.github.io/Context%E7%90%90%E4%BA%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/yfy.png">
+      <meta itemprop="name" content="fynch3r">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fynch3r的小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Context琐事
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-12-08 10:03:34 / 修改时间：18:17:14" itemprop="dateCreated datePublished" datetime="2021-12-08T10:03:34+08:00">2021-12-08</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JavaWeb/" itemprop="url" rel="index"><span itemprop="name">JavaWeb</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/Context%E7%90%90%E4%BA%8B/" class="post-meta-item leancloud_visitors" data-flag-title="Context琐事" title="热度">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">热度：</span>
+              <span class="leancloud-visitors-count"></span>
+              <span>°C</span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/Context%E7%90%90%E4%BA%8B/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Context%E7%90%90%E4%BA%8B/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>9.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>15 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><blockquote>
+<p>去年花里逢君别，今年花开又一年。</p>
+</blockquote>
+<p>对JavaWeb中Context的学习，设计模式yyds。</p>
+<a id="more"></a>
+
+<h1 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h1><p>文中出现的所有名词解释：</p>
+<p>​    Web容器：Tomcat，JBoss</p>
+<h1 id="Tomcat架构"><a href="#Tomcat架构" class="headerlink" title="Tomcat架构"></a>Tomcat架构</h1><p>Tomcat大家都比较熟悉了，Connector连接器负责外部交流，Container容器负责内部处理。</p>
+<p>Container组件，容器，内部实现了4种子容器：</p>
+<p>4种子容器: <code>Engine、Host、Context、Wrapper</code> ，这四种容器是父子关系。</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208101735602.png" alt="image-20211208101735602" style="zoom:50%;">
+
+<ol>
+<li>Engine: 最顶层容器组件，可以包含多个Host。实现类为<code>org.apache.catalina.core.StandardEngine</code></li>
+<li>Host: 代表一个虚拟主机，每个虚拟主机和某个域名Domain Name相匹配，可以包含多个Context。实现类为<code>org.apache.catalina.core.StandardHost</code></li>
+<li><strong>Context</strong>: 一个Context对应于一个Web 应用，可以包含多个Wrapper。<strong>实现类为<code>org.apache.catalina.core.StandardContext</code></strong></li>
+<li>Wrapper: 一个Wrapper对应一个Servlet。负责管理 Servlet ，包括Servlet的装载、初始化、执行以及资源回收。实现类为<code>org.apache.catalina.core.StandardWrapper</code></li>
+</ol>
+<p><strong>Context在Tomcat中代表一个Web应用的抽象表示</strong>，下文重点看Context部分。</p>
+<h1 id="三种Context"><a href="#三种Context" class="headerlink" title="三种Context"></a>三种Context</h1><ol>
+<li><p>ServletContext</p>
+</li>
+<li><p>StandardContext</p>
+</li>
+<li><p>ApplicationContext</p>
+</li>
+</ol>
+<h2 id="ServletContext"><a href="#ServletContext" class="headerlink" title="ServletContext"></a>ServletContext</h2><p><strong>ServletContext是javax.servlet包下的接口(规范)，它不属于Tomcat也不属于Spring家族</strong>。</p>
+<p>它的本意是可以对某个Web应用的各种资源和功能进行访问。</p>
+<p>Web容器在启动时，它会为每个Web应用程序都创建一个对应的ServletContext对象。<strong>它代表当前Web应用，并且它被所有客户端共享</strong>。</p>
+<h2 id="StandardContext"><a href="#StandardContext" class="headerlink" title="StandardContext"></a>StandardContext</h2><img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208103824206.png" alt="image-20211208103824206" style="zoom:50%;">
+
+<p>Tomcat架构图中的Context其实就是个接口，Tomcat内部对Context接口的默认实现为StandardContext类。</p>
+<p><strong>StandardContext是一个Web应用在Tomcat内部的具体对象。</strong></p>
+<h2 id="ApplicationContext"><a href="#ApplicationContext" class="headerlink" title="ApplicationContext"></a>ApplicationContext</h2><img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208104906459.png" alt="image-20211208104906459" style="zoom:50%;">
+
+<p>ApplicationContext其实更像是为了满足ServletContext规范而对StandardContext的一种封装。</p>
+<p>在Tomcat内部，ApplicationContext是ServletContext接口的具体实现。</p>
+<p>而Tomcat惯用Facade方式，因此我们一般获取的ServletContext实例是ApplicationContextFacade对象</p>
+<p>ApplicationContextFacade对象其实就是对ApplicationContext做了一层包装。</p>
+<h1 id="搞搞StandardContext"><a href="#搞搞StandardContext" class="headerlink" title="搞搞StandardContext"></a>搞搞StandardContext</h1><h2 id="web-xml信息装配到StandardContext中"><a href="#web-xml信息装配到StandardContext中" class="headerlink" title="web.xml信息装配到StandardContext中"></a>web.xml信息装配到StandardContext中</h2><p>如果你debug过tomcat的源码，你会发现，其实在tomcat启动的时候，会执行valve责任链那一套，来到</p>
+<p>Tomcat 层级调用组件的start()方法，执行StandardContext.startInternal() 方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//挑重点说</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">startInternal</span><span class="params">()</span> <span class="keyword">throws</span> LifecycleException </span>&#123;</span><br><span class="line">  <span class="comment">// LifeCycle.java</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String CONFIGURE_START_EVENT = <span class="string">"configure_start"</span>;</span><br><span class="line">  <span class="comment">// Notify our interested LifecycleListeners</span></span><br><span class="line">  fireLifecycleEvent(Lifecycle.CONFIGURE_START_EVENT, <span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//LifecycleBase#fireLifecycleEvent</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">fireLifecycleEvent</span><span class="params">(String type, Object data)</span> </span>&#123;</span><br><span class="line">  LifecycleEvent event = <span class="keyword">new</span> LifecycleEvent(<span class="keyword">this</span>, type, data);</span><br><span class="line">  <span class="keyword">for</span> (LifecycleListener listener : lifecycleListeners) &#123;</span><br><span class="line">    listener.lifecycleEvent(event);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出来，在startInternal()方法中调用fireLifecycleEvent()发布一个”configure_start” 事件。</p>
+<p>fireLifecycleEvent方法内部将信号configure_start被包装为一个LifecycleEvent对象event，通知所有的lifecycleListeners。</p>
+<p>LifecycleListener是一个接口，接口中的lifecycleEvent抽象方法被ContextConfig实现类进行了重写。</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208110604926.png" alt="image-20211208110604926" style="zoom:50%;">
+
+<p>下面是ContextConfig类重写的lifecycleEvent方法，可以看到我们现在满足信号条件会执行configureStart方法。</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208110745925.png" alt="image-20211208110745925" style="zoom:50%;">
+
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">configureStart</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  webConfig();</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//解析web.xml</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">webConfig</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="comment">// 解析web.xml</span></span><br><span class="line">  parseWebXml(InputSource source, WebXml dest, <span class="keyword">boolean</span> fragment)</span><br><span class="line">  ...</span><br><span class="line">  <span class="comment">// 将web.xml文件解析到的各个组件设置到标准servlet上下文StandardContext中去</span></span><br><span class="line">  configureContext(WebXml webxml)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>动态调试源码看一眼，确实是StandardContext对象</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208111356903.png" alt="image-20211208111356903" style="zoom:50%;">
+
+<p>configureContext方法内部其实就是为我们配置filter、listener、filter、filterMap等信息。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">configureContext</span><span class="params">(WebXml webxml)</span> </span>&#123;</span><br><span class="line">  <span class="comment">//filter</span></span><br><span class="line">  <span class="keyword">for</span> (FilterDef filter : webxml.getFilters().values()) &#123;</span><br><span class="line">    <span class="keyword">if</span> (filter.getAsyncSupported() == <span class="keyword">null</span>) &#123;</span><br><span class="line">      filter.setAsyncSupported(<span class="string">"false"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    context.addFilterDef(filter);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//filterMap</span></span><br><span class="line">  <span class="keyword">for</span> (FilterMap filterMap : webxml.getFilterMappings()) &#123;</span><br><span class="line">    context.addFilterMap(filterMap);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//把配置文件中sevrlet设置到context中</span></span><br><span class="line">  <span class="keyword">for</span> (ServletDef servlet : webxml.getServlets().values()) &#123;</span><br><span class="line">    Wrapper wrapper = context.createWrapper();</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//把配置文件中listener设置到context中</span></span><br><span class="line">  <span class="keyword">for</span> (String listener : webxml.getListeners()) &#123;</span><br><span class="line">    context.addApplicationListener(listener);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="执行"><a href="#执行" class="headerlink" title="执行"></a>执行</h2><p>configure_start信号目的就是让tomcat将web.xml信息加入到StandardContext中，现在已经结束了。</p>
+<p>回到StandardContext.startInternal()方法中：</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208113227724.png" alt="image-20211208113227724" style="zoom:50%;">
+
+
+
+<h1 id="整合SpringMVC"><a href="#整合SpringMVC" class="headerlink" title="整合SpringMVC"></a>整合SpringMVC</h1><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">web-app</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">listener</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">listener-class</span>&gt;</span>org.springframework.web.context.ContextLoaderListener<span class="tag">&lt;/<span class="name">listener-class</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">listener</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">context-param</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>contextConfigLocation<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>/WEB-INF/app-context.xml<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">context-param</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>app<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">servlet-class</span>&gt;</span>org.springframework.web.servlet.DispatcherServlet<span class="tag">&lt;/<span class="name">servlet-class</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>contextConfigLocation<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">param-value</span>&gt;</span><span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">load-on-startup</span>&gt;</span>1<span class="tag">&lt;/<span class="name">load-on-startup</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">servlet</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>app<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">web-app</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>我们发现，在springMVC的web.xml通常有这么一节配置：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">&lt;!--监听器--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">listener</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">listener-class</span>&gt;</span>org.springframework.web.context.ContextLoaderListener<span class="tag">&lt;/<span class="name">listener-class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">listener</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>接着上一小节说，如果我们现在将SpringMVC工程打成war包，工程的web.xml就会被解析，这段listener就会被解析进来</p>
+<p>我们进入listenerStart方法，顾名思义就是触发每个listener的方法：</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208114414880.png" alt="image-20211208114414880" style="zoom:50%;">
+
+<p>重点片段：</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208115857716.png" alt="image-20211208115857716" style="zoom:50%;">
+
+
+
+<p>debug看一下，确实触发ContextLoaderListener#contextInitialized方法，event包装的是ApplicationContextFacade</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208115335072.png" alt="image-20211208115335072" style="zoom:50%;">
+
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208115446263.png" alt="image-20211208115446263" style="zoom:50%;">
+
+
+
+<p>我们直接进入initWebApplicationContext方法</p>
+<p>上来就是域对象属性判断：</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208120244813.png" alt="image-20211208120244813" style="zoom:50%;">
+
+<p>我们传进来的ApplicationContextFacade当然没有这个属性了</p>
+<p>来到this.context = this.createWebApplicationContext(servletContext);</p>
+<p>很明显，这是创建SpringMVC自己的WebApplicationContext</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208120622462.png" alt="image-20211208120622462" style="zoom:50%;">
+
+
+
+<h1 id="搞搞ApplicationContext"><a href="#搞搞ApplicationContext" class="headerlink" title="搞搞ApplicationContext"></a>搞搞ApplicationContext</h1><p><img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208131115677.png" alt="image-20211208131115677"></p>
+<p>Spring有两个核心接口：BeanFactory和ApplicationContext。都可以代表Spring容器。</p>
+<p>什么是Spring容器？Spring容器是生成Bean实例的工厂，并且管理容器中的Bean的生命周期。</p>
+<p>应用中的所有组件，都处于Spring的管理下，都被Spring以Bean的方式管理，Spring负责创建Bean实例，并管理他们的生命周期。</p>
+<p>和 BeanFactory 类似，它可以加载配置文件中定义的 bean，将所有的 bean 集中在一起，当有请求的时候分配 bean。 </p>
+<p>另外，它增加了企业所需要的功能，比如，从属性文件从解析文本信息和将事件传递给所指定的listeners。</p>
+<p>BeanFactory的实现是按需创建，即第一次获取Bean时才创建这个Bean，而ApplicationContext会一次性创建所有的Bean。</p>
+<p>最常被使用的 ApplicationContext 接口实现：</p>
+<ol>
+<li>FileSystemXmlApplicationContext：该容器从 XML 文件中加载已被定义的 bean。需要提供XML 文件的<strong>完整路径</strong>。</li>
+<li>ClassPathXmlApplicationContext：该容器从 XML 文件中加载已被定义的 bean。不需要提供 XML 文件的完整路径。</li>
+<li>WebXmlApplicationContext：该容器会在一个 web 应用程序的范围内加载在 XML 文件中已被定义的 bean。</li>
+</ol>
+<h2 id="转换"><a href="#转换" class="headerlink" title="转换"></a>转换</h2><p>我们回到”创建SpringMVC自己的WebApplicationContext”这里：</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208120622462.png" alt="image-20211208120622462" style="zoom:50%;">
+
+<p>跟进去createWebApplicationContext方法中：</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208132051735.png" alt="image-20211208132051735" style="zoom:50%;">
+
+<p>determineContextClass方法：</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208132431548.png" alt="image-20211208132431548" style="zoom:50%;">
+
+<p>这里的ApplicationContextFacade没有contextClass属性(自己在web.xml可以配置)</p>
+<p>那么ClassUtils.forName就为应用返回一个默认的XmlWebApplicationContext类型的Class对象。</p>
+<p>返回上级createWebApplicationContext方法，返回值contextClass其实就是XmlWebApplicationContext类对象。</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208132634934.png" alt="image-20211208132634934">
+
+<p>进入BeanUtils.instantiateClass方法，将Class对象进行了实例化，返回了XmlWebApplicationContext的实例化对象，赋值给了ContextLoader类（ContextLoaderListener的父类）的context属性。</p>
+<p>XmlWebApplicationContext是WebApplicationContext的某一个实现类</p>
+<p>我们可以看到，其实这里的context已经被标识为”Root WebApplicationContext”了</p>
+<p>一路跟下来，我们知道context其实是tomcat内部的ApplicationContextFacade对象被Spring包装为自己的XmlWebApplicationContext对象了。</p>
+<p>并且作为“Root WebApplicationContext”，是<strong>唯一的</strong>。</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208133818738.png" alt="image-20211208133818738" style="zoom:50%;">
+
+<p>ok继续向下看，parent为null，进入configureAndRefreshWebApplicationContext方法：</p>
+<p><img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208134602540.png" alt="image-20211208134602540"></p>
+<p>之后挑重点说：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">configureAndRefreshWebApplicationContext</span>()</span><br><span class="line"><span class="selector-tag">wac</span><span class="selector-class">.refresh</span>();</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208145335211.png" alt="image-20211208145335211"></p>
+<p>contextConfigLocation是要告诉ContextLoaderListener要把哪些Bean注入到XmlWebApplicationContext管理的BeanFactory。</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208135135541.png" alt="image-20211208135135541" style="zoom:50%;">
+
+
+
+
+
+<p>refresh才开始真正初始化组件。</p>
+<p>总结：</p>
+<p>我们在SpringMVC工程中配置好的web.xml中的listener类型ContextLoaderListener，会监听Web容器(tomcat)的初始化事件。ContextLoaderListener的contextInitialized方法中，Spring会将tomcat中唯一的ApplicationContextFacade对象包装为XMLWebApplicationContext对象并标识为全局唯一的Spring根容器”ROOT WebApplicationContext”。</p>
+<h2 id="融合"><a href="#融合" class="headerlink" title="融合"></a>融合</h2><p>当我们完成bean初始化之后，还是要回到最开始的initWebApplicationContext方法</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208142522728.png" alt="image-20211208142522728" style="zoom:50%;">
+
+<p>是的你没有看错，二者凭借成员属性“融合”到一起了。</p>
+<p>Spring的Web应用上下文和Web容器的上下文应用就可以实现互访，二者实现了“融合”。我中有你，你中有我！</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208143331833.png" alt="image-20211208143331833" style="zoom:50%;">
+
+
+
+<p>总而言之，Servlet规范中ServletContext实现(ApplicationContext)是tomcat的Context实现(StandardContext)的一个成员变量，而Spring的ApplicationContext是Servlet规范中ServletContext的一个属性。</p>
+<h1 id="DispatcherServlet"><a href="#DispatcherServlet" class="headerlink" title="DispatcherServlet"></a>DispatcherServlet</h1><img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208151715828.png" alt="image-20211208151715828" style="zoom:50%;">
+
+<p>DispatcherServlet的本质是Servlet，是前端控制器。</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208151913908.png" alt="image-20211208151913908" style="zoom:50%;">
+
+
+
+<p>但是既然本质是Servlet，初始化还是要走init方法的。</p>
+<p>还记得tomcat中的StandardContext.startInternal方法：</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208152332597.png" alt="image-20211208152332597" style="zoom:50%;">
+
+
+
+<p>进入loadOnStartup方法：</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208152422016.png" alt="image-20211208152422016" style="zoom:50%;">
+
+
+
+<p>注释已经写的很清楚了，加载那些loadonstartup=1的Servlet</p>
+<p>现在tomcat准备加载DispatcherServlet对象，要去寻找init方法</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">GenericServlet (javax.servlet)</span><br><span class="line">    HttpServlet (javax.servlet.http)</span><br><span class="line">        HttpServletBean (org.springframework.web.servlet)</span><br><span class="line">            FrameworkServlet (org.springframework.web.servlet)</span><br><span class="line">                DispatcherServlet (org.springframework.web.servlet)</span><br></pre></td></tr></table></figure>
+
+<p>在HttpServletBean找到了init方法</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208165433964.png" alt="image-20211208165433964" style="zoom:50%;">
+
+<p>发现调用的是FrameworkServlet类的initServletBean方法：</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208165719017.png" alt="image-20211208165719017" style="zoom:50%;">
+
+<p>进入initWebApplicationContext方法：</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208170748959.png" alt="image-20211208170748959" style="zoom:50%;">
+
+
+
+<p>这里创建的是特定Servlet拥有的子IoC容器</p>
+<p><code>根IoC容器</code>做为全局共享的<code>IoC容器</code>放入Web应用需要共享的<code>Bean</code>，而<code>子IoC容器</code>根据需求的不同，放入不同的<code>Bean</code>，这样能够做到隔离，保证系统的安全性。</p>
+<p><img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208173014765.png" alt="image-20211208173014765"></p>
+<p>返回子容器</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208173238331.png" alt="image-20211208173238331" style="zoom:50%;">
+
+
+
+<p>当IoC子容器构造完成后调用了onRefresh()方法，具体实现由子类覆盖，调用onRefresh()方法时将前文创建的IoC子容器作为参数传入，DispatcherServletBean类的onRefresh()初始化配置一堆<strong>组件</strong></p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208173554027.png" alt="image-20211208173554027" style="zoom:50%;">
+
+
+
+
+
+<h1 id="SpringMVC-启动流程"><a href="#SpringMVC-启动流程" class="headerlink" title="SpringMVC 启动流程"></a>SpringMVC 启动流程</h1><ol>
+<li>tomcat会读取项目web.xml中的<code>&lt;context-param&gt;</code>内容、<code>&lt;listener&gt;</code>标签、<code>filter</code>标签。</li>
+<li>tomcat会读取项目的web.xml中的<code>&lt;listener&gt;</code>，如果配置了listener为ContextLoaderListener，那么就创建父容器ROOT，与tomcat的ApplicationContextFacade“融合”。</li>
+<li>读取<code>servlet</code>标签，一般是DispatchServlet</li>
+<li>为DispatchServlet创建子容器</li>
+<li>读取<code>&lt;servlet&gt;</code>标签的<code>&lt;init-param&gt;</code>配置的<code>xml文件</code>并加载相关<code>Bean</code></li>
+<li>onfresh方法创建SpringMVC的组件</li>
+</ol>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208175553011.png" alt="image-20211208175553011" style="zoom:50%;">
+
+<p><strong>每个具体的 DispatcherServlet 创建的是一个 Child Context，代表一个独立的 IoC 容器；</strong></p>
+<p> <strong>ContextLoaderListener 所创建的是一个 Root Context，代表全局唯一的一个公共 IoC 容器。</strong></p>
+<h1 id="四种方式获取当前容器"><a href="#四种方式获取当前容器" class="headerlink" title="四种方式获取当前容器"></a>四种方式获取当前容器</h1><p>现在这句话应该可以清晰了:</p>
+<p>WebApplicationContext是专门为web应用准备的，从WebApplicationContext中可以获得ServletContext的引用。</p>
+<p>同时，整个Web应用上下文对象将作为域对象属性放置在Web容器的facade中，以便Web应用可以访问spring上下文。</p>
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208143204632.png" alt="image-20211208143204632" style="zoom:50%;">
+
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ROOT XmlWebApplicationContext</span></span><br><span class="line">WebApplicationContext context = ContextLoader.getCurrentWebApplicationContext();</span><br><span class="line"></span><br><span class="line"><span class="comment">// ROOT XmlWebApplicationContext</span></span><br><span class="line">WebApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(RequestContextUtils.getWebApplicationContext(((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest()).getServletContext());</span><br><span class="line"></span><br><span class="line"><span class="comment">// Child WebApplicationContext dispatcherServlet-servlet</span></span><br><span class="line">WebApplicationContext context = RequestContextUtils.findWebApplicationContext(((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest());</span><br><span class="line"></span><br><span class="line"><span class="comment">// Child WebApplicationContext dispatcherServlet-servlet</span></span><br><span class="line">WebApplicationContext context = (WebApplicationContext)RequestContextHolder.currentRequestAttributes().getAttribute(<span class="string">"org.springframework.web.servlet.DispatcherServlet.CONTEXT"</span>, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<img src="../images/Context%E7%90%90%E4%BA%8B/image-20211208181647515.png" alt="image-20211208181647515" style="zoom:50%;">
+
+
+
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://www.jianshu.com/p/dc64d02e49ac" target="_blank" rel="noopener">SpringMVC 启动流程及相关源码分析</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Servlet/" rel="tag"><i class="fa fa-tag"></i>Servlet</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9B%9B/" rel="prev" title="CodeQL学习笔记(四)">
+      <i class="fa fa-chevron-left"></i> CodeQL学习笔记(四)
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+      <!--
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://link.hhtjim.com/163/26348068.mp3"></iframe>
+      -->
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#名词解释"><span class="nav-number">2.</span> <span class="nav-text">名词解释</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Tomcat架构"><span class="nav-number">3.</span> <span class="nav-text">Tomcat架构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三种Context"><span class="nav-number">4.</span> <span class="nav-text">三种Context</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ServletContext"><span class="nav-number">4.1.</span> <span class="nav-text">ServletContext</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#StandardContext"><span class="nav-number">4.2.</span> <span class="nav-text">StandardContext</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ApplicationContext"><span class="nav-number">4.3.</span> <span class="nav-text">ApplicationContext</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#搞搞StandardContext"><span class="nav-number">5.</span> <span class="nav-text">搞搞StandardContext</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#web-xml信息装配到StandardContext中"><span class="nav-number">5.1.</span> <span class="nav-text">web.xml信息装配到StandardContext中</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#执行"><span class="nav-number">5.2.</span> <span class="nav-text">执行</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#整合SpringMVC"><span class="nav-number">6.</span> <span class="nav-text">整合SpringMVC</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#搞搞ApplicationContext"><span class="nav-number">7.</span> <span class="nav-text">搞搞ApplicationContext</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#转换"><span class="nav-number">7.1.</span> <span class="nav-text">转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#融合"><span class="nav-number">7.2.</span> <span class="nav-text">融合</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DispatcherServlet"><span class="nav-number">8.</span> <span class="nav-text">DispatcherServlet</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SpringMVC-启动流程"><span class="nav-number">9.</span> <span class="nav-text">SpringMVC 启动流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四种方式获取当前容器"><span class="nav-number">10.</span> <span class="nav-text">四种方式获取当前容器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">11.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="fynch3r"
+      src="/images/yfy.png">
+  <p class="site-author-name" itemprop="name">fynch3r</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">56</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/fynch3r" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;fynch3r" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      友链
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.0kami.cn/" title="https:&#x2F;&#x2F;blog.0kami.cn&#x2F;" rel="noopener" target="_blank">wh1t3p1g</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://zebork.org/" title="https:&#x2F;&#x2F;zebork.org" rel="noopener" target="_blank">Zebork</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://su18.org/" title="https:&#x2F;&#x2F;su18.org" rel="noopener" target="_blank">su18</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/tr1ple/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;tr1ple&#x2F;" rel="noopener" target="_blank">tr1ple</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://4ra1n.love/" title="https:&#x2F;&#x2F;4ra1n.love&#x2F;" rel="noopener" target="_blank">4ra1n</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.cnpanda.net/" title="http:&#x2F;&#x2F;www.cnpanda.net&#x2F;" rel="noopener" target="_blank">panda</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://m0d9.me/" title="http:&#x2F;&#x2F;m0d9.me&#x2F;" rel="noopener" target="_blank">yangbh</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://anemone.top/" title="http:&#x2F;&#x2F;anemone.top" rel="noopener" target="_blank">Anemone95</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.kingkk.com/" title="https:&#x2F;&#x2F;www.kingkk.com&#x2F;" rel="noopener" target="_blank">kingkk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.yuque.com/ni4n/blogs" title="https:&#x2F;&#x2F;www.yuque.com&#x2F;ni4n&#x2F;blogs" rel="noopener" target="_blank">Ni4n</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://summersec.github.io/" title="https:&#x2F;&#x2F;summersec.github.io" rel="noopener" target="_blank">SummerSec</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.zhihu.com/people/chenwengang" title="https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;chenwengang" rel="noopener" target="_blank">ApsarasX</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart" aria-hidden="true"></i>
+  </span>
+   Powered By - 
+  <span class="author" itemprop="copyrightHolder">fynch3r</span>
+
+  <!--
+    <span class="post-meta-divider"> | </span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">821k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">22:48</span>
+  -->
+
+</div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+            'X-LC-Key'    : 'l8KvoMr1i8urA7X7BzPMtQC7',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+      appKey     : 'l8KvoMr1i8urA7X7BzPMtQC7',
+      placeholder: "Say Something~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+
+<!--
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unjkp.com/valine/dist/Valine.min.js"></script>  
+  <script src="/js/Valine.min.js"></script> 
+
+   
+  
+  <script src="/js/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'Xm92yiHJb6lBpsP02sgh3uGo-gzGzoHsz',
+        appKey: 'l8KvoMr1i8urA7X7BzPMtQC7',
+        placeholder: 'Say Something~',
+        avatar:'mm',
+        guest_info:['nick'] ,  //评论者只需要提供评论的昵称即可
+        pageSize:'10' || 10,
+    });
+  
+    var infoEle = document.querySelector('#comments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0){
+      infoEle.childNodes.forEach(function(item) {
+        item.parentNode.removeChild(item);
+      });
+    }
+  </script>
+
+-->
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/click_love.js"></script>
