@@ -36,14 +36,14 @@
 <meta property="og:description" content="序言 天街小雨润如酥，草色遥看近却无。  记录IDEA远程调试过程。随时更新，参考yz。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://fynch3r.github.io/images/IDEA%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/image-20210315144011945.png">
-<meta property="og:image" content="https://fynch3r.github.io/images/IDEA%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/image-20210315144220008.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/IDEA%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/image-20211227202316061.png">
 <meta property="og:image" content="https://fynch3r.github.io/images/IDEA%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/image-20210315144259091.png">
 <meta property="og:image" content="https://fynch3r.github.io/images/IDEA%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/image-20210315144746757.png">
 <meta property="og:image" content="https://fynch3r.github.io/images/IDEA%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/image-20210315150152050.png">
 <meta property="og:image" content="https://fynch3r.github.io/images/IDEA%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/image-20210315150434825.png">
 <meta property="og:image" content="https://fynch3r.github.io/images/IDEA%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/image-20210315150524937.png">
 <meta property="article:published_time" content="2021-03-15T06:34:39.000Z">
-<meta property="article:modified_time" content="2021-03-15T07:20:00.978Z">
+<meta property="article:modified_time" content="2021-12-27T12:39:06.793Z">
 <meta property="article:author" content="fynch3r">
 <meta property="article:tag" content="IDEA">
 <meta name="twitter:card" content="summary">
@@ -225,10 +225,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-03-15 14:34:39 / 修改时间：15:20:00" itemprop="dateCreated datePublished" datetime="2021-03-15T14:34:39+08:00">2021-03-15</time>
+              <time title="创建时间：2021-03-15 14:34:39" itemprop="dateCreated datePublished" datetime="2021-03-15T14:34:39+08:00">2021-03-15</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-12-27 20:39:06" itemprop="dateModified" datetime="2021-12-27T20:39:06+08:00">2021-12-27</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -267,7 +273,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>600</span>
+              <span>712</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -295,7 +301,7 @@
 <h1 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h1><p>点击工具栏的<code>Add Configuration...</code>，点击左侧的<code>+</code>号，选择<code>Remote</code>，如下图：</p>
 <p><img src="../images/IDEA%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/image-20210315144011945.png" alt="image-20210315144011945"></p>
 <p>创建之后，复制这段命令，记得要改成<code>suspend=y</code>。</p>
-<p><img src="../images/IDEA%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/image-20210315144220008.png" alt="image-20210315144220008"></p>
+<p><img src="../images/IDEA%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/image-20211227202316061.png" alt="image-20211227202316061"></p>
 <h1 id="开始调试"><a href="#开始调试" class="headerlink" title="开始调试"></a>开始调试</h1><h2 id="有源码调试"><a href="#有源码调试" class="headerlink" title="有源码调试"></a>有源码调试</h2><p>这里在IDEA自带的终端里演示（系统shell当然也可以）：</p>
 <p>cd classes:</p>
 <p><img src="../images/IDEA%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/image-20210315144259091.png" alt="image-20210315144259091"></p>
@@ -315,6 +321,9 @@
 <p><img src="../images/IDEA%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/image-20210315150434825.png" alt="image-20210315150434825"></p>
 <p>点击小甲虫就完事了：</p>
 <p><img src="../images/IDEA%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E8%AE%B0%E5%BD%95/image-20210315150524937.png" alt="image-20210315150524937"></p>
+<h1 id="审计部署在服务器上的jar包"><a href="#审计部署在服务器上的jar包" class="headerlink" title="审计部署在服务器上的jar包"></a>审计部署在服务器上的jar包</h1><p>服务器启动命令行：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -Xdebug -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -jar xxx.jar</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -402,7 +411,7 @@
       -->
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#环境准备"><span class="nav-number">2.</span> <span class="nav-text">环境准备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开始调试"><span class="nav-number">3.</span> <span class="nav-text">开始调试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#有源码调试"><span class="nav-number">3.1.</span> <span class="nav-text">有源码调试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#无源码-只有jar包"><span class="nav-number">3.2.</span> <span class="nav-text">无源码 只有jar包</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#环境准备"><span class="nav-number">2.</span> <span class="nav-text">环境准备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开始调试"><span class="nav-number">3.</span> <span class="nav-text">开始调试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#有源码调试"><span class="nav-number">3.1.</span> <span class="nav-text">有源码调试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#无源码-只有jar包"><span class="nav-number">3.2.</span> <span class="nav-text">无源码 只有jar包</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#审计部署在服务器上的jar包"><span class="nav-number">4.</span> <span class="nav-text">审计部署在服务器上的jar包</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -520,12 +529,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">821k</span>
+    <span title="站点总字数">822k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">22:48</span>
+    <span title="站点阅读时长">22:50</span>
   -->
 
 </div>

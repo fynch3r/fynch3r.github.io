@@ -45,7 +45,7 @@
 <meta property="og:image" content="https://fynch3r.github.io/images/Docker%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20210519132819881.png">
 <meta property="og:image" content="https://fynch3r.github.io/images/Docker%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20210930213709652.png">
 <meta property="article:published_time" content="2021-05-19T03:17:25.000Z">
-<meta property="article:modified_time" content="2021-10-03T01:56:27.264Z">
+<meta property="article:modified_time" content="2021-12-27T12:57:23.791Z">
 <meta property="article:author" content="fynch3r">
 <meta property="article:tag" content="Docker">
 <meta name="twitter:card" content="summary">
@@ -235,7 +235,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-10-03 09:56:27" itemprop="dateModified" datetime="2021-10-03T09:56:27+08:00">2021-10-03</time>
+                <time title="修改时间：2021-12-27 20:57:23" itemprop="dateModified" datetime="2021-12-27T20:57:23+08:00">2021-12-27</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -275,7 +275,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>3.3k</span>
+              <span>3.9k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -328,13 +328,13 @@
 <ul>
 <li><code>-i</code>参数是启动容器内交互式操作模式</li>
 <li><code>-t</code>参数是在容器内开启一个终端</li>
-<li><code>--rm</code>代表容器退出后随之将该容器删除，不必再手动rm</li>
+<li><code>--rm</code>代表容器退出后随之将该容器删除，不必再手动rm，不支持以 docker run -d 启动的容器</li>
 <li><code>bash</code>就是给容器的命令，这里我们希望得到交互式shell，所以打开bash</li>
 </ul>
 <p>其他参数：</p>
 <ul>
 <li><code>-d</code>可以让容器在后台运行</li>
-<li><code>-p</code></li>
+<li><code>-p</code> 暴露端口</li>
 <li><code>exit</code>退出容器</li>
 </ul>
 <h2 id="列出镜像"><a href="#列出镜像" class="headerlink" title="列出镜像"></a>列出镜像</h2><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker image ls</span><br><span class="line">docker images -a</span><br></pre></td></tr></table></figure>
@@ -354,7 +354,8 @@
 <p>配合docker image ls</p>
 <figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image rm $(docker image ls -q redis) <span class="comment">#删除所有仓库名为 redis 的镜像</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="搜索镜像"><a href="#搜索镜像" class="headerlink" title="搜索镜像"></a>搜索镜像</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker search mysql</span><br></pre></td></tr></table></figure>
+<h2 id="搜索镜像"><a href="#搜索镜像" class="headerlink" title="搜索镜像"></a>搜索镜像</h2><p>在docker hub中搜索镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker search mysql</span><br></pre></td></tr></table></figure>
 
 <h2 id="提交镜像"><a href="#提交镜像" class="headerlink" title="提交镜像"></a>提交镜像</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker commit -m "xxx" -a="author" 镜像id 目标镜像名：TAG</span><br></pre></td></tr></table></figure>
 
@@ -377,7 +378,7 @@
 
 <p><img src="../images/Docker%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20210519130640053.png" alt="image-20210519130640053"></p>
 <p>对比可以发现，刚才那一长串才是完整ID</p>
-<p>查看自动容器的日志：</p>
+<p>查看容器的日志信息：</p>
 <figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container logs [id or name]</span><br></pre></td></tr></table></figure>
 
 
@@ -451,11 +452,34 @@
 
 
 
+<h1 id="容器的加载"><a href="#容器的加载" class="headerlink" title="容器的加载"></a>容器的加载</h1><p>tar文件：容器的离线保存</p>
+<h2 id="container-gt-image"><a href="#container-gt-image" class="headerlink" title="container-&gt;image"></a>container-&gt;image</h2><p>将容器保存为镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker commit [OPTIONS] CONTAINERID [REPO:VERSION]</span><br></pre></td></tr></table></figure>
+
+<p>OPTIONS:</p>
+<ul>
+<li>-m: info</li>
+<li>-a: author</li>
+</ul>
+<h3 id="container-gt-tar"><a href="#container-gt-tar" class="headerlink" title="container-&gt;tar"></a>container-&gt;tar</h3><p>将容器保存为tar文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker export -o target.tar [ContainerID]</span><br></pre></td></tr></table></figure>
 
 
-<h1 id="额外的备忘命令"><a href="#额外的备忘命令" class="headerlink" title="额外的备忘命令"></a>额外的备忘命令</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看当前运行的容器</span></span><br><span class="line">docker ps</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看所有容器，包括停止的</span></span><br><span class="line">docker ps -a</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看最新创建的容器，只列出最后创建的</span></span><br><span class="line">docker ps -l</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看网络端口</span></span><br><span class="line">docker port [容器ID|容器名]</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看容器内部的标准输出</span></span><br><span class="line">docker logs [容器ID|容器名]</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看容器内部运行的进程</span></span><br><span class="line">docker top [容器ID|容器名]</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看 Docker 的底层信息。它会返回一个 JSON 文件记录着 Docker 容器的配置和状态信息</span></span><br><span class="line">docker inspect [容器ID|容器名]</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 删除指定镜像</span></span><br><span class="line">docker rmi image_id</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 删除容器，删除容器时，容器必须是停止状态</span></span><br><span class="line">docker rm [容器ID|容器名]</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 删除所有的容器</span></span><br><span class="line">docker rm $(docker ps -aq)</span><br></pre></td></tr></table></figure>
+
+<h3 id="images-lt-gt-tar"><a href="#images-lt-gt-tar" class="headerlink" title="images&lt;-&gt;tar"></a>images&lt;-&gt;tar</h3><h4 id="images-lt-tar"><a href="#images-lt-tar" class="headerlink" title="images&lt;-tar"></a>images&lt;-tar</h4><p>load：将tar加载为image</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker load -i target.tar</span><br></pre></td></tr></table></figure>
+
+<p>加载之后为同名image</p>
+<h4 id="image-gt-tar"><a href="#image-gt-tar" class="headerlink" title="image-&gt; tar"></a>image-&gt; tar</h4><p>save：将image保存为tar文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker save -o target.tar ImageID</span><br></pre></td></tr></table></figure>
 
 <p><img src="../images/Docker%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20210930213709652.png" alt="image-20210930213709652"></p>
+<h1 id="额外的备忘命令"><a href="#额外的备忘命令" class="headerlink" title="额外的备忘命令"></a>额外的备忘命令</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看当前运行的容器</span></span><br><span class="line">docker ps</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看所有容器，包括停止的</span></span><br><span class="line">docker ps -a</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看最新创建的容器，只列出最后创建的</span></span><br><span class="line">docker ps -l</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看网络端口</span></span><br><span class="line">docker port [容器ID|容器名]</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看容器内部的标准输出</span></span><br><span class="line">docker logs [容器ID|容器名]</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看容器内部运行的进程</span></span><br><span class="line">docker top [容器ID|容器名]</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看 Docker 的底层信息。它会返回一个 JSON 文件记录着 Docker 容器的配置和状态信息</span></span><br><span class="line">docker inspect [容器ID|容器名]</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 删除指定镜像</span></span><br><span class="line">docker rmi image_id</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 删除容器，删除容器时，容器必须是停止状态</span></span><br><span class="line">docker rm [容器ID|容器名]</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 删除所有的容器</span></span><br><span class="line">docker rm $(docker ps -aq)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 一步到位</span></span><br><span class="line">docker run -it nginx:latest /bin/bash</span><br></pre></td></tr></table></figure>
+
+
+
+
+
 <h1 id="容器数据卷"><a href="#容器数据卷" class="headerlink" title="容器数据卷"></a>容器数据卷</h1><p>   容器之间数据共享的技术，将容器内部的目录，挂载到宿主机上</p>
 <h2 id="命令挂载"><a href="#命令挂载" class="headerlink" title="命令挂载"></a>命令挂载</h2><p><code>-v 主机目录:容器目录</code></p>
 <p>数据映射</p>
@@ -463,13 +487,20 @@
 <p>镜像多层，命令多行</p>
  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -f Dockerfile -t 镜像名:版本 .</span><br></pre></td></tr></table></figure>
 
-<h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><p><strong>CMD</strong>  docker run 会执行 </p>
+<h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><p><strong>RUN</strong></p>
+<p>docker build时候执行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">FROM centos</span><br><span class="line">RUN yum -y install wget \</span><br><span class="line">    &amp;&amp; wget -O redis.tar.gz "http://download.redis.io/releases/redis-5.0.3.tar.gz" \</span><br><span class="line">    &amp;&amp; tar -xvf redis.tar.gz</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>CMD</strong>  docker run 时执行 </p>
 <figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CMD</span><span class="bash"> [<span class="string">"ls"</span>,<span class="string">"-a"</span>]</span></span><br><span class="line">&amp;&amp; 拼接</span><br></pre></td></tr></table></figure>
 
 
 
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://yeasy.gitbook.io/docker_practice/" target="_blank" rel="noopener">Docker-入门到实战</a></p>
 <p><a href="https://segmentfault.com/a/1190000017151019" target="_blank" rel="noopener">MacOS Docker安装和使用</a></p>
+<p><a href="https://www.runoob.com/docker/docker-command-manual.html" target="_blank" rel="noopener">Docker命令大全</a></p>
 
     </div>
 
@@ -557,7 +588,7 @@
       -->
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本概念"><span class="nav-number">2.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#镜像"><span class="nav-number">3.</span> <span class="nav-text">镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#获取镜像"><span class="nav-number">3.1.</span> <span class="nav-text">获取镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行镜像"><span class="nav-number">3.2.</span> <span class="nav-text">运行镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#列出镜像"><span class="nav-number">3.3.</span> <span class="nav-text">列出镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除本地镜像"><span class="nav-number">3.4.</span> <span class="nav-text">删除本地镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搜索镜像"><span class="nav-number">3.5.</span> <span class="nav-text">搜索镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提交镜像"><span class="nav-number">3.6.</span> <span class="nav-text">提交镜像</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#容器"><span class="nav-number">4.</span> <span class="nav-text">容器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#新建-amp-启动"><span class="nav-number">4.1.</span> <span class="nav-text">新建&amp;启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#守护态运行"><span class="nav-number">4.2.</span> <span class="nav-text">守护态运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看运行中的容器"><span class="nav-number">4.3.</span> <span class="nav-text">查看运行中的容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#终止-amp-重启容器"><span class="nav-number">4.4.</span> <span class="nav-text">终止&amp;重启容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进入容器"><span class="nav-number">4.5.</span> <span class="nav-text">进入容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器的导出-amp-导入"><span class="nav-number">4.6.</span> <span class="nav-text">容器的导出&amp;导入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除容器"><span class="nav-number">4.7.</span> <span class="nav-text">删除容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#外部网络访问容器"><span class="nav-number">4.8.</span> <span class="nav-text">外部网络访问容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看容器元数据"><span class="nav-number">4.9.</span> <span class="nav-text">查看容器元数据</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#额外的备忘命令"><span class="nav-number">5.</span> <span class="nav-text">额外的备忘命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#容器数据卷"><span class="nav-number">6.</span> <span class="nav-text">容器数据卷</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#命令挂载"><span class="nav-number">6.1.</span> <span class="nav-text">命令挂载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerfile"><span class="nav-number">6.2.</span> <span class="nav-text">Dockerfile</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常用命令"><span class="nav-number">6.2.1.</span> <span class="nav-text">常用命令</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本概念"><span class="nav-number">2.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#镜像"><span class="nav-number">3.</span> <span class="nav-text">镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#获取镜像"><span class="nav-number">3.1.</span> <span class="nav-text">获取镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行镜像"><span class="nav-number">3.2.</span> <span class="nav-text">运行镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#列出镜像"><span class="nav-number">3.3.</span> <span class="nav-text">列出镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除本地镜像"><span class="nav-number">3.4.</span> <span class="nav-text">删除本地镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搜索镜像"><span class="nav-number">3.5.</span> <span class="nav-text">搜索镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提交镜像"><span class="nav-number">3.6.</span> <span class="nav-text">提交镜像</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#容器"><span class="nav-number">4.</span> <span class="nav-text">容器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#新建-amp-启动"><span class="nav-number">4.1.</span> <span class="nav-text">新建&amp;启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#守护态运行"><span class="nav-number">4.2.</span> <span class="nav-text">守护态运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看运行中的容器"><span class="nav-number">4.3.</span> <span class="nav-text">查看运行中的容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#终止-amp-重启容器"><span class="nav-number">4.4.</span> <span class="nav-text">终止&amp;重启容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进入容器"><span class="nav-number">4.5.</span> <span class="nav-text">进入容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器的导出-amp-导入"><span class="nav-number">4.6.</span> <span class="nav-text">容器的导出&amp;导入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除容器"><span class="nav-number">4.7.</span> <span class="nav-text">删除容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#外部网络访问容器"><span class="nav-number">4.8.</span> <span class="nav-text">外部网络访问容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看容器元数据"><span class="nav-number">4.9.</span> <span class="nav-text">查看容器元数据</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#容器的加载"><span class="nav-number">5.</span> <span class="nav-text">容器的加载</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#container-gt-image"><span class="nav-number">5.1.</span> <span class="nav-text">container-&gt;image</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#container-gt-tar"><span class="nav-number">5.1.1.</span> <span class="nav-text">container-&gt;tar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#images-lt-gt-tar"><span class="nav-number">5.1.2.</span> <span class="nav-text">images&lt;-&gt;tar</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#images-lt-tar"><span class="nav-number">5.1.2.1.</span> <span class="nav-text">images&lt;-tar</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#image-gt-tar"><span class="nav-number">5.1.2.2.</span> <span class="nav-text">image-&gt; tar</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#额外的备忘命令"><span class="nav-number">6.</span> <span class="nav-text">额外的备忘命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#容器数据卷"><span class="nav-number">7.</span> <span class="nav-text">容器数据卷</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#命令挂载"><span class="nav-number">7.1.</span> <span class="nav-text">命令挂载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerfile"><span class="nav-number">7.2.</span> <span class="nav-text">Dockerfile</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常用命令"><span class="nav-number">7.2.1.</span> <span class="nav-text">常用命令</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -675,12 +706,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">821k</span>
+    <span title="站点总字数">822k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">22:48</span>
+    <span title="站点阅读时长">22:50</span>
   -->
 
 </div>
