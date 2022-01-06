@@ -36,9 +36,12 @@
 <meta property="og:description" content="序言 春风不相识，何事入罗帏。  CodeQL for Java。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://fynch3r.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9B%9B/image-20211029175310396.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9B%9B/image-20220106093348817.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9B%9B/image-20220106093406308.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9B%9B/image-20220106093445663.png">
 <meta property="og:image" content="https://fynch3r.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9B%9B/image-20211102184158889.png">
 <meta property="article:published_time" content="2021-10-29T07:08:17.000Z">
-<meta property="article:modified_time" content="2021-12-14T04:07:58.465Z">
+<meta property="article:modified_time" content="2022-01-06T05:40:09.400Z">
 <meta property="article:author" content="fynch3r">
 <meta property="article:tag" content="CodeQL">
 <meta name="twitter:card" content="summary">
@@ -228,7 +231,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-12-14 12:07:58" itemprop="dateModified" datetime="2021-12-14T12:07:58+08:00">2021-12-14</time>
+                <time title="修改时间：2022-01-06 13:40:09" itemprop="dateModified" datetime="2022-01-06T13:40:09+08:00">2022-01-06</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -295,26 +298,26 @@
 
 <h2 id="CodeQL-Library-for-Java"><a href="#CodeQL-Library-for-Java" class="headerlink" title="CodeQL Library for Java"></a>CodeQL Library for Java</h2><p>最重要的五类Library：</p>
 <ol>
-<li>程序元素：class  method</li>
-<li>描述<strong>AST</strong>上的节点：statement expression</li>
-<li>描述元数据metadata：注解annotation 注释</li>
-<li>Classes for computing metrics (such as cyclomatic complexity and coupling)</li>
+<li>程序元素：例如class , method</li>
+<li>描述<strong>AST</strong>节点：例如statement , expression</li>
+<li>描述元数据metadata：例如 注解annotation 注释</li>
+<li>计算指标的类： 例如 cyclomatic complexity and coupling 例如圈复杂度和耦合程度</li>
 <li>Classes for navigating the program’s <strong>call graph</strong></li>
 </ol>
-<h3 id="程序元素Program-element"><a href="#程序元素Program-element" class="headerlink" title="程序元素Program element"></a>程序元素Program element</h3><p>QL提供了如下类</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Element -- Package</span><br><span class="line">				-- CompilationUnit</span><br><span class="line">				-- Type</span><br><span class="line">				-- Method</span><br><span class="line">				-- Constructor</span><br><span class="line">				-- Variable</span><br></pre></td></tr></table></figure>
+<h3 id="程序元素Program-element"><a href="#程序元素Program-element" class="headerlink" title="程序元素Program element"></a>程序元素Program element</h3><p>为了表示class和method，QL提供了如下类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Element</span><br><span class="line">├── Package</span><br><span class="line">├── CompilationUnit</span><br><span class="line">├── Type</span><br><span class="line">├── Method</span><br><span class="line">├── Constructor</span><br><span class="line">└── Variable</span><br></pre></td></tr></table></figure>
 
 <p><code>Callable</code>类，它是<code>Method</code>和<code>Constructor</code>类的公共父类。</p>
 <h4 id="Type"><a href="#Type" class="headerlink" title="Type"></a>Type</h4><p>拥有很多子类：</p>
 <ul>
-<li>PrimitiveType ：描述Java语言中的8个基础类型 boolean byte char double float int long short 外带一个null</li>
+<li>PrimitiveType ：描述Java语言中的8个基础类型 boolean byte char double float int long short 外带null+void</li>
 <li>RefType：引用类型（也就是非基础类型），拥有如下子类：<ul>
-<li>Class ： 表示Java Class</li>
-<li>Interface：表示Java 接口</li>
-<li>EnumType：表示Java 枚举类型</li>
-<li>Array：表示Java数组</li>
-<li>TopLevelType：表示在编译单元顶层声明的引用类型 </li>
-<li>NestedType：在一个类型内部声明的类型</li>
+<li>Class ： 类Class</li>
+<li>Interface：接口</li>
+<li>EnumType：枚举</li>
+<li>Array：数组</li>
+<li>TopLevelType：表示在编译单元顶层声明的类型 （声明类型）</li>
+<li>NestedType：在一个type内部声明的type</li>
 <li>TopLevelClass：表示在编译单元顶层声明的类</li>
 <li>NestedType：在另一个type中声明的类<ul>
 <li>LocalClass：在一个method或者constructor中定义的类</li>
@@ -336,7 +339,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from NestedClass nc</span><br><span class="line">where nc.getASupertype() instanceof TypeObject</span><br><span class="line">select nc</span><br></pre></td></tr></table></figure>
 
 <h5 id="泛型Genetics"><a href="#泛型Genetics" class="headerlink" title="泛型Genetics"></a>泛型Genetics</h5><p>CodeQL设计了若干个Type子类负责处理Java中的泛型</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GenericType -- GenericInterface &#x2F;&#x2F; 泛型接口</span><br><span class="line">						-- GenericClass &#x2F;&#x2F; 泛型类</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GenericType</span><br><span class="line">├── GenericInterface &#x2F;&#x2F; 泛型接口</span><br><span class="line">└── GenericClass &#x2F;&#x2F; 泛型类</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">package java.util.;</span><br><span class="line"></span><br><span class="line">public interface Map&lt;K, V&gt; &#123;</span><br><span class="line">    int size();</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -355,7 +358,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from TypeVariable tv, TypeBound tb</span><br><span class="line">where tb &#x3D; tv.getATypeBound() and</span><br><span class="line">    tb.getType().hasQualifiedName(&quot;java.lang&quot;, &quot;Number&quot;)</span><br><span class="line">select tv</span><br></pre></td></tr></table></figure>
 
 <p>当处理未知泛型类型的遗留代码，每个泛型type都是一个raw version 没有任何类形参数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RawType -- RawClass</span><br><span class="line">				-- RawInterface</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">RawType</span><br><span class="line">├── RawClass</span><br><span class="line">└── RawInterface</span><br></pre></td></tr></table></figure>
 
 <p>同样有谓词<code>getSourceDeclaration</code>方法来获得对应的泛型类型。</p>
 <p>例如我们寻找Map的泛型类型</p>
@@ -378,7 +381,7 @@
 <h4 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h4><ul>
 <li>Filed 代表Java类属性</li>
 <li>LocalVariableDecl 代表局部变量</li>
-<li>Parameter 代表方法参数</li>
+<li>Parameter 代表方法（method, constructor）参数</li>
 </ul>
 <h3 id="AST-：Abstract-syntax-tree"><a href="#AST-：Abstract-syntax-tree" class="headerlink" title="AST ：Abstract syntax tree"></a>AST ：Abstract syntax tree</h3><p>AST中节点的成分，主要两类：</p>
 <ul>
@@ -423,16 +426,16 @@
 <p>For example, the following query finds all calls to methods called <code>println</code>:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Call c, Method m</span><br><span class="line">where m &#x3D; c.getCallee() and</span><br><span class="line">    m.hasName(&quot;println&quot;)</span><br><span class="line">select c</span><br></pre></td></tr></table></figure>
 
-<p>相反的，<code>Callable.getAreference</code>返回一个引用的Call。比如找到那些从来没有被调用的cons和methods。</p>
+<p>相反的，<code>Callable.getAreference</code>返回一个Callable的call site。比如找到那些从来没有被调用的cons和methods。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line">from Callable c</span><br><span class="line">where not exists(c.getAReference())</span><br><span class="line">select c</span><br></pre></td></tr></table></figure>
 
 <h2 id="Analyzing-data-flow-in-Java"><a href="#Analyzing-data-flow-in-Java" class="headerlink" title="Analyzing data flow in Java"></a>Analyzing data flow in Java</h2><p>local data flow / global data flow / taint tracking </p>
 <h3 id="Local-data-flow"><a href="#Local-data-flow" class="headerlink" title="Local data flow"></a>Local data flow</h3><p>方法内的数据流分析。</p>
 <p>CodeQL为局部数据流分析提供的模块是<code>DataFlow</code>。</p>
-<p><code>DataFlow</code>模块定义了<code>Node</code>类去表示数据可以流经的类。</p>
-<p><code>Node</code>被分成<code>ExprNode</code>和<code>ParameterNode</code>。</p>
+<p><code>DataFlow</code>模块定义了<code>Node</code>类，表示数据可以流经的类。</p>
+<p><code>Node</code>最常用的两个子类是<code>ExprNode</code>和<code>ParameterNode</code>。</p>
 <p> You can map between data flow nodes and expressions/parameters using the member predicates <code>asExpr</code> and <code>asParameter</code>:</p>
-<p>可以在数据流节点和表达式/参数之间进行映射</p>
+<p>可以在数据流节点和表达式/参数之间进行映射：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">class Node &#123;</span><br><span class="line">  &#x2F;** Gets the expression corresponding to this node, if any. *&#x2F;</span><br><span class="line">  Expr asExpr() &#123; ... &#125;</span><br><span class="line"></span><br><span class="line">  &#x2F;** Gets the parameter corresponding to this node, if any. *&#x2F;</span><br><span class="line">  Parameter asParameter() &#123; ... &#125;</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> * Gets the node corresponding to expression &#96;e&#96;.</span><br><span class="line"> *&#x2F;</span><br><span class="line">ExprNode exprNode(Expr e) &#123; ... &#125;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> * Gets the node corresponding to the value of parameter &#96;p&#96; at function entry.</span><br><span class="line"> *&#x2F;</span><br><span class="line">ParameterNode parameterNode(Parameter p) &#123; ... &#125;</span><br></pre></td></tr></table></figure>
 
 <p>如果数据流直接在两个node之间传递，谓词<code>localFlowStep</code>派上用途。</p>
@@ -450,7 +453,7 @@
 <p>模板：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TaintTracking::localTaint(DataFlow::parameterNode(source), DataFlow::exprNode(sink))</span><br></pre></td></tr></table></figure>
 
-<h4 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h4><p>寻找流向``new FileReader(..)<code>.</code>的methods</p>
+<h4 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h4><p>寻找流向<code>new FileReader(..)</code>的fileName，也就是第0个参数</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Constructor fileReader, Call call</span><br><span class="line">where</span><br><span class="line">  fileReader.getDeclaringType().hasQualifiedName(&quot;java.io&quot;, &quot;FileReader&quot;) and</span><br><span class="line">  call.getCallee() &#x3D; fileReader</span><br><span class="line">select call.getArgument(0)</span><br></pre></td></tr></table></figure>
 
 <p>上面只能找到参数中的表达式，找不到数据流的流向关系。</p>
@@ -469,7 +472,7 @@
 <h4 id="Using-global-data-flow"><a href="#Using-global-data-flow" class="headerlink" title="Using global data flow"></a>Using global data flow</h4><p>对<code>DataFlow::Configuration</code>进行继承，例如：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">import semmle.code.java.dataflow.DataFlow</span><br><span class="line"></span><br><span class="line">class MyDataFlowConfiguration extends DataFlow::Configuration &#123;</span><br><span class="line">  MyDataFlowConfiguration() &#123; this &#x3D; &quot;MyDataFlowConfiguration&quot; &#125;</span><br><span class="line"></span><br><span class="line">  override predicate isSource(DataFlow::Node source) &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  override predicate isSink(DataFlow::Node sink) &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>内部定义的谓词；</p>
+<p>override内部定义的谓词；</p>
 <ol>
 <li>isSource 从哪流来 from</li>
 <li>isSink 流向哪里to</li>
@@ -482,10 +485,10 @@
 <h4 id="Using-global-taint-tracking"><a href="#Using-global-taint-tracking" class="headerlink" title="Using global taint tracking"></a>Using global taint tracking</h4><p>对<code>TaintTracking::Configuration</code>进行继承：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">import semmle.code.java.dataflow.TaintTracking</span><br><span class="line"></span><br><span class="line">class MyTaintTrackingConfiguration extends TaintTracking::Configuration &#123;</span><br><span class="line">  MyTaintTrackingConfiguration() &#123; this &#x3D; &quot;MyTaintTrackingConfiguration&quot; &#125;</span><br><span class="line"></span><br><span class="line">  override predicate isSource(DataFlow::Node source) &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  override predicate isSink(DataFlow::Node sink) &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>内部定义的谓词；</p>
+<p>override内部定义的谓词；</p>
 <ol>
-<li>isSource 从哪流来 from</li>
-<li>isSink 流向哪里to</li>
+<li>isSource 污点数据从哪流来 from</li>
+<li>isSink 污点数据流向哪里to</li>
 <li>isBarrier 可选 限制数据流</li>
 <li>isAdditionalFlowStep 可选，添加额外的流程步骤</li>
 </ol>
@@ -515,7 +518,7 @@
 <p>寻找B类的全部父类：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Class B</span><br><span class="line">where B.hasName(&quot;B&quot;)</span><br><span class="line">select B.getASuperType+()</span><br></pre></td></tr></table></figure>
 
-<p>返回的是A、I、和java.lang.Object()</p>
+<p>返回的结果是A、I、和java.lang.Object()</p>
 <p>除了这些，还提供：</p>
 <p>谓词<code>getAMember</code>去获得类内声明的成分，例如field、cons、methods</p>
 <p>谓词<code>inherits(Method m)</code> 可以去判断m方法是否是该type声明或者继承的。</p>
@@ -587,11 +590,18 @@
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">class Super &#123;</span><br><span class="line">    int x;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; callable</span><br><span class="line">    public Super() &#123;</span><br><span class="line">        this(23);       &#x2F;&#x2F; call</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; callable</span><br><span class="line">    public Super(int x) &#123;</span><br><span class="line">        this.x &#x3D; x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; callable</span><br><span class="line">    public int getX() &#123;</span><br><span class="line">        return x;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Sub extends Super &#123;</span><br><span class="line">    &#x2F;&#x2F; callable</span><br><span class="line">    public Sub(int x) &#123;</span><br><span class="line">        super(x+19);    &#x2F;&#x2F; call</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; callable</span><br><span class="line">    public int getX() &#123;</span><br><span class="line">        return x-19;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Client &#123;</span><br><span class="line">    &#x2F;&#x2F; callable</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        Super s &#x3D; new Sub(42);  &#x2F;&#x2F; call</span><br><span class="line">        s.getX();               &#x2F;&#x2F; call </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>Client.main的第二行getCallee() 发挥的结果是 Super.getX()，但是实际运行起来调用的是Sub.getX()</p>
+
+
+<p>Call提供了两种成员谓词：</p>
+<ol>
+<li><code>getCallee</code>返回的是静态解析这次调用的结果（Callable）。</li>
+<li><code>getCaller</code>返回的是调用者。</li>
+</ol>
+<p>就像Client.main的第二行getCallee() 发挥的结果是 Super.getX()，但是实际运行起来调用的是Sub.getX()</p>
 <p>Callable提供了大量的成员谓词，最重要的两个是：</p>
 <ul>
-<li>calls(Callable target)          如果当前调用callee是target的话，返回true</li>
-<li>polyCalls(Callable target)  如果实际运行可能的callee是target的话，返回true。比如说callee是target或者target override的</li>
+<li>cl.calls(Callable target)          如果当前调用的callee是target的话，返回true</li>
+<li>polyCalls(Callable target)  如果实际运行可能的callee是target的话，返回true。比如说callee是target或者被target override了的</li>
 </ul>
 <p>在上面这个例子中，<code>Client.main</code>方法调用的是<code>Sub(int)</code>和<code>Super.getX()</code>方法；；另外它<code>polyCalls</code>了方法<code>Sub.getX()</code>。</p>
 <h3 id="举例：寻找未被调用的方法"><a href="#举例：寻找未被调用的方法" class="headerlink" title="举例：寻找未被调用的方法"></a>举例：寻找未被调用的方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Callable callee</span><br><span class="line">where not exists(Callable caller|caller.polyCalls(callee))</span><br><span class="line">select callee</span><br></pre></td></tr></table></figure>
@@ -605,7 +615,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Callable callee</span><br><span class="line">where not exists(Callable caller | caller.polyCalls(callee)) and</span><br><span class="line">    callee.getCompilationUnit().fromSource() and</span><br><span class="line">    not callee.hasName(&quot;&lt;clinit&gt;&quot;) and not callee.hasName(&quot;finalize&quot;)</span><br><span class="line">select callee, &quot;Not called.&quot;</span><br></pre></td></tr></table></figure>
 
 <p>还有一种特例就是</p>
-<p>在单例模式中，一个类提供了private修饰的空构造方法，防止它被其他类实例化。</p>
+<p>在单例模式中，一个类提供了private修饰的空构造方法，防止它被其他类实例化（单例模式）。</p>
 <p>这些结果不应该出现在我们的查询结果中，因为他们的设计意图就是这样。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Callable callee</span><br><span class="line">where not exists(Callable caller | caller.polyCalls(callee)) and</span><br><span class="line">    callee.getCompilationUnit().fromSource() and</span><br><span class="line">    not callee.hasName(&quot;&lt;clinit&gt;&quot;) and not callee.hasName(&quot;finalize&quot;) and</span><br><span class="line">    not callee.isPublic() and</span><br><span class="line">    not callee.(Constructor).getNumberOfParameters() &#x3D; 0</span><br><span class="line">select callee, &quot;Not called.&quot;</span><br></pre></td></tr></table></figure>
 
@@ -669,7 +679,17 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Insert the class definitions from above</span><br><span class="line"></span><br><span class="line">from Call call</span><br><span class="line">where call.getCallee() instanceof DeprecatedMethod</span><br><span class="line">    and not call.getCaller() instanceof DeprecatedMethod</span><br><span class="line">    and not call.getCaller().getAnAnnotation() instanceof SuppressDeprecationWarningAnnotation</span><br><span class="line">select call, &quot;This call invokes a deprecated method.&quot;</span><br></pre></td></tr></table></figure>
 
 <h2 id="AST"><a href="#AST" class="headerlink" title="AST"></a>AST</h2><p><a href="https://codeql.github.com/docs/codeql-language-guides/abstract-syntax-tree-classes-for-working-with-java-programs/" target="_blank" rel="noopener">CodeQL for AST</a></p>
+<p>抽象语法树上的节点都是语句和表达式。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">AST</span><br><span class="line">├── Statement (Stmt)</span><br><span class="line">└── Expression (Expr)</span><br><span class="line">    ├── Literal 字面量 </span><br><span class="line">    │   ├── BooleanLiteral</span><br><span class="line">    │   ├── IntegerLiteral</span><br><span class="line">    │   ├── LongLiteral</span><br><span class="line">    │   ├── FloatingPointLiteral</span><br><span class="line">    │   ├── DoubleLiteral</span><br><span class="line">    │   ├── CharacterLiteral</span><br><span class="line">    │   ├── StringLiteral</span><br><span class="line">    │   └── NullLiteral</span><br><span class="line">    ├── Unary expression 一元表达式</span><br><span class="line">    ├── Binary expression 二元表达式</span><br><span class="line">    ├── Assignment expression 赋值表达式</span><br><span class="line">    ├── Access </span><br><span class="line">    └── Miscellaneous</span><br></pre></td></tr></table></figure>
+
+<img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9B%9B/image-20220106093348817.png" alt="image-20220106093348817" style="zoom:50%;">
+
+<img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9B%9B/image-20220106093406308.png" alt="image-20220106093406308" style="zoom:50%;">
+
+<img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9B%9B/image-20220106093445663.png" alt="image-20220106093445663" style="zoom: 33%;">
+
 <h2 id="Java官方例子"><a href="#Java官方例子" class="headerlink" title="Java官方例子"></a>Java官方例子</h2><p><a href="https://codeql.github.com/codeql-query-help/java/" target="_blank" rel="noopener">https://codeql.github.com/codeql-query-help/java/</a></p>
+<p><a href="https://github.com/github/codeql/tree/main/java/ql/examples/snippets" target="_blank" rel="noopener">https://github.com/github/codeql/tree/main/java/ql/examples/snippets</a></p>
 <h2 id="GitHub-Security-Lab"><a href="#GitHub-Security-Lab" class="headerlink" title="GitHub Security Lab"></a>GitHub Security Lab</h2><p><a href="https://securitylab.github.com/research/" target="_blank" rel="noopener">https://securitylab.github.com/research/</a></p>
 <h2 id="Java-路径查询"><a href="#Java-路径查询" class="headerlink" title="Java 路径查询"></a>Java 路径查询</h2><p>模板：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * ...</span><br><span class="line"> * @kind path-problem</span><br><span class="line"> * ...</span><br><span class="line"> *&#x2F;</span><br><span class="line"></span><br><span class="line">import &lt;language&gt;</span><br><span class="line">&#x2F;&#x2F; For some languages (Java&#x2F;C++&#x2F;Python) you need to explicitly import the data flow library, such as</span><br><span class="line">&#x2F;&#x2F; import semmle.code.java.dataflow.DataFlow</span><br><span class="line">import DataFlow::PathGraph</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">from MyConfiguration config, DataFlow::PathNode source, DataFlow::PathNode sink</span><br><span class="line">where config.hasFlowPath(source, sink)</span><br><span class="line">select sink.getNode(), source, sink, &quot;&lt;message&gt;&quot;</span><br></pre></td></tr></table></figure>
@@ -879,6 +899,9 @@
         <li class="links-of-blogroll-item">
           <a href="https://www.zhihu.com/people/chenwengang" title="https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;chenwengang" rel="noopener" target="_blank">ApsarasX</a>
         </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.safe6.cn/index" title="http:&#x2F;&#x2F;www.safe6.cn&#x2F;index" rel="noopener" target="_blank">Safe6</a>
+        </li>
     </ul>
   </div>
 
@@ -914,12 +937,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">822k</span>
+    <span title="站点总字数">823k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">22:50</span>
+    <span title="站点阅读时长">22:52</span>
   -->
 
 </div>
