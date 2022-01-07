@@ -46,8 +46,10 @@
 <meta property="og:image" content="https://fynch3r.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80/image-20211022160542029.png">
 <meta property="og:image" content="https://fynch3r.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80/image-20211022160948714.png">
 <meta property="og:image" content="https://fynch3r.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80/image-20220105170008407.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80/image-20220107101109715.png">
+<meta property="og:image" content="https://fynch3r.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80/image-20220107111253978.png">
 <meta property="article:published_time" content="2021-10-21T08:58:57.000Z">
-<meta property="article:modified_time" content="2022-01-05T09:05:13.662Z">
+<meta property="article:modified_time" content="2022-01-07T11:30:27.434Z">
 <meta property="article:author" content="fynch3r">
 <meta property="article:tag" content="CodeQL">
 <meta name="twitter:card" content="summary">
@@ -237,7 +239,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-01-05 17:05:13" itemprop="dateModified" datetime="2022-01-05T17:05:13+08:00">2022-01-05</time>
+                <time title="修改时间：2022-01-07 19:30:27" itemprop="dateModified" datetime="2022-01-07T19:30:27+08:00">2022-01-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -277,14 +279,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.8k</span>
+              <span>6.1k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
+              <span>10 分钟</span>
             </span>
 
         </div>
@@ -387,6 +389,160 @@
 <li>CodeQL: Quick Evaluation 只查询鼠标选中的谓词/片段</li>
 <li>CodeQL: Run Query on Multiple Databases 在多个数据中联合查询</li>
 </ul>
+<h1 id="CodeQL-queries"><a href="#CodeQL-queries" class="headerlink" title="CodeQL queries"></a>CodeQL queries</h1><p>重要的查找类型有：</p>
+<ul>
+<li><strong>Alert queries</strong>: queries that highlight issues in specific locations in your code.</li>
+<li><strong>Path queries</strong>: queries that describe the flow of information between a source and a sink in your code.</li>
+</ul>
+<p>查询方式：</p>
+<blockquote>
+<p>You can add custom queries to <a href="https://codeql.github.com/docs/codeql-cli/about-ql-packs/" target="_blank" rel="noopener">QL packs</a> to analyze your projects with “<a href="https://docs.github.com/github/finding-security-vulnerabilities-and-errors-in-your-code" target="_blank" rel="noopener">Code scanning</a>”, use them to analyze a database with the “<a href="https://codeql.github.com/docs/codeql-cli/#codeql-cli" target="_blank" rel="noopener">CodeQL CLI</a>,” or you can contribute to the standard CodeQL queries in our <a href="https://github.com/github/codeql" target="_blank" rel="noopener">open source repository on GitHub</a>.</p>
+</blockquote>
+<h2 id="元数据-Metadata"><a href="#元数据-Metadata" class="headerlink" title="元数据 Metadata"></a>元数据 Metadata</h2><p>元数据表示查询的目的、如何解释查询结果、如何显示查询结果。</p>
+<p>不同的查询方式所需的元数据也不相同。</p>
+<ol>
+<li><p>如果你是向GitHub仓库贡献一个查询，学习<a href="https://github.com/github/codeql/blob/main/docs/query-metadata-style-guide.md" target="_blank" rel="noopener">query metadata style guide</a>.</p>
+</li>
+<li><p>如果你正在将自定义查询添加到使用 LGTM 进行分析的qlpack中，学习<a href="https://lgtm.com/help/lgtm/writing-custom-queries" target="_blank" rel="noopener">Writing custom queries to include in LGTM analysis</a>.</p>
+</li>
+<li><p>如果你使用 <a href="https://codeql.github.com/docs/codeql-cli/#codeql-cli" target="_blank" rel="noopener">CodeQL CLI</a>进行查询，你的元数据部分<strong>必须包含</strong> <code>@kind</code>.</p>
+</li>
+<li><p>如果你使用LGTM终端或者VSCode插件进行查询，元数据不是必须的；</p>
+<p>但是如果你希望你的结果显示为<code>alert</code> 或者<code>path</code>，必须包含<code>@kind</code>. 更多内容学习 “<a href="https://codeql.github.com/docs/codeql-for-visual-studio-code/analyzing-your-projects/#analyzing-your-projects" target="_blank" rel="noopener">Analyzing your projects</a>”</p>
+<p>Alert problem：必须包含<code>@kind problem</code></p>
+<p>Path problem：必须包含<code>@kind path-problem</code></p>
+</li>
+</ol>
+<h2 id="元数据属性"><a href="#元数据属性" class="headerlink" title="元数据属性"></a>元数据属性</h2><p>更细的学习：<a href="https://github.com/github/codeql/blob/main/docs/query-metadata-style-guide.md" target="_blank" rel="noopener">Query metadata style guide</a>.</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@description</code></td>
+<td><code>&lt;text&gt;</code></td>
+<td>描述查询的用途，代码元素用 <code>&#39;</code>框住</td>
+</tr>
+<tr>
+<td><code>@id</code></td>
+<td><code>&lt;text&gt;</code></td>
+<td>识别和分类查询，使用<code>/</code>和<code>-</code>分割；LGTM模板：<code>&lt;language&gt;/&lt;brief-description&gt;</code></td>
+</tr>
+<tr>
+<td><code>@kind</code></td>
+<td><code>problem</code> <code>path-problem</code></td>
+<td>the query is an alert (<code>@kind problem</code>) or a path (<code>@kind path-problem</code>)</td>
+</tr>
+<tr>
+<td><code>@name</code></td>
+<td><code>&lt;text&gt;</code></td>
+<td>查询的名字，代码元素用 <code>&#39;</code>框住</td>
+</tr>
+<tr>
+<td><code>@tags</code></td>
+<td><code>correctness</code> <code>maintainability</code> <code>readability</code> <code>security</code></td>
+<td>查询的归类</td>
+</tr>
+<tr>
+<td><code>@precision</code></td>
+<td><code>low</code> <code>medium</code> <code>high</code> <code>very-high</code></td>
+<td>查询的准确率（误报率高低）</td>
+</tr>
+<tr>
+<td><code>@problem.severity</code></td>
+<td><code>error</code> <code>warning</code> <code>recommendation</code></td>
+<td>描述一次非安全查询的产生的任何警报的严重性等级</td>
+</tr>
+<tr>
+<td><code>@security-severity</code></td>
+<td><code>&lt;score&gt;</code></td>
+<td>漏洞评分</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>备注：</p>
+<ol>
+<li><p>tags</p>
+<blockquote>
+<ul>
+<li><code>@tags correctness</code>–for queries that 检测程序不正确的行为.</li>
+<li><code>@tags maintainability</code>–for queries that 检测程序中难以改动的模式.</li>
+<li><code>@tags readability</code>–for queries that 检测程序中源码难以阅读的模式.</li>
+<li><code>@tags security</code>–for queries that 检测程序中的安全性问题.</li>
+</ul>
+</blockquote>
+</li>
+</ol>
+<p>官方规范小例子：</p>
+<p><img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80/image-20220107101109715.png" alt="image-20220107101109715"></p>
+<h2 id="规范查询结果"><a href="#规范查询结果" class="headerlink" title="规范查询结果"></a>规范查询结果</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select f, "This file is similar to $@.", other, other.getBaseName()</span><br></pre></td></tr></table></figure>
+
+<p><code>$@</code> 会把后两列合并显示</p>
+<h2 id="关于数据流分析"><a href="#关于数据流分析" class="headerlink" title="关于数据流分析"></a>关于数据流分析</h2><h3 id="数据流图"><a href="#数据流图" class="headerlink" title="数据流图"></a>数据流图</h3><p>AST上面的节点是语句/表达式 Expr Stmt</p>
+<p>数据流图上的节点是传递value的语义元素 ExprNode ParameterNode</p>
+<blockquote>
+<p>Some AST nodes (such as expressions) have corresponding data flow nodes, but others (such as <code>if</code> statements) do not. This is because expressions are evaluated to a value at runtime, whereas <code>if</code> statements are purely a control-flow construct and do not carry values. There are also data flow nodes that do not correspond to AST nodes at all.</p>
+</blockquote>
+<p>AST上面的节点：Stmt，Expr</p>
+<p>Expr有对应的数据流图节点，因为表达式在数据流分析过程中变成了value</p>
+<p>Stmt没有对应的数据流图节点，比如if，纯纯的控制流结构，不携带任何值</p>
+<p>当然，数据流图还有很多节点中根本没在抽象语法树中出现；</p>
+<h3 id="建模"><a href="#建模" class="headerlink" title="建模"></a>建模</h3><p>两种：</p>
+<ul>
+<li>local data flow ：局部数据流分析，函数内</li>
+<li>Global data flow：全局数据流分析，函数间</li>
+</ul>
+<h3 id="数据流分析-污点分析"><a href="#数据流分析-污点分析" class="headerlink" title="数据流分析+污点分析"></a>数据流分析+污点分析</h3><blockquote>
+<p>For example, if you are tracking an insecure object <code>x</code> (which might be some untrusted or potentially malicious data), a step in the program may ‘change’ its value. So, in a simple process such as <code>y = x + 1</code>, a normal data flow analysis will highlight the use of <code>x</code>, but not <code>y</code>. However, since <code>y</code> is derived from <code>x</code>, it is influenced by the untrusted or ‘tainted’ information, and therefore it is also tainted. Analyzing the flow of the taint from <code>x</code> to <code>y</code> is known as taint tracking.</p>
+</blockquote>
+<h2 id="关于路径查询"><a href="#关于路径查询" class="headerlink" title="关于路径查询"></a>关于路径查询</h2><p>官方模板：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * ...</span><br><span class="line"> * @kind path-problem</span><br><span class="line"> * ...</span><br><span class="line"> *&#x2F;</span><br><span class="line"></span><br><span class="line">import &lt;language&gt;</span><br><span class="line">&#x2F;&#x2F; For some languages (Java&#x2F;C++&#x2F;Python) you need to explicitly import the data flow library, such as</span><br><span class="line">&#x2F;&#x2F; import semmle.code.java.dataflow.DataFlow</span><br><span class="line">import DataFlow::PathGraph</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">from MyConfiguration config, DataFlow::PathNode source, DataFlow::PathNode sink</span><br><span class="line">where config.hasFlowPath(source, sink)</span><br><span class="line">select sink.getNode(), source, sink, &quot;&lt;message&gt;&quot;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>import DataFlow::PathGraph</p>
+<p>PathGraph有内置查询谓词edges，用来判断ab之间是否有数据边，有的话找出来</p>
+<img src="../images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80/image-20220107111253978.png" alt="image-20220107111253978" style="zoom:50%;">
+
+
+
+<h2 id="数据流分析调试"><a href="#数据流分析调试" class="headerlink" title="数据流分析调试"></a>数据流分析调试</h2><p>常规模板：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class MyConfig extends TaintTracking::Configuration &#123;</span><br><span class="line">  MyConfig() &#123; this &#x3D; &quot;MyConfig&quot; &#125;</span><br><span class="line"></span><br><span class="line">  override predicate isSource(DataFlow::Node node) &#123; node instanceof MySource &#125;</span><br><span class="line"></span><br><span class="line">  override predicate isSink(DataFlow::Node node) &#123; node instanceof MySink &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">from MyConfig config, DataFlow::PathNode source, DataFlow::PathNode sink</span><br><span class="line">where config.hasFlowPath(source, sink)</span><br><span class="line">select sink.getNode(), source, sink, &quot;Sink is reached from $@.&quot;, source.getNode(), &quot;here&quot;</span><br></pre></td></tr></table></figure>
+
+<h3 id="检查Source和Sink集合"><a href="#检查Source和Sink集合" class="headerlink" title="检查Source和Sink集合"></a>检查Source和Sink集合</h3><p>选中<code>node instanceof MySource</code>,右键“CodeQL: Quick Evaluation”，可以查看你的SourceSet</p>
+<h3 id="设置fieldFlowBranchLimit属性值"><a href="#设置fieldFlowBranchLimit属性值" class="headerlink" title="设置fieldFlowBranchLimit属性值"></a>设置<code>fieldFlowBranchLimit</code>属性值</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">override int fieldFlowBranchLimit() &#123; result &#x3D; 5000 &#125;</span><br></pre></td></tr></table></figure>
+
+<p>Data-flow configuration们自身有个属性：<code>fieldFlowBranchLimit</code></p>
+<p>他的value如果过高会浪费性能，过低找不到path；</p>
+<h3 id="部分数据流"><a href="#部分数据流" class="headerlink" title="部分数据流"></a>部分数据流</h3><p>“数据流片段”</p>
+<p>如果你想获取全部的“数据流片段”，naive的做法可能是两步：</p>
+<ul>
+<li>传统的hasFlow</li>
+<li>isSink =&gt; any()</li>
+</ul>
+<p>但是这样是找不到全部的数据流片段的，因为CodeQL内置的数据流库其实一直在努力修建不可能的路径。</p>
+<p>官方推荐谓词：<code>Configuration.hasPartialFlow</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">final predicate hasPartialFlow(PartialPathNode source, PartialPathNode node, int dist) &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>用法：<a href="https://codeql.github.com/codeql-standard-libraries/java/semmle/code/java/dataflow/internal/DataFlowImpl2.qll/predicate.DataFlowImpl2$Configuration$hasPartialFlow.3.html" target="_blank" rel="noopener">Configuration.hasPartialFlow</a></p>
+<p>需要先设置explorationLimit，它是整个搜索范围的Top，dist应该&lt;=：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">override int explorationLimit() &#123; result = 5 &#125;</span><br></pre></td></tr></table></figure>
+
+<p>推荐的方式是直接写一个谓词来包装它：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">predicate adhocPartialFlow(Callable c, PartialPathNode n, Node src, int dist) &#123;</span><br><span class="line">  exists(MyConfig conf, PartialPathNode source |</span><br><span class="line">    conf.hasPartialFlow(source, n, dist) and</span><br><span class="line">    src = source.getNode() and</span><br><span class="line">    c = n.getNode().getEnclosingCallable()</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
 
     </div>
 
@@ -474,7 +630,7 @@
       -->
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#背景介绍"><span class="nav-number">2.</span> <span class="nav-text">背景介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CodeQL-引擎"><span class="nav-number">3.</span> <span class="nav-text">CodeQL 引擎</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#环境准备"><span class="nav-number">4.</span> <span class="nav-text">环境准备</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CodeQL-CLI-binaries"><span class="nav-number">4.1.</span> <span class="nav-text">CodeQL-CLI-binaries</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CodeQL-Library"><span class="nav-number">4.2.</span> <span class="nav-text">CodeQL Library</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码准备"><span class="nav-number">5.</span> <span class="nav-text">源码准备</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#下载待分析的源码"><span class="nav-number">5.1.</span> <span class="nav-text">下载待分析的源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构建数据库"><span class="nav-number">5.2.</span> <span class="nav-text">构建数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VSCode"><span class="nav-number">5.3.</span> <span class="nav-text">VSCode</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#配置数据库"><span class="nav-number">5.3.1.</span> <span class="nav-text">配置数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置QL-Pack"><span class="nav-number">5.3.2.</span> <span class="nav-text">配置QL Pack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加到工作区"><span class="nav-number">5.3.3.</span> <span class="nav-text">添加到工作区</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#QL查询"><span class="nav-number">6.</span> <span class="nav-text">QL查询</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#细节"><span class="nav-number">7.</span> <span class="nav-text">细节</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#插件"><span class="nav-number">7.1.</span> <span class="nav-text">插件</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#背景介绍"><span class="nav-number">2.</span> <span class="nav-text">背景介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CodeQL-引擎"><span class="nav-number">3.</span> <span class="nav-text">CodeQL 引擎</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#环境准备"><span class="nav-number">4.</span> <span class="nav-text">环境准备</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CodeQL-CLI-binaries"><span class="nav-number">4.1.</span> <span class="nav-text">CodeQL-CLI-binaries</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CodeQL-Library"><span class="nav-number">4.2.</span> <span class="nav-text">CodeQL Library</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码准备"><span class="nav-number">5.</span> <span class="nav-text">源码准备</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#下载待分析的源码"><span class="nav-number">5.1.</span> <span class="nav-text">下载待分析的源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构建数据库"><span class="nav-number">5.2.</span> <span class="nav-text">构建数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VSCode"><span class="nav-number">5.3.</span> <span class="nav-text">VSCode</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#配置数据库"><span class="nav-number">5.3.1.</span> <span class="nav-text">配置数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置QL-Pack"><span class="nav-number">5.3.2.</span> <span class="nav-text">配置QL Pack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加到工作区"><span class="nav-number">5.3.3.</span> <span class="nav-text">添加到工作区</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#QL查询"><span class="nav-number">6.</span> <span class="nav-text">QL查询</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#细节"><span class="nav-number">7.</span> <span class="nav-text">细节</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#插件"><span class="nav-number">7.1.</span> <span class="nav-text">插件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CodeQL-queries"><span class="nav-number">8.</span> <span class="nav-text">CodeQL queries</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#元数据-Metadata"><span class="nav-number">8.1.</span> <span class="nav-text">元数据 Metadata</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#元数据属性"><span class="nav-number">8.2.</span> <span class="nav-text">元数据属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#规范查询结果"><span class="nav-number">8.3.</span> <span class="nav-text">规范查询结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于数据流分析"><span class="nav-number">8.4.</span> <span class="nav-text">关于数据流分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据流图"><span class="nav-number">8.4.1.</span> <span class="nav-text">数据流图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#建模"><span class="nav-number">8.4.2.</span> <span class="nav-text">建模</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据流分析-污点分析"><span class="nav-number">8.4.3.</span> <span class="nav-text">数据流分析+污点分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于路径查询"><span class="nav-number">8.5.</span> <span class="nav-text">关于路径查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据流分析调试"><span class="nav-number">8.6.</span> <span class="nav-text">数据流分析调试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#检查Source和Sink集合"><span class="nav-number">8.6.1.</span> <span class="nav-text">检查Source和Sink集合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置fieldFlowBranchLimit属性值"><span class="nav-number">8.6.2.</span> <span class="nav-text">设置fieldFlowBranchLimit属性值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#部分数据流"><span class="nav-number">8.6.3.</span> <span class="nav-text">部分数据流</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -595,12 +751,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">823k</span>
+    <span title="站点总字数">827k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">22:52</span>
+    <span title="站点阅读时长">22:59</span>
   -->
 
 </div>
