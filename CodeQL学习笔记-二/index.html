@@ -45,7 +45,7 @@
 <meta property="og:image" content="https://fynch3r.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%BA%8C/image-20211029121416854.png">
 <meta property="og:image" content="https://fynch3r.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%BA%8C/image-20211029121447367.png">
 <meta property="article:published_time" content="2021-10-22T11:59:19.000Z">
-<meta property="article:modified_time" content="2022-01-05T11:34:10.064Z">
+<meta property="article:modified_time" content="2022-02-28T03:17:50.939Z">
 <meta property="article:author" content="fynch3r">
 <meta property="article:tag" content="CodeQL">
 <meta name="twitter:card" content="summary">
@@ -235,7 +235,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-01-05 19:34:10" itemprop="dateModified" datetime="2022-01-05T19:34:10+08:00">2022-01-05</time>
+                <time title="修改时间：2022-02-28 11:17:50" itemprop="dateModified" datetime="2022-02-28T11:17:50+08:00">2022-02-28</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -275,14 +275,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>19k</span>
+              <span>21k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>32 分钟</span>
+              <span>35 分钟</span>
             </span>
 
         </div>
@@ -377,7 +377,7 @@
 <li>成员谓词：class内定义的常规谓词</li>
 <li>特征谓词：简单粗暴，<strong>构造函数</strong>级别的谓词，直接规定</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">int getSuccessor(int i) &#123;  &#x2F;&#x2F; 非成员谓词</span><br><span class="line">  result &#x3D; i + 1 and</span><br><span class="line">  i in [1 .. 9]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class FavoriteNumbers extends int &#123;</span><br><span class="line">  FavoriteNumbers() &#123;  &#x2F;&#x2F; 特征谓词</span><br><span class="line">    this &#x3D; 1 or</span><br><span class="line">    this &#x3D; 4 or</span><br><span class="line">    this &#x3D; 9</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  string getName() &#123;   &#x2F;&#x2F; 成员谓词</span><br><span class="line">    this &#x3D; 1 and result &#x3D; &quot;one&quot;</span><br><span class="line">    or</span><br><span class="line">    this &#x3D; 4 and result &#x3D; &quot;four&quot;</span><br><span class="line">    or</span><br><span class="line">    this &#x3D; 9 and result &#x3D; &quot;nine&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">int getSuccessor(int i) &#123;  &#x2F;&#x2F; 非成员谓词 non-member predicate</span><br><span class="line">  result &#x3D; i + 1 and</span><br><span class="line">  i in [1 .. 9]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class FavoriteNumbers extends int &#123;</span><br><span class="line">  FavoriteNumbers() &#123;  &#x2F;&#x2F; 特征谓词 Characteristic predicates</span><br><span class="line">    this &#x3D; 1 or</span><br><span class="line">    this &#x3D; 4 or</span><br><span class="line">    this &#x3D; 9</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  string getName() &#123;   &#x2F;&#x2F; 成员谓词 Member predicate</span><br><span class="line">    this &#x3D; 1 and result &#x3D; &quot;one&quot;</span><br><span class="line">    or</span><br><span class="line">    this &#x3D; 4 and result &#x3D; &quot;four&quot;</span><br><span class="line">    or</span><br><span class="line">    this &#x3D; 9 and result &#x3D; &quot;nine&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="行为绑定"><a href="#行为绑定" class="headerlink" title="行为绑定"></a>行为绑定</h3><p>绑定的意思是谓词的参数/结果一定是finite的，一定是有限的。</p>
 <p>两个反例：</p>
@@ -748,7 +748,35 @@
 <h4 id="private"><a href="#private" class="headerlink" title="private"></a>private</h4><p><strong>Avilable for</strong>：类，代数类型，成员谓词，非成员谓词，import，类成员，模块，别名</p>
 <h4 id="query"><a href="#query" class="headerlink" title="query"></a>query</h4><p><strong>Avilable for</strong>：非成员谓词，别名</p>
 <p>将一个谓词转换为查询</p>
-<h3 id="编译器参数"><a href="#编译器参数" class="headerlink" title="编译器参数"></a>编译器参数</h3><p>选修，先跳过</p>
+<h3 id="编译器参数"><a href="#编译器参数" class="headerlink" title="编译器参数"></a>编译器参数</h3><p>优化执行性能。</p>
+<p><strong>Inling 内联</strong></p>
+<p>对于简单的谓词，QL优化器有时会用谓词体本身取代对谓词的调用，这就是所谓的内联。</p>
+<p>例如，假设你有一个定义谓词one(int i) { i = 1 }和一个对该谓词的调用…one(y) …. QL优化器可以将该谓词内联为…y = 1 ….</p>
+<p>你可以使用以下编译器pragma注释来控制QL优化器内联谓词的方式。</p>
+<p><strong>pragma[inline]</strong></p>
+<p>告诉QL优化器将这个谓词内联到它被调用的地方。当一个谓词体完全计算起来非常昂贵时，这可能很有用，因为它可以确保谓词在被调用的地方与其他上下文信息一起被评估。</p>
+<p><strong>pragma[noinline]</strong></p>
+<p>用于防止一个谓词被内联到它被调用的地方。在实践中，当你已经在一个 “辅助 “谓词中把某些变量组合在一起时，这个注解是有用的，以确保关系被整体评估。这可以帮助提高性能。QL优化器的内联可能会撤销辅助谓词的工作，所以用pragma[noinline]来注释它是个好主意。</p>
+<p><strong>pragma[nomagic]</strong></p>
+<p>用于防止QL优化器在谓词上执行 “魔法集 “优化。</p>
+<p>这种优化包括从谓词调用的上下文中获取信息并将其推入谓词的主体。这通常是有益的，所以你<strong>不应该使用pragma[nomagic]注解，除非GitHub推荐这样做</strong>。</p>
+<p>请注意，nomagic也就意味着noinline。</p>
+<p><strong>pragma[noopt]</strong></p>
+<p>用于阻止QL优化器对谓词进行优化，除非它对编译和评估的工作绝对必要。</p>
+<p><strong>这很少有必要，你不应该使用pragma[noopt]注解，除非GitHub推荐这样做</strong>，例如，为了帮助解决性能问题。</p>
+<p><strong>pragma[only_bind_out]</strong></p>
+<p>可以让你指定QL编译器应该绑定表达式的方向。这对于在QL优化器以低效方式排列QL程序的部分的罕见情况下提高性能是很有用的。</p>
+<p>例如，<code>x = pragma[only_bind_out](y)</code>在语义上等同于x = y，但有不同的绑定行为。x = y从y绑定x，反之亦然，而<code>x = pragma[only_bind_out](y)</code>只从y绑定x。</p>
+<p>欲了解更多信息，请参见 “<a href="https://codeql.github.com/docs/ql-language-reference/evaluation-of-ql-programs/#binding" target="_blank" rel="noopener">Binding</a>“。</p>
+<p><strong>pragma[only_bind_into]</strong></p>
+<p>指定QL编译器应该绑定表达式的方向。这对于在QL优化器以低效率的方式排列QL程序的部分的罕见情况下提高性能是很有用的。</p>
+<p>例如，<code>x = pragma[only_bind_into](y)</code>在语义上等同于x = y，但有不同的绑定行为。x = y从y绑定x，反之亦然，而<code>x = pragma[only_bind_into</code>](y)只从x绑定y。</p>
+<p>欲了解更多信息，请参见 “<a href="https://codeql.github.com/docs/ql-language-reference/evaluation-of-ql-programs/#binding" target="_blank" rel="noopener">Binding</a>“。</p>
+<p><strong>bindingset[…]</strong></p>
+<p><a href="https://codeql.github.com/docs/ql-language-reference/predicates/#binding-behavior" target="_blank" rel="noopener">https://codeql.github.com/docs/ql-language-reference/predicates/#binding-behavior</a></p>
+<p>明确说明谓词或类的绑定集。绑定集是谓词或类主体的参数的一个子集，如果这些参数被限制在一个有限的值集上，那么谓词或类本身就是有限的（也就是说，它被评估为一个有限的图元集）。</p>
+<p>bindingset 注解接受一个用逗号分隔的变量列表。</p>
+<p>当您注释一个谓词时，每个变量必须是谓词的参数，可能包括this（对于特征谓词和成员谓词）和result（对于返回结果的谓词）。<br>当你注解一个类时，每个变量必须是this或该类中的一个字段。从CodeQL CLI的2.3.0版和LGTM Enterprise的1.26版开始支持类的绑定集。</p>
 <h2 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h2><h3 id="传递闭包-Transitive-closures"><a href="#传递闭包-Transitive-closures" class="headerlink" title="传递闭包 Transitive closures"></a>传递闭包 Transitive closures</h3><p>原始谓词必须要有两个参数，this 和 result， 参数类型必须兼容</p>
 <h4 id="传递闭包"><a href="#传递闭包" class="headerlink" title="传递闭包 +"></a>传递闭包 +</h4><p>一次或者多次</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Person getAnAncestor() &#123;</span><br><span class="line">  result &#x3D; this.getAParent()</span><br><span class="line">  or</span><br><span class="line">  result &#x3D; this.getAParent().getAnAncestor()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">等价于getparent+() 返回p的所有祖先（不包含p）</span><br></pre></td></tr></table></figure>
@@ -1037,12 +1065,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">828k</span>
+    <span title="站点总字数">829k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">22:59</span>
+    <span title="站点阅读时长">23:02</span>
   -->
 
 </div>
