@@ -41,7 +41,7 @@
 <meta property="og:image" content="https://fynch3r.github.io/images/%E8%AE%B0%E4%B8%80%E6%AC%A1CodeQL%E4%B8%8EOpenJDK%E7%9A%84%E8%81%94%E5%8A%A8/image-20220303105954416.png">
 <meta property="og:image" content="https://fynch3r.github.io/images/%E8%AE%B0%E4%B8%80%E6%AC%A1CodeQL%E4%B8%8EOpenJDK%E7%9A%84%E8%81%94%E5%8A%A8/image-20220303111013521.png">
 <meta property="article:published_time" content="2022-03-03T02:00:18.000Z">
-<meta property="article:modified_time" content="2022-03-03T03:26:36.849Z">
+<meta property="article:modified_time" content="2022-03-03T04:04:42.547Z">
 <meta property="article:author" content="fynch3r">
 <meta property="article:tag" content="实战">
 <meta name="twitter:card" content="summary">
@@ -225,7 +225,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2022-03-03 10:00:18 / 修改时间：11:26:36" itemprop="dateCreated datePublished" datetime="2022-03-03T10:00:18+08:00">2022-03-03</time>
+              <time title="创建时间：2022-03-03 10:00:18 / 修改时间：12:04:42" itemprop="dateCreated datePublished" datetime="2022-03-03T10:00:18+08:00">2022-03-03</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -290,7 +290,8 @@
 <p>使用CodeQL为OpenJDK生成数据库，过程中踩了很多坑，写篇博客详细记录一下。</p>
 <a id="more"></a>
 
-<h1 id="CodeQL数据库生成流程"><a href="#CodeQL数据库生成流程" class="headerlink" title="CodeQL数据库生成流程"></a>CodeQL数据库生成流程</h1><p><img src="../images/%E8%AE%B0%E4%B8%80%E6%AC%A1CodeQL%E4%B8%8EOpenJDK%E7%9A%84%E8%81%94%E5%8A%A8/image-20220303101229869.png" alt="image-20220303101229869"></p>
+<h1 id="CodeQL数据库生成流程"><a href="#CodeQL数据库生成流程" class="headerlink" title="CodeQL数据库生成流程"></a>CodeQL数据库生成流程</h1><img src="../images/%E8%AE%B0%E4%B8%80%E6%AC%A1CodeQL%E4%B8%8EOpenJDK%E7%9A%84%E8%81%94%E5%8A%A8/image-20220303101229869.png" alt="image-20220303101229869" style="zoom:50%;">
+
 <p>CodeQL引擎内的<code>Extractor</code>会对程序中的语义信息进行分析与提取，用来构建后续用来分析的数据库。</p>
 <p>编译型语言：在本地编译的过程中，可以将<code>Extractor</code>视作探针。它监视编译过程，捕获程序语义信息。</p>
 <p>解释性语言：直接分析程序源码。</p>
@@ -322,7 +323,8 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chmod 777 configure</span><br><span class="line">./configure --with-target-bits=64 --with-boot-jdk=/usr/lib/jvm/jdk1.7.0_80 --with-debug-level=slowdebug --enable-debug-symbols ZIP_DEBUGINFO_FILES=0</span><br></pre></td></tr></table></figure>
 
 <p>当你看到这个画面，恭喜你，你的编译环境没问题：</p>
-<p><img src="../images/%E8%AE%B0%E4%B8%80%E6%AC%A1CodeQL%E4%B8%8EOpenJDK%E7%9A%84%E8%81%94%E5%8A%A8/image-20220303105226017.png" alt="image-20220303105226017"></p>
+<img src="../images/%E8%AE%B0%E4%B8%80%E6%AC%A1CodeQL%E4%B8%8EOpenJDK%E7%9A%84%E8%81%94%E5%8A%A8/image-20220303105226017.png" alt="image-20220303105226017" style="zoom:50%;">
+
 <h2 id="编译-amp-数据库生成"><a href="#编译-amp-数据库生成" class="headerlink" title="编译&amp;数据库生成"></a>编译&amp;数据库生成</h2><p>到这里，下面这行命令就可以编译了：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make all DISABLE_HOTSPOT_OS_VERSION_CHECK=OK ZIP_DEBUGINFO_FILES=0</span><br></pre></td></tr></table></figure>
 
@@ -332,9 +334,13 @@
 <p>编译成功之后，cd到<code>build/linux-x86_64-normal-server-slowdebug/jdk/bin</code>目录下：</p>
 <p><img src="../images/%E8%AE%B0%E4%B8%80%E6%AC%A1CodeQL%E4%B8%8EOpenJDK%E7%9A%84%E8%81%94%E5%8A%A8/image-20220303110254754.png" alt="image-20220303110254754"></p>
 <p>编译好的OpenJDK在build目录下，对应的CodeQL数据库在源码目录下：</p>
-<p><img src="../images/%E8%AE%B0%E4%B8%80%E6%AC%A1CodeQL%E4%B8%8EOpenJDK%E7%9A%84%E8%81%94%E5%8A%A8/image-20220303105954416.png" alt="image-20220303105954416"></p>
+<img src="../images/%E8%AE%B0%E4%B8%80%E6%AC%A1CodeQL%E4%B8%8EOpenJDK%E7%9A%84%E8%81%94%E5%8A%A8/image-20220303105954416.png" alt="image-20220303105954416" style="zoom:50%;">
+
+
+
 <h2 id="CodeQL查询"><a href="#CodeQL查询" class="headerlink" title="CodeQL查询"></a>CodeQL查询</h2><p>有了Database，导入到VSCode插件中，写个脚本简单查询一下：</p>
-<p><img src="../images/%E8%AE%B0%E4%B8%80%E6%AC%A1CodeQL%E4%B8%8EOpenJDK%E7%9A%84%E8%81%94%E5%8A%A8/image-20220303111013521.png" alt="image-20220303111013521"></p>
+<img src="../images/%E8%AE%B0%E4%B8%80%E6%AC%A1CodeQL%E4%B8%8EOpenJDK%E7%9A%84%E8%81%94%E5%8A%A8/image-20220303111013521.png" alt="image-20220303111013521" style="zoom:50%;">
+
 <h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><ol>
 <li>MacOS上面Xcode，clang那一套编译工具实在是头大，为了省事，选择了Toolchain更简单清晰的Linux；</li>
 <li>下载Linux版本的<a href="https://github.com/github/codeql-cli-binaries" target="_blank" rel="noopener">CodeQL CLI</a>以及<a href="https://github.com/github/codeql" target="_blank" rel="noopener">CodeQL Lib</a>,构建数据库之前，别忘了修改环境变量；</li>
