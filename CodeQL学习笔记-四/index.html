@@ -41,7 +41,7 @@
 <meta property="og:image" content="https://fynch3r.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9B%9B/image-20220106093445663.png">
 <meta property="og:image" content="https://fynch3r.github.io/images/CodeQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9B%9B/image-20211102184158889.png">
 <meta property="article:published_time" content="2021-10-29T07:08:17.000Z">
-<meta property="article:modified_time" content="2022-03-03T00:56:51.856Z">
+<meta property="article:modified_time" content="2022-03-11T01:40:18.009Z">
 <meta property="article:author" content="fynch3r">
 <meta property="article:tag" content="CodeQL">
 <meta name="twitter:card" content="summary">
@@ -231,7 +231,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-03-03 08:56:51" itemprop="dateModified" datetime="2022-03-03T08:56:51+08:00">2022-03-03</time>
+                <time title="修改时间：2022-03-11 09:40:18" itemprop="dateModified" datetime="2022-03-11T09:40:18+08:00">2022-03-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -369,10 +369,11 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Map m1 &#x3D; new HashMap();</span><br><span class="line">Map&lt;String, String&gt; m2 &#x3D; new HashMap&lt;String, String&gt;();</span><br></pre></td></tr></table></figure>
 
 <p>但是只能找到m1，不能找到m2。</p>
+<p>RawType不带任何参数，比如说Map</p>
 <p>通配符？：wildcard type</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;? extends Number, ? super Float&gt; m;</span><br></pre></td></tr></table></figure>
 
-<p><code>WildcardTypeAccess</code>：表示的是这两个通配符</p>
+<p><code>WildcardTypeAccess</code>：表示的是这两个通配符<code>? extends Number</code>和<code>? super Float</code></p>
 <p>Number是上界，Float是下届</p>
 <p><code>getUpperBound</code>：获取上界</p>
 <p><code>getLowerBound</code>：获取下界</p>
@@ -390,7 +391,7 @@
 </ul>
 <p>这两个类中也提供了一些成员谓词：</p>
 <ul>
-<li><code>Expr.getAChildExpr</code> 返回一个给定表达式的子表达式</li>
+<li><code>Expr.getAChildExpr</code> 返回一个当前表达式的子表达式</li>
 <li><code>Stmt.getAChild</code> 返回直接嵌套在给定语句中的语句或者表达式</li>
 <li><code>Expr.getParent</code> and <code>Stmt.getParent</code>  返回一个AST节点的父节点</li>
 </ul>
@@ -426,7 +427,8 @@
 <p>For example, the following query finds all calls to methods called <code>println</code>:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Call c, Method m</span><br><span class="line">where m &#x3D; c.getCallee() and</span><br><span class="line">    m.hasName(&quot;println&quot;)</span><br><span class="line">select c</span><br></pre></td></tr></table></figure>
 
-<p>相反的，<code>Callable.getAreference</code>返回一个Callable的call site。比如找到那些从来没有被调用的cons和methods。</p>
+<p>相反的，<code>Callable.getAReference</code>返回一个Call。</p>
+<p>比如找到那些从来没有被调用的cons和methods。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line">from Callable c</span><br><span class="line">where not exists(c.getAReference())</span><br><span class="line">select c</span><br></pre></td></tr></table></figure>
 
 <h2 id="Analyzing-data-flow-in-Java"><a href="#Analyzing-data-flow-in-Java" class="headerlink" title="Analyzing data flow in Java"></a>Analyzing data flow in Java</h2><p>local data flow / global data flow / taint tracking </p>
@@ -457,7 +459,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Constructor fileReader, Call call</span><br><span class="line">where</span><br><span class="line">  fileReader.getDeclaringType().hasQualifiedName(&quot;java.io&quot;, &quot;FileReader&quot;) and</span><br><span class="line">  call.getCallee() &#x3D; fileReader</span><br><span class="line">select call.getArgument(0)</span><br></pre></td></tr></table></figure>
 
 <p>上面只能找到参数中的表达式，找不到数据流的流向关系。</p>
-<p>附加上数据流，具体了一些：</p>
+<p>附加上本地数据流，具体了一些：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line">import semmle.code.java.dataflow.DataFlow</span><br><span class="line"></span><br><span class="line">from Constructor fileReader, Call call, Expr src</span><br><span class="line">where</span><br><span class="line">  fileReader.getDeclaringType().hasQualifiedName(&quot;java.io&quot;, &quot;FileReader&quot;) and</span><br><span class="line">  call.getCallee() &#x3D; fileReader and</span><br><span class="line">  DataFlow::localFlow(DataFlow::exprNode(src), DataFlow::exprNode(call.getArgument(0)))</span><br><span class="line">select src</span><br></pre></td></tr></table></figure>
 
 <p>寻找公共参数：</p>
@@ -492,7 +494,7 @@
 <li>isBarrier 可选 限制数据流</li>
 <li>isAdditionalFlowStep 可选，添加额外的流程步骤</li>
 </ol>
-<p>也可以使用<code>hasFlow</code>谓词去寻找数据流：</p>
+<p>也可以使用<code>hasFlow(DataFlow::Node source, DataFlow::Node sink)</code>谓词去寻找数据流：</p>
 <h4 id="Flow-sources"><a href="#Flow-sources" class="headerlink" title="Flow sources"></a>Flow sources</h4><p>数据库流包含一些预定义的流源。<code>semmle.code.java.dataflow.FlowSources</code>包中定义的类<code>RemoteFlowSource</code>表示的是那些可以由远程用户控制的数据源，这对查找安全问题有很大帮助。</p>
 <h4 id="举例-1"><a href="#举例-1" class="headerlink" title="举例"></a>举例</h4><p>寻找用户输入源：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line">import semmle.code.java.dataflow.FlowSources</span><br><span class="line"></span><br><span class="line">class MyTaintTrackingConfiguration extends TaintTracking::Configuration &#123;</span><br><span class="line">  MyTaintTrackingConfiguration() &#123;</span><br><span class="line">    this &#x3D; &quot;...&quot;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  override predicate isSource(DataFlow::Node source) &#123;</span><br><span class="line">    source instanceof RemoteFlowSource</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -625,10 +627,10 @@
 
 <h2 id="Annotations-in-Java"><a href="#Annotations-in-Java" class="headerlink" title="Annotations in Java"></a>Annotations in Java</h2><p>CodeQL中关于Annotation的类：</p>
 <ul>
-<li><code>Annotable</code>类表示所有可以被注解附加的程序元素，比如说package、引用类型、field、method、localvar。</li>
+<li><code>Annotable</code>类表示所有可以被注解附加的程序元素，比如说package、引用类型、field、method、local_var。</li>
 <li><code>AnnotationType</code>类表示注解这个类型，例如<code>java.langOverride</code>。Java中的注解都是接口。</li>
 <li><code>AnnotationElement</code>类表示某个注解内部的元素，也就是一个注解类型的成员。</li>
-<li><code>Annotation</code>类表示一个注解，例如<code>@Override</code>。注解的可以通过<code>getValue</code>谓词获得。</li>
+<li><code>Annotation</code>类表示一个注解，例如<code>@Override</code>。注解的value可以通过<code>getValue</code>谓词获得。</li>
 </ul>
 <p>例如，<code>SuppressWarnings</code>是Java官方注解，要求针对某类错误不报错。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">package java.lang;</span><br><span class="line"></span><br><span class="line">public @interface SuppressWarnings &#123;</span><br><span class="line">    String[] value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -900,7 +902,16 @@
           <a href="https://zebork.org/" title="https:&#x2F;&#x2F;zebork.org" rel="noopener" target="_blank">Zebork</a>
         </li>
         <li class="links-of-blogroll-item">
+          <a href="https://apsarasx.com/" title="https:&#x2F;&#x2F;apsarasx.com" rel="noopener" target="_blank">ApsarasX</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.safe6.cn/index" title="http:&#x2F;&#x2F;www.safe6.cn&#x2F;index" rel="noopener" target="_blank">Safe6</a>
+        </li>
+        <li class="links-of-blogroll-item">
           <a href="https://su18.org/" title="https:&#x2F;&#x2F;su18.org" rel="noopener" target="_blank">su18</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://summersec.github.io/" title="https:&#x2F;&#x2F;summersec.github.io" rel="noopener" target="_blank">SummerSec</a>
         </li>
         <li class="links-of-blogroll-item">
           <a href="https://www.cnblogs.com/tr1ple/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;tr1ple&#x2F;" rel="noopener" target="_blank">tr1ple</a>
@@ -922,15 +933,6 @@
         </li>
         <li class="links-of-blogroll-item">
           <a href="https://www.yuque.com/ni4n/blogs" title="https:&#x2F;&#x2F;www.yuque.com&#x2F;ni4n&#x2F;blogs" rel="noopener" target="_blank">Ni4n</a>
-        </li>
-        <li class="links-of-blogroll-item">
-          <a href="https://summersec.github.io/" title="https:&#x2F;&#x2F;summersec.github.io" rel="noopener" target="_blank">SummerSec</a>
-        </li>
-        <li class="links-of-blogroll-item">
-          <a href="https://www.zhihu.com/people/chenwengang" title="https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;chenwengang" rel="noopener" target="_blank">ApsarasX</a>
-        </li>
-        <li class="links-of-blogroll-item">
-          <a href="http://www.safe6.cn/index" title="http:&#x2F;&#x2F;www.safe6.cn&#x2F;index" rel="noopener" target="_blank">Safe6</a>
         </li>
     </ul>
   </div>
@@ -972,7 +974,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">23:09</span>
+    <span title="站点阅读时长">23:10</span>
   -->
 
 </div>
